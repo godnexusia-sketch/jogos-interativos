@@ -25,6 +25,10 @@
   <main>
     <section id="stage">
       <canvas id="canvas" width="1080" height="1920"></canvas>
+      <script>
+        // Modo leve: desenha em 720×1280 (metade dos pixels). O jogo é o mesmo, só a resolução muda.
+        if (new URLSearchParams(location.search).get('leve') === '1') { const c = document.getElementById('canvas'); c.width = 720; c.height = 1280; }
+      </script>
     </section>
     <aside class="controls">
      <div class="col">
@@ -60,8 +64,11 @@
         <p class="small">Valores reais da loja do TikTok. O efeito é proporcional ao total de moedas (preço × combo): 1–9 · 10–99 · 100–999 · 1.000+, e cresce dentro de cada faixa.</p>
       </div>
       <div class="panel">
-        <h3>OBS / LIVE Studio</h3>
-        <p class="small">Fonte de navegador 1080×1920 (9:16):</p>
+        <h3>Tela da Live (LIVE Studio)</h3>
+        <button id="mirrorBtn">🖥️ Abrir Tela da Live</button>
+        <label class="small" style="display:flex;align-items:center;gap:6px"><input id="mirrorLight" type="checkbox" style="width:auto"> Modo leve (720p, para PC mais fraco)</label>
+        <p class="small">Abre uma janela só com o jogo. No LIVE Studio, adicione <b>Captura de janela</b> e escolha "Tela da Live". Não minimize nem cubra essa janela. Enquanto ela estiver aberta, o painel para de desenhar o jogo e tudo roda lá, mais leve.</p>
+        <p class="small">No OBS, use uma fonte de navegador 1080×1920 (9:16):</p>
         <code id="obsUrl"></code>
       </div>
      </div>
