@@ -2,7 +2,6 @@
 
 // Bola no Ursinho: um personagem (pode ser a sua foto) segura um ursinho de pelúcia. Presentes lançam bolas nele.
 // O ursinho tem barra de vida; quando zera, a rodada acaba e recomeça sozinha.
-const BEAR = { x: 470, y: 690 };
 
 registerGame(withConfig({
   id: 'chute',
@@ -30,6 +29,8 @@ registerGame(withConfig({
       extras: [{ key: 'life', label: 'Vida do ursinho', min: 10, max: 100000 }],
     }, (cfg) => { this.applyConfig(cfg); save(this.config); });
   },
+  // Foto nova do personagem: remonta a cena 3D.
+  applyConfig(cfg) { if (!cfg?.items?.length) return; this.config = cfg; store.set('cfg:chute', cfg); this.r = null; this.reset(); },
   sample: () => pick(['chuta', 'chuta!', 'gol']),
   kick(user, kind, delay = 0) { this.pending.push({ user, kind, at: delay }); },
   onEvent(ev) {
@@ -47,13 +48,6 @@ registerGame(withConfig({
       if (tier >= 3) announcer.show(`${tier === 4 ? '🌟' : '🔥'} @${trim(ev.user.nick, 12)}`, tier === 4 ? '#ffd23f' : '#ff8a3d', 2, 58);
     }
   },
-  launch({ user, kind }) {
-    if (this.balls.length > 40) return;
-    const miss = kind === 'normal' && Math.random() < 0.35;
-    const tx = BEAR.x + rand(-40, 40) + (miss ? pick([-170, 170]) : 0), ty = BEAR.y + rand(-50, 40) + (miss ? -80 : 0);
-    this.balls.push({ user, kind, miss, sx: rand(60, W - 60), sy: H + 40, tx, ty, t: 0, dur: kind === 'gold' ? 0.55 : kind === 'fire' ? 1.0 : 0.8, spin: rand(-8, 8) });
-    sfx.tone(160, 0.08, 'sine', 0.15);
-  },
   update(dt) {
     this.gray = Math.max(0, this.gray - dt);
     this.shake = Math.max(0, this.shake - dt);
@@ -68,15 +62,16 @@ registerGame(withConfig({
       b.t += dt;
       if (b.t < b.dur || b.done) continue;
       b.done = true;
-      if (b.miss) { floatText('errou!', b.tx, b.ty - 30, '#fff', 26); continue; }
+      const hp = this.r ? this.project(this.bearWorld()) : { x: W / 2, y: H / 2 };
+      if (b.miss) { floatText('errou!', hp.x + (b.tx > 0.55 ? 120 : -120), hp.y - 60, '#fff', 26); continue; }
       const dmg = b.kind === 'fire' ? 5 : b.kind === 'gold' ? 2 : 1;
       this.life = Math.max(0, this.life - dmg);
       this.hits++;
       addScore(this.kickers, b.user.nick, dmg);
       this.gray = 0.16;
       this.shake = 0.35;
-      this.booms.push({ x: b.tx + rand(-30, 30), y: b.ty - 40, t: 0.7, big: b.kind === 'fire', n: dmg });
-      burst(b.tx, b.ty, b.kind === 'gold' ? ['#ffd23f', '#fff'] : b.kind === 'fire' ? ['#ff8a3d', '#fe2c55'] : ['#fff', '#c8a27a'], 22, 320);
+      this.booms.push({ t: 0.7, big: b.kind === 'fire', n: dmg });
+      burst(hp.x, hp.y, b.kind === 'gold' ? ['#ffd23f', '#fff'] : b.kind === 'fire' ? ['#ff8a3d', '#fe2c55'] : ['#fff', '#c8a27a'], 22, 320);
       sfx.tone(b.kind === 'fire' ? 90 : 220, 0.12, 'square', 0.1);
       if (this.life <= 0) {
         this.phase = 'over'; this.endT = 9;
@@ -87,29 +82,6 @@ registerGame(withConfig({
       }
     }
     this.balls = this.balls.filter((b) => !b.done || (b.miss && b.t < b.dur + 0.4));
-  },
-  drawKitchen() {
-    // Parede de tijolos
-    ctx.fillStyle = '#7a4a32'; ctx.fillRect(0, 0, W, H);
-    for (let y = 0, row = 0; y < 1000; y += 34, row++) for (let x = (row % 2) * -40; x < W; x += 80) {
-      const c = ['#a0603f', '#9a5638', '#b36b47', '#8f5034'][(x * 7 + y * 3) % 4 & 3];
-      ctx.fillStyle = c; ctx.fillRect(x + 3, y + 3, 74, 28);
-    }
-    const vg = ctx.createRadialGradient(W / 2, 560, 100, W / 2, 560, 760);
-    vg.addColorStop(0, 'rgba(255,220,180,.15)'); vg.addColorStop(1, 'rgba(0,0,0,.55)');
-    ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
-    // Armário e bancada
-    ctx.fillStyle = '#3b2a20'; ctx.fillRect(560, 420, 160, 340);
-    ctx.fillStyle = '#d9d3c7'; ctx.fillRect(540, 560, 180, 22);
-    ctx.fillStyle = '#2b1f18'; ctx.fillRect(560, 582, 160, 260);
-    for (let k = 0; k < 2; k++) { ctx.fillStyle = '#4a3528'; ctx.fillRect(570 + k * 76, 600, 70, 220); ctx.fillStyle = '#c9b38a'; ctx.fillRect(620 + k * 76 - 30 + (k ? -30 : 0) + 36, 700, 4, 30); }
-    // Piso
-    const fg = ctx.createLinearGradient(0, 1000, 0, H);
-    fg.addColorStop(0, '#d8d2c8'); fg.addColorStop(1, '#a9a196');
-    ctx.fillStyle = fg; ctx.fillRect(0, 1000, W, H - 1000);
-    ctx.strokeStyle = 'rgba(0,0,0,.12)';
-    for (let k = -6; k <= 6; k++) { ctx.beginPath(); ctx.moveTo(W / 2 + k * 70, 1000); ctx.lineTo(W / 2 + k * 200, H); ctx.stroke(); }
-    for (let k = 0; k < 5; k++) { ctx.beginPath(); ctx.moveTo(0, 1010 + k * k * 12); ctx.lineTo(W, 1010 + k * k * 12); ctx.stroke(); }
   },
   drawBear(x, y, s, hurt) {
     ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
@@ -128,62 +100,107 @@ registerGame(withConfig({
     ctx.fillStyle = '#e11d48'; ctx.beginPath(); ctx.moveTo(0, -2); ctx.lineTo(-20, -12); ctx.lineTo(-20, 8); ctx.closePath(); ctx.moveTo(0, -2); ctx.lineTo(20, -12); ctx.lineTo(20, 8); ctx.closePath(); ctx.fill();
     ctx.restore();
   },
-  drawCharacter(t) {
+  // ---------- Cena 3D: cozinha, personagem e ursinho ----------
+  init3d() {
+    if (this.r || !THREE) return;
+    const T = THREE;
+    const scene = new T.Scene();
+    scene.background = new T.Color(0x1a120d);
+    const camera = new T.PerspectiveCamera(40, W / H, 0.1, 100);
+    G3.lights(scene, { sky: 0xfff1e0, ground: 0x3b2a20, hemi: 0.9, sun: 2.2, pos: [6, 10, 8] });
+    const lamp = new T.PointLight(0xffd6a0, 25, 14); lamp.position.set(0, 4.2, 1.5); scene.add(lamp);
+    const brick = G3.tex(256, 256, (g) => {
+      g.fillStyle = '#5c3524'; g.fillRect(0, 0, 256, 256);
+      for (let y = 0, row = 0; y < 256; y += 32, row++) for (let x = (row % 2) * -32; x < 256; x += 64) { g.fillStyle = ['#a0603f', '#9a5638', '#b36b47', '#8f5034'][(x + y * 3) & 3]; g.fillRect(x + 3, y + 3, 58, 26); }
+    }, [5, 3]);
+    const wall = new T.Mesh(new T.PlaneGeometry(14, 8), new T.MeshStandardMaterial({ map: brick, roughness: 0.9 }));
+    wall.position.set(0, 4, -2.5); wall.receiveShadow = true; scene.add(wall);
+    const tiles = G3.tex(256, 256, (g) => { for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) { g.fillStyle = (x + y) % 2 ? '#d6d3cd' : '#c4bfb6'; g.fillRect(x * 64, y * 64, 64, 64); } g.strokeStyle = 'rgba(0,0,0,.15)'; g.lineWidth = 2; for (let i = 0; i <= 4; i++) { g.beginPath(); g.moveTo(i * 64, 0); g.lineTo(i * 64, 256); g.moveTo(0, i * 64); g.lineTo(256, i * 64); g.stroke(); } }, [6, 6]);
+    const floor = new T.Mesh(new T.PlaneGeometry(14, 14), new T.MeshStandardMaterial({ map: tiles, roughness: 0.5 }));
+    floor.rotation.x = -Math.PI / 2; floor.position.z = 3; floor.receiveShadow = true; scene.add(floor);
+    // Bancada, armários e geladeira
+    const wood = new T.MeshStandardMaterial({ color: 0x3b2a20, roughness: 0.7 });
+    const counter = new T.Mesh(new T.BoxGeometry(3.4, 1.8, 1.2), wood); counter.position.set(3.6, 0.9, -1.8); counter.castShadow = true; scene.add(counter);
+    const top = new T.Mesh(new T.BoxGeometry(3.6, 0.12, 1.3), new T.MeshStandardMaterial({ color: 0xe7e2d8, roughness: 0.3 })); top.position.set(3.6, 1.86, -1.8); scene.add(top);
+    const fridge = new T.Mesh(new T.BoxGeometry(1.4, 3.6, 1.2), new T.MeshStandardMaterial({ color: 0xe5e7eb, metalness: 0.4, roughness: 0.3 })); fridge.position.set(-4, 1.8, -1.8); fridge.castShadow = true; scene.add(fridge);
+    const upper = new T.Mesh(new T.BoxGeometry(3.4, 1.2, 0.6), wood); upper.position.set(3.6, 4.4, -2.2); scene.add(upper);
+    // Personagem segurando o ursinho
     const it = this.config.items[0];
-    const x = 290, base = 1060;
-    const shirt = it.color, dark = shade(it.color, -50), skin = '#c68642';
-    const limb = (x0, y0, x1, y1, w, col) => { ctx.strokeStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); };
-    ctx.fillStyle = 'rgba(0,0,0,.3)'; ctx.beginPath(); ctx.ellipse(x, base + 6, 130, 18, 0, 0, 7); ctx.fill();
-    // Pernas e tênis
-    limb(x - 36, 840, x - 58, base - 22, 46, skin); limb(x + 36, 840, x + 66, base - 22, 46, skin);
-    for (const [fx, flip] of [[x - 60, -1], [x + 70, 1]]) { ctx.fillStyle = '#111'; ctx.beginPath(); ctx.roundRect(fx - 30 + flip * 8, base - 34, 70, 30, 12); ctx.fill(); ctx.fillStyle = '#fff'; ctx.fillRect(fx - 26 + flip * 8, base - 12, 62, 6); }
-    // Short
-    ctx.fillStyle = '#1f2937'; ctx.beginPath(); ctx.moveTo(x - 80, 740); ctx.lineTo(x + 80, 740); ctx.lineTo(x + 96, 890); ctx.lineTo(x + 8, 890); ctx.lineTo(x, 850); ctx.lineTo(x - 8, 890); ctx.lineTo(x - 96, 890); ctx.closePath(); ctx.fill();
-    // Camisa
-    const sg = ctx.createLinearGradient(x - 90, 0, x + 90, 0);
-    sg.addColorStop(0, dark); sg.addColorStop(0.5, shirt); sg.addColorStop(1, dark);
-    ctx.fillStyle = sg; ctx.beginPath(); ctx.roundRect(x - 88, 520, 176, 240, [40, 40, 16, 16]); ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.fillRect(x - 88, 600, 176, 10);
-    // Braço segurando o ursinho
-    limb(x + 70, 560, BEAR.x - 60, BEAR.y + 20, 30, skin);
-    // Braço com a mão na cabeça (provocando)
-    const wave = Math.sin(t * 3) * 6;
-    limb(x - 78, 552, x - 150, 430 + wave, 32, skin);
-    limb(x - 150, 430 + wave, x - 78, 350, 28, skin);
-    // Cabeça com a foto
-    avatar({ nick: it.name, pic: it.photo || fakeFace('personagem') }, x, 430, 88, '#fff');
-    ctx.fillStyle = skin; ctx.beginPath(); ctx.arc(x - 74, 352, 22, 0, 7); ctx.fill();
-    pill(`@${trim(it.name, 14)}`, x, 1086, { size: 18, bg: 'rgba(0,0,0,.75)' });
+    const rig = makeHuman({ color: it.color, shorts: '#111827', photo: it.photo, seed: it.name });
+    rig.root.position.set(-0.6, 0, 0.2); rig.root.rotation.y = 0.35;
+    scene.add(rig.root);
+    // Ursinho de pelúcia 3D
+    const bear = new T.Group();
+    const fur = new T.MeshStandardMaterial({ color: 0xa4703f, roughness: 0.95 }), light = new T.MeshStandardMaterial({ color: 0xd9a066, roughness: 0.95 });
+    const ball = (r, m, x, y, z, sx = 1, sy = 1, sz = 1) => { const o = new T.Mesh(new T.SphereGeometry(r, 18, 14), m); o.position.set(x, y, z); o.scale.set(sx, sy, sz); o.castShadow = true; bear.add(o); return o; };
+    ball(0.42, fur, 0, 0, 0, 1, 1.1, 0.9); ball(0.26, light, 0, -0.02, 0.3, 1, 1, 0.5);
+    const bh = ball(0.36, fur, 0, 0.58, 0); ball(0.15, light, 0, 0.5, 0.32, 1, 0.8, 0.6);
+    for (const s of [-1, 1]) { ball(0.13, fur, s * 0.27, 0.86, 0); ball(0.15, fur, s * 0.42, 0.05, 0.05); ball(0.17, fur, s * 0.22, -0.42, 0.08); }
+    const eyeM = new T.MeshBasicMaterial({ color: 0x111111 });
+    const eyes = [-1, 1].map((s) => ball(0.045, eyeM, s * 0.12, 0.66, 0.32));
+    ball(0.05, eyeM, 0, 0.53, 0.42);
+    const bow = new T.Mesh(new T.TorusGeometry(0.1, 0.04, 8, 16), new T.MeshStandardMaterial({ color: 0xe11d48 })); bow.position.set(0, 0.3, 0.33); bear.add(bow);
+    bear.position.set(0.55, 1.75, 0.65);
+    scene.add(bear);
+    // Bolas
+    const ballTex = G3.tex(128, 64, (g) => { g.fillStyle = '#f8fafc'; g.fillRect(0, 0, 128, 64); g.fillStyle = '#111'; for (let i = 0; i < 6; i++) { g.beginPath(); g.arc(12 + i * 22, i % 2 ? 18 : 46, 8, 0, 7); g.fill(); } });
+    const mats = { normal: new T.MeshStandardMaterial({ map: ballTex, roughness: 0.4 }), gift: new T.MeshStandardMaterial({ map: ballTex, roughness: 0.4 }), fire: new T.MeshStandardMaterial({ color: 0xff6a00, emissive: 0xff3300, emissiveIntensity: 1.2 }), gold: new T.MeshStandardMaterial({ color: 0xffd23f, metalness: 1, roughness: 0.2, emissive: 0x553300 }) };
+    this.r = { scene, camera, rig, bear, bh, eyes, mats, ballGeo: new T.SphereGeometry(0.18, 18, 14), balls: new Map() };
+  },
+  bearWorld() { return this.r ? this.r.bear.position.clone() : null; },
+  project(v) { const p = v.clone().project(this.r.camera); return { x: (p.x + 1) / 2 * W, y: (1 - p.y) / 2 * H }; },
+  launch({ user, kind }) {
+    if (this.balls.length > 40) return;
+    const miss = kind === 'normal' && Math.random() < 0.35;
+    // Coordenadas no mundo 3D: sai de perto da câmera e vai até o ursinho
+    const tx = 0.55 + rand(-0.25, 0.25) + (miss ? pick([-1.6, 1.6]) : 0), ty = 1.8 + rand(-0.25, 0.3) + (miss ? 0.8 : 0), tz = 0.65;
+    this.balls.push({ user, kind, miss, sx: rand(-2.5, 2.5), sy: 0.4, sz: 7, tx, ty, tz, t: 0, dur: kind === 'gold' ? 0.55 : kind === 'fire' ? 1.0 : 0.8, spin: rand(-8, 8) });
+    sfx.tone(160, 0.08, 'sine', 0.15);
   },
   draw() {
-    const t = performance.now() / 1000;
-    cachedScene('cozinha', () => this.drawKitchen());
-    const sx = this.shake ? rand(-6, 6) : 0;
-    ctx.save(); ctx.translate(sx, 0);
-    this.drawCharacter(t);
-    const hurt = this.life / this.config.life < 0.25;
-    this.drawBear(BEAR.x + (this.shake ? rand(-8, 8) : 0), BEAR.y, 1.1, hurt || this.shake > 0.2);
-    ctx.restore();
-    for (const b of this.balls) {
-      const k = clamp(b.t / b.dur, 0, 1.4);
-      const x = b.sx + (b.tx - b.sx) * k, y = b.sy + (b.ty - b.sy) * k - Math.sin(Math.min(1, k) * Math.PI) * 140;
-      const size = (b.kind === 'fire' ? 110 : 60) * (1.3 - 0.5 * Math.min(1, k));
-      if (b.kind === 'fire') { ctx.globalAlpha = 0.75; text('🔥', x - 10, y + size * 0.25, size * 1.15); ctx.globalAlpha = 1; }
-      ctx.save(); ctx.translate(x, y); ctx.rotate(b.t * b.spin);
-      text(b.kind === 'gold' ? '🪙' : '⚽', 0, 0, size);
-      ctx.restore();
-      if (k < 0.55) pill(`@${trim(b.user.nick, 10)}`, x, y + size * 0.75, { size: 13 });
+    if (!this.r) {
+      this.init3d();
+      background('#1a120d', '#3b2a20');
+      title('ACERTE O URSINHO', W / 2, H / 2 - 20, 56, '#fff');
+      text('Montando a cozinha…', W / 2, H / 2 + 40, 26, '#fde68a', 'center', 700);
+      three3dReady.then(() => this.init3d());
+      return;
     }
+    const T = THREE, t = performance.now() / 1000, r = this.r;
+    // Personagem provocando: mão na cabeça e o outro braço segurando o ursinho
+    const wave = Math.sin(t * 3) * 0.15;
+    poseHuman(r.rig, { sL: [-1.25, 0, -0.35], eL: [-0.45], sR: [-2.6 + wave, 0, 0.5], eR: [-1.7], torso: [0, -0.15, 0], head: [0.05, 0.25, Math.sin(t * 2) * 0.06], hL: [0.05, 0, 0.06], hR: [-0.05, 0, -0.06], kL: [0.05], kR: [0.05], y: Math.sin(t * 2) * 0.02 });
+    const shake = this.shake > 0 ? (Math.random() - 0.5) * this.shake * 0.6 : 0;
+    r.bear.position.set(0.55 + shake, 1.75 + Math.abs(shake) * 0.5, 0.65);
+    r.bear.rotation.z = shake * 0.8;
+    const hurt = this.life / this.config.life < 0.25 || this.shake > 0.2;
+    for (const e of r.eyes) e.scale.set(hurt ? 1.6 : 1, hurt ? 0.3 : 1, 1);
+    // Bolas em voo (arco)
+    const seen = new Set();
+    for (const b of this.balls) {
+      let m = r.balls.get(b);
+      if (!m) { m = new T.Mesh(r.ballGeo, r.mats[b.kind] || r.mats.normal); m.castShadow = true; m.scale.setScalar(b.kind === 'fire' ? 2.2 : 1); r.scene.add(m); r.balls.set(b, m); }
+      seen.add(b);
+      const k = clamp(b.t / b.dur, 0, 1.5);
+      m.position.set(b.sx + (b.tx - b.sx) * k, b.sy + (b.ty - b.sy) * k + Math.sin(Math.min(1, k) * Math.PI) * 1.2, b.sz + (b.tz - b.sz) * k);
+      m.rotation.x += b.spin * 0.016; m.rotation.y += 0.1;
+    }
+    for (const [b, m] of r.balls) if (!seen.has(b)) { r.scene.remove(m); r.balls.delete(b); }
+    r.camera.position.set(0.05 + Math.sin(t * 0.3) * 0.2, 2.2, 8.6);
+    r.camera.lookAt(0, 1.55, 0);
+    G3.render(r.scene, r.camera);
+    // Nomes nas bolas, "BOOM!" e corte em preto e branco
+    for (const b of this.balls) if (b.t / b.dur < 0.5) { const m = r.balls.get(b); if (m) { const p = this.project(m.position); pill(`@${trim(b.user.nick, 10)}`, p.x, p.y + 34, { size: 13 }); } }
     for (const b of this.booms) {
+      const bp = this.project(this.bearWorld());
       const s = (b.big ? 1.6 : 1) * (1 + (0.7 - b.t) * 0.8);
-      ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(-0.2); ctx.scale(s, s); ctx.globalAlpha = clamp(b.t * 2, 0, 1);
+      ctx.save(); ctx.translate(bp.x + (b.ox ?? (b.ox = rand(-60, 60))), bp.y - 60); ctx.rotate(-0.2); ctx.scale(s, s); ctx.globalAlpha = clamp(b.t * 2, 0, 1);
       ctx.beginPath();
-      for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2, r = k % 2 ? 34 : 58; ctx.lineTo(Math.cos(a) * r * 1.3, Math.sin(a) * r); }
+      for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2, rr = k % 2 ? 34 : 58; ctx.lineTo(Math.cos(a) * rr * 1.3, Math.sin(a) * rr); }
       ctx.closePath(); ctx.fillStyle = '#ffd23f'; ctx.fill(); ctx.lineWidth = 5; ctx.strokeStyle = '#b91c1c'; ctx.stroke();
       label('BOOM!', 0, 2, 26, '#b91c1c', 'center', 400, F_TITLE);
       ctx.restore();
     }
-    // Corte em preto e branco a cada acerto: uma camada de dessaturação, barata em Full HD.
     if (this.gray > 0) { ctx.save(); ctx.globalCompositeOperation = 'saturation'; ctx.fillStyle = '#808080'; ctx.fillRect(0, 0, W, H); ctx.restore(); }
     this.drawHud();
     if (this.phase === 'over') this.drawOver();
