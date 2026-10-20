@@ -2,25 +2,25 @@
 
 **Site:** https://jogos-interativos.onrender.com
 
-14 jogos que rodam no navegador e reagem à live do TikTok em tempo real. O espectador vê o próprio
-@ e a foto na tela; quanto maior o presente, maior o efeito.
+14 jogos que rodam no navegador (a maioria em 3D) e reagem à live do TikTok em tempo real. A tela é
+sempre 9:16 (1080×1920). O espectador vê o próprio @ e a foto; quanto maior o presente, maior o efeito.
 
 | Jogo | Como o público joga |
 | --- | --- |
-| 🗳️ Votação | Comenta 1–4; presente soma votos por moeda |
-| 🏛️ Sim ou Não | Comenta SIM ou NÃO; presente soma votos por moeda |
-| 🗳️ Urna | Comenta o número do candidato; a mão digita na urna e aperta CONFIRMA. Foto, número e nome configuráveis |
-| ⚽ Bola no Ursinho | Comenta “chuta”; presentes lançam bolas no ursinho que o personagem segura (foto configurável) |
-| 🏃 Corrida de Torcidas | Comenta o nome do corredor; presentes dão impulso, banana, superarrancada; meta coletiva de likes |
-| 🏁 Corrida Maluca | Avenida à noite: comenta carro ou moto e entra na pista; nitro, óleo, míssil, bomba no líder |
-| 🏎️ Kart 3D | Circuito em 3D com mapa: comenta kart; nitro, pedra, míssil teleguiado e raio |
-| 🐍 Cobra IA | A IA joga; o chat comenta “bomba” para matar |
-| 🥊 Combate | Comenta 1 ou 2 para escolher o lado; presente vira golpe (fotos configuráveis) |
-| 🪁 Pipa | Cada comentário vira uma pipa; presente corta as outras |
-| 🕺 Palco Roblox | Comenta o nick do Roblox e o avatar real dança no palco |
+| 🗳️ Escolha o Jogo | Lista todos os jogos; a live vota pelo número e o vencedor abre sozinho |
+| 🏛️ Sim ou Não | Plenário 3D com telão; comenta SIM ou NÃO e a mão aperta o botão no tablet |
+| 🗳️ Urna | Duas urnas 3D na mesa; comenta o número do candidato (foto, número e nome configuráveis) |
+| ⚽ Bola no Ursinho | Cozinha 3D; presentes lançam bolas no ursinho que o personagem segura (foto configurável) |
+| 🏃 Corrida de Torcidas | Atletismo olímpico 3D; torce pelo corredor (rosto configurável) e presentes viram efeitos |
+| 🏁 Corrida na Cidade | Racha 3D noturno; comenta carro e corre com a foto em cima do carro |
+| 🏎️ Kart 3D | Circuito 3D com minimapa; comenta kart; nitro, pedra, míssil e raio |
+| 🐍 Arena de Cobras | Estilo Snake Rivals: cada espectador vira uma cobra 3D |
+| 🥊 Combate 3D | Lutadores 3D com o rosto configurado; comenta 1 ou 2 e presentes viram golpes |
+| 🪁 Céu de Pipas | Estilo Pipa Combate: cada comentário vira uma pipa 3D; presente corta as outras |
+| 🕺 Palco Roblox | Comenta o nick do Roblox e o avatar real dança num palco de show 3D |
 | 🐤 Flappy | Você joga; o público sabota com presentes |
-| 🏝️ Ilha | Battle royale: comenta “entrar”; a ilha encolhe até sobrar um |
-| 💃 Passarela | Comenta para entrar na fila do desfile; presente fura a fila |
+| 🏝️ Ilha | Battle royale 3D com bonecos estilo Roblox; a ilha encolhe até sobrar um |
+| 💃 Passarela | Desfile 3D com o avatar do Roblox; presente fura a fila |
 
 Presentes contam pela faixa de valor: 🌹 até 4 moedas · 🍩 5–99 · 🕶️ 100–499 · 🌌 500+.
 

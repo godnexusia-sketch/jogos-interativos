@@ -138,8 +138,53 @@ registerGame({
     ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.fillRect(0, 720, W, 3);
     ctx.fillStyle = '#05060a'; ctx.fillRect(0, 840, W, H - 840);
   },
+  // Plenário 3D ao fundo: fileiras em arco, mesa diretora, parede de ripas e luzes do teto.
+  init3d() {
+    if (this.r || !THREE) return;
+    const T = THREE;
+    const scene = new T.Scene();
+    scene.background = new T.Color(0x05070f);
+    scene.fog = new T.Fog(0x05070f, 30, 90);
+    const camera = new T.PerspectiveCamera(50, W / H, 0.5, 200);
+    scene.add(new T.HemisphereLight(0xb8c8ff, 0x1a2238, 1.6));
+    for (let i = 0; i < 6; i++) { const l = new T.PointLight(0xfff5df, 260, 60); l.position.set(-15 + i * 6, 18, -10); scene.add(l); const bulb = new T.Mesh(new T.SphereGeometry(0.4, 10, 8), new T.MeshBasicMaterial({ color: 0xfff7e0 })); bulb.position.copy(l.position); scene.add(bulb); }
+    const slats = G3.tex(256, 64, (g) => { for (let x = 0; x < 256; x += 16) { g.fillStyle = x % 32 ? '#2b3a5c' : '#22304d'; g.fillRect(x, 0, 16, 64); } }, [12, 1]);
+    const wall = new T.Mesh(new T.CylinderGeometry(40, 40, 22, 48, 1, true, Math.PI * 0.7, Math.PI * 0.6), new T.MeshStandardMaterial({ map: slats, side: T.BackSide, roughness: 0.8 }));
+    wall.position.set(0, 8, 14); scene.add(wall);
+    const floor = new T.Mesh(new T.CircleGeometry(45, 48), new T.MeshStandardMaterial({ color: 0x0f1a2e, roughness: 0.8 }));
+    floor.rotation.x = -Math.PI / 2; scene.add(floor);
+    // Mesa diretora
+    const desk = new T.Mesh(new T.BoxGeometry(14, 2.4, 2), new T.MeshStandardMaterial({ color: 0x2b4a7a, roughness: 0.5 }));
+    desk.position.set(0, 1.2, -18); scene.add(desk);
+    // Cadeiras em arco (um único desenho instanciado)
+    const chairGeo = new T.BoxGeometry(0.9, 1.1, 0.9);
+    const rows = 9, perRow = 26;
+    const chairs = new T.InstancedMesh(chairGeo, new T.MeshStandardMaterial({ color: 0x2f7fd0, roughness: 0.5 }), rows * perRow);
+    const m = new T.Matrix4(), q = new T.Quaternion();
+    let n = 0;
+    for (let r = 0; r < rows; r++) for (let k = 0; k < perRow; k++) {
+      const radius = 10 + r * 2.4, a = Math.PI * 1.1 + (k / (perRow - 1)) * Math.PI * 0.8;
+      const x = Math.cos(a) * radius, z = Math.sin(a) * radius + 4;
+      q.setFromEuler(new T.Euler(0, -a - Math.PI / 2, 0));
+      m.compose(new T.Vector3(x, 0.55 + r * 0.45, z), q, new T.Vector3(1, 1, 1));
+      chairs.setMatrixAt(n++, m);
+    }
+    scene.add(chairs);
+    // Bancadas em degraus
+    for (let r = 0; r < rows; r++) { const st = new T.Mesh(new T.RingGeometry(9 + r * 2.4, 11.2 + r * 2.4, 48, 1, Math.PI * 1.05, Math.PI * 0.9), new T.MeshStandardMaterial({ color: r % 2 ? 0x13355a : 0x0f2a44, side: T.DoubleSide })); st.rotation.x = -Math.PI / 2; st.position.set(0, r * 0.45, 4); scene.add(st); }
+    this.r = { scene, camera };
+  },
   draw() {
-    cachedScene('plenario', () => this.drawChamber());
+    let in3d = false;
+    if (G3.ready) {
+      this.init3d();
+      const t = performance.now() / 1000;
+      this.r.camera.position.set(Math.sin(t * 0.08) * 4, 9, 20);
+      this.r.camera.lookAt(0, 3, -10);
+      in3d = G3.render(this.r.scene, this.r.camera);
+      if (in3d) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, 'rgba(5,7,15,.2)'); g.addColorStop(0.6, 'rgba(5,7,15,0)'); g.addColorStop(1, 'rgba(5,7,15,.9)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+    } else three3dReady.then(() => this.init3d());
+    if (!in3d) cachedScene('plenario', () => this.drawChamber());
     const total = this.yes + this.no;
     const py = total ? this.yes / total : 0, pn = total ? this.no / total : 0;
     // Telão
@@ -157,11 +202,12 @@ registerGame({
     const status = this.phase === 'ended' ? 'VOTAÇÃO ENCERRADA' : 'VOTAÇÃO ABERTA';
     pill(`${status} • ${this.config.duration > 0 ? fmtTime(this.timeLeft) : 'AO VIVO'} • ${total} VOTOS VÁLIDOS`, W / 2, 284, { bg: 'rgba(8,20,45,.9)', color: '#cfe0ff', size: 16, border: '#2d5fb3' });
     pill('● AO VIVO', 70, 26, { bg: '#e11d48', size: 13 });
+    slant(70, 478, W - 140, 56, { fill: 'rgba(8,20,45,.9)', skew: 12, border: '#3d8bff' });
+    title('COMENTE SIM OU NÃO', W / 2, 498, 28, '#fff');
+    label('presente = 10 votos por moeda', W / 2, 522, 14, '#ffd23f', 'center', 800);
     // Avisos
     this.log.forEach((l, k) => toast(l.user, trim(`@${trim(l.user.nick, 14)} ${l.msg}`, 32), W / 2, 338 + k * 46, { color: l.color, align: 'center', alpha: clamp(l.t, 0, 1) }));
     this.drawTablet();
-    pill('💬 Comente SIM ou NÃO', 230, 1130, { bg: 'rgba(20,40,80,.9)', size: 24, border: '#3d8bff' });
-    pill('🎁 presente = mais votos', 230, 1186, { bg: 'rgba(60,40,0,.9)', color: '#ffd23f', size: 20, border: '#ffd23f' });
     for (const p of this.plus) { ctx.globalAlpha = clamp(p.t, 0, 1); num(`+${p.n}`, p.x, p.y - (1.4 - p.t) * 40, 34, p.color, 'left'); ctx.globalAlpha = 1; }
     hand(this.hand.x, this.hand.y, { scale: 0.75, angle: -0.35, press: this.job?.stage === 'press' ? 1 : 0, skin: '#e8b98a', sleeve: '#e9e4da' });
     if (this.phase === 'ended') this.drawResult();

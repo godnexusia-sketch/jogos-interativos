@@ -48,6 +48,7 @@ registerGame({
     if (!cfg?.candidates?.length) return;
     this.config = cfg;
     store.set('cfg:urna', cfg);
+    this.r3 = null;
     this.reset();
   },
   sample() { return pick(this.config.candidates).num; },
@@ -336,8 +337,66 @@ registerGame({
     const p = this.plus[i];
     if (p) { ctx.globalAlpha = clamp(p.t, 0, 1); num(`+${p.n}`, r.x + (r.big ? 190 : 150), r.y + (r.big ? 130 : 90) - (1.8 - p.t) * 30, r.big ? 46 : 32, '#7cff6b'); ctx.globalAlpha = 1; }
   },
+  // ---------- Cena 3D: sala, mesa e urnas ----------
+  // A câmera olha reto para o plano z = 0 com 40 px por unidade, então a frente de cada urna cai
+  // exatamente no retângulo 2D da urna e a mão continua mirando as mesmas teclas.
+  init3d() {
+    if (this.r3 || !THREE) return;
+    const T = THREE, S = 40;
+    const toW = (x, y) => [(x - W / 2) / S, (H / 2 - y) / S];
+    const scene = new T.Scene();
+    scene.background = new T.Color(0x3a332d);
+    const fov = 40, dist = (H / 2 / S) / Math.tan((fov / 2) * Math.PI / 180);
+    const camera = new T.PerspectiveCamera(fov, W / H, 0.5, 300);
+    camera.position.set(0, 0, dist); camera.lookAt(0, 0, 0);
+    scene.add(new T.HemisphereLight(0xfff4e6, 0x2a1f18, 1.0));
+    const key = new T.SpotLight(0xfff1d6, 900, 120, 0.6, 0.6, 1.4); key.position.set(0, 18, 26); key.target.position.set(0, -5, -2); key.castShadow = true; key.shadow.mapSize.set(1024, 1024); scene.add(key, key.target);
+    const plaster = G3.tex(256, 256, (g) => { g.fillStyle = '#8a7f73'; g.fillRect(0, 0, 256, 256); for (let i = 0; i < 4000; i++) { g.fillStyle = `rgba(${Math.random() < 0.5 ? '255,255,255' : '0,0,0'},.05)`; g.fillRect(Math.random() * 256, Math.random() * 256, 3, 3); } }, [4, 4]);
+    const wall = new T.Mesh(new T.PlaneGeometry(80, 70), new T.MeshStandardMaterial({ map: plaster, roughness: 0.95 }));
+    wall.position.set(0, 4, -16); wall.receiveShadow = true; scene.add(wall);
+    const tiles = G3.tex(256, 256, (g) => { for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) { g.fillStyle = (x + y) % 2 ? '#a39a8f' : '#958c81'; g.fillRect(x * 64, y * 64, 64, 64); } }, [10, 10]);
+    const floor = new T.Mesh(new T.PlaneGeometry(80, 60), new T.MeshStandardMaterial({ map: tiles, roughness: 0.6 }));
+    floor.rotation.x = -Math.PI / 2; floor.position.set(0, -15, 0); floor.receiveShadow = true; scene.add(floor);
+    // Mesa de madeira
+    const wood = G3.tex(512, 128, (g) => { g.fillStyle = '#9a6535'; g.fillRect(0, 0, 512, 128); for (let i = 0; i < 40; i++) { g.strokeStyle = `rgba(70,35,10,${0.08 + Math.random() * 0.12})`; g.lineWidth = 1 + Math.random() * 2; g.beginPath(); g.moveTo(0, Math.random() * 128); g.bezierCurveTo(170, Math.random() * 128, 340, Math.random() * 128, 512, Math.random() * 128); g.stroke(); } }, [2, 1]);
+    const [, tableY] = toW(0, TABLE_Y - 14);
+    const table = new T.Mesh(new T.BoxGeometry(W / S + 4, 0.7, 12), new T.MeshStandardMaterial({ map: wood, roughness: 0.5 }));
+    table.position.set(0, tableY - 0.35, -4.5); table.receiveShadow = true; table.castShadow = true; scene.add(table);
+    for (const x of [-7, 7]) { const leg = new T.Mesh(new T.BoxGeometry(0.7, 9, 0.7), new T.MeshStandardMaterial({ color: 0x2a2420 })); leg.position.set(x, tableY - 5, 0.8); scene.add(leg); }
+    // Urnas: caixa bege com a frente desenhada como textura viva
+    const beige = new T.MeshStandardMaterial({ color: 0xd8d0c2, roughness: 0.55 });
+    this.r3 = { scene, camera, faces: [] };
+    for (const m of this.machines) {
+      const [cx, cy] = toW(m.x + m.w / 2, m.y + m.h / 2);
+      const w = m.w / S, h = m.h / S, depth = 5;
+      const c = document.createElement('canvas'); c.width = Math.round(m.w * 3); c.height = Math.round(m.h * 3);
+      const tex = new T.CanvasTexture(c); tex.colorSpace = T.SRGBColorSpace; tex.anisotropy = 4;
+      const front = new T.MeshStandardMaterial({ map: tex, roughness: 0.5 });
+      const box = new T.Mesh(new T.BoxGeometry(w, h, depth), [beige, beige, beige, beige, front, beige]);
+      box.position.set(cx, cy, -depth / 2); box.castShadow = true; box.receiveShadow = true;
+      scene.add(box);
+      this.r3.faces.push({ m, c, tex });
+    }
+  },
+  paintMachines() {
+    // Desenha cada urna (tela, teclado e botões) no canvas da textura reaproveitando drawMachine
+    for (const f of this.r3.faces) {
+      const g = f.c.getContext('2d');
+      g.setTransform(f.c.width / f.m.w, 0, 0, f.c.height / f.m.h, -f.m.x * (f.c.width / f.m.w), -f.m.y * (f.c.height / f.m.h));
+      g.clearRect(f.m.x, f.m.y, f.m.w, f.m.h);
+      const real = ctx; ctxSwap(g); this.drawMachine(f.m); ctxSwap(real);
+      f.tex.needsUpdate = true;
+    }
+  },
   draw() {
-    cachedScene('urna-room', () => this.drawRoom());
+    let in3d = false;
+    if (G3.ready) {
+      if (this.r3 && this.r3.faces.length !== this.machines.length) this.r3 = null;
+      this.init3d();
+      this.paintMachines();
+      in3d = G3.render(this.r3.scene, this.r3.camera);
+    } else three3dReady.then(() => this.init3d());
+    if (!in3d) cachedScene('urna-room', () => this.drawRoom());
     const cands = this.config.candidates;
     const total = this.votes.reduce((a, b) => a + b, 0);
     const lead = this.leader();
@@ -359,7 +418,7 @@ registerGame({
     num(lead >= 0 ? `${cands[lead].num} NA FRENTE` : total ? 'EMPATE' : 'VOTE AGORA', 356 + (W - 56 - 338) / 2, 195, 34);
 
     cands.forEach((_, i) => this.drawCard(i));
-    for (const m of this.machines) this.drawMachine(m);
+    if (!in3d) for (const m of this.machines) this.drawMachine(m);
     // Avisos de quem votou
     this.log.forEach((l, k) => toast(l.user, trim(`@${trim(l.user.nick, 12)} ${l.msg}`, 30), W / 2, 922 + k * 46, { color: l.color, align: 'center', alpha: clamp(l.t, 0, 1) }));
     leaderboardSmall(this.supporters, W / 2 - 150, 1090);
