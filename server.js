@@ -1,0 +1,165 @@
+import http from 'node:http';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { WebSocketServer } from 'ws';
+import { TikTokLiveConnection, WebcastEvent, ControlEvent } from 'tiktok-live-connector';
+
+const PORT = Number(process.env.PORT) || 3000;
+const SIGN_API_KEY = process.env.SIGN_API_KEY || undefined;
+const PUBLIC_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), 'public');
+const USERNAME_RE = /^[a-zA-Z0-9_.]{2,24}$/;
+
+const MIME = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.ico': 'image/x-icon',
+};
+
+const server = http.createServer(async (req, res) => {
+  const url = new URL(req.url, 'http://localhost');
+  if (url.pathname === '/health') {
+    res.writeHead(200, { 'content-type': 'text/plain' });
+    return res.end('ok');
+  }
+  const rel = url.pathname === '/' ? 'index.html' : url.pathname.slice(1);
+  const file = path.normalize(path.join(PUBLIC_DIR, rel));
+  if (!file.startsWith(PUBLIC_DIR)) {
+    res.writeHead(403);
+    return res.end();
+  }
+  try {
+    const body = await fs.readFile(file);
+    res.writeHead(200, { 'content-type': MIME[path.extname(file)] || 'application/octet-stream' });
+    res.end(body);
+  } catch {
+    res.writeHead(404, { 'content-type': 'text/plain' });
+    res.end('Não encontrado');
+  }
+});
+
+// Uma conexão com o TikTok por @, compartilhada por todos os navegadores que pedirem o mesmo @.
+const rooms = new Map(); // username -> { conn, clients: Set<ws>, ready: Promise }
+
+function userInfo(u) {
+  return {
+    id: u?.uniqueId || '',
+    nick: u?.nickname || u?.uniqueId || 'anônimo',
+    pic: u?.profilePicture?.url?.[0] || '',
+  };
+}
+
+function broadcast(room, msg) {
+  const data = JSON.stringify(msg);
+  for (const ws of room.clients) if (ws.readyState === ws.OPEN) ws.send(data);
+}
+
+function closeRoom(username) {
+  const room = rooms.get(username);
+  if (!room) return;
+  rooms.delete(username);
+  room.conn.disconnect().catch(() => {});
+}
+
+function openRoom(username) {
+  const conn = new TikTokLiveConnection(username, {
+    processInitialData: false,
+    enableExtendedGiftInfo: true,
+    signApiKey: SIGN_API_KEY,
+  });
+  const room = { conn, clients: new Set(), state: null };
+  rooms.set(username, room);
+
+  conn.on(WebcastEvent.CHAT, (d) => broadcast(room, { type: 'chat', user: userInfo(d.user), text: d.comment || '' }));
+  conn.on(WebcastEvent.LIKE, (d) => broadcast(room, { type: 'like', user: userInfo(d.user), count: d.likeCount || 1 }));
+  conn.on(WebcastEvent.GIFT, (d) => {
+    // Presentes em sequência (giftType 1) só contam quando a sequência termina.
+    if (d.giftDetails?.giftType === 1 && !d.repeatEnd) return;
+    broadcast(room, {
+      type: 'gift',
+      user: userInfo(d.user),
+      name: d.giftDetails?.giftName || d.extendedGiftInfo?.name || 'Presente',
+      count: d.repeatCount || 1,
+      diamonds: d.giftDetails?.diamondCount || d.extendedGiftInfo?.diamond_count || 1,
+    });
+  });
+  conn.on(WebcastEvent.SOCIAL, (d) => broadcast(room, { type: 'social', user: userInfo(d.user), action: String(d.displayType || d.action || '') }));
+  conn.on(WebcastEvent.MEMBER, (d) => broadcast(room, { type: 'join', user: userInfo(d.user) }));
+  conn.on(WebcastEvent.ROOM_USER, (d) => broadcast(room, { type: 'viewers', count: d.viewerCount || 0 }));
+  conn.on(WebcastEvent.STREAM_END, () => {
+    broadcast(room, { type: 'status', state: 'ended', message: 'A live terminou.' });
+    closeRoom(username);
+  });
+  conn.on(ControlEvent.DISCONNECTED, () => {
+    if (rooms.get(username) !== room) return;
+    broadcast(room, { type: 'status', state: 'disconnected', message: 'Conexão com o TikTok caiu.' });
+    rooms.delete(username);
+  });
+  conn.on(ControlEvent.ERROR, ({ info }) => console.error(`[${username}] erro:`, info));
+
+  room.ready = conn.connect().then(
+    (state) => {
+      room.state = { state: 'connected', message: `Conectado à live de @${username}`, roomId: state.roomId };
+      broadcast(room, { type: 'status', ...room.state });
+      console.log(`[${username}] conectado, sala ${state.roomId}`);
+    },
+    (err) => {
+      const offline = err?.name === 'UserOfflineError' || /offline|not live/i.test(err?.message || '');
+      const message = offline ? `@${username} não está ao vivo agora.` : `Não foi possível conectar: ${err?.message || err}`;
+      console.error(`[${username}] falha ao conectar:`, err?.message || err);
+      broadcast(room, { type: 'status', state: 'error', message });
+      rooms.delete(username);
+    }
+  );
+  return room;
+}
+
+function leave(ws) {
+  if (!ws.username) return;
+  const room = rooms.get(ws.username);
+  if (room) {
+    room.clients.delete(ws);
+    if (room.clients.size === 0) closeRoom(ws.username);
+  }
+  ws.username = null;
+}
+
+const wss = new WebSocketServer({ server, path: '/ws' });
+
+wss.on('connection', (ws) => {
+  ws.isAlive = true;
+  ws.on('pong', () => (ws.isAlive = true));
+  ws.on('message', (raw) => {
+    let msg;
+    try { msg = JSON.parse(raw); } catch { return; }
+    if (msg.type === 'connect') {
+      const username = String(msg.user || '').trim().replace(/^@/, '').toLowerCase();
+      if (!USERNAME_RE.test(username)) {
+        return ws.send(JSON.stringify({ type: 'status', state: 'error', message: 'Usuário inválido.' }));
+      }
+      leave(ws);
+      ws.username = username;
+      const room = rooms.get(username) || openRoom(username);
+      room.clients.add(ws);
+      ws.send(JSON.stringify(room.state ? { type: 'status', ...room.state } : { type: 'status', state: 'connecting', message: `Conectando a @${username}…` }));
+    } else if (msg.type === 'disconnect') {
+      leave(ws);
+      ws.send(JSON.stringify({ type: 'status', state: 'idle', message: 'Desconectado.' }));
+    }
+  });
+  ws.on('close', () => leave(ws));
+});
+
+// Ping a cada 30s mantém o WebSocket vivo atrás do proxy do Render e limpa clientes mortos.
+setInterval(() => {
+  for (const ws of wss.clients) {
+    if (!ws.isAlive) { ws.terminate(); continue; }
+    ws.isAlive = false;
+    ws.ping();
+  }
+}, 30000);
+
+server.listen(PORT, () => console.log(`Jogos interativos em http://localhost:${PORT}`));

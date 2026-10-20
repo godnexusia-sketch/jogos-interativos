@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jogos Interativos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="bar controls">
+    <strong class="logo">🎮 Jogos Interativos</strong>
+    <form id="connectForm">
+      <input id="user" placeholder="@usuário que está ao vivo" autocomplete="off" spellcheck="false">
+      <button id="connectBtn" type="submit">Conectar</button>
+    </form>
+    <span id="status" class="status idle">Desconectado</span>
+    <span id="viewers"></span>
+  </header>
+
+  <nav class="bar controls tabs">
+    <button data-game="votacao" class="active">🗳️ Votação</button>
+    <button data-game="corrida">🏁 Corrida</button>
+    <button data-game="flappy">🐤 Flappy</button>
+  </nav>
+
+  <main>
+    <section id="stage">
+      <canvas id="canvas" width="720" height="1280"></canvas>
+    </section>
+    <aside class="controls">
+      <div class="panel">
+        <h3>Como jogar</h3>
+        <div id="help"></div>
+        <button id="editPoll" hidden>Editar votação</button>
+        <button id="resetGame">Reiniciar jogo</button>
+      </div>
+      <div class="panel">
+        <h3>Simulador</h3>
+        <input id="simText" placeholder="comentário (ex.: 1, !entrar, pula)">
+        <div class="row">
+          <button id="simChat">💬</button>
+          <button id="simLike">❤️</button>
+          <button id="simGift">🎁</button>
+          <button id="simAuto">Auto</button>
+        </div>
+      </div>
+      <div class="panel feed">
+        <h3>Eventos</h3>
+        <ul id="feed"></ul>
+      </div>
+      <div class="panel">
+        <h3>OBS</h3>
+        <p class="small">Fonte de navegador (720×1280):</p>
+        <code id="obsUrl"></code>
+      </div>
+    </aside>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
