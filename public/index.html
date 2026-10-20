@@ -27,6 +27,7 @@
       <canvas id="canvas" width="1080" height="1920"></canvas>
     </section>
     <aside class="controls">
+     <div class="col">
       <div class="panel">
         <h3>Como jogar</h3>
         <div id="help"></div>
@@ -39,6 +40,8 @@
         <h3>Configurar</h3>
         <div id="settings"></div>
       </div>
+     </div>
+     <div class="col">
       <div class="panel">
         <h3>Simulador (teste sem live)</h3>
         <input id="simText" placeholder="comentário (vazio = exemplo do jogo)">
@@ -56,15 +59,18 @@
         <div class="row gifts" id="simShop"></div>
         <p class="small">Valores reais da loja do TikTok. O efeito é proporcional ao total de moedas (preço × combo): 1–9 · 10–99 · 100–999 · 1.000+, e cresce dentro de cada faixa.</p>
       </div>
-      <div class="panel feed">
-        <h3>Eventos da live</h3>
-        <ul id="feed"></ul>
-      </div>
       <div class="panel">
         <h3>OBS / LIVE Studio</h3>
         <p class="small">Fonte de navegador 1080×1920 (9:16):</p>
         <code id="obsUrl"></code>
       </div>
+     </div>
+     <div class="col">
+      <div class="panel feed">
+        <h3>Eventos da live</h3>
+        <ul id="feed"></ul>
+      </div>
+     </div>
     </aside>
   </main>
   <script src="core.js"></script>

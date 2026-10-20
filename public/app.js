@@ -15,6 +15,7 @@ function setStatus(state, msg) {
   const el = $('status');
   el.className = 'status ' + state;
   el.textContent = msg;
+  el.title = msg; // mensagem longa fica numa linha só (a barra não muda de altura e a tela do jogo não se mexe)
   $('connectBtn').textContent = state === 'connected' || state === 'connecting' ? 'Desconectar' : 'Conectar';
 }
 
@@ -96,7 +97,7 @@ function addFeed(str) {
   li.textContent = str;
   const feed = $('feed');
   feed.prepend(li);
-  while (feed.children.length > 60) feed.lastChild.remove();
+  while (feed.children.length > 150) feed.lastChild.remove();
 }
 
 function handleEvent(ev) {
@@ -196,14 +197,17 @@ $('simAuto').addEventListener('click', () => {
 
 // ---------- Tela sempre em 9:16 ----------
 // O canvas é encaixado no espaço disponível mantendo 9:16: nunca estica nem achata.
+// No computador a tela do jogo fica fixa à esquerda: só a coluna da direita rola.
+// O tamanho depende apenas da janela, então nada na página (avisos, painéis, rolagem) a move durante o espelhamento.
+const ASIDE_W = 640, GAP = 18; // espaço mínimo para as colunas de controle à direita
 function fitStage() {
   const stage = $('stage');
   let maxW, maxH;
   if (isClean) { maxW = window.innerWidth; maxH = window.innerHeight; }
+  else if (window.innerWidth <= 900) { maxW = stage.clientWidth; maxH = Infinity; }
   else {
-    const top = stage.getBoundingClientRect().top + window.scrollY;
-    maxW = stage.clientWidth;
-    maxH = window.innerWidth <= 900 ? Infinity : window.innerHeight - top - 18;
+    maxW = window.innerWidth - ASIDE_W - GAP * 3;
+    maxH = window.innerHeight - $('stage').getBoundingClientRect().top - GAP;
     maxH = Math.max(maxH, 420);
   }
   let w = maxW, h = (w * 16) / 9;
@@ -211,8 +215,9 @@ function fitStage() {
   canvas.style.width = `${Math.floor(w)}px`;
   canvas.style.height = `${Math.floor(h)}px`;
 }
+// A roda do mouse em cima do jogo não faz nada (nem rola a página).
+$('stage').addEventListener('wheel', (e) => { if (window.innerWidth > 900 || isClean) e.preventDefault(); }, { passive: false });
 window.addEventListener('resize', fitStage);
-new ResizeObserver(fitStage).observe($('stage'));
 fitStage();
 
 // ---------- Loop ----------

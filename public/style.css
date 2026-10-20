@@ -45,6 +45,27 @@ aside { display:flex; flex-direction:column; gap:12px; min-width:0; }
 code { font-size:12px; overflow-wrap:anywhere; color:var(--accent2); }
 #help p { margin:0 0 6px; font-size:13px; }
 
+/* Computador: página travada, tela do jogo fixa bem à esquerda; à direita, colunas que rolam cada uma por conta própria */
+.col { display:flex; flex-direction:column; gap:12px; min-width:0; }
+@media (min-width: 901px) {
+  html, body { overflow:hidden; overscroll-behavior:none; }
+  body:not(.clean) { display:flex; flex-direction:column; height:100vh; }
+  .topbar { flex:none; flex-wrap:nowrap; height:64px; position:relative; }
+  .status { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; flex:0 1 auto; }
+  #viewers { white-space:nowrap; }
+  .tabs { flex:none; }
+  main { flex:1; min-height:0; grid-template-columns:auto minmax(0,1fr); justify-content:start; align-items:stretch; }
+  #stage { justify-content:flex-start; overflow:hidden; }
+  aside { height:100%; min-height:0; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; }
+}
+/* Tela larga: três colunas (Jogo · Testar/OBS · Eventos da live), tudo visível sem rolar a página */
+@media (min-width: 1240px) {
+  aside { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; overflow:hidden; }
+  .col { height:100%; min-height:0; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; padding-right:2px; }
+  .col:last-child .feed { flex:1; min-height:0; }
+  .col:last-child .feed ul { max-height:none; flex:1; }
+}
+
 @media (max-width: 900px) {
   main { grid-template-columns:1fr; padding:12px 16px; }
   #stage { justify-content:center; }
