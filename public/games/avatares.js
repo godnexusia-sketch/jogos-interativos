@@ -93,7 +93,7 @@ registerGame({
     ctx.translate(x, y - bounce);
     ctx.rotate(sway + extraRot);
     ctx.scale(squash < 0 ? -1 : 1, 1);
-    if (d.tier >= 1) { ctx.shadowColor = ['#fff', '#ffd23f', '#ff6bd6', '#25f4ee', '#b36bff'][d.tier]; ctx.shadowBlur = 30 + Math.sin(t * 8) * 10; }
+    if (d.tier >= 1 && !extraRot) { ctx.shadowColor = ['#fff', '#ffd23f', '#ff6bd6', '#25f4ee', '#b36bff'][d.tier]; ctx.shadowBlur = 10; }
     const img = getImg(d.rbx?.img);
     if (img) ctx.drawImage(img, -size / 2, -size, size, size);
     else {

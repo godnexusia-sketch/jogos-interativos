@@ -27,6 +27,8 @@ function openSocket() {
       setStatus(msg.state, msg.message);
       // Se a conexão com o TikTok caiu (não a live acabou), tenta de novo em 10s.
       if (msg.state === 'disconnected' && wantedUser) retry(10000);
+      // Conta fora do ar: tenta de novo a cada 30s até a live começar.
+      if (msg.state === 'offline' && wantedUser) { $('connectBtn').textContent = 'Desconectar'; retry(30000); }
       if (msg.state === 'error' || msg.state === 'ended') wantedUser = '';
       if (msg.state === 'connected') pushConfigs();
     } else if (msg.type === 'config') {
@@ -181,6 +183,7 @@ function loop(now) {
   current.update(dt);
   updateParticles(dt);
   announcer.update(dt);
+  ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
   ctx.clearRect(0, 0, W, H);
   current.draw();
   drawParticles();

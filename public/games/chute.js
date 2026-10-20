@@ -112,7 +112,6 @@ registerGame(withConfig({
     this.balls = this.balls.filter((b) => !b.gone);
   },
   draw() {
-    if (this.gray > 0) ctx.filter = 'grayscale(1) contrast(1.3)';
     background('#0d5c2e', '#1f8f4a');
     for (let i = 0; i < 8; i++) { ctx.fillStyle = i % 2 ? 'rgba(255,255,255,.04)' : 'transparent'; ctx.fillRect(0, 700 + i * 75, W, 75); }
     const keeperCfg = this.config.items[0];
@@ -160,7 +159,8 @@ registerGame(withConfig({
       text(b.kind === 'gold' ? '🟡' : '⚽', x, y, size);
       if (t < 0.5 && b.kind !== 'saved') text(`@${trim(b.user.nick, 10)}`, x, y + size * 0.7, 18, '#fff', 'center', 700);
     }
-    ctx.filter = 'none';
+    // Corte em preto e branco a cada gol: uma camada de dessaturação, barata em Full HD.
+    if (this.gray > 0) { ctx.save(); ctx.globalCompositeOperation = 'saturation'; ctx.fillStyle = '#808080'; ctx.fillRect(0, 0, W, H); ctx.restore(); }
 
     if (this.gray > 0) text('GOL!', W / 2, 760, 120, '#ffd23f');
     this.log.forEach((l, i) => {

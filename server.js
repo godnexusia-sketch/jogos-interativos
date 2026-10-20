@@ -56,6 +56,22 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { 'content-type': 'text/plain' });
     return res.end('ok');
   }
+  if (url.pathname === '/api/diag') {
+    // Diagnóstico: tenta achar a sala de um @ e mostra o resultado de cada fonte.
+    const user = (url.searchParams.get('u') || '').replace(/^@/, '').toLowerCase();
+    res.writeHead(200, { 'content-type': 'application/json' });
+    if (!USERNAME_RE.test(user)) return res.end(JSON.stringify({ error: 'usuário inválido' }));
+    const conn = new TikTokLiveConnection(user, { signApiKey: SIGN_API_KEY });
+    conn.on('error', () => {});
+    try {
+      const roomId = await conn.fetchRoomId();
+      let live = null;
+      try { live = await conn.fetchIsLive(); } catch (e) { live = `erro: ${e.message}`; }
+      return res.end(JSON.stringify({ user, roomId, live, signKey: Boolean(SIGN_API_KEY) }));
+    } catch (err) {
+      return res.end(JSON.stringify({ user, error: err?.message, details: detailErrors(err), signKey: Boolean(SIGN_API_KEY) }));
+    }
+  }
   if (url.pathname === '/api/roblox') {
     const nick = url.searchParams.get('u') || '';
     const send = (code, body) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)); };
@@ -82,6 +98,15 @@ const server = http.createServer(async (req, res) => {
     res.end('Não encontrado');
   }
 });
+
+// Junta as mensagens das tentativas internas (HTML, API e Euler) para o log e o diagnóstico.
+function detailErrors(err, depth = 0) {
+  if (!err || depth > 3) return [];
+  const inner = err.config?.requestErrs || err.requestErrs || err.errors || (err.exception ? [err.exception] : []);
+  const out = [];
+  for (const e of inner) out.push(`${e?.name || 'Error'}: ${e?.message || e}`, ...detailErrors(e, depth + 1));
+  return out;
+}
 
 // Uma conexão com o TikTok por @, compartilhada por todos os navegadores que pedirem o mesmo @.
 const rooms = new Map(); // username -> { conn, clients: Set<ws>, ready: Promise }
@@ -149,10 +174,13 @@ function openRoom(username) {
       console.log(`[${username}] conectado, sala ${state.roomId}`);
     },
     (err) => {
-      const offline = err?.name === 'UserOfflineError' || /offline|not live|isn't online/i.test(err?.message || '');
-      const message = offline ? `@${username} não está ao vivo agora.` : `Não foi possível conectar: ${err?.message || err}`;
-      console.error(`[${username}] falha ao conectar:`, err?.message || err);
-      broadcast(room, { type: 'status', state: 'error', message });
+      const details = detailErrors(err).join(' | ');
+      const offline = err?.name === 'UserOfflineError' || /offline|not live|isn't online|user_not_found|SIGI_STATE/i.test(`${err?.message} ${details}`);
+      const message = offline
+        ? `Nenhuma live aberta em @${username} agora. Entre ao vivo no TikTok primeiro — vou tentando de novo sozinho.`
+        : `Não foi possível conectar: ${err?.message || err}`;
+      console.error(`[${username}] falha ao conectar:`, err?.message || err, details);
+      broadcast(room, { type: 'status', state: offline ? 'offline' : 'error', message });
       rooms.delete(username);
     }
   );

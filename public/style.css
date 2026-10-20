@@ -11,7 +11,7 @@ input { background:#0b0c10; border:1px solid var(--line); border-radius:8px; pad
 #connectForm input { flex:1; }
 #connectBtn { background:var(--accent); border-color:var(--accent); font-weight:600; }
 .status { font-size:13px; padding:4px 10px; border-radius:99px; background:#262938; }
-.status.connected { background:#14532d; } .status.connecting { background:#713f12; } .status.error, .status.ended, .status.disconnected { background:#7f1d1d; }
+.status.connected { background:#14532d; } .status.connecting, .status.offline { background:#713f12; } .status.error, .status.ended, .status.disconnected { background:#7f1d1d; }
 #viewers { color:var(--muted); font-size:13px; }
 .tabs button.active { background:var(--accent2); color:#000; border-color:var(--accent2); font-weight:600; }
 main { display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:16px; padding:16px; }

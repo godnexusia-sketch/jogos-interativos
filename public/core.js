@@ -3,7 +3,9 @@
 // Base compartilhada por todos os jogos: canvas, desenho, avatares, partículas e registro.
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const W = canvas.width, H = canvas.height;
+// Os jogos desenham em 720×1280; o canvas real é 1080×1920 (Full HD vertical), escalado.
+const W = 720, H = 1280, SCALE = canvas.width / W;
+const F_TEXT = 'Inter, system-ui, sans-serif', F_NUM = 'Anton, Impact, sans-serif', F_TITLE = 'Bungee, Impact, sans-serif';
 const COLORS = ['#fe2c55', '#25f4ee', '#ffd23f', '#7cff6b', '#b36bff', '#ff8a3d', '#4d9bff', '#ff6bd6'];
 const GAMES = [];
 
@@ -35,17 +37,21 @@ class Cooldown {
 }
 
 // ---------- Desenho ----------
-function text(str, x, y, size = 40, color = '#fff', align = 'center', weight = 700) {
-  ctx.font = `${weight} ${size}px system-ui, sans-serif`;
+// Texto com sombra suave (sem contorno). font: F_TEXT, F_NUM (números grandes) ou F_TITLE (títulos).
+function text(str, x, y, size = 40, color = '#fff', align = 'center', weight = 800, font = F_TEXT) {
+  ctx.save();
+  ctx.font = `${font === F_TEXT ? weight : 400} ${size}px ${font}`;
   ctx.textAlign = align;
   ctx.textBaseline = 'middle';
-  ctx.lineWidth = Math.max(4, size / 8);
-  ctx.lineJoin = 'round';
-  ctx.strokeStyle = 'rgba(0,0,0,.75)';
-  ctx.strokeText(str, x, y);
+  ctx.shadowColor = 'rgba(0,0,0,.65)';
+  ctx.shadowBlur = clamp(size / 5, 3, 8);
+  ctx.shadowOffsetY = Math.max(1, size / 18);
   ctx.fillStyle = color;
   ctx.fillText(str, x, y);
+  ctx.restore();
 }
+const num = (str, x, y, size, color = '#fff', align = 'center') => text(str, x, y, size, color, align, 400, F_NUM);
+const title = (str, x, y, size, color = '#fff', align = 'center') => text(str, x, y, size, color, align, 400, F_TITLE);
 
 function roundRect(x, y, w, h, r, fill) {
   ctx.beginPath();
@@ -57,7 +63,7 @@ function roundRect(x, y, w, h, r, fill) {
 function trim(str, n) { str = String(str); return str.length > n ? str.slice(0, n - 1) + '…' : str; }
 
 function wrapText(str, x, y, maxW, size, maxLines = 2, color = '#fff') {
-  ctx.font = `700 ${size}px system-ui, sans-serif`;
+  ctx.font = `800 ${size}px ${F_TEXT}`;
   const lines = [];
   let line = '';
   for (const word of String(str).split(' ')) {
@@ -252,8 +258,8 @@ const store = {
 };
 
 // Texto sem contorno, para fundos claros e letras pequenas.
-function label(str, x, y, size = 20, color = '#111', align = 'center', weight = 700) {
-  ctx.font = `${weight} ${size}px system-ui, sans-serif`;
+function label(str, x, y, size = 20, color = '#111', align = 'center', weight = 700, font = F_TEXT) {
+  ctx.font = `${font === F_TEXT ? weight : 400} ${size}px ${font}`;
   ctx.textAlign = align;
   ctx.textBaseline = 'middle';
   ctx.fillStyle = color;
