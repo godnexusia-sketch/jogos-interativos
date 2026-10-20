@@ -1,7 +1,7 @@
 'use strict';
 
-// Urna: candidatos com foto e número escolhidos por você. Comentar o número vota;
-// presente vale votos por moeda. Cada voto passa pela urna: a mão digita, a foto aparece, CONFIRMA.
+// Urna: duas urnas em pé na live, em cima de uma mesa. Comentar o número vota; presente vale votos por moeda.
+// Cada voto passa pela urna: a mão digita o número, a foto do candidato aparece e ela aperta CONFIRMA.
 const URNA_DEFAULT = {
   duration: 7, // minutos; 0 = sem cronômetro
   giftVotes: 10, // votos por moeda de presente
@@ -12,6 +12,7 @@ const URNA_DEFAULT = {
 };
 const URNA_COLORS = ['#2f7cf6', '#e5383b', '#1f9d55', '#f59f00'];
 const KEYPAD = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+const TABLE_Y = 860;
 
 registerGame({
   id: 'urna',
@@ -26,18 +27,21 @@ registerGame({
     const n = this.config.candidates.length;
     this.votes = new Array(n).fill(0);
     this.gifts = new Array(n).fill(0);
+    this.last = new Array(n).fill(null);
     this.choice = new Map();
     this.perUser = new Map();
     this.supporters = new Map();
-    this.queue = [];
-    this.job = null;
     this.log = [];
     this.flash = new Array(n).fill(0);
     this.plus = new Array(n).fill(null);
     this.timeLeft = this.config.duration * 60;
     this.phase = 'running';
     this.endT = 0;
-    this.hand = { x: W / 2, y: H + 100 };
+    // Com 2 candidatos, uma urna para cada; com 3 ou 4, uma urna grande no meio.
+    this.machines = n === 2
+      ? [0, 1].map((i) => ({ cands: [i], x: 28 + i * 340, y: 600, w: 324, h: 250 }))
+      : [{ cands: this.config.candidates.map((_, i) => i), x: 150, y: 600, w: 420, h: 250 }];
+    for (const m of this.machines) { m.queue = []; m.job = null; m.hand = { x: m.x + m.w * 0.8, y: H + 200 }; m.done = 0; }
   },
   getConfig() { return this.config; },
   applyConfig(cfg) {
@@ -47,6 +51,7 @@ registerGame({
     this.reset();
   },
   sample() { return pick(this.config.candidates).num; },
+  machineOf(i) { return this.machines.find((m) => m.cands.includes(i)); },
 
   // ---------- Eventos ----------
   onEvent(ev) {
@@ -61,54 +66,91 @@ registerGame({
       const used = this.perUser.get(id) || 0;
       if (used >= 20 || !this.cd.ok(id)) return;
       this.perUser.set(id, used + 1);
-      this.enqueue({ i, user: ev.user, votes: 1, tier: 0 });
+      this.enqueue({ i, user: ev.user, votes: 1, tier: 0, what: 'comentou' });
     } else if (ev.type === 'gift') {
       const i = this.choice.get(id);
       if (i === undefined) { this.addLog(ev.user, 'comente o número antes!', '#ffd23f'); return; }
       this.gifts[i] += ev.count || 1;
-      this.enqueue({ i, user: ev.user, votes: this.config.giftVotes * coins(ev), tier: giftTier(ev), gift: ev.name });
+      this.enqueue({ i, user: ev.user, votes: this.config.giftVotes * coins(ev), tier: giftTier(ev), what: `${ev.name} x${ev.count || 1}` });
     }
   },
   enqueue(item) {
+    const q = this.machineOf(item.i).queue;
     // Com fila grande, junta votos seguidos do mesmo candidato para a urna não ficar para trás.
-    const last = this.queue[this.queue.length - 1];
-    if (this.queue.length > 8 && last && last.i === item.i && item.tier < 2 && last.tier < 2) { last.votes += item.votes; last.user = item.user; return; }
-    this.queue.push(item);
+    const last = q[q.length - 1];
+    if (q.length > 6 && last && last.i === item.i && item.tier < 2 && last.tier < 2) { last.votes += item.votes; last.user = item.user; return; }
+    q.push(item);
   },
   addLog(user, msg, color = '#fff') {
-    this.log.unshift({ user, msg, color, t: 8 });
-    this.log.length = Math.min(this.log.length, 4);
+    this.log.unshift({ user, msg, color, t: 7 });
+    this.log.length = Math.min(this.log.length, 3);
   },
 
-  // Aplica o voto quando a urna confirma.
   commit(job) {
     const c = this.config.candidates[job.i];
     this.votes[job.i] += job.votes;
+    this.last[job.i] = { user: job.user, what: job.what, votes: job.votes };
     addScore(this.supporters, job.user.nick, job.votes);
     this.flash[job.i] = 1;
-    this.plus[job.i] = { n: job.votes, t: 1.6 };
+    this.plus[job.i] = { n: job.votes, t: 1.8 };
     this.addLog(job.user, `votou ${c.num} +${job.votes}`, c.color);
     sfx.confirm();
-    const cx = this.cardCenter(job.i);
-    if (job.tier >= 2) burst(cx.x, cx.y, [c.color, '#fff', '#ffd23f'], 30 + job.tier * 20, 400 + job.tier * 80);
-    if (job.tier >= 3) announcer.show(`${trim(job.user.nick, 14)} +${job.votes}`, c.color, 2.5, 60);
+    const p = this.cardRect(job.i);
+    if (job.tier >= 2) burst(p.x + p.w / 2, p.y + p.h / 2, [c.color, '#fff', '#ffd23f'], 30 + job.tier * 20, 400 + job.tier * 80);
+    if (job.tier >= 3) announcer.show(`@${trim(job.user.nick, 14)} +${job.votes}`, c.color, 2.5, 58);
     if (job.tier >= 4) { sfx.boom(); for (let k = 0; k < 6; k++) setTimeout(() => burst(rand(80, W - 80), rand(150, 650), COLORS, 60, 520), k * 220); }
   },
 
-  // ---------- Animação da urna ----------
-  keyPos(k) {
+  // ---------- Animação ----------
+  screenRect(m) { return { x: m.x + 18, y: m.y + 26, w: m.w * 0.5, h: m.h - 70 }; },
+  padRect(m) { const s = this.screenRect(m); return { x: s.x + s.w + 14, y: m.y + 26, w: m.x + m.w - (s.x + s.w + 14) - 16, h: m.h - 70 }; },
+  keyPos(m, k) {
+    const p = this.padRect(m);
     const idx = KEYPAD.indexOf(k);
     const col = idx === 9 ? 1 : idx % 3, row = idx === 9 ? 3 : Math.floor(idx / 3);
-    return { x: 494 + col * 70, y: 978 + row * 44 };
+    const kw = p.w / 3;
+    return { x: p.x + kw * col + kw / 2, y: p.y + 18 + row * (p.h - 70) / 3.4 };
   },
-  confirmPos() { return { x: 614, y: 1172 }; },
-  startJob() {
-    const item = this.queue.shift();
+  btnPos(m, which) {
+    const p = this.padRect(m);
+    const bw = p.w / 3;
+    const k = { branco: 0, corrige: 1, confirma: 2 }[which];
+    return { x: p.x + bw * k + bw / 2, y: p.y + p.h - 18, w: bw - 6 };
+  },
+  startJob(m) {
+    const item = m.queue.shift();
     if (!item) return;
     const digits = this.config.candidates[item.i].num.split('');
-    const steps = digits.map((d) => ({ kind: 'key', d, pos: this.keyPos(d) }));
-    steps.push({ kind: 'confirm', pos: this.confirmPos() });
-    this.job = { ...item, steps, step: 0, t: 0, typed: '', stage: 'move', done: 0 };
+    const steps = digits.map((d) => ({ kind: 'key', d, pos: this.keyPos(m, d) }));
+    steps.push({ kind: 'confirm', pos: this.btnPos(m, 'confirma') });
+    m.job = { ...item, steps, step: 0, t: 0, typed: '', stage: 'move' };
+  },
+  updateMachine(m, dt) {
+    const speed = m.queue.length > 15 ? 4 : m.queue.length > 5 ? 2.4 : 1.3;
+    const restX = m.x + m.w / 2 < W / 2 ? m.x + 40 : m.x + m.w - 40, restY = H + 80;
+    if (!m.job) {
+      this.startJob(m);
+      m.hand.x += (restX - m.hand.x) * Math.min(1, dt * 3);
+      m.hand.y += (restY - m.hand.y) * Math.min(1, dt * 3);
+      return;
+    }
+    const j = m.job;
+    j.t += dt * speed;
+    if (j.stage === 'move') {
+      const target = j.steps[j.step].pos;
+      m.hand.x += (target.x - m.hand.x) * Math.min(1, dt * 9 * speed);
+      m.hand.y += (target.y - m.hand.y) * Math.min(1, dt * 9 * speed);
+      if (j.t > 0.3) { j.stage = 'press'; j.t = 0; }
+    } else if (j.stage === 'press') {
+      if (j.t > 0.14) {
+        const s = j.steps[j.step];
+        if (s.kind === 'key') { j.typed += s.d; sfx.key(); }
+        else { this.commit(j); j.stage = 'fim'; j.t = 0; return; }
+        j.step++; j.stage = 'move'; j.t = 0;
+      }
+    } else if (j.stage === 'fim' && j.t > 0.7) {
+      m.job = null;
+    }
   },
   update(dt) {
     for (let i = 0; i < this.flash.length; i++) {
@@ -117,50 +159,25 @@ registerGame({
     }
     for (const l of this.log) l.t -= dt;
     this.log = this.log.filter((l) => l.t > 0);
-
     if (this.phase === 'running') {
       if (this.config.duration > 0) {
         this.timeLeft -= dt;
-        if (this.timeLeft <= 0) this.finish();
+        if (this.timeLeft <= 0) return this.finish();
       }
-    } else if (this.phase === 'ended') {
+    } else {
       this.endT -= dt;
       if (this.endT <= 0) this.reset();
       return;
     }
-
-    // A mão anda mais rápido quando tem fila.
-    const speed = this.queue.length > 15 ? 4 : this.queue.length > 5 ? 2.2 : 1.2;
-    if (!this.job) {
-      this.startJob();
-      const rest = { x: 640, y: H + 60 };
-      this.hand.x += (rest.x - this.hand.x) * Math.min(1, dt * 4);
-      this.hand.y += (rest.y - this.hand.y) * Math.min(1, dt * 4);
-      return;
-    }
-    const j = this.job;
-    j.t += dt * speed;
-    if (j.stage === 'move') {
-      const target = j.steps[j.step].pos;
-      this.hand.x += (target.x - this.hand.x) * Math.min(1, dt * 10 * speed);
-      this.hand.y += (target.y - this.hand.y) * Math.min(1, dt * 10 * speed);
-      if (j.t > 0.28) { j.stage = 'press'; j.t = 0; }
-    } else if (j.stage === 'press') {
-      if (j.t > 0.12) {
-        const s = j.steps[j.step];
-        if (s.kind === 'key') { j.typed += s.d; sfx.key(); }
-        else { this.commit(j); j.stage = 'fim'; j.t = 0; return; }
-        j.step++; j.stage = 'move'; j.t = 0;
-      }
-    } else if (j.stage === 'fim' && j.t > 0.55) {
-      this.job = null;
-    }
+    for (const m of this.machines) this.updateMachine(m, dt);
   },
   finish() {
     // Votos que ainda estavam na fila entram no placar antes do resultado.
-    if (this.job && this.job.stage !== 'fim') this.commit(this.job);
-    for (const q of this.queue) { this.votes[q.i] += q.votes; addScore(this.supporters, q.user.nick, q.votes); }
-    this.queue = []; this.job = null;
+    for (const m of this.machines) {
+      if (m.job && m.job.stage !== 'fim') this.commit(m.job);
+      for (const q of m.queue) { this.votes[q.i] += q.votes; addScore(this.supporters, q.user.nick, q.votes); }
+      m.queue = []; m.job = null;
+    }
     this.phase = 'ended';
     this.endT = 12;
     sfx.win();
@@ -170,159 +187,213 @@ registerGame({
   leader() {
     const max = Math.max(...this.votes);
     if (max <= 0) return -1;
-    const tied = this.votes.filter((v) => v === max).length > 1;
-    return tied ? -1 : this.votes.indexOf(max);
+    return this.votes.filter((v) => v === max).length > 1 ? -1 : this.votes.indexOf(max);
   },
 
   // ---------- Desenho ----------
-  layout() {
+  cardRect(i) {
     const n = this.config.candidates.length;
-    if (n <= 2) return { cols: 2, w: 318, h: 470, top: 300 };
-    return { cols: 2, w: 318, h: 300, top: 290 };
+    if (n === 2) return { x: 28 + i * 340, y: 252, w: 324, h: 318, big: true };
+    return { x: 28 + (i % 2) * 340, y: 244 + Math.floor(i / 2) * 176, w: 324, h: 164, big: false };
   },
-  cardCenter(i) {
-    const L = this.layout();
-    const col = i % L.cols, row = Math.floor(i / L.cols);
-    return { x: 30 + col * (L.w + 24) + L.w / 2, y: L.top + row * (L.h + 16) + L.h / 2 };
+  drawRoom() {
+    // Parede
+    const g = ctx.createLinearGradient(0, 0, 0, TABLE_Y);
+    g.addColorStop(0, '#3a3633'); g.addColorStop(0.5, '#6b625a'); g.addColorStop(1, '#8a8076');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, TABLE_Y);
+    const vg = ctx.createRadialGradient(W / 2, 520, 80, W / 2, 520, 700);
+    vg.addColorStop(0, 'rgba(255,240,220,.18)'); vg.addColorStop(1, 'rgba(0,0,0,.35)');
+    ctx.fillStyle = vg; ctx.fillRect(0, 0, W, TABLE_Y);
+    // Piso em perspectiva
+    const fg = ctx.createLinearGradient(0, TABLE_Y, 0, H);
+    fg.addColorStop(0, '#6f675f'); fg.addColorStop(1, '#a39a8f');
+    ctx.fillStyle = fg; ctx.fillRect(0, TABLE_Y, W, H - TABLE_Y);
+    ctx.strokeStyle = 'rgba(40,30,25,.25)'; ctx.lineWidth = 2;
+    for (let k = -8; k <= 8; k++) { ctx.beginPath(); ctx.moveTo(W / 2 + k * 40, TABLE_Y + 30); ctx.lineTo(W / 2 + k * 160, H); ctx.stroke(); }
+    for (let k = 0; k < 6; k++) { const y = TABLE_Y + 40 + k * k * 14; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+    // Mesa
+    ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(0, TABLE_Y + 34, W, 40);
+    const tg = ctx.createLinearGradient(0, TABLE_Y - 22, 0, TABLE_Y + 34);
+    tg.addColorStop(0, '#c9935a'); tg.addColorStop(0.35, '#a8723f'); tg.addColorStop(1, '#6e4521');
+    ctx.fillStyle = tg; ctx.fillRect(0, TABLE_Y - 22, W, 56);
+    ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(0, TABLE_Y - 22, W, 4);
+    for (let k = 0; k < 9; k++) { ctx.strokeStyle = 'rgba(80,45,20,.25)'; ctx.beginPath(); ctx.moveTo(0, TABLE_Y - 14 + k * 5); ctx.bezierCurveTo(200, TABLE_Y - 18 + k * 6, 500, TABLE_Y - 8 + k * 4, W, TABLE_Y - 14 + k * 5); ctx.stroke(); }
+    ctx.fillStyle = '#2a2420';
+    for (const x of [40, W - 70]) ctx.fillRect(x, TABLE_Y + 34, 30, 260);
+  },
+  drawMachine(m) {
+    const { x, y, w, h } = m;
+    const j = m.job;
+    // Sombra e corpo bege com tampa em perspectiva
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 10;
+    const bg = ctx.createLinearGradient(0, y, 0, y + h);
+    bg.addColorStop(0, '#f1ece2'); bg.addColorStop(0.6, '#d8d0c2'); bg.addColorStop(1, '#b9b0a1');
+    ctx.beginPath(); ctx.roundRect(x, y, w, h, 16); ctx.fillStyle = bg; ctx.fill();
+    ctx.restore();
+    ctx.beginPath(); ctx.roundRect(x, y, w, 18, [16, 16, 0, 0]); ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.fill();
+    ctx.fillStyle = '#a49a8b'; ctx.fillRect(x + 8, y + h - 10, w - 16, 10);
+    // Tela
+    const s = this.screenRect(m);
+    ctx.fillStyle = '#4a4a4a'; ctx.beginPath(); ctx.roundRect(s.x - 5, s.y - 5, s.w + 10, s.h + 10, 8); ctx.fill();
+    const sg = ctx.createLinearGradient(0, s.y, 0, s.y + s.h);
+    const cand = j ? this.config.candidates[j.i] : null;
+    const fim = j?.stage === 'fim';
+    sg.addColorStop(0, fim ? '#fdf3f3' : '#f3f6fb'); sg.addColorStop(1, fim ? '#f2dede' : '#dfe6f1');
+    ctx.fillStyle = sg; ctx.fillRect(s.x, s.y, s.w, s.h);
+    if (!j) {
+      label('SEU VOTO PARA', s.x + s.w / 2, s.y + 30, 15, '#444', 'center', 800);
+      const n = this.config.candidates[m.cands[0]].num.length;
+      for (let k = 0; k < n; k++) { const bw = 40, bx = s.x + s.w / 2 - (n * (bw + 8)) / 2 + k * (bw + 8) + 4; ctx.strokeStyle = '#333'; ctx.lineWidth = 2.5; ctx.strokeRect(bx, s.y + 56, bw, 56); }
+      label('Comente o número', s.x + s.w / 2, s.y + s.h - 20, 13, '#666', 'center', 700);
+    } else if (fim) {
+      label('FIM', s.x + s.w / 2, s.y + s.h / 2 - 20, 64, '#151515', 'center', 400, F_NUM);
+      label('CONFIRMADO', s.x + s.w / 2, s.y + s.h / 2 + 26, 15, '#c0392b', 'center', 900);
+      label(`+${j.votes} VOTO${j.votes > 1 ? 'S' : ''}`, s.x + s.w / 2, s.y + s.h / 2 + 50, 22, '#c0392b', 'center', 400, F_NUM);
+    } else {
+      const n = cand.num.length;
+      const bw = 34;
+      for (let k = 0; k < n; k++) {
+        const bx = s.x + 10 + k * (bw + 5);
+        ctx.fillStyle = '#fff'; ctx.fillRect(bx, s.y + 30, bw, 56);
+        ctx.strokeStyle = '#222'; ctx.lineWidth = 2.5; ctx.strokeRect(bx, s.y + 30, bw, 56);
+        if (j.typed[k]) label(j.typed[k], bx + bw / 2, s.y + 60, 36, '#111', 'center', 400, F_NUM);
+      }
+      label('Número:', s.x + 12, s.y + 16, 12, '#555', 'left', 800);
+      if (j.typed.length === n) {
+        photo(cand.photo, s.x + s.w - 62, s.y + 22, 54, 66, 6, cand.name[0] || '?', cand.color);
+        label(trim(cand.name, 14), s.x + 12, s.y + 108, 14, '#111', 'left', 900);
+        label('CONFIRMA para confirmar', s.x + 12, s.y + s.h - 16, 11, '#555', 'left', 800);
+      } else label(`@${trim(j.user.nick, 12)}`, s.x + 12, s.y + 108, 13, '#555', 'left', 800);
+    }
+    // Teclado
+    const p = this.padRect(m);
+    const pg = ctx.createLinearGradient(0, p.y, 0, p.y + p.h);
+    pg.addColorStop(0, '#2b2b2b'); pg.addColorStop(1, '#151515');
+    ctx.beginPath(); ctx.roundRect(p.x, p.y, p.w, p.h, 10); ctx.fillStyle = pg; ctx.fill();
+    const kw = p.w / 3 - 10, kh = (p.h - 70) / 3.4 - 6;
+    for (const k of KEYPAD) {
+      const kp = this.keyPos(m, k);
+      const pressed = j && j.stage === 'press' && j.steps[j.step]?.d === k;
+      ctx.beginPath(); ctx.roundRect(kp.x - kw / 2, kp.y - kh / 2 + (pressed ? 2 : 0), kw, kh, 5);
+      ctx.fillStyle = pressed ? '#5a5a5a' : '#0b0b0b'; ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = 1; ctx.stroke();
+      label(k, kp.x, kp.y + 1 + (pressed ? 2 : 0), Math.min(18, kh * 0.6), '#f2f2f2', 'center', 800);
+    }
+    const btns = [['branco', 'BRANCO', '#f6f6f6'], ['corrige', 'CORRIGE', '#f08c00'], ['confirma', 'CONFIRMA', '#2f9e44']];
+    for (const [key, txt, col] of btns) {
+      const b = this.btnPos(m, key);
+      const lit = key === 'confirma' && j && (j.stage === 'fim' || (j.stage === 'press' && j.steps[j.step]?.kind === 'confirm'));
+      ctx.save();
+      if (lit) { ctx.shadowColor = '#7cff6b'; ctx.shadowBlur = 22; }
+      ctx.beginPath(); ctx.roundRect(b.x - b.w / 2, b.y - 13, b.w, 26, 4); ctx.fillStyle = lit ? '#6bff7a' : col; ctx.fill();
+      ctx.restore();
+      label(txt, b.x, b.y + 1, Math.min(10, b.w / 7), '#111', 'center', 900);
+    }
+  },
+  drawCard(i) {
+    const c = this.config.candidates[i];
+    const r = this.cardRect(i);
+    const total = this.votes.reduce((a, b) => a + b, 0);
+    const pct = total ? this.votes[i] / total : 0;
+    const lead = this.leader() === i;
+    panel(r.x, r.y, r.w, r.h, { r: 18, from: shade(c.color, -70), to: '#0b0e16', border: lead ? '#ffd23f' : shade(c.color, 20), glow: lead ? 'rgba(255,210,63,.45)' : null });
+    // Faixa de cima com o número
+    ctx.save();
+    ctx.beginPath(); ctx.roundRect(r.x, r.y, r.w, r.big ? 62 : 48, [18, 18, 0, 0]);
+    const hg = ctx.createLinearGradient(0, r.y, 0, r.y + 62);
+    hg.addColorStop(0, shade(c.color, 30)); hg.addColorStop(1, c.color);
+    ctx.fillStyle = hg; ctx.fill();
+    ctx.restore();
+    num(c.num, r.x + 16, r.y + (r.big ? 33 : 26), r.big ? 44 : 34, '#fff', 'left');
+    if (lead) pill('👑 NA FRENTE', r.x + r.w - 74, r.y + (r.big ? 31 : 24), { bg: '#ffd23f', color: '#3a2a00', size: 14 });
+    const ph = r.big ? 92 : 64;
+    const px = r.x + r.w - ph - 14, py = r.y + (r.big ? 74 : 56);
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 10;
+    photo(c.photo, px, py, ph, ph, 14, (c.name[0] || '?').toUpperCase(), shade(c.color, -20));
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect(px, py, ph, ph, 14); ctx.stroke();
+    if (r.big) {
+      num(String(this.votes[i]), r.x + 22, r.y + 150, 104, '#fff', 'left');
+      label('VOTOS', r.x + 24, r.y + 210, 15, 'rgba(255,255,255,.7)', 'left', 900);
+      label(trim(c.name, 16), r.x + r.w - 14, r.y + 186, 16, '#fff', 'right', 800);
+      glossBar(r.x + 18, r.y + 228, r.w - 36, 14, pct, c.color);
+      num(`${(pct * 100).toFixed(1)}%`, r.x + 18, r.y + 264, 28, '#fff', 'left');
+      label(`🎁 ${this.gifts[i]} presentes`, r.x + r.w - 18, r.y + 264, 15, '#ddd', 'right', 800);
+      const l = this.last[i];
+      if (l) {
+        ctx.beginPath(); ctx.roundRect(r.x + 10, r.y + r.h - 34, r.w - 20, 26, 13); ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fill();
+        avatar(l.user, r.x + 24, r.y + r.h - 21, 10, c.color);
+        label(trim(`@${trim(l.user.nick, 10)} · ${l.what} · +${l.votes}`, 34), r.x + 40, r.y + r.h - 20, 12, '#fff', 'left', 800);
+      }
+    } else {
+      num(String(this.votes[i]), r.x + 18, r.y + 96, 54, '#fff', 'left');
+      label(trim(c.name, 14), r.x + 18, r.y + 130, 14, '#fff', 'left', 800);
+      glossBar(r.x + 18, r.y + 142, r.w - 120, 10, pct, c.color);
+      label(`${(pct * 100).toFixed(1)}%`, r.x + r.w - 96, r.y + 148, 13, '#fff', 'left', 800);
+    }
+    if (this.flash[i] > 0) { ctx.globalAlpha = this.flash[i] * 0.3; ctx.beginPath(); ctx.roundRect(r.x, r.y, r.w, r.h, 18); ctx.fillStyle = '#fff'; ctx.fill(); ctx.globalAlpha = 1; }
+    const p = this.plus[i];
+    if (p) { ctx.globalAlpha = clamp(p.t, 0, 1); num(`+${p.n}`, r.x + (r.big ? 190 : 150), r.y + (r.big ? 130 : 90) - (1.8 - p.t) * 30, r.big ? 46 : 32, '#7cff6b'); ctx.globalAlpha = 1; }
   },
   draw() {
-    background('#1a1f2e', '#0b0e16');
+    cachedScene('urna-room', () => this.drawRoom());
     const cands = this.config.candidates;
     const total = this.votes.reduce((a, b) => a + b, 0);
     const lead = this.leader();
 
-    // Cronômetro
-    roundRect(200, 26, 320, 104, 22, '#05070c');
+    // Cronômetro e faixa de status
     const urgent = this.config.duration > 0 && this.timeLeft < 30 && this.phase === 'running';
-    text(this.config.duration > 0 ? fmtTime(this.timeLeft) : 'AO VIVO', W / 2, 80, 76, urgent && Math.floor(this.timeLeft * 2) % 2 ? '#fe2c55' : '#fff');
-
-    // Faixa: total, diferença, quem está na frente
-    roundRect(30, 150, W - 60, 120, 20, '#05070c');
+    panel(176, 22, 368, 118, { r: 26, from: '#1a1d26', to: '#05060a', glow: urgent ? 'rgba(254,44,85,.6)' : null });
+    num(this.config.duration > 0 ? fmtTime(this.timeLeft) : 'AO VIVO', W / 2, 84, 96, urgent && Math.floor(this.timeLeft * 2) % 2 ? '#fe2c55' : '#fff');
+    panel(28, 154, W - 56, 80, { r: 40, from: '#151821', to: '#07080d' });
     const sorted = [...this.votes].sort((a, b) => b - a);
-    const diff = (sorted[0] || 0) - (sorted[1] || 0);
-    text('TOTAL', 110, 182, 22, '#9aa0b4', 'center', 700);
-    text(String(total), 110, 228, 46);
-    text('DIFERENÇA', 270, 182, 22, '#9aa0b4', 'center', 700);
-    text(String(diff), 270, 228, 46);
-    if (lead >= 0) {
-      roundRect(370, 168, 320, 84, 18, cands[lead].color);
-      text(`${cands[lead].num} NA FRENTE`, 530, 211, 40);
-    } else {
-      roundRect(370, 168, 320, 84, 18, '#333a4d');
-      text(total ? 'EMPATE' : 'VOTE AGORA', 530, 211, 40);
+    label('TOTAL', 110, 176, 13, '#9aa0b4', 'center', 900); num(String(total), 110, 208, 34);
+    ctx.fillStyle = 'rgba(255,255,255,.12)'; ctx.fillRect(196, 168, 2, 52);
+    label('DIFERENÇA', 270, 176, 13, '#9aa0b4', 'center', 900); num(String((sorted[0] || 0) - (sorted[1] || 0)), 270, 208, 34);
+    const lc = lead >= 0 ? cands[lead].color : '#3a4153';
+    ctx.save(); ctx.shadowColor = lc; ctx.shadowBlur = lead >= 0 ? 18 : 0;
+    ctx.beginPath(); ctx.roundRect(356, 164, W - 56 - 338, 60, 30);
+    const lg = ctx.createLinearGradient(0, 164, 0, 224); lg.addColorStop(0, shade(lc, 30)); lg.addColorStop(1, shade(lc, -20));
+    ctx.fillStyle = lg; ctx.fill(); ctx.restore();
+    num(lead >= 0 ? `${cands[lead].num} NA FRENTE` : total ? 'EMPATE' : 'VOTE AGORA', 356 + (W - 56 - 338) / 2, 195, 34);
+
+    cands.forEach((_, i) => this.drawCard(i));
+    for (const m of this.machines) this.drawMachine(m);
+    // Avisos de quem votou
+    this.log.forEach((l, k) => toast(l.user, trim(`@${trim(l.user.nick, 12)} ${l.msg}`, 30), W / 2, 922 + k * 46, { color: l.color, align: 'center', alpha: clamp(l.t, 0, 1) }));
+    leaderboardSmall(this.supporters, W / 2 - 150, 1090);
+    // Mãos por cima de tudo
+    for (const m of this.machines) {
+      const pressing = m.job && m.job.stage === 'press';
+      const left = m.x + m.w / 2 < W / 2 || this.machines.length === 1;
+      hand(m.hand.x, m.hand.y, { scale: 0.55, angle: left ? 0.42 : -0.42, press: pressing ? 1 : 0, sleeve: m === this.machines[1] ? '#d9d9e3' : '#8fb8de', skin: m === this.machines[1] ? '#c68642' : '#e0ac69' });
     }
-
-    // Cartões dos candidatos
-    const L = this.layout();
-    cands.forEach((c, i) => {
-      const col = i % L.cols, row = Math.floor(i / L.cols);
-      const x = 30 + col * (L.w + 24), y = L.top + row * (L.h + 16);
-      const pct = total ? this.votes[i] / total : 0;
-      const big = L.h > 400;
-      roundRect(x - 4, y - 4, L.w + 8, L.h + 8, 24, lead === i ? '#ffd23f' : 'rgba(255,255,255,.12)');
-      roundRect(x, y, L.w, L.h, 20, '#10141f');
-      roundRect(x, y, L.w, 64, [20, 20, 0, 0], c.color);
-      text(c.num, x + 18, y + 34, 44, '#fff', 'left', 800);
-      if (lead === i) text('👑 NA FRENTE', x + L.w - 14, y + 34, 20, '#fff', 'right', 800);
-      const ph = big ? 190 : 120;
-      photo(c.photo, x + (L.w - ph) / 2, y + 76, ph, ph, 18, c.num, c.color + '88');
-      text(trim(c.name, 14), x + L.w / 2, y + 76 + ph + 28, big ? 32 : 26);
-      text(String(this.votes[i]), x + L.w / 2, y + 76 + ph + (big ? 90 : 70), big ? 76 : 52, '#fff', 'center', 800);
-      if (big) text('VOTOS', x + L.w / 2, y + 76 + ph + 138, 20, '#9aa0b4');
-      const by = y + L.h - (big ? 52 : 34);
-      roundRect(x + 16, by, L.w - 32, 12, 6, 'rgba(255,255,255,.12)');
-      if (pct > 0) roundRect(x + 16, by, Math.max(12, (L.w - 32) * pct), 12, 6, c.color);
-      text(`${(pct * 100).toFixed(1)}%`, x + 18, by + (big ? 32 : 24), big ? 26 : 20, '#fff', 'left');
-      text(`🎁 ${this.gifts[i]}`, x + L.w - 18, by + (big ? 32 : 24), big ? 22 : 18, '#ddd', 'right', 600);
-      if (this.flash[i] > 0) { ctx.globalAlpha = this.flash[i] * 0.35; roundRect(x, y, L.w, L.h, 20, '#fff'); ctx.globalAlpha = 1; }
-      const p = this.plus[i];
-      if (p) { ctx.globalAlpha = clamp(p.t, 0, 1); text(`+${p.n}`, x + L.w - 50, y + 130 - (1.6 - p.t) * 40, 56, '#7cff6b'); ctx.globalAlpha = 1; }
-    });
-
-    // Quem votou por último (com foto do perfil)
-    const logTop = cands.length <= 2 ? 790 : 924;
-    this.log.slice(0, cands.length <= 2 ? 3 : 1).forEach((l, k) => {
-      const y = logTop + k * 50;
-      ctx.globalAlpha = clamp(l.t, 0, 1);
-      roundRect(30, y - 22, 400, 44, 22, 'rgba(0,0,0,.6)');
-      avatar(l.user, 52, y, 18, l.color);
-      text(trim(`@${trim(l.user.nick, 12)} ${l.msg}`, 30), 80, y, 20, '#fff', 'left', 700);
-      ctx.globalAlpha = 1;
-    });
-
-    this.drawMachine();
-    leaderboardSmall(this.supporters, 30, cands.length <= 2 ? 960 : 990);
-    if (this.queue.length > 3) text(`fila: ${this.queue.length}`, 220, 1240, 22, '#9aa0b4');
-
     if (this.phase === 'ended') this.drawWinner();
-  },
-  drawMachine() {
-    const j = this.job;
-    const x = 440, y = 780, w = 250, h = 470;
-    roundRect(x, y, w, h, 22, '#d9d4c7');
-    roundRect(x + 14, y + 14, w - 28, 140, 10, '#f4f1e8');
-    const cand = j ? this.config.candidates[j.i] : null;
-    if (!j) {
-      label('SEU VOTO PARA', x + w / 2, y + 60, 22, '#555', 'center', 800);
-      label('_ _', x + w / 2, y + 105, 34, '#777');
-    } else if (j.stage === 'fim') {
-      label('FIM', x + w / 2, y + 70, 72, '#111', 'center', 900);
-      label(`+${j.votes} VOTO${j.votes > 1 ? 'S' : ''}`, x + w / 2, y + 125, 24, '#1f9d55', 'center', 800);
-    } else {
-      const shown = cand.num.length === j.typed.length;
-      ctx.save();
-      ctx.font = '800 46px ui-monospace, monospace';
-      const boxes = cand.num.length;
-      for (let k = 0; k < boxes; k++) {
-        const bx = x + 26 + k * 46;
-        ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.strokeRect(bx, y + 40, 40, 56);
-        if (j.typed[k]) label(j.typed[k], bx + 20, y + 70, 40, '#111', 'center', 800);
-      }
-      ctx.restore();
-      if (shown) {
-        photo(cand.photo, x + w - 100, y + 24, 76, 92, 8, cand.num, cand.color);
-        label(trim(cand.name, 12), x + 26, y + 116, 18, '#111', 'left', 800);
-      }
-      label(`@${trim(j.user.nick, 12)}`, x + 26, y + 138, 15, '#555', 'left', 700);
-    }
-    // Teclado
-    roundRect(x + 14, y + 170, w - 28, h - 184, 12, '#2a2a2a');
-    for (const k of KEYPAD) {
-      const p = this.keyPos(k);
-      const pressed = j && j.stage === 'press' && j.steps[j.step]?.d === k;
-      roundRect(p.x - 28, p.y - 19, 56, 38, 8, pressed ? '#555' : '#111');
-      text(k, p.x, p.y, 26, '#fff');
-    }
-    const by = 1172;
-    roundRect(x + 22, by - 22, 64, 44, 8, '#f4f4f4'); label('BRANCO', x + 54, by, 12, '#111', 'center', 800);
-    roundRect(x + 92, by - 22, 64, 44, 8, '#e8590c'); label('CORRIGE', x + 124, by, 12, '#111', 'center', 800);
-    const pressedC = j && j.stage === 'press' && j.steps[j.step]?.kind === 'confirm';
-    roundRect(x + 162, by - 22, 72, 44, 8, pressedC ? '#7cff6b' : '#2f9e44'); label('CONFIRMA', x + 198, by, 12, '#111', 'center', 800);
-    // Mão
-    if (this.hand.y < H + 40) {
-      const pressing = j && j.stage === 'press';
-      text('👆', this.hand.x + 8, this.hand.y + (pressing ? 34 : 44), 70);
-    }
   },
   drawWinner() {
     const w = this.leader();
-    ctx.fillStyle = 'rgba(0,0,0,.78)';
-    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = 'rgba(0,0,0,.8)'; ctx.fillRect(0, 0, W, H);
+    const rg = ctx.createRadialGradient(W / 2, 480, 20, W / 2, 480, 420);
+    rg.addColorStop(0, 'rgba(255,210,63,.35)'); rg.addColorStop(1, 'rgba(255,210,63,0)');
+    ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
     if (w < 0) {
-      text('EMPATE!', W / 2, 480, 90, '#ffd23f');
+      title('EMPATE!', W / 2, 480, 80, '#ffd23f');
     } else {
       const c = this.config.candidates[w];
-      text('🏆 VENCEU', W / 2, 260, 70, '#ffd23f');
-      roundRect(W / 2 - 170, 330, 340, 340, 30, c.color);
-      photo(c.photo, W / 2 - 160, 340, 320, 320, 24, c.num, c.color);
-      text(`${c.num} · ${trim(c.name, 16)}`, W / 2, 730, 52);
-      text(`${this.votes[w]} votos`, W / 2, 800, 44, '#7cff6b');
+      title('VENCEU', W / 2, 230, 72, '#ffd23f');
+      ctx.save(); ctx.shadowColor = c.color; ctx.shadowBlur = 50;
+      photo(c.photo, W / 2 - 160, 300, 320, 320, 30, c.num, c.color);
+      ctx.restore();
+      ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = 6; ctx.beginPath(); ctx.roundRect(W / 2 - 160, 300, 320, 320, 30); ctx.stroke();
+      pill(`${c.num}`, W / 2, 300, { bg: c.color, size: 30, font: F_NUM });
+      text(trim(c.name, 18), W / 2, 670, 50, '#fff', 'center', 900);
+      num(`${this.votes[w]} VOTOS`, W / 2, 735, 52, '#7cff6b');
     }
-    leaderboard(this.supporters, 'Quem mais votou', W / 2, 900, 3, 30);
-    text(`Nova rodada em ${Math.ceil(this.endT)}s`, W / 2, 1150, 34, '#ddd', 'center', 600);
+    leaderboard(this.supporters, 'Quem mais votou', W / 2, 830, 3, 30);
+    text(`Nova rodada em ${Math.ceil(this.endT)}s`, W / 2, 1150, 30, '#ddd', 'center', 700);
   },
 
-  // ---------- Painel de configuração ----------
   renderSettings(el, save) {
     const cfg = structuredClone(this.config);
     const draw = () => {
@@ -376,10 +447,15 @@ registerGame({
 });
 
 // Top 3 compacto para o canto da tela.
-function leaderboardSmall(map, x, y) {
+function leaderboardSmall(map, x, y, w = 300) {
   const rows = [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3);
   if (!rows.length) return;
-  roundRect(x, y - 26, 390, 40 + rows.length * 40, 16, 'rgba(0,0,0,.55)');
-  text('TOP APOIADORES', x + 16, y - 4, 20, '#ffd23f', 'left', 800);
-  rows.forEach(([name, v], i) => text(`${i + 1}. @${trim(name, 14)} — ${v}`, x + 16, y + 34 + i * 40, 22, '#fff', 'left', 700));
+  panel(x, y - 24, w, 44 + rows.length * 36, { r: 16, from: 'rgba(20,24,36,.92)', to: 'rgba(6,8,14,.92)' });
+  label('TOP 3', x + 16, y, 15, '#ffd23f', 'left', 900);
+  rows.forEach(([name, v], i) => {
+    const yy = y + 34 + i * 36;
+    posBadge(i + 1, x + 28, yy, 24);
+    label(`@${trim(name, 14)}`, x + 50, yy + 1, 16, '#fff', 'left', 800);
+    label(String(v), x + w - 16, yy + 1, 16, '#ffd23f', 'right', 900);
+  });
 }

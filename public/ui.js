@@ -5,8 +5,8 @@
 // Painel com gradiente, borda clara em cima e sombra projetada.
 function panel(x, y, w, h, { r = 18, from = '#1d2436', to = '#0c0f18', border = 'rgba(255,255,255,.14)', glow = null, shadow = true } = {}) {
   ctx.save();
-  if (shadow) { ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 8; }
-  if (glow) { ctx.shadowColor = glow; ctx.shadowBlur = 28; ctx.shadowOffsetY = 0; }
+  if (shadow) { ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 12; ctx.shadowOffsetY = 6; }
+  if (glow) { ctx.shadowColor = glow; ctx.shadowBlur = 18; ctx.shadowOffsetY = 0; }
   const g = ctx.createLinearGradient(0, y, 0, y + h);
   g.addColorStop(0, from); g.addColorStop(1, to);
   ctx.beginPath(); ctx.roundRect(x, y, w, h, r);
@@ -98,6 +98,7 @@ function hand(x, y, { scale = 1, angle = 0, skin = '#e0ac69', sleeve = '#8fb8de'
   ctx.translate(x, y + press * 6);
   ctx.rotate(angle);
   ctx.scale(scale, scale);
+  ctx.translate(30, 0);
   const dark = shade(skin, -45), light = shade(skin, 25);
   // Manga
   const sg = ctx.createLinearGradient(-70, 0, 70, 0);
@@ -111,30 +112,33 @@ function hand(x, y, { scale = 1, angle = 0, skin = '#e0ac69', sleeve = '#8fb8de'
   ag.addColorStop(0, dark); ag.addColorStop(0.5, light); ag.addColorStop(1, dark);
   ctx.fillStyle = ag;
   ctx.beginPath(); ctx.moveTo(-44, 190); ctx.lineTo(46, 190); ctx.lineTo(54, 304); ctx.lineTo(-52, 304); ctx.closePath(); ctx.fill();
-  // Palma e dedos dobrados
+  // Palma (mão direita vista por trás: o indicador fica do lado esquerdo, junto do polegar)
   const pg = ctx.createLinearGradient(-60, 0, 60, 0);
-  pg.addColorStop(0, dark); pg.addColorStop(0.35, skin); pg.addColorStop(0.7, light); pg.addColorStop(1, dark);
+  pg.addColorStop(0, dark); pg.addColorStop(0.3, light); pg.addColorStop(0.7, skin); pg.addColorStop(1, dark);
   ctx.fillStyle = pg;
-  ctx.beginPath(); ctx.roundRect(-58, 92, 112, 120, [26, 30, 34, 40]); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(-46, 92, 106, 116, [22, 34, 34, 40]); ctx.fill();
+  // Dedos dobrados (médio, anelar e mindinho), descendo para a direita
   for (let k = 0; k < 3; k++) {
-    ctx.beginPath(); ctx.ellipse(-36 + k * 26, 104 + k * 6, 16, 22, 0, 0, Math.PI * 2); ctx.fillStyle = k % 2 ? skin : shade(skin, -10); ctx.fill();
-    ctx.strokeStyle = 'rgba(80,40,20,.25)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(4 + k * 20, 100 + k * 9, 14, 19, -0.2, 0, Math.PI * 2);
+    ctx.fillStyle = k % 2 ? shade(skin, -8) : skin; ctx.fill();
+    ctx.strokeStyle = 'rgba(80,40,20,.3)'; ctx.lineWidth = 2; ctx.stroke();
   }
-  // Polegar
-  ctx.save(); ctx.translate(40, 140); ctx.rotate(-0.55);
-  ctx.beginPath(); ctx.roundRect(-14, -58, 30, 76, 15); ctx.fillStyle = shade(skin, 8); ctx.fill();
-  ctx.strokeStyle = 'rgba(80,40,20,.25)'; ctx.stroke();
-  ctx.restore();
-  // Indicador
-  const fg = ctx.createLinearGradient(-18, 0, 18, 0);
-  fg.addColorStop(0, dark); fg.addColorStop(0.45, light); fg.addColorStop(1, shade(skin, -30));
+  // Indicador apontando para cima, na lateral esquerda
+  const fg = ctx.createLinearGradient(-48, 0, -12, 0);
+  fg.addColorStop(0, dark); fg.addColorStop(0.5, light); fg.addColorStop(1, shade(skin, -25));
   ctx.fillStyle = fg;
-  ctx.beginPath(); ctx.roundRect(-17, -4, 34, 124, 17); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(-47, -4, 34, 128, 17); ctx.fill();
   ctx.strokeStyle = 'rgba(80,40,20,.35)'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(-9, 46); ctx.quadraticCurveTo(0, 50, 9, 46); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(-9, 82); ctx.quadraticCurveTo(0, 86, 9, 82); ctx.stroke();
-  // Unha
-  ctx.beginPath(); ctx.roundRect(-11, 0, 22, 26, [11, 11, 6, 6]); ctx.fillStyle = 'rgba(255,225,215,.75)'; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-39, 46); ctx.quadraticCurveTo(-30, 50, -21, 46); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-39, 84); ctx.quadraticCurveTo(-30, 88, -21, 84); ctx.stroke();
+  ctx.beginPath(); ctx.roundRect(-41, 0, 22, 26, [11, 11, 6, 6]); ctx.fillStyle = 'rgba(255,225,215,.75)'; ctx.fill();
+  // Polegar dobrado por cima dos dedos
+  ctx.save(); ctx.translate(-18, 150); ctx.rotate(-1.15);
+  ctx.beginPath(); ctx.roundRect(-14, -12, 28, 70, 14);
+  const tg = ctx.createLinearGradient(-14, 0, 14, 0); tg.addColorStop(0, shade(skin, -20)); tg.addColorStop(1, light);
+  ctx.fillStyle = tg; ctx.fill();
+  ctx.strokeStyle = 'rgba(80,40,20,.3)'; ctx.stroke();
+  ctx.restore();
   ctx.restore();
 }
 
@@ -169,4 +173,21 @@ function fakeFace(seed) {
   const url = c.toDataURL();
   faceCache.set(seed, url);
   return url;
+}
+
+// Desenho estático guardado em memória (cenários): desenha uma vez em Full HD e reaproveita.
+const sceneCache = new Map();
+function cachedScene(key, drawFn) {
+  let c = sceneCache.get(key);
+  if (!c) {
+    c = document.createElement('canvas');
+    c.width = W * SCALE; c.height = H * SCALE;
+    const real = ctx;
+    const g = c.getContext('2d');
+    g.scale(SCALE, SCALE);
+    // As funções de desenho usam o ctx global; troca temporariamente.
+    ctxSwap(g); drawFn(); ctxSwap(real);
+    sceneCache.set(key, c);
+  }
+  ctx.drawImage(c, 0, 0, W, H);
 }

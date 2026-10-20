@@ -12,6 +12,7 @@
     "node": ">=22"
   },
   "dependencies": {
+    "three": "0.170.0",
     "tiktok-live-connector": "2.5.0",
     "ws": "8.22.0"
   }

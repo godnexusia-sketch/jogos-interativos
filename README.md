@@ -2,7 +2,7 @@
 
 **Site:** https://jogos-interativos.onrender.com
 
-13 jogos que rodam no navegador e reagem à live do TikTok em tempo real. O espectador vê o próprio
+14 jogos que rodam no navegador e reagem à live do TikTok em tempo real. O espectador vê o próprio
 @ e a foto na tela; quanto maior o presente, maior o efeito.
 
 | Jogo | Como o público joga |
@@ -10,9 +10,10 @@
 | 🗳️ Votação | Comenta 1–4; presente soma votos por moeda |
 | 🏛️ Sim ou Não | Comenta SIM ou NÃO; presente soma votos por moeda |
 | 🗳️ Urna | Comenta o número do candidato; a mão digita na urna e aperta CONFIRMA. Foto, número e nome configuráveis |
-| ⚽ Chute ao Gol | Comenta “chuta”; presentes chutam mais bolas no goleiro (foto configurável) |
+| ⚽ Bola no Ursinho | Comenta “chuta”; presentes lançam bolas no ursinho que o personagem segura (foto configurável) |
 | 🏃 Corrida de Torcidas | Comenta o nome do corredor; presentes dão impulso, banana, superarrancada; meta coletiva de likes |
-| 🏁 Corrida Maluca | Comenta carro ou moto e entra na pista; nitro, óleo, míssil, bomba no líder |
+| 🏁 Corrida Maluca | Avenida à noite: comenta carro ou moto e entra na pista; nitro, óleo, míssil, bomba no líder |
+| 🏎️ Kart 3D | Circuito em 3D com mapa: comenta kart; nitro, pedra, míssil teleguiado e raio |
 | 🐍 Cobra IA | A IA joga; o chat comenta “bomba” para matar |
 | 🥊 Combate | Comenta 1 ou 2 para escolher o lado; presente vira golpe (fotos configuráveis) |
 | 🪁 Pipa | Cada comentário vira uma pipa; presente corta as outras |
@@ -35,13 +36,13 @@ O painel **Simulador** permite testar sem live.
 
 ## OBS / TikTok LIVE Studio
 
-Fonte de navegador 720×1280 com:
+Fonte de navegador 1080×1920 com:
 
 ```
 https://jogos-interativos.onrender.com/?clean=1&game=urna&user=seuusuario
 ```
 
-`game` pode ser `votacao`, `simnao`, `urna`, `chute`, `torcida`, `corrida`, `cobra`, `combate`, `pipa`,
+`game` pode ser `votacao`, `simnao`, `urna`, `chute`, `torcida`, `corrida`, `kart`, `cobra`, `combate`, `pipa`,
 `avatares`, `flappy`, `ilha` ou `desfile`.
 
 As fotos e nomes configurados ficam salvos no navegador onde você configurou. Com a página principal

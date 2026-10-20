@@ -45,7 +45,7 @@ registerGame(withConfig({
     if (kind === 'slip') {
       if (r.shield > 0) { r.shield = 0; this.addLog(user, `bateu no escudo de ${r.name}`, '#25f4ee'); return; }
       r.slip = Math.max(r.slip, secs); r.boost = 0;
-      burst(160 + (W - 300) * (r.pos / this.config.length), this.laneY(r.i), ['#ffd23f', '#fff'], 20, 250);
+      { const q = this.runnerXY(r); burst(q.x, q.y - 120, ['#ffd23f', '#fff'], 20, 250); }
     }
   },
   onEvent(ev) {
@@ -132,80 +132,171 @@ registerGame(withConfig({
       for (let k = 0; k < 5; k++) setTimeout(() => burst(rand(100, W - 100), rand(250, 700), [w.color, '#ffd23f', '#fff'], 70, 550), k * 250);
     }
   },
-  laneY(i) {
-    const n = this.runners.length;
-    const h = 520 / n;
-    return 400 + h * i + h / 2;
+  // ---------- Desenho ----------
+  // Pistas em profundidade: a de trás mais alta e menor, a da frente mais baixa e maior.
+  laneY(i) { return this.runners.length > 2 ? 800 + i * 96 : 880 + i * 200; },
+  laneScale(i) { return this.runners.length > 2 ? 0.7 + i * 0.12 : 1.0 + i * 0.28; },
+  // Câmera segue o líder: 1 unidade de pista = 4 m, 18 px por metro.
+  runnerXY(r) {
+    const lead = Math.max(...this.runners.map((o) => o.pos));
+    const spread = Math.max(1, (lead - Math.min(...this.runners.map((o) => o.pos))) * 4 * 18 / 380);
+    return { x: 520 - ((lead - r.pos) * 4 * 18) / spread, y: this.laneY(r.i) };
+  },
+  drawStadium() {
+    const g = ctx.createLinearGradient(0, 0, 0, 560);
+    g.addColorStop(0, '#2563eb'); g.addColorStop(1, '#93c5fd');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, 560);
+    // Arquibancada desfocada: desenhada pequena e ampliada
+    const c = document.createElement('canvas'); c.width = 120; c.height = 60;
+    const cg = c.getContext('2d');
+    cg.fillStyle = '#1e293b'; cg.fillRect(0, 0, 120, 60);
+    for (let i = 0; i < 900; i++) { cg.fillStyle = ['#f87171', '#facc15', '#60a5fa', '#f1f5f9', '#4ade80', '#fb923c'][i % 6]; cg.fillRect(Math.random() * 120, 6 + Math.random() * 54, 1.5, 1.5); }
+    ctx.save(); ctx.filter = 'blur(3px)'; ctx.drawImage(c, -10, 296, W + 20, 310); ctx.restore();
+    ctx.fillStyle = 'rgba(255,255,255,.15)'; ctx.fillRect(0, 300, W, 300);
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 596, W, 14);
+    for (let i = 0; i < 20; i++) { ctx.fillStyle = i % 2 ? '#facc15' : '#f97316'; ctx.fillRect(i * 36, 596, 30, 14); }
+    // Pista
+    const tg = ctx.createLinearGradient(0, 610, 0, 1110);
+    tg.addColorStop(0, '#c2410c'); tg.addColorStop(1, '#9a3412');
+    ctx.fillStyle = tg; ctx.fillRect(0, 610, W, 500);
+    for (let i = 0; i < 2000; i++) { ctx.fillStyle = 'rgba(0,0,0,.08)'; ctx.fillRect(Math.random() * W, 610 + Math.random() * 500, 2, 2); }
+    // Grama e faixa de velocidade em primeiro plano
+    ctx.fillStyle = '#16a34a'; ctx.fillRect(0, 1110, W, H - 1110);
+    for (let i = 0; i < 7; i++) { ctx.fillStyle = i % 2 ? '#15803d' : '#22c55e'; ctx.fillRect(0, 1110 + i * 26, W, 13); }
+  },
+  drawRunner(r, x, y, t, s = 1, alpha = 1) {
+    ctx.save();
+    ctx.globalAlpha *= alpha;
+    ctx.translate(x, y);
+    ctx.scale(s, s);
+    const fallen = r.slip > 0;
+    if (fallen) { ctx.rotate(-1.2); ctx.translate(-30, -10); }
+    const ph = fallen ? 0 : t * (9 + r.mult * 3) + r.i;
+    const skin = '#c68642', shorts = shade(r.color, -70), shoe = '#f8fafc';
+    const seg = (x0, y0, a, len, w, col) => {
+      const x1 = x0 + Math.sin(a) * len, y1 = y0 + Math.cos(a) * len;
+      ctx.strokeStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      return [x1, y1];
+    };
+    const leg = (p, dark) => {
+      const th = Math.sin(p) * 0.85;
+      const kneeBend = 0.25 + Math.max(0, Math.sin(p + 1.4)) * 1.5;
+      const [kx, ky] = seg(0, -92, th, 46, 17, dark ? shade(skin, -30) : skin);
+      const [fx, fy] = seg(kx, ky, th - kneeBend, 44, 14, dark ? shade(skin, -30) : skin);
+      ctx.fillStyle = dark ? '#cbd5e1' : shoe; ctx.beginPath(); ctx.roundRect(fx - 8, fy - 6, 26, 12, 6); ctx.fill();
+      ctx.fillStyle = r.color; ctx.fillRect(fx - 4, fy - 2, 14, 3);
+    };
+    const arm = (p, dark) => {
+      const ua = -Math.sin(p) * 0.9 + Math.PI;
+      const [ex, ey] = seg(0, -150, ua, 34, 12, dark ? shade(skin, -30) : skin);
+      seg(ex, ey, ua - 1.6 * (Math.sin(p) > 0 ? 1 : 0.6), 30, 11, dark ? shade(skin, -30) : skin);
+    };
+    // Sombra
+    ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(6, 0, 46, 8, 0, 0, 7); ctx.fill();
+    arm(ph + Math.PI, true); leg(ph + Math.PI, true);
+    // Short e camisa
+    ctx.fillStyle = shorts; ctx.beginPath(); ctx.roundRect(-20, -110, 42, 30, 8); ctx.fill();
+    const jg = ctx.createLinearGradient(-22, 0, 24, 0);
+    jg.addColorStop(0, shade(r.color, -30)); jg.addColorStop(0.5, shade(r.color, 25)); jg.addColorStop(1, shade(r.color, -40));
+    ctx.fillStyle = jg; ctx.beginPath(); ctx.roundRect(-22, -166, 46, 62, 14); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.fillRect(-22, -140, 46, 6);
+    leg(ph, false); arm(ph, false);
+    ctx.restore();
+    // Cabeça grande com a foto (fica de fora da rotação para não distorcer)
+    const hx = fallen ? x - 70 * s : x + 2 * s, hy = fallen ? y - 30 * s : y - 202 * s;
+    ctx.save(); ctx.globalAlpha *= alpha;
+    avatar({ nick: r.name, pic: r.photo }, hx, hy, 40 * s, '#fff');
+    ctx.restore();
   },
   draw() {
-    background('#c0392b', '#e67e22');
+    cachedScene('estadio', () => this.drawStadium());
     const L = this.config.length;
-    // Placar
-    roundRect(20, 20, W - 40, 70 + this.runners.length * 62, 20, 'rgba(0,0,0,.65)');
-    text('🏃 CORRIDA DE TORCIDAS', 40, 52, 30, '#ffd23f', 'left', 900);
-    text(this.phase === 'race' ? fmtTime(this.timer) : this.phase === 'countdown' ? `LARGADA ${Math.ceil(this.timer)}` : 'CHEGADA', W - 40, 52, 28, '#fff', 'right', 800);
-    const order = [...this.runners].sort((a, b) => b.pos - a.pos);
-    order.forEach((r, k) => {
-      const y = 112 + k * 62;
-      text(`${k + 1}º`, 50, y, 26, '#fff', 'center', 900);
-      avatar({ nick: r.name, pic: r.photo }, 100, y, 24, r.color);
-      text(trim(r.name, 10), 135, y, 24, '#fff', 'left', 800);
-      roundRect(300, y - 12, 300, 24, 12, 'rgba(255,255,255,.15)');
-      roundRect(300, y - 12, Math.max(24, 300 * (r.pos / L)), 24, 12, r.color);
-      text(`${Math.round((r.pos / L) * 100)}%`, 640, y, 22, '#fff', 'center', 800);
-    });
-
-    // Pista
-    const top = 360, bottom = 960;
-    ctx.fillStyle = '#b5482c'; ctx.fillRect(0, top, W, bottom - top);
-    ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 4;
-    for (let i = 0; i <= this.runners.length; i++) {
-      const y = i === this.runners.length ? 920 : this.laneY(i) - 520 / this.runners.length / 2;
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
-    }
-    for (let k = 0; k < 12; k++) { ctx.fillStyle = k % 2 ? '#fff' : '#111'; ctx.fillRect(W - 80, 400 + k * 43.3, 24, 43.3); }
     const t = performance.now() / 1000;
-    for (const r of this.runners) {
-      const x = 90 + (W - 230) * (r.pos / L), y = this.laneY(r.i);
-      const bob = r.slip > 0 ? 0 : Math.abs(Math.sin(t * (8 + r.mult * 4) + r.i)) * 14;
-      if (r.boost > 0) { ctx.globalAlpha = 0.6; for (let k = 1; k < 4; k++) avatar({ nick: r.name, pic: r.photo }, x - k * 26, y - 30, 30, r.color); ctx.globalAlpha = 1; }
-      if (r.shield > 0) { ctx.beginPath(); ctx.arc(x, y - 10, 70, 0, Math.PI * 2); ctx.fillStyle = 'rgba(37,244,238,.25)'; ctx.fill(); ctx.strokeStyle = '#25f4ee'; ctx.stroke(); }
-      ctx.save(); ctx.translate(x, y + 20 - bob);
-      if (r.slip > 0) ctx.rotate(Math.PI / 2);
-      roundRect(-22, -10, 44, 54, 12, r.color);
-      ctx.restore();
-      avatar({ nick: r.name, pic: r.photo }, x, y - 36 - bob, 34, '#fff');
-      if (r.slip > 0) text('🍌💫', x, y - 90, 30);
-      roundRect(x - 60, y - 112 - bob, 120, 30, 15, r.color);
-      text(trim(r.name, 9), x, y - 97 - bob, 18, '#fff', 'center', 800);
+    const lead = Math.max(...this.runners.map((o) => o.pos));
+    // Linhas da pista andando com a câmera
+    const off = -((lead * 4 * 18) % 120);
+    ctx.fillStyle = 'rgba(255,255,255,.85)';
+    ctx.fillRect(0, 640, W, 3);
+    for (let i = 0; i < this.runners.length; i++) ctx.fillRect(0, this.laneY(i) + 16, W, 3);
+    for (let x = off; x < W; x += 120) { ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.fillRect(x, 640, 4, 470); }
+    // Faixas de velocidade no primeiro plano
+    for (let k = 0; k < 6; k++) { const x = ((-(lead * 4 * 40) + k * 260) % (W + 300) + W + 300) % (W + 300) - 150; ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(x, 1124 + k * 24, 140, 8); }
+    const order = [...this.runners].sort((a, b) => b.pos - a.pos);
+    // Marcador de distância entre 1º e 2º
+    if (order.length > 1 && this.phase === 'race') {
+      const a = this.runnerXY(order[0]), b = this.runnerXY(order[1]);
+      const y = Math.max(a.y, b.y) + 40;
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(b.x, y); ctx.lineTo(a.x, y); ctx.moveTo(b.x, y - 10); ctx.lineTo(b.x, y + 10); ctx.moveTo(a.x, y - 10); ctx.lineTo(a.x, y + 10); ctx.stroke();
+      pill(`+${((order[0].pos - order[1].pos) * 4).toFixed(1).replace('.', ',')} m`, (a.x + b.x) / 2, y, { bg: '#dc2626', size: 16, font: F_NUM });
     }
-
-    // Meta coletiva
-    roundRect(20, 975, W - 40, 70, 18, 'rgba(0,0,0,.6)');
-    text(`❤️ META: ${this.goal.n}/${this.goal.need} likes`, 40, 1010, 24, '#fff', 'left', 800);
-    text(`⏱ ${Math.ceil(this.goal.t)}s · ajuda o último`, W - 40, 1010, 20, '#ffd23f', 'right', 700);
-    roundRect(330, 1030, 340, 8, 4, 'rgba(255,255,255,.2)');
-    roundRect(330, 1030, 340 * clamp(this.goal.n / this.goal.need, 0, 1), 8, 4, '#fe2c55');
-
-    this.log.forEach((l, k) => {
-      const y = 1080 + k * 46;
+    for (const r of [...this.runners].sort((a, b) => a.i - b.i)) {
+      const p = this.runnerXY(r);
+      const s = this.laneScale(r.i);
+      if (r.boost > 0) for (let k = 3; k >= 1; k--) this.drawRunner(r, p.x - k * 34, p.y, t - k * 0.05, s, 0.18 * (4 - k));
+      if (r.shield > 0) { ctx.save(); ctx.beginPath(); ctx.arc(p.x, p.y - 120 * s, 150 * s, 0, 7); const sg = ctx.createRadialGradient(p.x, p.y - 120 * s, 40, p.x, p.y - 120 * s, 150 * s); sg.addColorStop(0, 'rgba(255,255,255,0)'); sg.addColorStop(1, 'rgba(165,243,252,.45)'); ctx.fillStyle = sg; ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 3; ctx.stroke(); ctx.restore(); }
+      this.drawRunner(r, p.x, p.y, t, s);
+      const rank = order.indexOf(r) + 1;
+      const ty = p.y - 268 * s;
+      const w = pill(trim(r.name, 10).toUpperCase(), p.x + 16, ty, { bg: shade(r.color, -50), border: r.color, size: 18, font: F_TITLE });
+      posBadge(rank, p.x + 16 - w / 2 - 18, ty, 28);
+      if (r.slip > 0) text('🍌💫', p.x - 40, p.y - 120, 30);
+    }
+    this.drawHud(order);
+    if (this.phase === 'finish' && this.winner) this.drawWinner();
+  },
+  drawHud(order) {
+    const L = this.config.length;
+    title('CORRIDA DE TORCIDAS', 24, 46, 26, '#fff', 'left');
+    panel(W - 170, 18, 150, 58, { r: 10, from: '#111827', to: '#030712', border: '#facc15' });
+    num(this.phase === 'race' ? fmtTime(this.timer) : this.phase === 'countdown' ? `0:0${Math.ceil(this.timer)}` : 'FIM', W - 95, 48, 36, '#facc15');
+    const rowsH = 18 + order.length * 50;
+    panel(16, 88, W - 32, rowsH, { r: 12, from: 'rgba(10,15,40,.92)', to: 'rgba(5,8,20,.92)', border: '#fff' });
+    order.forEach((r, k) => {
+      const y = 116 + k * 50;
+      posBadge(k + 1, 42, y, 28);
+      label(trim(r.name, 9).toUpperCase(), 66, y + 1, 20, r.color === '#ffffff' ? '#fff' : shade(r.color, 40), 'left', 400, F_TITLE);
+      const bx = 250, bw = 300;
+      ctx.fillStyle = '#7f1d1d'; ctx.fillRect(bx, y - 5, bw, 10);
+      ctx.fillStyle = r.color; ctx.fillRect(bx, y - 5, bw * clamp(r.pos / L, 0, 1), 10);
+      photo(r.photo, bx + bw * clamp(r.pos / L, 0, 1) - 18, y - 18, 36, 36, 6, (r.name[0] || '?').toUpperCase(), r.color);
+      text('🏁', bx + bw + 16, y, 18);
+      num(`${Math.round((r.pos / L) * 100)}%`, W - 30, y - 8, 24, '#fff', 'right');
+      const kmh = (r.slip > 0 ? 0.1 : 0.8 * r.mult) * 4 * 3.6 * (this.phase === 'race' ? 1 : 0);
+      label(`${kmh.toFixed(0)} KM/H`, W - 30, y + 14, 11, '#9aa0b4', 'right', 800);
+    });
+    // Cartões de evento e meta coletiva
+    const cy = 88 + rowsH + 14;
+    this.log.slice(0, 2).forEach((l, k) => {
+      const y = cy + k * 58;
       ctx.globalAlpha = clamp(l.t, 0, 1);
-      roundRect(20, y - 20, W - 40, 40, 20, 'rgba(0,0,0,.6)');
-      avatar(l.user, 42, y, 16, l.color);
-      text(trim(`@${trim(l.user.nick, 12)} ${l.msg}`, 42), 66, y, 20, '#fff', 'left', 700);
+      panel(16, y, 404, 50, { r: 8, from: 'rgba(10,15,40,.92)', to: 'rgba(5,8,20,.92)', border: l.color, shadow: false });
+      avatar(l.user, 42, y + 25, 17, l.color);
+      label(`@${trim(l.user.nick, 12)}`, 68, y + 16, 15, '#fff', 'left', 900);
+      label(trim(l.msg, 34), 68, y + 36, 13, l.color, 'left', 800);
       ctx.globalAlpha = 1;
     });
-
-    if (this.phase === 'finish' && this.winner) {
-      const w = this.winner;
-      ctx.fillStyle = 'rgba(0,0,0,.8)'; ctx.fillRect(0, 0, W, H);
-      text('🏆 VENCEU', W / 2, 250, 72, '#ffd23f');
-      avatar({ nick: w.name, pic: w.photo }, W / 2, 450, 140, w.color);
-      text(trim(w.name, 16), W / 2, 640, 60);
-      text(`${w.fans} torcedores`, W / 2, 710, 34, '#ddd', 'center', 600);
-      leaderboard(this.top, 'Quem mais empurrou', W / 2, 800, 3, 30);
-      text(`Nova corrida em ${Math.ceil(this.timer)}s`, W / 2, 1100, 32, '#ddd', 'center', 600);
-    }
+    panel(432, cy, W - 448, 108, { r: 8, from: 'rgba(10,15,40,.92)', to: 'rgba(5,8,20,.92)', border: '#fff', shadow: false });
+    label('META COLETIVA', 446, cy + 18, 12, '#cbd5e1', 'left', 900);
+    label(`${Math.ceil(this.goal.t)}s`, W - 28, cy + 18, 12, '#cbd5e1', 'right', 900);
+    text('❤️', 462, cy + 56, 30);
+    num(`${this.goal.n}/${this.goal.need}`, 492, cy + 52, 30, '#facc15', 'left');
+    label('likes → ajuda quem está atrás', 446, cy + 84, 11, '#cbd5e1', 'left', 800);
+    glossBar(446, cy + 94, W - 476, 8, this.goal.n / this.goal.need, '#facc15');
+    if (this.phase === 'countdown') { panel(W / 2 - 230, 1080, 460, 90, { r: 20, from: 'rgba(10,15,40,.92)', to: 'rgba(5,8,20,.92)', border: '#facc15' }); title(`LARGADA EM ${Math.ceil(this.timer)}`, W / 2, 1112, 28, '#facc15'); label('Comente o nome ou o número do seu corredor', W / 2, 1148, 16, '#fff', 'center', 800); }
+    else { pill(`💬 Comente ${this.runners.map((r, i) => `${i + 1} = ${trim(r.name, 8)}`).join(' · ')}`, W / 2, 1190, { size: 18, bg: 'rgba(10,15,40,.9)', border: '#fff' }); }
+  },
+  drawWinner() {
+    const w = this.winner;
+    ctx.fillStyle = 'rgba(0,0,0,.8)'; ctx.fillRect(0, 0, W, H);
+    title('VENCEU', W / 2, 230, 70, '#ffd23f');
+    ctx.save(); ctx.shadowColor = w.color; ctx.shadowBlur = 40;
+    avatar({ nick: w.name, pic: w.photo }, W / 2, 440, 150, w.color);
+    ctx.restore();
+    title(trim(w.name, 14).toUpperCase(), W / 2, 640, 50, '#fff');
+    text(`${w.fans} torcedores`, W / 2, 704, 30, '#ddd', 'center', 700);
+    leaderboard(this.top, 'Quem mais empurrou', W / 2, 790, 3, 30);
+    text(`Nova corrida em ${Math.ceil(this.timer)}s`, W / 2, 1100, 30, '#ddd', 'center', 700);
   },
 }, {
   length: 100,

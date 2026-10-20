@@ -152,7 +152,7 @@ $('user').addEventListener('input', updateObsUrl);
 
 // ---------- Simulador ----------
 const FAKE = ['ana', 'bruno', 'carla', 'davi', 'enzo', 'fernanda', 'gabi', 'heitor', 'isa', 'joao', 'lara', 'miguel', 'nina', 'otavio', 'paula', 'rafa'];
-function fakeUser() { const n = pick(FAKE); return { id: 'sim_' + n, nick: n, pic: '' }; }
+function fakeUser() { const n = pick(FAKE); return { id: 'sim_' + n, nick: n, pic: fakeFace(n) }; }
 const GIFTS = { 1: ['Rosa', 1], 2: ['Rosquinha', 30], 3: ['Óculos', 199], 4: ['Galáxia', 1000] };
 function simChat(str, user = fakeUser()) { handleEvent({ type: 'chat', user, text: str }); }
 function simGift(tier, user = fakeUser()) {

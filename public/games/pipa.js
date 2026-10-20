@@ -109,7 +109,7 @@ registerGame({
     ctx.rotate(rot + Math.sin(t * 2 + k.phase) * 0.12);
     const s = k.born < 0.4 ? k.born / 0.4 : 1;
     ctx.scale(s, s);
-    ctx.beginPath(); ctx.moveTo(0, -52); ctx.lineTo(40, 0); ctx.lineTo(0, 56); ctx.lineTo(-40, 0); ctx.closePath();
+    ctx.beginPath(); ctx.moveTo(0, -58); ctx.lineTo(46, 0); ctx.lineTo(0, 62); ctx.lineTo(-46, 0); ctx.closePath();
     ctx.fillStyle = k.gold > 0 ? '#ffd23f' : k.color; ctx.fill();
     ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,.4)'; ctx.stroke();
     ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.moveTo(0, -52); ctx.lineTo(0, 56); ctx.moveTo(-40, 0); ctx.lineTo(40, 0); ctx.stroke();
@@ -117,9 +117,9 @@ registerGame({
     for (let i = 1; i <= 6; i++) ctx.lineTo(Math.sin(t * 4 + i + k.phase) * 10, 56 + i * 14);
     ctx.stroke();
     ctx.restore();
-    avatar(k.user, k.x, k.y, 20, '#fff');
+    avatar(k.user, k.x, k.y, 27, '#fff');
     if (k.shield > 0) { ctx.beginPath(); ctx.arc(k.x, k.y, 62, 0, Math.PI * 2); ctx.strokeStyle = '#25f4ee'; ctx.lineWidth = 4; ctx.stroke(); }
-    text(`@${trim(k.user.nick, 9)}`, k.x, k.y - 66, 16, '#fff', 'center', 700);
+    pill(`@${trim(k.user.nick, 12)}`, k.x, k.y - 72, { size: 15, bg: shade(k.color, -60), border: k.color });
   },
   draw() {
     background('#56b4f5', '#ffd6a5');

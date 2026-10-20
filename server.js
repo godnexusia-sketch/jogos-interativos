@@ -9,6 +9,9 @@ const PORT = Number(process.env.PORT) || 3000;
 const SIGN_API_KEY = process.env.SIGN_API_KEY || undefined;
 const PUBLIC_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), 'public');
 const USERNAME_RE = /^[a-zA-Z0-9_.]{2,24}$/;
+const THREE_PATH = fileURLToPath(new URL('./node_modules/three/build/three.module.min.js', import.meta.url));
+const IMG_HOSTS = ['tiktokcdn.com', 'tiktokcdn-us.com', 'tiktokcdn-eu.com', 'ibyteimg.com', 'muscdn.com', 'byteimg.com', 'rbxcdn.com'];
+const imgCache = new Map();
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -71,6 +74,31 @@ const server = http.createServer(async (req, res) => {
     } catch (err) {
       return res.end(JSON.stringify({ user, error: err?.message, details: detailErrors(err), signKey: Boolean(SIGN_API_KEY) }));
     }
+  }
+  if (url.pathname === '/vendor/three.module.min.js') {
+    const body = await fs.readFile(THREE_PATH);
+    res.writeHead(200, { 'content-type': MIME['.js'], 'cache-control': 'public, max-age=86400' });
+    return res.end(body);
+  }
+  if (url.pathname === '/api/img') {
+    // Repassa fotos de perfil (TikTok/Roblox) com CORS liberado, para poderem virar textura no 3D.
+    let target;
+    try { target = new URL(url.searchParams.get('u') || ''); } catch { res.writeHead(400); return res.end(); }
+    if (target.protocol !== 'https:' || !IMG_HOSTS.some((h) => target.hostname === h || target.hostname.endsWith('.' + h))) { res.writeHead(403); return res.end(); }
+    const cached = imgCache.get(target.href);
+    const send = (img) => { res.writeHead(200, { 'content-type': img.type, 'access-control-allow-origin': '*', 'cache-control': 'public, max-age=3600' }); res.end(img.body); };
+    if (cached) return send(cached);
+    try {
+      const r = await fetch(target, { signal: AbortSignal.timeout(8000) });
+      const type = r.headers.get('content-type') || '';
+      if (!r.ok || !type.startsWith('image/')) { res.writeHead(502); return res.end(); }
+      const body = Buffer.from(await r.arrayBuffer());
+      if (body.length > 2_000_000) { res.writeHead(413); return res.end(); }
+      if (imgCache.size > 500) imgCache.delete(imgCache.keys().next().value);
+      const img = { type, body };
+      imgCache.set(target.href, img);
+      return send(img);
+    } catch { res.writeHead(502); return res.end(); }
   }
   if (url.pathname === '/api/roblox') {
     const nick = url.searchParams.get('u') || '';

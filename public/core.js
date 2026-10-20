@@ -2,7 +2,8 @@
 
 // Base compartilhada por todos os jogos: canvas, desenho, avatares, partículas e registro.
 const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+let ctx = canvas.getContext('2d');
+function ctxSwap(c) { ctx = c; }
 // Os jogos desenham em 720×1280; o canvas real é 1080×1920 (Full HD vertical), escalado.
 const W = 720, H = 1280, SCALE = canvas.width / W;
 const F_TEXT = 'Inter, system-ui, sans-serif', F_NUM = 'Anton, Impact, sans-serif', F_TITLE = 'Bungee, Impact, sans-serif';
