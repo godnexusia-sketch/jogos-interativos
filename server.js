@@ -107,7 +107,7 @@ function openRoom(username) {
       console.log(`[${username}] conectado, sala ${state.roomId}`);
     },
     (err) => {
-      const offline = err?.name === 'UserOfflineError' || /offline|not live/i.test(err?.message || '');
+      const offline = err?.name === 'UserOfflineError' || /offline|not live|isn't online/i.test(err?.message || '');
       const message = offline ? `@${username} não está ao vivo agora.` : `Não foi possível conectar: ${err?.message || err}`;
       console.error(`[${username}] falha ao conectar:`, err?.message || err);
       broadcast(room, { type: 'status', state: 'error', message });
