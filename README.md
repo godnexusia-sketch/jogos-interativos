@@ -1,5 +1,7 @@
 # Jogos Interativos para TikTok LIVE
 
+**Site:** https://jogos-interativos.onrender.com
+
 Três jogos que rodam no navegador e reagem à live do TikTok em tempo real:
 
 - **Votação**: comente `1`, `2`, `3` ou `4`. Presente dá +5 votos na sua opção.
@@ -21,7 +23,7 @@ O painel **Simulador** permite testar sem live.
 Fonte de navegador 720×1280 com:
 
 ```
-https://SEU-APP.onrender.com/?clean=1&game=corrida&user=seuusuario
+https://jogos-interativos.onrender.com/?clean=1&game=corrida&user=seuusuario
 ```
 
 `game` pode ser `votacao`, `corrida` ou `flappy`.
