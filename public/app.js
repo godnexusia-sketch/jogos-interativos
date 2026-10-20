@@ -37,9 +37,11 @@ function openSocket() {
       // Conta fora do ar: tenta de novo a cada 30s até a live começar.
       if (msg.state === 'offline' && wantedUser) { $('connectBtn').textContent = 'Desconectar'; retry(30000); }
       if (msg.state === 'error' || msg.state === 'ended') wantedUser = '';
-      if (msg.state === 'connected') pushConfigs();
+      if (msg.state === 'connected') { pushConfigs(); if (!isClean) sendControl({ action: 'game', id: current.id }); }
     } else if (msg.type === 'config') {
       GAMES.find((g) => g.configKey === msg.key)?.applyConfig(msg.data);
+    } else if (msg.type === 'control') {
+      onControl(msg);
     } else if (msg.type === 'viewers') {
       $('viewers').textContent = `👀 ${msg.count}`;
       viewerCount = msg.count;
@@ -52,6 +54,18 @@ function openSocket() {
   ws.onclose = () => {
     if (wantedUser) { setStatus('connecting', 'Reconectando ao servidor…'); retry(3000); }
   };
+}
+
+// Comandos entre o painel e as telas da live abertas em outro programa (fonte "Link" do LIVE Studio, OBS).
+function sendControl(msg) { if (ws && ws.readyState === WebSocket.OPEN && wantedUser) ws.send(JSON.stringify({ type: 'control', ...msg })); }
+function onControl(m) {
+  const g = m.id && GAMES.find((x) => x.id === m.id);
+  if (isClean) {
+    if (m.action === 'game' && g) { if (g !== current) { g.reset(); selectGame(g); } }
+    else if (m.action === 'reset') { current.reset(); particles.length = 0; }
+    else if (m.action === 'sim' && m.ev) handleEvent(m.ev);
+    else if (m.action === 'press') current.onPress?.();
+  } else if (m.action === 'current' && g && g !== current && !m.join) { followingMirror = true; selectGame(g); followingMirror = false; }
 }
 
 function retry(ms) {
@@ -143,6 +157,8 @@ function selectGame(game) {
   current = game;
   if (isMirror) bc?.postMessage({ t: 'current', id: game.id });
   else if (!followingMirror) toMirror({ t: 'game', id: game.id });
+  if (isClean && !isMirror) sendControl({ action: 'current', id: game.id });
+  else if (!isClean && !followingMirror) sendControl({ action: 'game', id: game.id });
   particles.length = 0;
   announcer.items.length = 0;
   document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('active', b.dataset.game === game.id));
@@ -154,11 +170,11 @@ function selectGame(game) {
 }
 // Usado pela votação para abrir o jogo escolhido pela live.
 function switchGameById(id) { const g = GAMES.find((x) => x.id === id); if (g) { g.reset(); selectGame(g); toMirror({ t: 'reset' }); } }
-$('resetGame').addEventListener('click', () => { current.reset(); particles.length = 0; toMirror({ t: 'reset' }); });
+$('resetGame').addEventListener('click', () => { current.reset(); particles.length = 0; toMirror({ t: 'reset' }); sendControl({ action: 'reset' }); });
 $('editGame').addEventListener('click', () => current.edit?.());
 
 // Jogos em que você também joga (Flappy) usam espaço, clique ou toque na tela.
-const press = () => (mirrorOn() ? toMirror({ t: 'press' }) : current.onPress?.());
+const press = () => { if (!isClean) sendControl({ action: 'press' }); mirrorOn() ? toMirror({ t: 'press' }) : current.onPress?.(); };
 canvas.addEventListener('pointerdown', press);
 document.addEventListener('keydown', (e) => {
   if (e.code === 'Space' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) { e.preventDefault(); press(); }
@@ -180,33 +196,35 @@ function fakeUser() { const n = pick(FAKE); return { id: 'sim_' + n, nick: n, pi
 // Presentes reais da loja do TikTok (preço em moedas). As teclas 1–4 antigas continuam valendo uma de cada faixa.
 const GIFTS = { 1: ['Rosa', 1], 2: ['Rosquinha', 30], 3: ['Mãos em coração', 100], 4: ['Bons Presságios', 1500] };
 const GIFT_SHOP = [['🌹', 'Rosa', 1], ['⚽', 'Bola de futebol', 5], ['❤️', 'Coração', 10], ['🍩', 'Rosquinha', 30], ['🤠', 'Chapéu e Bigode', 99], ['🫶', 'Mãos em coração', 100], ['🍬', 'Festa dos Doces', 3999], ['🌟', 'Estrelas do TikTok', 39999]];
-function simChat(str, user = fakeUser()) { handleEvent({ type: 'chat', user, text: str }); }
+// Eventos do simulador também vão para as telas da live abertas fora do navegador (LIVE Studio/OBS).
+function sim(ev) { handleEvent(ev); sendControl({ action: 'sim', ev }); }
+function simChat(str, user = fakeUser()) { sim({ type: 'chat', user, text: str }); }
 function simGift(tier, user = fakeUser(), count = 1) {
   const [name, diamonds] = typeof tier === 'object' ? tier : GIFTS[tier];
-  handleEvent({ type: 'gift', user, name, count, diamonds });
+  sim({ type: 'gift', user, name, count, diamonds });
 }
 $('simChat').addEventListener('click', () => simChat($('simText').value || current.sample?.() || 'oi'));
 $('simText').addEventListener('keydown', (e) => { if (e.key === 'Enter') simChat($('simText').value || current.sample?.() || 'oi'); });
-$('simLike').addEventListener('click', () => handleEvent({ type: 'like', user: fakeUser(), count: 5 }));
-$('simJoin').addEventListener('click', () => handleEvent({ type: 'join', user: fakeUser() }));
+$('simLike').addEventListener('click', () => sim({ type: 'like', user: fakeUser(), count: 5 }));
+$('simJoin').addEventListener('click', () => sim({ type: 'join', user: fakeUser() }));
 document.querySelectorAll('[data-gift]').forEach((b) => b.addEventListener('click', () => simGift(Number(b.dataset.gift))));
 $('simShop').innerHTML = GIFT_SHOP.map(([e, n, c], i) => `<button data-shop="${i}" title="${n} (${c} moedas)">${e}<small>${c >= 1000 ? Math.round(c / 1000) + 'k' : c}</small></button>`).join('');
 document.querySelectorAll('[data-shop]').forEach((b) => b.addEventListener('click', () => {
   const [, n, c] = GIFT_SHOP[b.dataset.shop];
   simGift([n, c], fakeUser(), Math.max(1, Number($('simCombo').value) || 1));
 }));
-$('simFollow').addEventListener('click', () => handleEvent({ type: 'social', user: fakeUser(), action: 'follow' }));
-$('simShare').addEventListener('click', () => handleEvent({ type: 'social', user: fakeUser(), action: 'share' }));
+$('simFollow').addEventListener('click', () => sim({ type: 'social', user: fakeUser(), action: 'follow' }));
+$('simShare').addEventListener('click', () => sim({ type: 'social', user: fakeUser(), action: 'share' }));
 let autoTimer = null;
 $('simAuto').addEventListener('click', () => {
   $('simAuto').classList.toggle('on');
   if (autoTimer) { clearInterval(autoTimer); autoTimer = null; return; }
   autoTimer = setInterval(() => {
     const r = Math.random();
-    if (r < 0.06) handleEvent({ type: 'join', user: fakeUser() });
+    if (r < 0.06) sim({ type: 'join', user: fakeUser() });
     else if (r < 0.7) simChat(current.sample?.() || 'oi');
-    else if (r < 0.9) handleEvent({ type: 'like', user: fakeUser(), count: randInt(1, 15) });
-    else if (r < 0.92) handleEvent({ type: 'social', user: fakeUser(), action: r < 0.91 ? 'follow' : 'share' });
+    else if (r < 0.9) sim({ type: 'like', user: fakeUser(), count: randInt(1, 15) });
+    else if (r < 0.92) sim({ type: 'social', user: fakeUser(), action: r < 0.91 ? 'follow' : 'share' });
     else { const g = GIFT_SHOP[r < 0.96 ? randInt(0, 2) : r < 0.99 ? randInt(3, 5) : randInt(6, 7)]; simGift([g[1], g[2]], fakeUser(), r < 0.95 && Math.random() < 0.3 ? randInt(2, 10) : 1); }
   }, 350);
 });

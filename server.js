@@ -246,6 +246,7 @@ wss.on('connection', (ws) => {
       const room = rooms.get(username) || openRoom(username);
       room.clients.add(ws);
       for (const [key, data] of Object.entries(room.configs)) ws.send(JSON.stringify({ type: 'config', key, data }));
+      if (room.game) ws.send(JSON.stringify({ type: 'control', action: 'game', id: room.game, join: true }));
       ws.send(JSON.stringify(room.state ? { type: 'status', ...room.state } : { type: 'status', state: 'connecting', message: `Conectando a @${username}…` }));
     } else if (msg.type === 'config') {
       // Configuração de um jogo (fotos, nomes) repassada às outras telas do mesmo @, como a fonte do OBS.
@@ -253,6 +254,14 @@ wss.on('connection', (ws) => {
       if (!room || typeof msg.key !== 'string' || !/^[a-z]{1,20}$/.test(msg.key)) return;
       room.configs[msg.key] = msg.data;
       const data = JSON.stringify({ type: 'config', key: msg.key, data: msg.data });
+      for (const other of room.clients) if (other !== ws && other.readyState === other.OPEN) other.send(data);
+    } else if (msg.type === 'control') {
+      // Comandos do painel (trocar jogo, reiniciar, simulador) para as telas do mesmo @, como a fonte "Link" do LIVE Studio.
+      // A tela da live só manda 'current' (trocou de jogo sozinha, ex.: fim da votação) para o painel acompanhar.
+      const room = ws.username && rooms.get(ws.username);
+      if (!room || !['game', 'reset', 'sim', 'press', 'current'].includes(msg.action)) return;
+      if (msg.action === 'game' || msg.action === 'current') { if (typeof msg.id !== 'string' || !/^[a-z]{1,20}$/.test(msg.id)) return; room.game = msg.id; }
+      const data = JSON.stringify({ type: 'control', action: msg.action, id: msg.id, ev: msg.action === 'sim' ? msg.ev : undefined });
       for (const other of room.clients) if (other !== ws && other.readyState === other.OPEN) other.send(data);
     } else if (msg.type === 'disconnect') {
       leave(ws);
