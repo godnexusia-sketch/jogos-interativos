@@ -5,10 +5,11 @@ const SIMNAO_DEFAULT = { question: 'Você é a favor do fim da', highlight: 'ESC
 
 registerGame({
   id: 'simnao',
+  meterY: 1000, // posição do medidor de presentes (livre de HUD)
   name: 'Sim ou Não',
   icon: '🏛️',
   configKey: 'simnao',
-  help: '<p>Comente <b>SIM</b> ou <b>NÃO</b>. Cada comentário é 1 voto (1 a cada 3s, até 10 por votação).</p><p>🎁 Presente: votos por moeda no lado que a pessoa votou por último.</p><p>Troque a pergunta em <b>Configurar</b>.</p>',
+  help: '<p>Comente <b>SIM</b> ou <b>NÃO</b>. Cada comentário é 1 voto (1 a cada 3s, até 10 por votação).</p><p>🎁 Presente: votos por moeda (preço × combo) no lado que a pessoa votou por último. Quanto mais moedas, mais votos e maior a explosão. ❤️ 25 likes valem 1 moeda · ⭐ seguir vale 5 · 🔁 compartilhar vale 10.</p>' + TIER_HELP + '<p>Troque a pergunta em <b>Configurar</b>.</p>',
   cd: new Cooldown(3000),
   config: store.get('cfg:simnao', SIMNAO_DEFAULT),
   reset() {
@@ -56,6 +57,12 @@ registerGame({
     } else if (ev.type === 'gift') {
       if (!this.side.has(id)) { this.addLog(ev.user, 'comente SIM ou NÃO antes!', '#ffd23f'); return; }
       this.queue.push({ yes: this.side.get(id), user: ev.user, n: this.config.giftVotes * coins(ev), tier: giftTier(ev) });
+    } else if (ev.type === 'like' || ev.type === 'social') {
+      // Likes (25 ≈ 1 moeda) e seguir/compartilhar também viram votos no lado da pessoa
+      if (!this.side.has(id)) return;
+      const c = ev.type === 'like' ? ev.count / 25 : SOCIAL_COINS[isFollow(ev) ? 'follow' : 'share'];
+      const n = Math.floor(this.config.giftVotes * c);
+      if (n > 0) this.queue.push({ yes: this.side.get(id), user: ev.user, n, tier: ev.type === 'social' ? 1 : 0 });
     }
     // Com fila longa, junta votos seguidos do mesmo lado.
     if (this.queue.length > 12) {

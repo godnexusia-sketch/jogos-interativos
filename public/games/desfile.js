@@ -9,7 +9,7 @@ registerGame({
   id: 'desfile',
   name: 'Passarela',
   icon: '💃',
-  help: '<p>Comente qualquer coisa para entrar na <b>fila do desfile</b>. Se comentar o seu <b>nick do Roblox</b>, desfila com o seu avatar.</p><p>Durante o seu desfile, comentários e ❤️ likes viram aplausos.</p><p>🌹 Fura a fila (2× maior) · 🍩 Desfile dançando (3×) · 🕶️ Salão piscando (6×) · 🌌 O GIGANTE (12×).</p>',
+  help: '<p>Comente qualquer coisa para entrar na <b>fila do desfile</b>. Se comentar o seu <b>nick do Roblox</b>, desfila com o seu avatar.</p><p>Durante o seu desfile, comentários e ❤️ likes viram aplausos.</p><p>1–9 🪙 Fura a fila (até 2× maior) · 10–99 🪙 Desfile dançando (até 3×) · 100–999 🪙 Salão piscando (até 7×) · 1.000+ 🪙 O GIGANTE (11× a 14×). Quem mandou mais moedas passa na frente na fila e desfila maior. ❤️ Likes viram aplausos · ⭐ seguir e 🔁 compartilhar furam a fila.</p>' + TIER_HELP + '',
   claps: new Map(),
   reset() {
     for (const m of [...(this.walking || []), ...(this.seats || [])]) this.r?.scene.remove(m.obj);
@@ -24,7 +24,8 @@ registerGame({
   },
   sample: () => pick(['eu', 'builderman', 'linda', 'arrasou', 'Roblox', 'diva']),
   inLine(id) { return this.queue.find((q) => q.id === id) || this.walking.find((w) => w.id === id); },
-  enqueue(ev, tier = 0) {
+  // pw = força do presente: tamanho, festa e lugar na fila crescem com as moedas
+  enqueue(ev, tier = 0, pw = 0) {
     const id = uid(ev);
     let m = this.inLine(id);
     if (!m) {
@@ -35,9 +36,11 @@ registerGame({
       if (looksLikeNick(txt)) robloxLookup(txt).then((r) => { if (r) { m.rbx = r; m.thumb = G3.ready ? null : null; } });
     }
     if (tier > m.tier) m.tier = tier;
+    m.pw = Math.max(m.pw || 0, pw);
+    if (tier) m.big = Math.max(m.big || 1, [1, 1.5, 2, 3, 6][tier] + m.pw * [0, 0.15, 0.1, 0.35, 0.5][tier]);
     if (tier >= 1 && this.queue.includes(m)) {
       this.queue.splice(this.queue.indexOf(m), 1);
-      const pos = this.queue.findIndex((q) => !q.tier);
+      const pos = this.queue.findIndex((q) => (q.pw || 0) < m.pw);
       this.queue.splice(pos < 0 ? this.queue.length : pos, 0, m);
     }
     return m;
@@ -51,9 +54,15 @@ registerGame({
       this.enqueue(ev);
     } else if (ev.type === 'like') {
       if (w) w.claps += ev.count;
+    } else if (ev.type === 'social') {
+      const m = this.enqueue(ev, 1, giftPower({ diamonds: SOCIAL_COINS[isFollow(ev) ? 'follow' : 'share'] }));
+      if (w) w.claps += isFollow(ev) ? 20 : 40;
+      if (m) announcer.show(`@${trim(ev.user.nick, 12)} ${isFollow(ev) ? 'seguiu' : 'compartilhou'} e furou a fila`, '#ffc93c', 2, 36);
+      return;
     } else if (ev.type === 'gift') {
       const tier = giftTier(ev);
-      this.enqueue(ev, tier);
+      this.enqueue(ev, tier, giftPower(ev));
+      if (w) w.claps += coins(ev);
       announcer.show(`@${trim(ev.user.nick, 12)} ${['', 'furou a fila', 'vai desfilar dançando', 'acendeu o salão', 'é O GIGANTE'][tier]}`, ['#fff', '#ffc93c', '#ff2e63', '#00e5ff', '#a3e635'][tier], 2.2, 40);
     }
   },
@@ -70,7 +79,7 @@ registerGame({
       this.walking.push(m);
       if (this.r) this.buildModel(m);
       this.gap = 1.2;
-      if (m.tier >= 3) this.party = 10;
+      if (m.tier >= 3) this.party = 4 + m.pw;
       if (m.tier >= 4) { this.giant = WALK_SECS; sfx.boom(); }
       sfx.pop();
     }
@@ -176,7 +185,7 @@ registerGame({
     for (const m of this.walking) {
       if (!m.obj) this.buildModel(m);
       const p = this.pathAt(m.t / WALK_SECS);
-      const big = [1, 2, 3, 6, 12][m.tier];
+      const big = (m.big || 1);
       m.obj.position.set(p.x, 0.8, p.z);
       m.obj.scale.setScalar(big * (m.tier >= 4 ? 1 : 1));
       const dance = m.tier >= 2;
@@ -201,7 +210,7 @@ registerGame({
     r.ledMat.color.setHSL(this.party > 0 ? (t * 2) % 1 : 0.95, 1, 0.55);
     const cur = this.current();
     const giantOn = cur && cur.tier >= 4;
-    const big = cur ? [1, 2, 3, 6, 12][cur.tier] : 1;
+    const big = cur ? (cur.big || 1) : 1;
     const want = giantOn ? new T.Vector3(0, 14, 34) : new T.Vector3(Math.sin(t * 0.2) * 1.2, 3.6 + big * 1.4, 13 + big * 4);
     r.cam.lerp(want, 0.04);
     r.look.lerp(new T.Vector3(0, giantOn ? 10 : 1.6 + big * 1.2, cur ? Math.max(RUNWAY_BACK, this.pathAt(cur.t / WALK_SECS).z - 3) : -8), 0.06);

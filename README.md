@@ -22,7 +22,7 @@ sempre 9:16 (1080×1920). O espectador vê o próprio @ e a foto; quanto maior o
 | 🏝️ Ilha | Battle royale 3D com bonecos estilo Roblox; a ilha encolhe até sobrar um |
 | 💃 Passarela | Desfile 3D com o avatar do Roblox; presente fura a fila |
 
-Presentes contam pela faixa de valor: 🌹 até 4 moedas · 🍩 5–99 · 🕶️ 100–499 · 🌌 500+.
+Presentes contam pelo total de moedas (preço × combo), com os preços reais da loja do TikTok. A faixa define o tipo de ação (1–9 · 10–99 · 100–999 · 1.000+) e a força cresce dentro da faixa: `giftPower` (escala log) para duração e tamanho, `giftQty` (raiz) para quantidades. Likes (25 ≈ 1 moeda), seguir (≈ 5) e compartilhar (≈ 10) também têm efeito em todos os jogos. Um medidor no canto mostra quem mandou, o valor e a força.
 
 ## Rodar localmente
 

@@ -5,9 +5,10 @@
 
 registerGame(withConfig({
   id: 'chute',
+  meterY: 900, // posição do medidor de presentes (livre de HUD)
   name: 'Bola no Ursinho',
   icon: '⚽',
-  help: '<p>Comente <b>chuta</b> para lançar uma bola (1 a cada 4s); algumas erram.</p><p>🌹 1 bola · 🍩 sequência de 3 · 🕶️ bola de fogo gigante (5×) · 🌌 chuva de 12 bolas de ouro.</p><p>Quando a vida do ursinho zera, a rodada acaba. Ponha a foto do personagem em <b>Configurar</b>.</p>',
+  help: '<p>Comente <b>chuta</b> para lançar uma bola (1 a cada 4s); algumas erram.</p><p>1–9 🪙 1 a 3 bolas · 10–99 🪙 3 a 10 bolas · 100–999 🪙 3 a 4 bolas de fogo gigantes (5×) · 1.000+ 🪙 chuva de 30 a 60 bolas de ouro. ❤️ A cada 30 likes da live sai uma bola · ⭐ seguir 1 bola · 🔁 compartilhar 3.</p>' + TIER_HELP + '<p>Quando a vida do ursinho zera, a rodada acaba. Ponha a foto do personagem em <b>Configurar</b>.</p>',
   cd: new Cooldown(4000),
   kickers: new Map(),
   round: 1,
@@ -36,15 +37,22 @@ registerGame(withConfig({
   onEvent(ev) {
     if (this.phase !== 'play') return;
     if (ev.type === 'chat' && /chut|gol|⚽|bola/i.test(ev.text) && this.cd.ok(uid(ev))) this.kick(ev.user, 'normal');
-    else if (ev.type === 'gift') {
-      const tier = giftTier(ev), n = Math.min(10, ev.count || 1);
-      for (let r = 0; r < n; r++) {
-        if (tier === 1) this.kick(ev.user, 'gift', r * 0.25);
-        else if (tier === 2) for (let k = 0; k < 3; k++) this.kick(ev.user, 'gift', r * 0.9 + k * 0.28);
-        else if (tier === 3) this.kick(ev.user, 'fire', r * 0.8);
-        else for (let k = 0; k < 12; k++) this.kick(ev.user, 'gold', r * 2 + k * 0.15);
-      }
-      this.lastGift = { user: ev.user, name: ev.name, n: { 1: n, 2: 3 * n, 3: n, 4: 12 * n }[tier], t: 6 };
+    else if (ev.type === 'like') {
+      // Likes da live inteira enchem a barra: a cada 30, uma bola de quem curtiu por último
+      this.likes = (this.likes || 0) + ev.count;
+      while (this.likes >= 30) { this.likes -= 30; this.kick(ev.user, 'normal'); }
+    } else if (ev.type === 'social') {
+      const n = isFollow(ev) ? 1 : 3;
+      for (let k = 0; k < n; k++) this.kick(ev.user, 'gift', k * 0.3);
+      this.lastGift = { user: ev.user, name: isFollow(ev) ? 'seguiu' : 'compartilhou', n, t: 4 };
+    } else if (ev.type === 'gift') {
+      // Número de bolas proporcional às moedas (raiz); fogo e ouro para valores altos
+      const tier = giftTier(ev), q = giftQty(ev, 60), p = giftPower(ev);
+      let n;
+      if (tier <= 2) { n = q; for (let k = 0; k < n; k++) this.kick(ev.user, 'gift', k * 0.28); }
+      else if (tier === 3) { n = Math.round(p / 2.5); for (let k = 0; k < n; k++) this.kick(ev.user, 'fire', k * 0.8); }
+      else { n = q; for (let k = 0; k < n; k++) this.kick(ev.user, k % 10 === 0 ? 'fire' : 'gold', k * 0.15); }
+      this.lastGift = { user: ev.user, name: ev.name, n, t: 6 };
       if (tier >= 3) announcer.show(`${tier === 4 ? '🌟' : '🔥'} @${trim(ev.user.nick, 12)}`, tier === 4 ? '#ffd23f' : '#ff8a3d', 2, 58);
     }
   },

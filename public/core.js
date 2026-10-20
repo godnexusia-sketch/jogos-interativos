@@ -26,12 +26,57 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const uid = (ev) => ev.user?.id || ev.user?.nick || 'anônimo';
 
-// Faixa do presente pelo valor em moedas: 1 (Rosa), 2 (5–99, ex.: Rosquinha), 3 (100–499, ex.: Óculos), 4 (500+, ex.: Galáxia).
-function giftTier(ev) {
-  const d = ev.diamonds || 1;
-  return d >= 500 ? 4 : d >= 100 ? 3 : d >= 5 ? 2 : 1;
-}
+// ---------- Valor das interações ----------
+// O TikTok manda diamondCount = preço do presente em moedas. O que conta é o total: preço × combo.
+// Exemplos da loja: Rosa, TikTok, GG = 1 · Bola de futebol, Fogos, Mãos fazendo coração = 5 · Dedos divinos = 6 ·
+// Coração, Fantasminha, Mini dino = 10 · Rosquinha, Buquê, Capybara = 30 · Chapéu e Bigode = 99 ·
+// Mãos em coração = 100 · Bons Pressá(gios) = 1.500 · Tom pé = 2.499 · Festa dos Doces = 3.999 ·
+// Promessa = 4.999 · Casa = 15.000 · Ária da Sereia = 22.500 · Estrelas do TikTok = 39.999.
 const coins = (ev) => (ev.diamonds || 1) * (ev.count || 1);
+// Faixa (tipo de ação): 1 = 1–9 moedas · 2 = 10–99 · 3 = 100–999 · 4 = 1.000+.
+function giftTier(ev) {
+  const c = coins(ev);
+  return c >= 1000 ? 4 : c >= 100 ? 3 : c >= 10 ? 2 : 1;
+}
+// Força (intensidade dentro da faixa), escala log: 1 moeda = 1 · 5 = 3,3 · 10 = 4,3 · 30 = 5,9 · 100 = 7,6 · 1.000 = 11 · 40.000 = 16,3.
+const giftPower = (ev) => 1 + Math.log2(coins(ev));
+// Quantidade proporcional (raiz): 1 → 1 · 5 → 2 · 10 → 3 · 30 → 5 · 100 → 10 · 1.000 → 32.
+const giftQty = (ev, max = 50) => clamp(Math.round(Math.sqrt(coins(ev))), 1, max);
+// Interações grátis em "moedas equivalentes", para usar a mesma escala: 25 likes ≈ 1 moeda, seguir ≈ 5, compartilhar ≈ 10.
+const SOCIAL_COINS = { follow: 5, share: 10 };
+const isFollow = (ev) => ev.type === 'social' && ev.action !== 'share';
+const TIER_TXT = ['', '1–9 🪙', '10–99 🪙', '100–999 🪙', '1.000+ 🪙'];
+const TIER_HELP = '<p class="tiers"><b>Quanto mais moedas, mais ação.</b> O efeito depende do total (preço × combo) e cresce dentro de cada faixa: 1–9 🪙 (Rosa, Bola, Fogos) · 10–99 🪙 (Coração, Mini dino, Rosquinha, Capybara, Chapéu) · 100–999 🪙 (Mãos em coração) · 1.000+ 🪙 (Bons Presságios, Estrelas do TikTok…). ⭐ Seguir e 🔁 compartilhar também valem.</p>';
+
+// Medidor de presentes, igual em todos os jogos: mostra quem mandou, o valor e a força.
+const giftMeter = {
+  items: [],
+  push(ev) {
+    const c = ev.type === 'gift' ? coins(ev) : SOCIAL_COINS[ev.action === 'share' ? 'share' : 'follow'];
+    const label = ev.type === 'gift' ? `${trim(ev.name || 'Presente', 14)}${(ev.count || 1) > 1 ? ' ×' + ev.count : ''}` : ev.action === 'share' ? '🔁 compartilhou' : '⭐ seguiu';
+    this.items.unshift({ user: ev.user, label, c, tier: giftTier({ diamonds: c }), t: 4 });
+    this.items.length = Math.min(this.items.length, 3);
+  },
+  update(dt) { this.items = this.items.filter((g) => (g.t -= dt) > 0); },
+  draw(top = 200) {
+    const cols = ['', '#f472b6', '#38bdf8', '#facc15', '#a3e635'];
+    this.items.forEach((g, i) => {
+      const a = clamp(Math.min((4 - g.t) * 6, g.t * 2), 0, 1), x = W - 18 - 262 + (1 - a) * 60, y = top + i * 66;
+      ctx.globalAlpha = a;
+      ctx.fillStyle = 'rgba(10,8,24,.82)'; ctx.beginPath(); ctx.roundRect(x, y, 262, 56, 14); ctx.fill();
+      ctx.strokeStyle = cols[g.tier]; ctx.lineWidth = 2; ctx.stroke();
+      avatar(g.user, x + 30, y + 28, 20, cols[g.tier]);
+      label(`@${trim(g.user?.nick || '', 11)}`, x + 58, y + 20, 15, '#fff', 'left', 800);
+      label(g.label, x + 58, y + 40, 13, 'rgba(255,255,255,.75)', 'left', 600);
+      label(`${g.c >= 1000 ? (g.c / 1000).toFixed(g.c >= 10000 ? 0 : 1).replace('.', ',') + 'k' : g.c} 🪙`, x + 250, y + 20, 15, cols[g.tier], 'right', 900);
+      // barra de força (log): 1 moeda ≈ 6%, 40.000 = cheia
+      const f = clamp((1 + Math.log2(g.c)) / 16.3, 0.06, 1);
+      ctx.fillStyle = 'rgba(255,255,255,.12)'; ctx.fillRect(x + 176, y + 36, 74, 7);
+      ctx.fillStyle = cols[g.tier]; ctx.fillRect(x + 176, y + 36, 74 * f, 7);
+      ctx.globalAlpha = 1;
+    });
+  },
+};
 
 class Cooldown {
   constructor(ms) { this.ms = ms; this.last = new Map(); }

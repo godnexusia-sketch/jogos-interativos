@@ -8,9 +8,10 @@ const SNAKE_COLORS = ['#22d3ee', '#f43f5e', '#a3e635', '#facc15', '#c084fc', '#f
 
 registerGame({
   id: 'cobra',
+  meterY: 360, // posição do medidor de presentes (livre de HUD)
   name: 'Arena de Cobras',
   icon: '🐍',
-  help: '<p>Comente <b>cobra</b> para entrar na arena com a sua foto. A sua cobra anda sozinha comendo energia.</p><p>Se a cabeça encostar no corpo de outra cobra, ela morre e vira comida. Comentários dão um empurrão.</p><p>🌹 Turbo · 🍩 Cresce +15 · 🕶️ Escudo de 10s · 🌌 MEGA: cresce +40, escudo e ímã.</p>',
+  help: '<p>Comente <b>cobra</b> para entrar na arena com a sua foto. A sua cobra anda sozinha comendo energia.</p><p>Se a cabeça encostar no corpo de outra cobra, ela morre e vira comida. Comentários dão um empurrão.</p><p>1–9 🪙 Turbo · 10–99 🪙 Cresce · 100–999 🪙 Escudo · 1.000+ 🪙 MEGA: cresce, escudo e ímã. ❤️ Likes fazem crescer, ⭐ seguir +8, 🔁 compartilhar dá turbo.</p>' + TIER_HELP + '',
   cd: new Cooldown(1500),
   kills: new Map(),
   best: new Map(),
@@ -53,15 +54,21 @@ registerGame({
       if (s && this.cd.ok(id)) s.boost = Math.max(s.boost, 0.6);
     } else if (ev.type === 'like') {
       const s = this.snake(id);
-      if (s) s.grow += Math.floor(ev.count / 5);
+      if (s) { s.grow += Math.max(1, Math.floor(ev.count / 5)); if (ev.count >= 10) s.boost = Math.max(s.boost, 0.4 + ev.count * 0.03); }
+    } else if (ev.type === 'social') {
+      const s = this.snake(id) || this.spawn(ev.user);
+      if (!s) return;
+      if (isFollow(ev)) { s.grow += 8; this.addLog(ev.user, 'seguiu: cresceu +8', '#a3e635'); }
+      else { s.boost = Math.max(s.boost, 3); s.grow += 12; this.addLog(ev.user, 'compartilhou: turbo + cresceu', '#22d3ee'); }
     } else if (ev.type === 'gift') {
       const s = this.snake(id) || this.spawn(ev.user);
       if (!s) return;
-      const tier = giftTier(ev), n = Math.min(5, ev.count || 1);
-      if (tier === 1) { s.boost = Math.max(s.boost, 3 * n); this.addLog(ev.user, 'ligou o TURBO', '#22d3ee'); }
-      else if (tier === 2) { s.grow += 15 * n; this.addLog(ev.user, `cresceu +${15 * n}`, '#a3e635'); }
-      else if (tier === 3) { s.shield = 10; s.boost = 3; this.addLog(ev.user, 'ganhou ESCUDO', '#facc15'); }
-      else { s.grow += 40; s.shield = 12; s.magnet = 15; s.boost = 4; this.addLog(ev.user, 'virou MEGA COBRA', '#f472b6'); announcer.show(`MEGA COBRA @${trim(ev.user.nick, 10)}`, '#f472b6', 2.4, 50); sfx.boom(); }
+      // Tudo cresce com as moedas: p = força (log), q = quantidade (raiz)
+      const tier = giftTier(ev), p = giftPower(ev), q = giftQty(ev, 60);
+      if (tier === 1) { s.boost = Math.max(s.boost, 1 + p * 0.8); s.grow += q * 2; this.addLog(ev.user, `ligou o TURBO ${(1 + p * 0.8).toFixed(0)}s`, '#22d3ee'); }
+      else if (tier === 2) { s.grow += q * 4; s.boost = Math.max(s.boost, p * 0.4); this.addLog(ev.user, `cresceu +${q * 4}`, '#a3e635'); }
+      else if (tier === 3) { s.shield = Math.max(s.shield, p + 2); s.boost = Math.max(s.boost, 3); s.grow += q * 2; this.addLog(ev.user, `ESCUDO ${(p + 2).toFixed(0)}s e +${q * 2}`, '#facc15'); }
+      else { s.grow += q * 2; s.shield = Math.max(s.shield, p + 2); s.magnet = Math.max(s.magnet, p * 1.4); s.boost = Math.max(s.boost, p * 0.4); this.addLog(ev.user, `virou MEGA COBRA +${q * 2}`, '#f472b6'); announcer.show(`MEGA COBRA @${trim(ev.user.nick, 10)}`, '#f472b6', 2.4, 50); sfx.boom(); }
     }
   },
   kill(s, by, silent) {
@@ -248,6 +255,6 @@ registerGame({
     });
     this.log.forEach((l, k) => toast(l.user, trim(`@${trim(l.user.nick, 10)} ${l.msg}`, 36), 20, 1120 + k * 44, { color: l.color, alpha: clamp(l.t, 0, 1), size: 17 }));
     slant(16, 1226, W - 32, 40, { fill: 'rgba(7,11,20,.85)', skew: 10 });
-    label('ROSA turbo  ·  ROSQUINHA cresce  ·  ÓCULOS escudo  ·  GALÁXIA mega cobra', W / 2, 1247, 14, '#fff', 'center', 800);
+    label('1+🪙 turbo  ·  10+🪙 cresce  ·  100+🪙 escudo  ·  1000+🪙 mega  ·  ⭐🔁 bônus', W / 2, 1247, 14, '#fff', 'center', 800);
   },
 });

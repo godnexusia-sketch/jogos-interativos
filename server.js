@@ -181,7 +181,9 @@ function openRoom(username) {
       diamonds: d.giftDetails?.diamondCount || d.extendedGiftInfo?.diamond_count || 1,
     });
   });
-  conn.on(WebcastEvent.SOCIAL, (d) => broadcast(room, { type: 'social', user: userInfo(d.user), action: String(d.displayType || d.action || '') }));
+  // Seguir e compartilhar chegam separados (o conector já filtra o SOCIAL por tipo).
+  conn.on(WebcastEvent.FOLLOW, (d) => broadcast(room, { type: 'social', user: userInfo(d.user), action: 'follow' }));
+  conn.on(WebcastEvent.SHARE, (d) => broadcast(room, { type: 'social', user: userInfo(d.user), action: 'share' }));
   conn.on(WebcastEvent.MEMBER, (d) => broadcast(room, { type: 'join', user: userInfo(d.user) }));
   conn.on(WebcastEvent.ROOM_USER, (d) => broadcast(room, { type: 'viewers', count: d.viewerCount || 0 }));
   conn.on(WebcastEvent.STREAM_END, () => {

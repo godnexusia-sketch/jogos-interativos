@@ -48,13 +48,13 @@
           <button id="simJoin" title="Alguém entrou na live">👋 Entrar</button>
           <button id="simAuto">▶ Auto</button>
         </div>
-        <div class="row gifts">
-          <button data-gift="1" title="Rosa (1 moeda)">🌹<small>1</small></button>
-          <button data-gift="2" title="Rosquinha (30 moedas)">🍩<small>30</small></button>
-          <button data-gift="3" title="Óculos (199 moedas)">🕶️<small>199</small></button>
-          <button data-gift="4" title="Galáxia (1000 moedas)">🌌<small>1000</small></button>
+        <div class="row">
+          <button id="simFollow" title="Alguém seguiu (vale ~5 moedas)">⭐ Seguir</button>
+          <button id="simShare" title="Alguém compartilhou (vale ~10 moedas)">🔁 Compartilhar</button>
+          <label class="small" style="display:flex;align-items:center;gap:6px">combo ×<input id="simCombo" type="number" min="1" max="99" value="1" style="width:56px"></label>
         </div>
-        <p class="small">Presentes contam pelo valor: 🌹 até 4 moedas · 🍩 5–99 · 🕶️ 100–499 · 🌌 500+.</p>
+        <div class="row gifts" id="simShop"></div>
+        <p class="small">Valores reais da loja do TikTok. O efeito é proporcional ao total de moedas (preço × combo): 1–9 · 10–99 · 100–999 · 1.000+, e cresce dentro de cada faixa.</p>
       </div>
       <div class="panel feed">
         <h3>Eventos da live</h3>

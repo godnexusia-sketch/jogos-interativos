@@ -7,9 +7,10 @@ const LANE_W = 1.22;
 
 registerGame(withConfig({
   id: 'torcida',
+  meterY: 440, // posição do medidor de presentes (livre de HUD)
   name: 'Corrida de Torcidas',
   icon: '🏃',
-  help: '<p>Comente o <b>nome</b> ou o <b>número</b> (1, 2…) do corredor para torcer por ele. Cada comentário depois disso dá um empurrão.</p><p>🌹 Impulso · 🍩 Casca de banana no rival da frente · 🕶️ Superarrancada · 🌌 Derruba todos os rivais + escudo.</p><p>❤️ Likes enchem a <b>meta coletiva</b>: quando completa, quem está em último ganha uma arrancada.</p><p>Fotos e nomes em <b>Configurar</b>.</p>',
+  help: '<p>Comente o <b>nome</b> ou o <b>número</b> (1, 2…) do corredor para torcer por ele. Cada comentário depois disso dá um empurrão.</p><p>1–9 🪙 Impulso (3 a 6s) · 10–99 🪙 Casca de banana no rival da frente + impulso · 100–999 🪙 Superarrancada (5 a 7s) · 1.000+ 🪙 Derruba todos os rivais + escudo. Quanto mais moedas, mais tempo dura. ⭐ Seguir +4 m · 🔁 compartilhar +7 m.</p>' + TIER_HELP + '<p>❤️ Likes enchem a <b>meta coletiva</b>: quando completa, quem está em último ganha uma arrancada.</p><p>Fotos e nomes em <b>Configurar</b>.</p>',
   cd: new Cooldown(1500),
   wins: new Map(),
   heat: 1,
@@ -77,18 +78,20 @@ registerGame(withConfig({
       if (mine && this.phase === 'race') mine.pos += Math.min(2, 0.1 * ev.count);
     } else if (ev.type === 'social') {
       const mine = this.fan.has(id) ? this.runners[this.fan.get(id)] : null;
-      if (mine) { mine.pos += 4; this.addLog(ev.user, `seguiu: +4 m para ${mine.name}`, mine.color); }
+      const m = isFollow(ev) ? 4 : 7;
+      if (mine) { mine.pos += m; this.addLog(ev.user, `${isFollow(ev) ? 'seguiu' : 'compartilhou'}: +${m} m para ${mine.name}`, mine.color); }
     } else if (ev.type === 'gift') {
       if (!this.fan.has(id)) { this.addLog(ev.user, 'comente o nome do corredor antes!', '#ffd23f'); return; }
       const r = this.runners[this.fan.get(id)];
-      const tier = giftTier(ev);
+      // Duração dos efeitos cresce com as moedas
+      const tier = giftTier(ev), pw = giftPower(ev);
       addScore(this.top, ev.user.nick, coins(ev) * 5);
-      if (tier === 1) { this.apply(r, 'boost', 3 + ev.count, ev.user); this.addLog(ev.user, `deu IMPULSO em ${r.name}`, r.color); }
-      else if (tier === 2) { const rival = this.leaderOf(r); this.apply(rival, 'slip', 2.2, ev.user); this.addLog(ev.user, `jogou casca de banana em ${rival.name}`, '#ffd23f'); }
-      else if (tier === 3) { this.apply(r, 'super', 5, ev.user); this.addLog(ev.user, `SUPERARRANCADA em ${r.name}`, r.color); announcer.show('SUPERARRANCADA', r.color, 1.6, 54); }
+      if (tier === 1) { this.apply(r, 'boost', 2 + pw, ev.user); this.addLog(ev.user, `deu IMPULSO em ${r.name}`, r.color); }
+      else if (tier === 2) { const rival = this.leaderOf(r); this.apply(rival, 'slip', 1 + pw * 0.3, ev.user); this.apply(r, 'boost', pw * 0.5, ev.user); this.addLog(ev.user, `jogou casca de banana em ${rival.name}`, '#ffd23f'); }
+      else if (tier === 3) { this.apply(r, 'super', 1.5 + pw * 0.5, ev.user); this.addLog(ev.user, `SUPERARRANCADA em ${r.name}`, r.color); announcer.show('SUPERARRANCADA', r.color, 1.6, 54); }
       else {
-        for (const o of this.runners) if (o !== r) this.apply(o, 'slip', 2.6, ev.user);
-        r.shield = 15; this.apply(r, 'super', 4, ev.user);
+        for (const o of this.runners) if (o !== r) this.apply(o, 'slip', 1 + pw * 0.15, ev.user);
+        r.shield = 5 + pw; this.apply(r, 'super', 1 + pw * 0.35, ev.user);
         this.addLog(ev.user, `derrubou todos! escudo em ${r.name}`, r.color);
         announcer.show(`@${trim(ev.user.nick, 12)}`, r.color, 2.2, 60);
         sfx.boom();

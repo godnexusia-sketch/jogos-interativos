@@ -69,3 +69,5 @@ body.clean canvas { border-radius:0; box-shadow:none; background:transparent; }
 .file input { position:absolute; inset:0; opacity:0; cursor:pointer; }
 .cfg-extra { display:flex; flex-direction:column; gap:8px; }
 button.primary { background:linear-gradient(180deg, #ff4d70, #e01e45); border-color:transparent; font-weight:700; }
+#simShop { display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; }
+#simShop button { min-width:0; padding:6px 2px; }

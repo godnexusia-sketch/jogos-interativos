@@ -13,7 +13,7 @@ registerGame({
   id: 'flappy',
   name: 'Flappy',
   icon: '🐤',
-  help: '<p><b>Você joga</b>: espaço, clique ou toque na tela. Quem comenta <b>pula</b> também faz o passarinho voar.</p><p>Os presentes sabotam: 🌹 ar turbulento · 🍩 canos gigantes · 🕶️ visão escura · 🌌 caos galáctico.</p>',
+  help: '<p><b>Você joga</b>: espaço, clique ou toque na tela. Quem comenta <b>pula</b> também faz o passarinho voar.</p><p>Os presentes sabotam, e quanto mais moedas, mais tempo dura: 1–9 🪙 ar turbulento · 10–99 🪙 2 a 4 canos gigantes · 100–999 🪙 visão escura · 1.000+ 🪙 caos galáctico. ❤️ Likes fazem o passarinho voar · ⭐ seguir limpa a sabotagem · 🔁 compartilhar dá vento.</p>' + TIER_HELP + '',
   best: 0,
   saboteurs: new Map(),
   helpCd: new Cooldown(250),
@@ -37,12 +37,19 @@ registerGame({
   onPress() { if (this.dead <= 0) this.flap(); },
   onEvent(ev) {
     if (ev.type === 'chat' && /pula|pulo|jump|sobe/i.test(ev.text) && this.helpCd.ok('all')) this.flap(ev.user.nick);
+    else if (ev.type === 'like' && ev.count >= 5 && this.helpCd.ok('all')) this.flap(ev.user.nick);
+    else if (ev.type === 'social') {
+      // Seguir ajuda (limpa a sabotagem), compartilhar atrapalha um pouco
+      if (isFollow(ev)) { for (const key in this.effects) this.effects[key] = Math.max(0, this.effects[key] - 2); this.flap(ev.user.nick); }
+      else this.effects.wind = Math.min(16, this.effects.wind + 2);
+    }
     else if (ev.type === 'gift') {
-      const s = SABOTAGE[giftTier(ev)];
+      // Duração da sabotagem proporcional às moedas (força log)
+      const s = SABOTAGE[giftTier(ev)], pw = giftPower(ev), k = 0.4 + pw * 0.12;
       addScore(this.saboteurs, ev.user.nick, coins(ev));
       this.lastSaboteur = { user: ev.user, s, t: 3 };
-      if (s.key === 'giant') this.giantNext = Math.min(6, this.giantNext + 3);
-      else this.effects[s.key] = Math.min(s.secs * 3, this.effects[s.key] + s.secs);
+      if (s.key === 'giant') this.giantNext = Math.min(10, this.giantNext + Math.round(pw / 2));
+      else this.effects[s.key] = Math.min(s.secs * 4, this.effects[s.key] + s.secs * k);
       if (s.key === 'chaos') { this.effects.wind = Math.max(this.effects.wind, 4); sfx.boom(); }
       else sfx.tone(220, 0.25, 'sawtooth', 0.08);
     }

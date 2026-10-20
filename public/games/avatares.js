@@ -9,7 +9,7 @@ registerGame({
   id: 'avatares',
   name: 'Palco Roblox',
   icon: '🕺',
-  help: '<p>Comente o seu <b>nick do Roblox</b> (só o nick, ou <b>!nick seunick</b>) e o seu avatar entra dançando no palco.</p><p>Quem manda presente ganha a sua foto em cima da cabeça do avatar.</p><p>🌹 Fica o dobro do tempo · 🍩 2,8× maior e a câmera vai nele · 🕶️ Furacão que gira todo mundo · 🌌 Chuva de 20 avatares seus.</p>',
+  help: '<p>Comente o seu <b>nick do Roblox</b> (só o nick, ou <b>!nick seunick</b>) e o seu avatar entra dançando no palco.</p><p>Quem manda presente ganha a sua foto em cima da cabeça do avatar.</p><p>1–9 🪙 fica mais tempo no palco · 10–99 🪙 cresce (2× a 2,8×) e a câmera vai nele · 100–999 🪙 Furacão que gira todo mundo (12 a 18s) · 1.000+ 🪙 Chuva de 32 a 48 avatares seus. Quanto mais moedas, maior e por mais tempo. ❤️ Likes e comentários fazem o seu avatar dançar mais animado · ⭐ seguir e 🔁 compartilhar põem o ícone na cabeça.</p>' + TIER_HELP + '',
   reset() {
     if (this.r) for (const d of this.dancers || []) this.r.scene.remove(d.obj);
     for (const r of this.rain || []) this.r?.scene.remove(r.obj);
@@ -23,9 +23,10 @@ registerGame({
   sample: () => pick(['builderman', 'Roblox', 'oi', 'kkk']),
   addLog(user, msg, color = '#fff') { this.log.unshift({ user, msg, color, t: 5 }); this.log.length = Math.min(this.log.length, 3); },
   dancer(id) { return this.dancers.find((d) => d.id === id); },
-  place(id, user, rbx, tier = 0) {
+  // pw = força do presente (giftPower): tempo no palco e tamanho crescem com as moedas
+  place(id, user, rbx, tier = 0, pw = 0) {
     let d = this.dancer(id);
-    const ttl = [45, 90, 240, 240, 300][tier];
+    const ttl = tier ? Math.round(60 + pw * 25) : 45;
     if (!d) {
       if (this.dancers.length >= STAGE_MAX) { const old = this.dancers.shift(); this.r?.scene.remove(old.obj); }
       d = { id, user, rbx, size: 1, ttl, tier: 0, phase: rand(0, 6), born: 0, gifted: false };
@@ -36,7 +37,7 @@ registerGame({
     if (rbx && !d.rbx) { d.rbx = rbx; if (this.r) { this.r.scene.remove(d.obj); this.buildDancer(d); } }
     d.ttl = Math.max(d.ttl, ttl);
     d.tier = Math.max(d.tier, tier);
-    d.size = [1, 1.2, 2.8, 4, 4][d.tier];
+    if (tier >= 2) d.size = Math.max(d.size, Math.min(4.2, 1 + pw * 0.27)); else if (tier) d.size = Math.max(d.size, 1.2);
     if (tier > 0 && !d.gifted && this.r) { d.gifted = true; this.addGiftIcon(d); }
     return d;
   },
@@ -45,20 +46,28 @@ registerGame({
     if (ev.type === 'chat') {
       const m = ev.text.trim().match(/^!nick\s+@?([A-Za-z0-9_]{3,20})$/i);
       const nick = m ? m[1] : looksLikeNick(ev.text) ? ev.text.trim().replace(/^@/, '') : null;
-      if (!nick) { const d = this.dancer(id); if (d) d.ttl = Math.max(d.ttl, 20); return; }
+      if (!nick) { const d = this.dancer(id); if (d) { d.ttl = Math.max(d.ttl, 20); d.hype = Math.min(3, (d.hype || 0) + 0.6); } return; }
       const rbx = await robloxLookup(nick);
       if (!rbx) { if (m) this.addLog(ev.user, `nick "${trim(nick, 12)}" não existe no Roblox`, '#ff8a3d'); return; }
       this.known.set(id, rbx);
       this.place(id, ev.user, rbx);
       this.addLog(ev.user, `entrou como ${trim(rbx.name, 14)}`, '#00e5ff');
+    } else if (ev.type === 'like') {
+      const d = this.dancer(id);
+      if (d) { d.ttl += Math.min(30, ev.count); d.hype = Math.min(3, (d.hype || 0) + ev.count * 0.1); }
+    } else if (ev.type === 'social') {
+      const d = this.place(id, ev.user, this.known.get(id) || null, 1, giftPower({ diamonds: SOCIAL_COINS[isFollow(ev) ? 'follow' : 'share'] }));
+      d.hype = 3;
+      this.addLog(ev.user, isFollow(ev) ? 'seguiu e subiu no palco' : 'compartilhou e subiu no palco', '#ffd23f');
     } else if (ev.type === 'gift') {
-      const tier = giftTier(ev);
-      const d = this.place(id, ev.user, this.known.get(id) || null, tier);
+      const tier = giftTier(ev), pw = giftPower(ev);
+      const d = this.place(id, ev.user, this.known.get(id) || null, tier, pw);
+      d.hype = 3;
       this.addLog(ev.user, ['', 'brilhou no palco', 'virou destaque', 'chamou o FURACÃO', 'fez CHOVER avatares'][tier], GIFT_RING[tier]);
-      if (tier >= 2) { this.focus = d; this.focusT = tier === 4 ? 9 : 5.5; }
-      if (tier === 3) { this.storm = 12; sfx.boom(); announcer.show('FURACÃO', '#00e5ff', 2, 80); }
+      if (tier >= 2) { this.focus = d; this.focusT = 3 + pw * 0.5; }
+      if (tier === 3) { this.storm = 4 + pw; sfx.boom(); announcer.show('FURACÃO', '#00e5ff', 2, 80); }
       if (tier === 4) {
-        for (let k = 0; k < 20; k++) this.rain.push({ d, x: rand(-7, 7), z: rand(-4, 3), y: 14 + k * 1.2, vy: rand(3, 5), rot: rand(-1, 1) });
+        for (let k = 0, n = giftQty(ev, 48); k < n; k++) this.rain.push({ d, x: rand(-7, 7), z: rand(-4, 3), y: 14 + k * 1.2, vy: rand(3, 5), rot: rand(-1, 1) });
         if (this.r) for (const r of this.rain) if (!r.obj) { r.obj = new THREE.Sprite(new THREE.SpriteMaterial({ map: d.tex, transparent: true })); r.obj.center.set(0.5, 0); r.obj.scale.set(2.4, 2.4, 1); this.r.scene.add(r.obj); }
         announcer.show(`@${trim(ev.user.nick, 12)}`, '#a3e635', 2.5, 60);
         sfx.win();
@@ -174,7 +183,7 @@ registerGame({
   update(dt) {
     for (const l of this.log) l.t -= dt;
     this.log = this.log.filter((l) => l.t > 0);
-    for (const d of this.dancers) { d.ttl -= dt; d.born += dt; }
+    for (const d of this.dancers) { d.ttl -= dt; d.born += dt; d.hype = Math.max(0, (d.hype || 0) - dt * 0.5); }
     for (const d of this.dancers.filter((d) => d.ttl <= 0)) this.r?.scene.remove(d.obj);
     this.dancers = this.dancers.filter((d) => d.ttl > 0);
     this.storm = Math.max(0, this.storm - dt);
@@ -219,7 +228,8 @@ registerGame({
       const s = d.size * (0.4 + 0.6 * grow);
       // Dança: pulinho, balanço e passo de lado; quem mandou presente grande dança mais forte
       const bpm = d.tier >= 2 ? 8 : 5.5;
-      const hop = Math.abs(Math.sin(t * bpm + d.phase)) * (d.tier >= 2 ? 0.6 : 0.3);
+      const hype = 1 + (d.hype || 0) * 0.45;
+      const hop = Math.abs(Math.sin(t * bpm * (1 + (d.hype || 0) * 0.15) + d.phase)) * (d.tier >= 2 ? 0.6 : 0.3) * hype;
       d.obj.position.set(x + Math.sin(t * 2 + d.phase) * (d.tier >= 2 ? 0.6 : 0.25), hop, z);
       d.obj.scale.setScalar(s);
       if (d.body) {

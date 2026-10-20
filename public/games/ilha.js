@@ -8,7 +8,7 @@ registerGame({
   id: 'ilha',
   name: 'Ilha',
   icon: '🏝️',
-  help: '<p>Comente <b>entrar</b> para pular na ilha (até 100). Com 2 jogadores a contagem começa. A ilha encolhe: quem cair na água sai.</p><p>🌹 Entra na ilha (ou corre pro centro) · 🍩 Escudo contra uma queda · 🕶️ Água congelada por 10s · 🌌 TSUNAMI: varre a borda e você ganha uma plataforma.</p>',
+  help: '<p>Comente <b>entrar</b> para pular na ilha (até 100). Com 2 jogadores a contagem começa. A ilha encolhe: quem cair na água sai.</p><p>1–9 🪙 Entra na ilha e dá uma corrida (5+ 🪙 ganha escudo) · 10–99 🪙 1 a 3 escudos contra queda · 100–999 🪙 Água congelada por 11 a 15s + 2 escudos · 1.000+ 🪙 TSUNAMI: quanto mais moedas, mais da ilha ele varre, e você ganha uma plataforma. ❤️ Likes puxam você pro centro · ⭐ seguir dá escudo · 🔁 compartilhar dá escudo e corrida.</p>' + TIER_HELP + '',
   wins: new Map(),
   reset() {
     for (const p of this.players || []) this.r?.scene.remove(p.obj);
@@ -42,20 +42,30 @@ registerGame({
     const id = uid(ev);
     if (ev.type === 'chat') {
       if (/\b(entrar|entra|eu|!entrar|bora)\b/i.test(ev.text)) this.join(ev.user);
+    } else if (ev.type === 'like') {
+      const p = this.player(id);
+      // Likes puxam o jogador um pouco para o centro
+      if (p && !p.dead && this.phase === 'battle' && ev.count >= 5) { p.tx = p.x * 0.5; p.tz = p.z * 0.5; p.dash = Math.max(p.dash || 0, 0.6); }
+    } else if (ev.type === 'social') {
+      let p = this.player(id) || this.join(ev.user);
+      if (!p || p.dead || this.phase !== 'battle') return;
+      if (isFollow(ev)) { p.shield++; this.addLog(ev.user, 'seguiu: ganhou ESCUDO', '#00e5ff'); }
+      else { p.tx = 0; p.tz = 0; p.dash = 2; p.shield++; this.addLog(ev.user, 'compartilhou: escudo + corrida pro centro', '#00e5ff'); }
     } else if (ev.type === 'gift') {
-      const tier = giftTier(ev);
+      // Escudos, gelo e tsunami crescem com as moedas
+      const tier = giftTier(ev), pw = giftPower(ev), q = giftQty(ev, 100);
       let p = this.player(id);
       if (!p) { p = this.join(ev.user); if (p) this.addLog(ev.user, 'pulou na ilha', '#ffc93c'); }
       if (!p || p.dead || this.phase !== 'battle') return;
-      if (tier === 1) { p.tx = rand(-1, 1); p.tz = rand(-1, 1); p.dash = 1.5; }
-      if (tier === 2) { p.shield++; this.addLog(ev.user, 'ganhou ESCUDO', '#00e5ff'); }
-      if (tier === 3) { this.freeze = Math.min(30, this.freeze + 10); this.addLog(ev.user, 'CONGELOU a água', '#bae6fd'); announcer.show('ÁGUA CONGELADA', '#bae6fd', 2, 56); }
+      if (tier === 1) { p.tx = rand(-1, 1); p.tz = rand(-1, 1); p.dash = 1 + pw * 0.3; if (pw >= 3) p.shield++; }
+      if (tier === 2) { const n = 1 + Math.floor(q / 5); p.shield += n; this.addLog(ev.user, `ganhou ${n > 1 ? n + ' ESCUDOS' : 'ESCUDO'}`, '#00e5ff'); }
+      if (tier === 3) { p.shield += 2; this.freeze = Math.min(40, this.freeze + 4 + pw); this.addLog(ev.user, 'CONGELOU a água', '#bae6fd'); announcer.show('ÁGUA CONGELADA', '#bae6fd', 2, 56); }
       if (tier === 4) {
-        p.platform = 30;
+        p.platform = 15 + pw * 2; p.shield += 3;
         this.wave = 1.4;
         announcer.show(`TSUNAMI de @${trim(ev.user.nick, 10)}`, '#38bdf8', 2.5, 48);
         sfx.boom();
-        for (const o of this.alive()) if (o !== p && Math.hypot(o.x, o.z) > this.R * 0.6) this.drown(o, `foi levado pelo tsunami de @${trim(ev.user.nick, 10)}`);
+        for (const o of this.alive()) if (o !== p && Math.hypot(o.x, o.z) > this.R * Math.max(0.3, 0.8 - pw * 0.025)) this.drown(o, `foi levado pelo tsunami de @${trim(ev.user.nick, 10)}`);
       }
     }
   },

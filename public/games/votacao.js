@@ -3,11 +3,12 @@
 // Escolha do jogo: a live vota pelo número qual jogo vem agora. No fim do tempo, o vencedor abre sozinho.
 registerGame({
   id: 'votacao',
+  meterY: 900, // posição do medidor de presentes (livre de HUD)
   name: 'Escolha o Jogo',
   icon: '🗳️',
   configKey: 'votacao',
   config: store.get('cfg:votacao', { duration: 60, autoSwitch: true }),
-  help: '<p>A live escolhe o próximo jogo: comente o <b>número</b> do jogo (1 voto por pessoa, pode trocar).</p><p>🎁 Presente: +10 votos por moeda no jogo que a pessoa escolheu.</p><p>Quando o tempo acaba, o jogo mais votado abre sozinho. Se ninguém votar, abre o <b>Céu de Pipas</b>.</p>',
+  help: '<p>A live escolhe o próximo jogo: comente o <b>número</b> do jogo (1 voto por pessoa, pode trocar).</p><p>🎁 Presente: +10 votos por moeda (preço × combo) no jogo que a pessoa escolheu. ❤️ 25 likes = +10 votos · ⭐ seguir +50 · 🔁 compartilhar +100.</p>' + TIER_HELP + '<p>Quando o tempo acaba, o jogo mais votado abre sozinho. Se ninguém votar, abre o <b>Céu de Pipas</b>.</p>',
   getConfig() { return this.config; },
   applyConfig(cfg) { if (!cfg) return; this.config = cfg; store.set('cfg:votacao', cfg); this.reset(); },
   renderSettings(el, save) {
@@ -60,6 +61,13 @@ registerGame({
       this.log.unshift({ user: ev.user, msg: `+${v} votos em ${this.options()[i].name}`, t: 5 });
       this.log.length = Math.min(this.log.length, 2);
       if (giftTier(ev) >= 3) announcer.show(`@${trim(ev.user.nick, 12)} +${v}`, '#ffc93c', 2, 50);
+    } else if (ev.type === 'like' || ev.type === 'social') {
+      const i = this.voters.get(id);
+      if (i === undefined) return;
+      const v = Math.floor(10 * (ev.type === 'like' ? ev.count / 25 : SOCIAL_COINS[isFollow(ev) ? 'follow' : 'share']));
+      if (v <= 0) return;
+      this.vote(ev.user, i, v);
+      if (ev.type === 'social') { this.log.unshift({ user: ev.user, msg: `${isFollow(ev) ? 'seguiu' : 'compartilhou'}: +${v} votos`, t: 4 }); this.log.length = Math.min(this.log.length, 2); }
     }
   },
   leader() {

@@ -104,9 +104,10 @@ function handleEvent(ev) {
   if (ev.type === 'chat') addFeed(`💬 ${who}: ${ev.text}`);
   else if (ev.type === 'like') addFeed(`❤️ ${who} curtiu ×${ev.count}`);
   else if (ev.type === 'gift') addFeed(`🎁 ${who} enviou ${ev.name} ×${ev.count} (${ev.diamonds} moedas)`);
-  else if (ev.type === 'social') addFeed(`⭐ ${who} seguiu/compartilhou`);
+  else if (ev.type === 'social') addFeed(ev.action === 'share' ? `🔁 ${who} compartilhou a live` : `⭐ ${who} seguiu`);
   else if (ev.type === 'join') { if (current.wantsPresence) { addFeed(`👋 ${who} entrou na live`); current.onEvent(ev); } return; }
   else return;
+  if (ev.type === 'gift' || ev.type === 'social') giftMeter.push(ev);
   current.onEvent(ev);
 }
 
@@ -159,17 +160,26 @@ $('user').addEventListener('input', updateObsUrl);
 // ---------- Simulador ----------
 const FAKE = ['ana', 'bruno', 'carla', 'davi', 'enzo', 'fernanda', 'gabi', 'heitor', 'isa', 'joao', 'lara', 'miguel', 'nina', 'otavio', 'paula', 'rafa'];
 function fakeUser() { const n = pick(FAKE); return { id: 'sim_' + n, nick: n, pic: fakeFace(n) }; }
-const GIFTS = { 1: ['Rosa', 1], 2: ['Rosquinha', 30], 3: ['Óculos', 199], 4: ['Galáxia', 1000] };
+// Presentes reais da loja do TikTok (preço em moedas). As teclas 1–4 antigas continuam valendo uma de cada faixa.
+const GIFTS = { 1: ['Rosa', 1], 2: ['Rosquinha', 30], 3: ['Mãos em coração', 100], 4: ['Bons Presságios', 1500] };
+const GIFT_SHOP = [['🌹', 'Rosa', 1], ['⚽', 'Bola de futebol', 5], ['❤️', 'Coração', 10], ['🍩', 'Rosquinha', 30], ['🤠', 'Chapéu e Bigode', 99], ['🫶', 'Mãos em coração', 100], ['🍬', 'Festa dos Doces', 3999], ['🌟', 'Estrelas do TikTok', 39999]];
 function simChat(str, user = fakeUser()) { handleEvent({ type: 'chat', user, text: str }); }
-function simGift(tier, user = fakeUser()) {
-  const [name, diamonds] = GIFTS[tier];
-  handleEvent({ type: 'gift', user, name, count: 1, diamonds });
+function simGift(tier, user = fakeUser(), count = 1) {
+  const [name, diamonds] = typeof tier === 'object' ? tier : GIFTS[tier];
+  handleEvent({ type: 'gift', user, name, count, diamonds });
 }
 $('simChat').addEventListener('click', () => simChat($('simText').value || current.sample?.() || 'oi'));
 $('simText').addEventListener('keydown', (e) => { if (e.key === 'Enter') simChat($('simText').value || current.sample?.() || 'oi'); });
 $('simLike').addEventListener('click', () => handleEvent({ type: 'like', user: fakeUser(), count: 5 }));
 $('simJoin').addEventListener('click', () => handleEvent({ type: 'join', user: fakeUser() }));
 document.querySelectorAll('[data-gift]').forEach((b) => b.addEventListener('click', () => simGift(Number(b.dataset.gift))));
+$('simShop').innerHTML = GIFT_SHOP.map(([e, n, c], i) => `<button data-shop="${i}" title="${n} (${c} moedas)">${e}<small>${c >= 1000 ? Math.round(c / 1000) + 'k' : c}</small></button>`).join('');
+document.querySelectorAll('[data-shop]').forEach((b) => b.addEventListener('click', () => {
+  const [, n, c] = GIFT_SHOP[b.dataset.shop];
+  simGift([n, c], fakeUser(), Math.max(1, Number($('simCombo').value) || 1));
+}));
+$('simFollow').addEventListener('click', () => handleEvent({ type: 'social', user: fakeUser(), action: 'follow' }));
+$('simShare').addEventListener('click', () => handleEvent({ type: 'social', user: fakeUser(), action: 'share' }));
 let autoTimer = null;
 $('simAuto').addEventListener('click', () => {
   $('simAuto').classList.toggle('on');
@@ -178,8 +188,9 @@ $('simAuto').addEventListener('click', () => {
     const r = Math.random();
     if (r < 0.06) handleEvent({ type: 'join', user: fakeUser() });
     else if (r < 0.7) simChat(current.sample?.() || 'oi');
-    else if (r < 0.92) handleEvent({ type: 'like', user: fakeUser(), count: 3 });
-    else simGift(r < 0.97 ? 1 : r < 0.99 ? 2 : 3);
+    else if (r < 0.9) handleEvent({ type: 'like', user: fakeUser(), count: randInt(1, 15) });
+    else if (r < 0.92) handleEvent({ type: 'social', user: fakeUser(), action: r < 0.91 ? 'follow' : 'share' });
+    else { const g = GIFT_SHOP[r < 0.96 ? randInt(0, 2) : r < 0.99 ? randInt(3, 5) : randInt(6, 7)]; simGift([g[1], g[2]], fakeUser(), r < 0.95 && Math.random() < 0.3 ? randInt(2, 10) : 1); }
   }, 350);
 });
 
@@ -212,11 +223,13 @@ function loop(now) {
   current.update(dt);
   updateParticles(dt);
   announcer.update(dt);
+  giftMeter.update(dt);
   ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
   ctx.clearRect(0, 0, W, H);
   current.draw();
   drawParticles();
   announcer.draw();
+  giftMeter.draw(current.meterY ?? 200);
   requestAnimationFrame(loop);
 }
 selectGame(current);

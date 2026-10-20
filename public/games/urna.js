@@ -16,10 +16,11 @@ const TABLE_Y = 860;
 
 registerGame({
   id: 'urna',
+  meterY: 1060, // posição do medidor de presentes (livre de HUD)
   name: 'Urna',
   icon: '🗳️',
   configKey: 'urna',
-  help: '<p>Comente o <b>número</b> do candidato para votar (1 voto a cada 3s, até 20 por rodada).</p><p>🎁 Presente: votos por moeda no candidato que a pessoa escolheu. Quanto maior o presente, maior o efeito.</p><p>Configure fotos, números e nomes em <b>Configurar</b>.</p>',
+  help: '<p>Comente o <b>número</b> do candidato para votar (1 voto a cada 3s, até 20 por rodada).</p><p>🎁 Presente: votos por moeda no candidato que a pessoa escolheu. Quanto mais moedas (preço × combo), mais votos e maior o efeito. ❤️ 25 likes valem 1 moeda · ⭐ seguir vale 5 · 🔁 compartilhar vale 10.</p>' + TIER_HELP + '<p>Configure fotos, números e nomes em <b>Configurar</b>.</p>',
   cd: new Cooldown(3000),
   config: store.get('cfg:urna', URNA_DEFAULT),
 
@@ -73,6 +74,13 @@ registerGame({
       if (i === undefined) { this.addLog(ev.user, 'comente o número antes!', '#ffd23f'); return; }
       this.gifts[i] += ev.count || 1;
       this.enqueue({ i, user: ev.user, votes: this.config.giftVotes * coins(ev), tier: giftTier(ev), what: `${ev.name} x${ev.count || 1}` });
+    } else if (ev.type === 'like' || ev.type === 'social') {
+      // Likes (25 ≈ 1 moeda) e seguir/compartilhar também viram votos no candidato da pessoa
+      const i = this.choice.get(id);
+      if (i === undefined) return;
+      const c = ev.type === 'like' ? ev.count / 25 : SOCIAL_COINS[isFollow(ev) ? 'follow' : 'share'];
+      const votes = Math.floor(this.config.giftVotes * c);
+      if (votes > 0) this.enqueue({ i, user: ev.user, votes, tier: ev.type === 'social' ? 1 : 0, what: ev.type === 'like' ? `${ev.count} likes` : isFollow(ev) ? 'seguiu' : 'compartilhou' });
     }
   },
   enqueue(item) {

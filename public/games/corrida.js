@@ -3,6 +3,7 @@
 // Corrida na Cidade: racha noturno em 3D, com prédios iluminados, neon e carros com a foto de quem comentou.
 const CITY = {
   id: 'corrida',
+  meterY: 330, // posição do medidor de presentes (livre de HUD)
   name: 'Corrida na Cidade',
   icon: '🏁',
   title: 'CORRIDA NA CIDADE',
@@ -10,7 +11,7 @@ const CITY = {
   accent: '#ff2e63',
   joinWord: 'carro',
   joinRe: /\b(carro|moto|!entrar|entrar|corrida)\b/,
-  help: '<p>Comente <b>carro</b> para entrar no racha (até 12). Com 2 pilotos a largada começa. São 2 voltas pela cidade.</p><p>💬 Comentário e ❤️ like dão um empurrão.</p><p>🌹 Nitro · 🍩 Nitro + pedra na pista · 🕶️ Míssil teleguiado em quem está na frente · 🌌 Raio: encolhe todo mundo e mega nitro para você.</p><p>Quem não está correndo e manda presente ataca o líder.</p>',
+  help: '<p>Comente <b>carro</b> para entrar no racha (até 12). Com 2 pilotos a largada começa. São 2 voltas pela cidade.</p><p>💬 Comentário e ❤️ like dão um empurrão.</p><p>1–9 🪙 Nitro (2 a 5s) · 10–99 🪙 Nitro + 1 a 3 pedras na pista · 100–999 🪙 1 a 3 mísseis teleguiados em quem está na frente · 1.000+ 🪙 Raio: encolhe todo mundo e mega nitro (10.000+ 🪙 ainda dispara mísseis). ⭐ Seguir e 🔁 compartilhar dão nitro.</p>' + TIER_HELP + '<p>Quem não está correndo e manda presente ataca o líder.</p>',
   laps: 2,
   speed: 34,
   trackW: 18,

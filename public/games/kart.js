@@ -3,6 +3,7 @@
 // Kart 3D: circuito no campo, karts com piloto de capacete.
 const KART = {
   id: 'kart',
+  meterY: 330, // posição do medidor de presentes (livre de HUD)
   name: 'Kart 3D',
   icon: '🏎️',
   title: 'KART 3D',
@@ -10,7 +11,7 @@ const KART = {
   accent: '#ff9f1c',
   joinWord: 'kart',
   joinRe: /\b(kart|!entrar|entrar)\b/,
-  help: '<p>Comente <b>kart</b> para entrar na corrida (até 12). Com 2 pilotos a largada começa. São 3 voltas.</p><p>💬 Comentário e ❤️ like dão um empurrão.</p><p>🌹 Nitro · 🍩 Nitro + pedra na pista · 🕶️ Míssil teleguiado em quem está na frente · 🌌 Raio: encolhe todo mundo e mega nitro para você.</p><p>Quem não está correndo e manda presente ataca o líder.</p>',
+  help: '<p>Comente <b>kart</b> para entrar na corrida (até 12). Com 2 pilotos a largada começa. São 3 voltas.</p><p>💬 Comentário e ❤️ like dão um empurrão.</p><p>1–9 🪙 Nitro (2 a 5s) · 10–99 🪙 Nitro + 1 a 3 pedras na pista · 100–999 🪙 1 a 3 mísseis teleguiados em quem está na frente · 1.000+ 🪙 Raio: encolhe todo mundo e mega nitro (10.000+ 🪙 ainda dispara mísseis). ⭐ Seguir e 🔁 compartilhar dão nitro.</p>' + TIER_HELP + '<p>Quem não está correndo e manda presente ataca o líder.</p>',
   laps: 3,
   speed: 28,
   trackW: 16,

@@ -8,6 +8,7 @@ const RACE_MAX = 12;
 function makeRace3D(opt) {
   return {
   id: opt.id,
+  meterY: opt.meterY,
   name: opt.name,
   icon: opt.icon,
   help: opt.help,
@@ -179,41 +180,57 @@ function makeRace3D(opt) {
     } else if (ev.type === 'like') {
       const k = this.kart(id);
       if (k && this.phase === 'race') k.s += Math.min(4, 0.3 * ev.count);
+    } else if (ev.type === 'social') {
+      let k = this.kart(id);
+      if (!k && this.phase !== 'race' && this.phase !== 'finish') { this.join(ev); k = this.kart(id); }
+      if (!k) return;
+      k.boost = Math.min(14, k.boost + (isFollow(ev) ? 2 : 3));
+      if (!isFollow(ev) && this.phase === 'race') this.dropRock(k.s - 5, k.off, ev.user);
+      this.addLog(ev.user, isFollow(ev) ? 'seguiu: NITRO 2s' : 'compartilhou: NITRO + pedra', '#60a5fa');
     } else if (ev.type === 'gift') {
-      if (this.phase !== 'race') { if (this.phase !== 'finish') this.join(ev); const k = this.kart(id); if (k) this.addLog(ev.user, 'largou com NITRO guardado', '#60a5fa'); if (k) k.boost = 3; return; }
+      if (this.phase !== 'race') { if (this.phase !== 'finish') this.join(ev); const k = this.kart(id); if (k) { k.boost = Math.min(10, 1 + giftPower(ev) * 0.6); this.addLog(ev.user, `largou com NITRO de ${k.boost.toFixed(0)}s guardado`, '#60a5fa'); } return; }
       this.power(ev);
     }
   },
+  // Tudo proporcional às moedas: p = força (log), q = quantidade (raiz)
   power(ev) {
     const me = this.kart(uid(ev));
-    const tier = giftTier(ev), n = Math.min(5, ev.count || 1);
+    const tier = giftTier(ev), p = giftPower(ev), q = giftQty(ev, 40);
     const order = this.ranked();
     const leader = order[0];
     if (!me) {
-      // Fora da corrida: ataca o líder
-      if (tier >= 3) this.fire(null, leader, ev.user); else this.dropRock(leader.s + 18, leader.off, ev.user);
-      this.addLog(ev.user, `atacou o líder @${trim(leader.user.nick, 10)}`, '#ff8a3d');
+      // Fora da corrida: ataca o líder (mais moedas, mais ataques)
+      const n = clamp(Math.round(p / 3), 1, 6);
+      for (let k = 0; k < n; k++) { if (tier >= 3) this.fire(null, order[k % Math.min(3, order.length)], ev.user); else this.dropRock(leader.s + 18 + k * 6, leader.off + rand(-2, 2), ev.user); }
+      this.addLog(ev.user, `atacou o líder @${trim(leader.user.nick, 10)}${n > 1 ? ' ×' + n : ''}`, '#ff8a3d');
       return;
     }
-    if (tier >= 2) this.setFocus(me, 3);
-    if (tier === 1) { me.boost = Math.min(12, me.boost + 2.5 * n); this.addLog(ev.user, `usou NITRO ${(2.5 * n).toFixed(0)}s`, '#60a5fa'); }
-    else if (tier === 2) { me.boost = Math.min(12, me.boost + 4); this.dropRock(me.s - 5, me.off, ev.user); this.addLog(ev.user, 'jogou uma PEDRA na pista', '#a8a29e'); }
-    else if (tier === 3) {
-      const target = order[order.indexOf(me) - 1] || order[order.indexOf(me) + 1];
-      if (target) this.fire(me, target, ev.user);
-      me.boost = Math.max(me.boost, 3);
-      this.addLog(ev.user, `lançou um MÍSSIL${target ? ' em @' + trim(target.user.nick, 10) : ''}`, '#f43f5e');
+    if (tier >= 2) this.setFocus(me, 2 + p * 0.25);
+    if (tier === 1) { const secs = 1 + p * 0.8; me.boost = Math.min(14, me.boost + secs); this.addLog(ev.user, `usou NITRO ${secs.toFixed(0)}s`, '#60a5fa'); }
+    else if (tier === 2) {
+      const rocks = 1 + Math.floor(q / 4);
+      me.boost = Math.min(14, me.boost + 2 + p * 0.5);
+      for (let k = 0; k < rocks; k++) this.dropRock(me.s - 5 - k * 5, me.off + (k ? rand(-3, 3) : 0), ev.user);
+      this.addLog(ev.user, `NITRO + ${rocks} PEDRA${rocks > 1 ? 'S' : ''} na pista`, '#a8a29e');
+    } else if (tier === 3) {
+      const i = order.indexOf(me), n = clamp(Math.round(p / 3.5), 1, 4);
+      const targets = order.slice(Math.max(0, i - n), i).reverse();
+      if (!targets.length) targets.push(order[i + 1]);
+      targets.forEach((t) => this.fire(me, t, ev.user));
+      me.boost = Math.max(me.boost, 2 + p * 0.3);
+      this.addLog(ev.user, `lançou ${targets.length > 1 ? targets.length + ' MÍSSEIS' : 'um MÍSSIL'}${targets[0] ? ' em @' + trim(targets[0].user.nick, 10) : ''}`, '#f43f5e');
     } else {
-      for (const k of this.karts) if (k !== me) { k.shrink = 6; k.stun = Math.max(k.stun, 1.2); k.spin = 1; }
-      me.boost = Math.max(me.boost, 7);
+      const secs = 3 + p * 0.4;
+      for (const k of this.karts) if (k !== me) { k.shrink = secs; k.stun = Math.max(k.stun, 0.6 + p * 0.06); k.spin = 1; }
+      me.boost = Math.max(me.boost, 3 + p * 0.45);
+      if (p >= 13) for (const t of order.filter((k) => k !== me).slice(0, 3)) this.fire(me, t, ev.user); // 10.000+ 🪙: raio + mísseis
       this.flash = 0.6;
       sfx.boom();
       announcer.show(`⚡ RAIO de @${trim(ev.user.nick, 12)}`, '#facc15', 2.5, 54);
-      this.addLog(ev.user, 'chamou o RAIO: todo mundo encolheu!', '#facc15');
+      this.addLog(ev.user, `chamou o RAIO: todo mundo encolheu ${secs.toFixed(0)}s!`, '#facc15');
       this.setFocus(me, 5);
     }
   },
-  setFocus(k, secs) { this.focus = k; this.focusT = secs; },
   dropRock(s, off, user) {
     const it = { kind: 'rock', s, off, user, t: 25 };
     if (this.r) {
@@ -416,8 +433,8 @@ function makeRace3D(opt) {
     } else {
       // Legenda dos poderes
       panel(16, 1196, W - 32, 64, { r: 16, from: 'rgba(15,18,30,.88)', to: 'rgba(5,6,12,.88)' });
-      const pw = [['🌹', 'NITRO'], ['🍩', 'PEDRA'], ['🕶️', 'MÍSSIL'], ['🌌', 'RAIO']];
-      pw.forEach(([e, n], i) => { const x = 30 + i * 172; text(e, x + 20, 1228, 26); label(n, x + 44, 1229, 17, '#fff', 'left', 900); });
+      const pw = [['1+', 'NITRO'], ['10+', 'PEDRA'], ['100+', 'MÍSSIL'], ['1000+', 'RAIO']];
+      pw.forEach(([e, n], i) => { const x = 30 + i * 172; label(e + ' 🪙', x + 4, 1219, 13, 'rgba(255,255,255,.6)', 'left', 800); label(n, x + 4, 1241, 18, '#fff', 'left', 900); });
     }
     const baseY = this.phase === 'lobby' || this.phase === 'countdown' ? 1020 : 1160;
     this.log.forEach((l, k) => toast(l.user, trim(`@${trim(l.user.nick, 10)} ${l.msg}`, 34), 20, baseY - k * 44, { color: l.color, size: 17, alpha: clamp(l.t, 0, 1) }));

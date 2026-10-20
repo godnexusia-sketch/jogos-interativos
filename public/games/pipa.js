@@ -9,9 +9,10 @@ const SKY = { w: 26, top: 46, bottom: 14 };
 
 registerGame({
   id: 'pipa',
+  meterY: 380, // posição do medidor de presentes (livre de HUD)
   name: 'Céu de Pipas',
   icon: '🪁',
-  help: '<p>Quem <b>entra na live</b> ganha uma pipa com o nome e a foto, sem precisar comentar. Comentar também solta a pipa.</p><p>❤️ Likes fazem a pipa subir. Comente <b>corta</b> para tentar cortar a pipa mais perto. Quem sai da live (ou fica muito tempo sem interagir) tem a pipa derrubada.</p><p>🌹 Caça e corta 1 · 🍩 Escudo de 30s · 🕶️ Corta 3 · 🌌 Linha de ouro: corta 10.</p><p>O admin muda as regras em <b>Configurar</b>.</p>',
+  help: '<p>Quem <b>entra na live</b> ganha uma pipa com o nome e a foto, sem precisar comentar. Comentar também solta a pipa.</p><p>❤️ Likes fazem a pipa subir. Comente <b>corta</b> para tentar cortar a pipa mais perto. Quem sai da live (ou fica muito tempo sem interagir) tem a pipa derrubada.</p><p>1–9 🪙 corta 1 a 3 · 10–99 🪙 escudo de 15 a 45s · 100–999 🪙 caçada (corta 5 a 12) · 1.000+ 🪙 linha de ouro (corta 20 ou mais). ⭐ Seguir dá escudo, 🔁 compartilhar caça 1.</p>' + TIER_HELP + '<p>O admin muda as regras em <b>Configurar</b>.</p>',
   wantsPresence: true,
   configKey: 'pipa',
   config: { ...PIPA_DEFAULT, ...store.get('cfg:pipa', {}) },
@@ -112,15 +113,24 @@ registerGame({
     } else if (ev.type === 'like') {
       const k = this.kite(id);
       if (k) k.alt = Math.min(12, k.alt + ev.count * 0.3);
+    } else if (ev.type === 'social') {
+      const k = this.kite(id) || this.spawn(ev.user);
+      if (!k) return;
+      k.alt = 12;
+      if (isFollow(ev)) { k.shield = Math.max(k.shield, 15); this.addLog(ev.user, 'seguiu: subiu com escudo', '#00e5ff'); }
+      else { k.hunt.push(...this.nearestTargets(k, 1)); this.addLog(ev.user, 'compartilhou: caça 1 pipa', '#ff2e63'); }
     } else if (ev.type === 'gift') {
       const k = this.kite(id) || this.spawn(ev.user);
       if (!k) return;
-      const tier = giftTier(ev), n = Math.min(5, ev.count || 1);
-      if (tier === 2) { k.shield = Math.min(120, k.shield + 30 * n); this.addLog(ev.user, 'ganhou ESCUDO na linha', '#00e5ff'); return; }
-      const cuts = { 1: 1, 3: 3, 4: 10 }[tier] * n;
+      // Quanto mais moedas, mais pipas cortadas e mais tempo de escudo
+      const tier = giftTier(ev), p = giftPower(ev), q = giftQty(ev, 40);
+      k.alt = Math.min(12, k.alt + p);
+      if (tier === 2) { const secs = Math.round(10 + p * 5); k.shield = Math.min(180, k.shield + secs); if (q >= 4) k.hunt.push(...this.nearestTargets(k, 1)); this.addLog(ev.user, `ESCUDO de ${secs}s na linha`, '#00e5ff'); return; }
+      const cuts = tier === 1 ? q : tier === 3 ? 2 + Math.round(q / 3) : 8 + Math.round(q / 2);
       k.hunt.push(...this.nearestTargets(k, cuts));
+      if (tier >= 3) k.shield = Math.max(k.shield, p * 2);
       if (tier >= 3) announcer.show(`${tier === 4 ? 'LINHA DE OURO' : 'CAÇADA'} @${trim(ev.user.nick, 10)}`, tier === 4 ? '#ffc93c' : '#ff2e63', 2, 46);
-      if (tier === 4) k.gold = 12;
+      if (tier === 4) k.gold = 4 + p;
     }
   },
   update(dt) {
@@ -281,6 +291,6 @@ registerGame({
     if (!this.kites.length) { slant(80, 520, W - 160, 110, { fill: 'rgba(10,30,70,.82)', skew: 14, border: '#fff' }); title('O CÉU ESTÁ VAZIO', W / 2, 562, 40, '#fff'); label('Quem entrar na live ganha uma pipa · comentar também solta', W / 2, 604, 18, '#e0f2fe', 'center', 700); }
     this.log.forEach((l, k) => toast(l.user, trim(`@${trim(l.user.nick, 10)} ${l.msg}`, 34), 20, 1120 + k * 44, { color: l.color, alpha: clamp(l.t, 0, 1), size: 17 }));
     slant(16, 1226, W - 32, 40, { fill: 'rgba(10,30,70,.85)', skew: 10 });
-    label('ROSA corta 1  ·  ROSQUINHA escudo  ·  ÓCULOS corta 3  ·  GALÁXIA linha de ouro', W / 2, 1247, 14, '#fff', 'center', 800);
+    label('1+🪙 corta  ·  10+🪙 escudo  ·  100+🪙 caçada  ·  1000+🪙 linha de ouro', W / 2, 1247, 14, '#fff', 'center', 800);
   },
 });

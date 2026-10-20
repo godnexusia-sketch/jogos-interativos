@@ -17,7 +17,7 @@ registerGame(withConfig({
   id: 'combate',
   name: 'Combate 3D',
   icon: '🥊',
-  help: '<p>Comente <b>1</b> ou <b>2</b> (ou o nome) para escolher seu lutador. Depois, cada comentário é um jab (1 a cada 2s).</p><p>🌹 Direto · 🍩 Chute · 🕶️ Bola de energia · 🌌 Golpe final em câmera lenta. ❤️ Likes enchem o especial da torcida.</p><p>Coloque a <b>foto do rosto</b> de cada lutador em <b>Configurar</b>.</p>',
+  help: '<p>Comente <b>1</b> ou <b>2</b> (ou o nome) para escolher seu lutador. Depois, cada comentário é um jab (1 a cada 2s).</p><p>1–9 🪙 Direto · 10–99 🪙 Chute · 100–999 🪙 Bola de energia · 1.000+ 🪙 Golpe final em câmera lenta. O dano é 3 × √moedas: Rosa tira 3, Rosquinha 16, Mãos em coração 30, 1.000 🪙 tira 95. ❤️ Likes, ⭐ seguir (+30%) e 🔁 compartilhar (+60%) enchem o especial da torcida.</p>' + TIER_HELP + '<p>Coloque a <b>foto do rosto</b> de cada lutador em <b>Configurar</b>.</p>',
   cd: new Cooldown(2000),
   roundsWon: [0, 0],
   round: 1,
@@ -160,8 +160,16 @@ registerGame(withConfig({
       if (this.meter[s] >= 100) { this.meter[s] -= 100; this.queue.push({ s, move: MOVES.special, user: ev.user }); }
     } else if (ev.type === 'gift') {
       if (!this.side.has(id)) { this.addLog(ev.user, 'comente 1 ou 2 para escolher o lado!', '#ffd23f'); return; }
-      const s = this.side.get(id), tier = giftTier(ev);
-      for (let k = 0; k < Math.min(10, ev.count || 1); k++) this.queue.push({ s, move: MOVES[tier], user: ev.user, tier });
+      // Dano total = 3 × √moedas (Rosa 3 · Coração 9 · Rosquinha 16 · Mãos em coração 30 · 1.000 🪙 95), dividido no combo
+      const s = this.side.get(id), tier = giftTier(ev), hits = clamp(ev.count || 1, 1, 5);
+      const total = Math.min(this.config.hp * 0.7, Math.round(3 * Math.sqrt(coins(ev))));
+      for (let k = 0; k < hits; k++) this.queue.push({ s, move: MOVES[tier], user: ev.user, tier, dmg: Math.max(1, Math.round(total / hits)) });
+    } else if (ev.type === 'social') {
+      if (!this.side.has(id)) return;
+      const s = this.side.get(id);
+      this.meter[s] += isFollow(ev) ? 30 : 60;
+      this.addLog(ev.user, `${isFollow(ev) ? 'seguiu' : 'compartilhou'}: especial +${isFollow(ev) ? 30 : 60}%`, this.config.items[s].color);
+      while (this.meter[s] >= 100) { this.meter[s] -= 100; this.queue.push({ s, move: MOVES.special, user: ev.user }); }
     }
   },
   start(item) {
@@ -170,7 +178,8 @@ registerGame(withConfig({
     if (item.tier === 4) { this.slowmo = 1.4; announcer.show('GOLPE FINAL', '#00e5ff', 1.6, 70); }
   },
   land(item) {
-    const { s, move, user, tier } = item;
+    const { s, user, tier } = item;
+    const move = item.dmg ? { ...item.move, dmg: item.dmg } : item.move;
     const o = 1 - s;
     this.hp[o] = Math.max(0, this.hp[o] - move.dmg);
     const v = this.act[o];
@@ -180,8 +189,8 @@ registerGame(withConfig({
     floatText(`-${move.dmg}`, p.x, p.y - 40, move.color, 34 + Math.min(40, move.dmg));
     burst(p.x, p.y, [move.color, '#fff'], 10 + move.dmg, 280 + move.dmg * 8);
     this.shake = Math.min(0.5, 0.08 + move.dmg / 80);
-    if (move !== MOVES.jab) this.addLog(user, `${move.name} de ${this.config.items[s].name}`, move.color);
-    if (tier === 3 || move === MOVES.special) announcer.show(move.name, move.color, 1.3, 54);
+    if (item.move !== MOVES.jab) this.addLog(user, `${move.name} de ${this.config.items[s].name}`, move.color);
+    if (tier === 3 || item.move === MOVES.special) announcer.show(move.name, move.color, 1.3, 54);
     if (tier >= 3) { this.flash = 0.25; sfx.boom(); } else sfx.tone(120 + move.dmg * 5, 0.12, 'square', 0.1);
     if (this.hp[o] <= 0) this.end(s);
   },
@@ -345,7 +354,7 @@ registerGame(withConfig({
     this.log.forEach((l, k) => toast(l.user, trim(`@${trim(l.user.nick, 12)} ${l.msg}`, 34), 20, 1012 + k * 46, { color: l.color, alpha: clamp(l.t, 0, 1), size: 17 }));
     slant(16, 1160, W - 32, 92, { fill: 'rgba(5,6,10,.85)', skew: 14, border: 'rgba(255,255,255,.18)' });
     label('Comente 1 ou 2 para escolher o lutador', W / 2, 1186, 20, '#fff', 'center', 800);
-    const moves = [['ROSA', 'DIRETO'], ['ROSQUINHA', 'CHUTE'], ['ÓCULOS', 'ENERGIA'], ['GALÁXIA', 'GOLPE FINAL']];
+    const moves = [['1+ 🪙', 'DIRETO'], ['10+ 🪙', 'CHUTE'], ['100+ 🪙', 'ENERGIA'], ['1000+ 🪙', 'GOLPE FINAL']];
     moves.forEach(([g, m], k) => { const x = 40 + k * 166; label(g, x, 1218, 12, 'rgba(255,255,255,.55)', 'left', 800); label(m, x, 1236, 17, ['#ffd23f', '#ff8a3d', '#ff2e63', '#00e5ff'][k], 'left', 400, F_TITLE); });
     if (this.phase === 'intro') {
       title(`ROUND ${this.round}`, W / 2, 560, 96, '#fff');
