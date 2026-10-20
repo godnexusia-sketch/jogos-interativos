@@ -19,11 +19,53 @@ const MIME = {
   '.ico': 'image/x-icon',
 };
 
+// Busca o avatar Roblox de um nick pela API pública da Roblox, com cache e limite de pedidos.
+const robloxCache = new Map(); // nick minúsculo -> { name, img } ou null
+let robloxBudget = 10;
+setInterval(() => (robloxBudget = 10), 2000);
+
+async function robloxAvatar(nick) {
+  const key = nick.toLowerCase();
+  if (robloxCache.has(key)) return robloxCache.get(key);
+  if (robloxBudget <= 0) throw new Error('busy');
+  robloxBudget--;
+  const users = await fetch('https://users.roblox.com/v1/usernames/users', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ usernames: [nick], excludeBannedUsers: true }),
+    signal: AbortSignal.timeout(8000),
+  }).then((r) => r.json());
+  const user = users?.data?.[0];
+  let result = null;
+  if (user) {
+    for (let attempt = 0; attempt < 3 && !result; attempt++) {
+      const thumb = await fetch(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${user.id}&size=420x420&format=Png&isCircular=false`, { signal: AbortSignal.timeout(8000) }).then((r) => r.json());
+      const t = thumb?.data?.[0];
+      if (t?.state === 'Completed' && t.imageUrl) result = { name: user.name, display: user.displayName, img: t.imageUrl };
+      else await new Promise((r) => setTimeout(r, 1200));
+    }
+  }
+  if (robloxCache.size > 5000) robloxCache.clear();
+  robloxCache.set(key, result);
+  return result;
+}
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
   if (url.pathname === '/health') {
     res.writeHead(200, { 'content-type': 'text/plain' });
     return res.end('ok');
+  }
+  if (url.pathname === '/api/roblox') {
+    const nick = url.searchParams.get('u') || '';
+    const send = (code, body) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)); };
+    if (!/^[A-Za-z0-9_]{3,20}$/.test(nick)) return send(400, { error: 'nick inválido' });
+    try {
+      const r = await robloxAvatar(nick);
+      return r ? send(200, r) : send(404, { error: 'não encontrado' });
+    } catch (err) {
+      return send(err.message === 'busy' ? 429 : 502, { error: err.message });
+    }
   }
   const rel = url.pathname === '/' ? 'index.html' : url.pathname.slice(1);
   const file = path.normalize(path.join(PUBLIC_DIR, rel));

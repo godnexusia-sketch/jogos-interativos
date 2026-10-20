@@ -259,3 +259,71 @@ function label(str, x, y, size = 20, color = '#111', align = 'center', weight = 
   ctx.fillStyle = color;
   ctx.fillText(str, x, y);
 }
+
+// Avatar Roblox pelo nick (o servidor consulta a API pública da Roblox). Devolve { name, img } ou null.
+const robloxLookups = new Map();
+function robloxLookup(nick) {
+  const key = nick.toLowerCase();
+  if (!robloxLookups.has(key)) {
+    robloxLookups.set(key, fetch(`/api/roblox?u=${encodeURIComponent(nick)}`)
+      .then((r) => {
+        if (r.status === 429) { robloxLookups.delete(key); return null; }
+        return r.ok ? r.json() : null;
+      })
+      .catch(() => { robloxLookups.delete(key); return null; }));
+  }
+  return robloxLookups.get(key);
+}
+const looksLikeNick = (t) => /^@?[A-Za-z0-9_]{3,20}$/.test(t.trim()) && !/^\d+$/.test(t.trim());
+
+// Painel genérico: uma lista de itens com nome, cor e foto, e campos numéricos extras.
+// items: [{ name, color, photo }], extras: [{ key, label, min, max }]
+function renderItemsSettings(el, cfg, { min = 2, max = 2, extras = [], itemLabel = 'Nome', newItem }, onSave) {
+  const draw = () => {
+    el.innerHTML = '';
+    cfg.items.forEach((it, i) => {
+      const box = document.createElement('div');
+      box.className = 'cand';
+      box.innerHTML = `
+        <img alt="" src="${it.photo || ''}" ${it.photo ? '' : 'hidden'}>
+        <div class="fields">
+          <label>${itemLabel} <input data-k="name" maxlength="24" value="${String(it.name).replace(/"/g, '&quot;')}"></label>
+          <label class="row2">Cor <input data-k="color" type="color" value="${it.color}">
+            <span class="file">📷 Foto<input data-k="photo" type="file" accept="image/*"></span>
+            ${it.photo ? '<button data-nophoto>Sem foto</button>' : ''}
+            ${cfg.items.length > min ? '<button data-del>✕</button>' : ''}</label>
+        </div>`;
+      box.querySelectorAll('input').forEach((inp) => inp.addEventListener('change', async () => {
+        if (inp.dataset.k === 'photo') { if (inp.files[0]) { it.photo = await fileToSquareDataUrl(inp.files[0]); draw(); } }
+        else it[inp.dataset.k] = inp.value.trim() || it[inp.dataset.k];
+      }));
+      box.querySelector('[data-nophoto]')?.addEventListener('click', () => { it.photo = ''; draw(); });
+      box.querySelector('[data-del]')?.addEventListener('click', () => { cfg.items.splice(i, 1); draw(); });
+      el.append(box);
+    });
+    const extra = document.createElement('div');
+    extra.className = 'cfg-extra';
+    extra.innerHTML = `${cfg.items.length < max ? '<button data-add>+ Adicionar</button>' : ''}
+      ${extras.map((x) => `<label>${x.label} <input data-k="${x.key}" type="number" min="${x.min}" max="${x.max}" value="${cfg[x.key]}"></label>`).join('')}
+      <button data-save class="primary">Salvar e reiniciar</button>`;
+    extra.querySelector('[data-add]')?.addEventListener('click', () => { cfg.items.push(newItem(cfg.items.length)); draw(); });
+    extra.querySelectorAll('input').forEach((inp) => inp.addEventListener('change', () => { cfg[inp.dataset.k] = clamp(Number(inp.value) || 0, Number(inp.min), Number(inp.max)); }));
+    extra.querySelector('[data-save]').addEventListener('click', () => onSave(structuredClone(cfg)));
+    el.append(extra);
+  };
+  draw();
+}
+
+// Registra um jogo com configuração salva neste navegador e repassada às outras telas.
+function withConfig(game, defaults) {
+  game.configKey = game.id;
+  game.config = store.get('cfg:' + game.id, defaults);
+  game.getConfig = function () { return this.config; };
+  game.applyConfig = function (cfg) {
+    if (!cfg?.items?.length) return;
+    this.config = cfg;
+    store.set('cfg:' + this.id, cfg);
+    this.reset();
+  };
+  return game;
+}
