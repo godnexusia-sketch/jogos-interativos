@@ -162,7 +162,8 @@ function closeRoom(username) {
 function openRoom(username) {
   const conn = new TikTokLiveConnection(username, {
     processInitialData: false,
-    enableExtendedGiftInfo: true,
+    // A lista completa de presentes (gift/list) exige plano pago no Euler Stream; o evento de presente já traz nome e valor.
+    enableExtendedGiftInfo: false,
     signApiKey: SIGN_API_KEY,
   });
   const room = { conn, clients: new Set(), state: null, configs: {} };
