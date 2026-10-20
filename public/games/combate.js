@@ -112,7 +112,7 @@ registerGame(withConfig({
     }
     const flashes = [];
     for (let i = 0; i < 24; i++) {
-      const s = new T.Sprite(new T.SpriteMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false }));
+      const s = new T.Sprite(new T.SpriteMaterial({ map: G3.glowTex(), color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, blending: T.AdditiveBlending }));
       const a = Math.random() * Math.PI * 2; s.position.set(Math.sin(a) * 13.4, 1 + Math.random() * 5, Math.cos(a) * 13.4); s.scale.set(0.35, 0.35, 1);
       scene.add(s); flashes.push(s);
     }

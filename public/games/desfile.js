@@ -127,7 +127,7 @@ registerGame({
     }
     // Fotógrafos (flashes) perto da frente
     const flashes = [];
-    for (let i = 0; i < 16; i++) { const s = new T.Sprite(new T.SpriteMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, blending: T.AdditiveBlending })); s.position.set(rand(-6, 6), rand(1, 2.4), RUNWAY_FRONT + rand(1, 4)); s.scale.set(0.8, 0.8, 1); scene.add(s); flashes.push(s); }
+    for (let i = 0; i < 16; i++) { const s = new T.Sprite(new T.SpriteMaterial({ map: G3.glowTex(), color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, blending: T.AdditiveBlending })); s.position.set(rand(-6, 6), rand(1, 2.4), RUNWAY_FRONT + rand(1, 4)); s.scale.set(0.8, 0.8, 1); scene.add(s); flashes.push(s); }
     const partyLights = [];
     for (let i = 0; i < 4; i++) { const p = new T.PointLight([0xff2e63, 0x00e5ff, 0xa3e635, 0xffc93c][i], 0, 30); p.position.set((i - 1.5) * 5, 6, -8); scene.add(p); partyLights.push(p); }
     this.r = { scene, camera, screen: { c: screenC, tex: screenTex, t: 0 }, flashes, partyLights, ledMat, cam: new T.Vector3(0, 4, 14), look: new T.Vector3(0, 2, -6) };
@@ -201,9 +201,10 @@ registerGame({
     r.ledMat.color.setHSL(this.party > 0 ? (t * 2) % 1 : 0.95, 1, 0.55);
     const cur = this.current();
     const giantOn = cur && cur.tier >= 4;
-    const want = giantOn ? new T.Vector3(0, 12, 30) : new T.Vector3(Math.sin(t * 0.2) * 1.2, 3.6, 13);
+    const big = cur ? [1, 2, 3, 6, 12][cur.tier] : 1;
+    const want = giantOn ? new T.Vector3(0, 14, 34) : new T.Vector3(Math.sin(t * 0.2) * 1.2, 3.6 + big * 1.4, 13 + big * 4);
     r.cam.lerp(want, 0.04);
-    r.look.lerp(new T.Vector3(0, giantOn ? 10 : 2.2, cur ? Math.max(RUNWAY_BACK, this.pathAt(cur.t / WALK_SECS).z - 3) : -8), 0.06);
+    r.look.lerp(new T.Vector3(0, giantOn ? 10 : 1.6 + big * 1.2, cur ? Math.max(RUNWAY_BACK, this.pathAt(cur.t / WALK_SECS).z - 3) : -8), 0.06);
     r.camera.position.copy(r.cam); r.camera.lookAt(r.look);
     G3.render(r.scene, r.camera);
     if (this.flashT > 0.9) { ctx.fillStyle = `rgba(255,255,255,${(this.flashT - 0.9) * 1.2})`; ctx.fillRect(0, 0, W, H); }

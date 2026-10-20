@@ -279,3 +279,9 @@ function walkBlocky(b, t, speed = 1) {
   b.lL.rotation.set(-s * 0.7, 0, 0); b.lR.rotation.set(s * 0.7, 0, 0);
   b.root.position.y = Math.abs(Math.cos(t * 7 * speed)) * 0.08;
 }
+
+// Textura de brilho redondo (flashes, faíscas, luzes).
+G3.glowTex = function () {
+  if (!this._glow) this._glow = this.tex(64, 64, (g) => { const gr = g.createRadialGradient(32, 32, 1, 32, 32, 32); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.3, 'rgba(255,255,255,.6)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); });
+  return this._glow;
+};

@@ -1,203 +1,253 @@
 'use strict';
 
-// Cobra IA: a cobra joga sozinha atrás das maçãs; o chat solta bombas para matá-la.
-const COLS = 18, ROWS = 24, CELL = 36, GX = 36, GY = 230;
+// Arena de Cobras 3D (estilo Snake Rivals): cada espectador vira uma cobra que anda sozinha comendo energia.
+// Encostar a cabeça no corpo de outra cobra mata; a cobra morta vira comida e quem matou ganha ponto.
+const ARENA = { w: 56, h: 96 };
+const SEG_GAP = 0.55, SEG_R = 0.62, MAX_SNAKES = 24, FOOD_N = 260, MAX_SEGS = 4000;
+const SNAKE_COLORS = ['#22d3ee', '#f43f5e', '#a3e635', '#facc15', '#c084fc', '#fb923c', '#34d399', '#60a5fa', '#f472b6', '#e2e8f0'];
 
 registerGame({
   id: 'cobra',
-  name: 'Cobra IA',
+  name: 'Arena de Cobras',
   icon: '🐍',
-  help: '<p>A IA joga sozinha. Comente <b>bomba</b> para soltar uma bomba na arena (1 a cada 5s). Se a cobra encostar, você matou!</p><p>🌹 +1 maçã · 🍩 +10 maçãs · 🕶️ +20 maçãs (a cobra cresce e fica mais fácil de se enrolar) · 🌌 30 bombas de uma vez.</p>',
-  cd: new Cooldown(5000),
-  killers: new Map(),
-  record: 0,
-  deaths: 0,
+  help: '<p>Comente <b>cobra</b> para entrar na arena com a sua foto. A sua cobra anda sozinha comendo energia.</p><p>Se a cabeça encostar no corpo de outra cobra, ela morre e vira comida. Comentários dão um empurrão.</p><p>🌹 Turbo · 🍩 Cresce +15 · 🕶️ Escudo de 10s · 🌌 MEGA: cresce +40, escudo e ímã.</p>',
+  cd: new Cooldown(1500),
+  kills: new Map(),
+  best: new Map(),
   reset() {
-    const cx = Math.floor(COLS / 2), cy = Math.floor(ROWS / 2);
-    this.snake = [{ x: cx, y: cy }, { x: cx, y: cy + 1 }, { x: cx, y: cy + 2 }, { x: cx, y: cy + 3 }];
-    this.dir = { x: 0, y: -1 };
-    this.apples = [];
-    this.bombs = [];
-    this.step = 0;
-    this.dead = 0;
-    this.killMsg = null;
+    this.snakes = [];
+    this.food = [];
     this.log = [];
-    this.addApple();
+    this.respawn = new Map();
+    for (let i = 0; i < FOOD_N; i++) this.food.push(this.newFood());
+    for (let i = 0; i < 3; i++) this.spawn({ id: 'bot' + i, nick: ['Robô Verde', 'Robô Azul', 'Robô Rosa'][i], pic: '' }, true);
   },
-  sample: () => (Math.random() < 0.7 ? 'bomba' : 'kkk'),
-  occupied(x, y) {
-    return this.snake.some((s) => s.x === x && s.y === y) || this.apples.some((a) => a.x === x && a.y === y) || this.bombs.some((b) => b.x === x && b.y === y);
+  sample: () => pick(['cobra', 'cobra', 'vai', 'come']),
+  newFood(x, z, big) { return { x: x ?? rand(-ARENA.w / 2 + 2, ARENA.w / 2 - 2), z: z ?? rand(-ARENA.h / 2 + 2, ARENA.h / 2 - 2), v: big ? 3 : 1, c: pick(SNAKE_COLORS), p: rand(0, 6) }; },
+  snake(id) { return this.snakes.find((s) => s.id === id && !s.dead); },
+  addLog(user, msg, color = '#fff') { this.log.unshift({ user, msg, color, t: 6 }); this.log.length = Math.min(this.log.length, 3); },
+  spawn(user, bot = false) {
+    const id = user.id || user.nick;
+    if (this.snake(id) || this.snakes.filter((s) => !s.dead).length >= MAX_SNAKES) return this.snake(id);
+    const x = rand(-ARENA.w / 2 + 6, ARENA.w / 2 - 6), z = rand(-ARENA.h / 2 + 6, ARENA.h / 2 - 6), a = rand(0, Math.PI * 2);
+    const segs = [];
+    for (let i = 0; i < 12; i++) segs.push({ x: x - Math.cos(a) * i * SEG_GAP, z: z - Math.sin(a) * i * SEG_GAP });
+    const s = { id, user, bot, color: bot ? ['#22c55e', '#3b82f6', '#ec4899'][this.snakes.length % 3] : colorFor(user.nick + 'cobra'), segs, a, turn: 0, boost: 0, shield: 2, magnet: 0, dead: false, kills: 0, grow: 0, think: 0 };
+    this.snakes.push(s);
+    if (this.r) this.buildHead(s);
+    if (!bot) { sfx.pop(); this.addLog(user, 'entrou na arena', s.color); }
+    return s;
   },
-  freeCell(avoidHead = 3) {
-    const h = this.snake[0];
-    for (let k = 0; k < 200; k++) {
-      const x = randInt(0, COLS - 1), y = randInt(0, ROWS - 1);
-      if (!this.occupied(x, y) && Math.abs(x - h.x) + Math.abs(y - h.y) > avoidHead) return { x, y };
-    }
-    return null;
-  },
-  addApple(user) { const c = this.freeCell(1); if (c && this.apples.length < 60) this.apples.push({ ...c, user }); },
-  addBomb(user, ahead = false) {
-    if (this.bombs.length >= 90) return;
-    let c = null;
-    if (ahead) {
-      // Às vezes a bomba cai no caminho da cobra.
-      const h = this.snake[0], d = randInt(3, 6);
-      const x = h.x + this.dir.x * d, y = h.y + this.dir.y * d;
-      if (x >= 0 && y >= 0 && x < COLS && y < ROWS && !this.occupied(x, y)) c = { x, y };
-    }
-    c = c || this.freeCell(2);
-    // "seen": a IA só desvia das bombas que percebeu.
-    if (c) this.bombs.push({ ...c, user, t: 25, seen: Math.random() < 0.7, born: 0 });
-  },
-  addLog(msg, color) { this.log.unshift({ msg, color, t: 6 }); this.log.length = Math.min(this.log.length, 3); },
   onEvent(ev) {
-    if (this.dead > 0) return;
-    if (ev.type === 'chat' && /bomba|💣|mata|morre/i.test(ev.text) && this.cd.ok(uid(ev))) {
-      this.addBomb(ev.user, Math.random() < 0.35);
+    const id = uid(ev);
+    if (ev.type === 'chat') {
+      if (/\b(cobra|entrar|!entrar|snake)\b/i.test(ev.text) && !this.snake(id)) {
+        if ((this.respawn.get(id) || 0) > performance.now()) return;
+        // Quando entra gente de verdade, os robôs saem para abrir espaço
+        const bot = this.snakes.find((s) => s.bot && !s.dead);
+        if (bot && this.snakes.filter((s) => !s.bot && !s.dead).length >= 2) this.kill(bot, null, true);
+        this.spawn(ev.user);
+        return;
+      }
+      const s = this.snake(id);
+      if (s && this.cd.ok(id)) s.boost = Math.max(s.boost, 0.6);
+    } else if (ev.type === 'like') {
+      const s = this.snake(id);
+      if (s) s.grow += Math.floor(ev.count / 5);
     } else if (ev.type === 'gift') {
+      const s = this.snake(id) || this.spawn(ev.user);
+      if (!s) return;
       const tier = giftTier(ev), n = Math.min(5, ev.count || 1);
-      if (tier === 4) { for (let k = 0; k < 30 * n; k++) this.addBomb(ev.user, k < 3); this.addLog(`💣 @${trim(ev.user.nick, 12)} soltou ${30 * n} bombas!`, '#fe2c55'); announcer.show(`💣×${30 * n} ${trim(ev.user.nick, 12)}`, '#fe2c55', 2.5, 56); sfx.boom(); }
-      else {
-        const apples = [1, 10, 20][tier - 1] * n;
-        for (let k = 0; k < apples; k++) this.addApple(ev.user);
-        this.addLog(`🍎 @${trim(ev.user.nick, 12)} deu ${apples} maçã${apples > 1 ? 's' : ''}`, '#7cff6b');
-      }
+      if (tier === 1) { s.boost = Math.max(s.boost, 3 * n); this.addLog(ev.user, 'ligou o TURBO', '#22d3ee'); }
+      else if (tier === 2) { s.grow += 15 * n; this.addLog(ev.user, `cresceu +${15 * n}`, '#a3e635'); }
+      else if (tier === 3) { s.shield = 10; s.boost = 3; this.addLog(ev.user, 'ganhou ESCUDO', '#facc15'); }
+      else { s.grow += 40; s.shield = 12; s.magnet = 15; s.boost = 4; this.addLog(ev.user, 'virou MEGA COBRA', '#f472b6'); announcer.show(`MEGA COBRA @${trim(ev.user.nick, 10)}`, '#f472b6', 2.4, 50); sfx.boom(); }
     }
   },
-  // Busca em largura até a maçã mais próxima, evitando o corpo e as bombas que a IA viu.
-  think() {
-    const h = this.snake[0];
-    const blocked = new Set(this.snake.slice(0, -1).map((s) => s.x + ',' + s.y));
-    for (const b of this.bombs) if (b.seen) blocked.add(b.x + ',' + b.y);
-    const dirs = [{ x: 1, y: 0 }, { x: -1, y: 0 }, { x: 0, y: 1 }, { x: 0, y: -1 }];
-    const ok = (x, y) => x >= 0 && y >= 0 && x < COLS && y < ROWS && !blocked.has(x + ',' + y);
-    const goal = new Set(this.apples.map((a) => a.x + ',' + a.y));
-    const prev = new Map([[h.x + ',' + h.y, null]]);
-    const q = [h];
-    let found = null;
-    while (q.length && !found) {
-      const c = q.shift();
-      for (const d of dirs) {
-        const nx = c.x + d.x, ny = c.y + d.y, k = nx + ',' + ny;
-        if (!ok(nx, ny) || prev.has(k)) continue;
-        prev.set(k, c.x + ',' + c.y);
-        if (goal.has(k)) { found = k; break; }
-        q.push({ x: nx, y: ny });
-      }
-    }
-    if (found) {
-      let k = found;
-      while (prev.get(k) !== h.x + ',' + h.y) k = prev.get(k);
-      const [x, y] = k.split(',').map(Number);
-      const d = { x: x - h.x, y: y - h.y };
-      if (this.space(x, y, blocked) > this.snake.length) return d;
-    }
-    // Sem caminho seguro: vai para onde tem mais espaço livre.
-    let best = this.dir, bestSpace = -1;
-    for (const d of dirs) {
-      const nx = h.x + d.x, ny = h.y + d.y;
-      if (!ok(nx, ny)) continue;
-      const s = this.space(nx, ny, blocked);
-      if (s > bestSpace) { bestSpace = s; best = d; }
-    }
-    return best;
-  },
-  space(x, y, blocked) {
-    const seen = new Set([x + ',' + y]);
-    const q = [[x, y]];
-    while (q.length && seen.size < 200) {
-      const [cx, cy] = q.shift();
-      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-        const nx = cx + dx, ny = cy + dy, k = nx + ',' + ny;
-        if (nx < 0 || ny < 0 || nx >= COLS || ny >= ROWS || blocked.has(k) || seen.has(k)) continue;
-        seen.add(k); q.push([nx, ny]);
-      }
-    }
-    return seen.size;
-  },
-  die(msg, user) {
-    this.dead = 4;
-    this.deaths++;
-    this.killMsg = { msg, user, len: this.snake.length };
-    if (user) addScore(this.killers, user.nick);
-    const h = this.snake[0];
-    burst(GX + h.x * CELL + CELL / 2, GY + h.y * CELL + CELL / 2, ['#fe2c55', '#ffd23f', '#7cff6b'], 80, 500);
-    sfx.boom();
+  kill(s, by, silent) {
+    s.dead = true;
+    for (let i = 0; i < s.segs.length; i += 2) if (this.food.length < FOOD_N * 2) this.food.push(this.newFood(s.segs[i].x + rand(-0.5, 0.5), s.segs[i].z + rand(-0.5, 0.5), true));
+    if (this.r && s.head) this.r.scene.remove(s.head);
+    if (!s.bot) this.respawn.set(s.id, performance.now() + 5000);
+    if (silent) return;
+    if (by) {
+      by.kills++;
+      if (!by.bot) addScore(this.kills, by.user.nick);
+      this.addLog(by.user, `eliminou @${trim(s.user.nick, 10)} (${s.segs.length})`, '#f43f5e');
+      if (s.segs.length > 40) announcer.show(`@${trim(by.user.nick, 10)} ELIMINOU @${trim(s.user.nick, 10)}`, '#f43f5e', 2, 40);
+    } else this.addLog(s.user, 'bateu na parede', '#94a3b8');
+    sfx.tone(160, 0.3, 'sawtooth', 0.08);
+    // Robôs voltam sozinhos se a arena ficar vazia
+    if (s.bot) setTimeout(() => { if (this.snakes.filter((x) => !x.dead).length < 4) this.spawn(s.user, true); }, 4000);
   },
   update(dt) {
     for (const l of this.log) l.t -= dt;
     this.log = this.log.filter((l) => l.t > 0);
-    for (const b of this.bombs) { b.t -= dt; b.born += dt; }
-    this.bombs = this.bombs.filter((b) => b.t > 0);
-    if (this.dead > 0) { this.dead -= dt; if (this.dead <= 0) this.reset(); return; }
-    if (!this.apples.length) this.addApple();
-    this.step += dt;
-    const rate = 1 / clamp(7 + this.snake.length / 10, 7, 14);
-    if (this.step < rate) return;
-    this.step = 0;
-    this.dir = this.think();
-    const h = this.snake[0];
-    const nx = h.x + this.dir.x, ny = h.y + this.dir.y;
-    if (nx < 0 || ny < 0 || nx >= COLS || ny >= ROWS || this.snake.slice(0, -1).some((s) => s.x === nx && s.y === ny)) return this.die('A IA se enrolou sozinha! 🤡');
-    const bomb = this.bombs.find((b) => b.x === nx && b.y === ny);
-    this.snake.unshift({ x: nx, y: ny });
-    if (bomb) return this.die('MATOU A COBRA! 💀', bomb.user);
-    const ai = this.apples.findIndex((a) => a.x === nx && a.y === ny);
-    if (ai >= 0) { this.apples.splice(ai, 1); this.record = Math.max(this.record, this.snake.length); sfx.tone(1000, 0.04, 'sine', 0.05); }
-    else this.snake.pop();
+    const alive = this.snakes.filter((s) => !s.dead);
+    for (const s of alive) {
+      s.boost = Math.max(0, s.boost - dt); s.shield = Math.max(0, s.shield - dt); s.magnet = Math.max(0, s.magnet - dt);
+      const h = s.segs[0];
+      // IA: vai atrás da comida mais perto e desvia de corpos e paredes
+      s.think -= dt;
+      if (s.think <= 0) {
+        s.think = 0.15;
+        let best = null, bd = 1e9;
+        for (const f of this.food) { const d = (f.x - h.x) ** 2 + (f.z - h.z) ** 2 - f.v * 6; if (d < bd) { bd = d; best = f; } }
+        let want = best ? Math.atan2(best.z - h.z, best.x - h.x) : s.a;
+        // Perigo à frente: corpo de outra cobra ou parede
+        const look = 3.2;
+        const danger = (ang) => {
+          const px = h.x + Math.cos(ang) * look, pz = h.z + Math.sin(ang) * look;
+          if (Math.abs(px) > ARENA.w / 2 - 1.5 || Math.abs(pz) > ARENA.h / 2 - 1.5) return true;
+          for (const o of alive) { if (o === s) continue; for (let i = 0; i < o.segs.length; i += 2) { const q = o.segs[i]; if ((q.x - px) ** 2 + (q.z - pz) ** 2 < 2.2) return true; } }
+          return false;
+        };
+        if (danger(want)) { for (const off of [0.6, -0.6, 1.2, -1.2, 1.8, -1.8, 2.6]) if (!danger(want + off)) { want += off; break; } }
+        s.target = want;
+      }
+      let da = ((s.target ?? s.a) - s.a + Math.PI * 3) % (Math.PI * 2) - Math.PI;
+      s.a += clamp(da, -3.2 * dt, 3.2 * dt);
+      const speed = (s.boost > 0 ? 12 : 7) * (1 - Math.min(0.3, s.segs.length / 800));
+      h.x += Math.cos(s.a) * speed * dt; h.z += Math.sin(s.a) * speed * dt;
+      // Corpo segue a cabeça mantendo a distância entre os gomos
+      for (let i = 1; i < s.segs.length; i++) {
+        const a = s.segs[i - 1], b = s.segs[i];
+        const dx = b.x - a.x, dz = b.z - a.z, d = Math.hypot(dx, dz) || 1;
+        if (d > SEG_GAP) { b.x = a.x + (dx / d) * SEG_GAP; b.z = a.z + (dz / d) * SEG_GAP; }
+      }
+      if (s.grow > 0 && s.segs.length < 400) { const t = s.segs[s.segs.length - 1]; s.segs.push({ x: t.x, z: t.z }); s.grow--; }
+      // Comer
+      const reach = s.magnet > 0 ? 6 : 1.4;
+      for (const f of this.food) {
+        const d2 = (f.x - h.x) ** 2 + (f.z - h.z) ** 2;
+        if (s.magnet > 0 && d2 < 36) { f.x += (h.x - f.x) * dt * 6; f.z += (h.z - f.z) * dt * 6; }
+        if (d2 < reach * reach * 0.5 || d2 < 1.6) { f.eaten = true; s.grow += f.v; }
+      }
+      if (!s.bot) { const cur = this.best.get(s.user.nick) || 0; if (s.segs.length > cur) this.best.set(s.user.nick, s.segs.length); }
+    }
+    this.food = this.food.filter((f) => !f.eaten);
+    while (this.food.length < FOOD_N) this.food.push(this.newFood());
+    // Colisões
+    for (const s of alive) {
+      if (s.dead) continue;
+      const h = s.segs[0];
+      if (Math.abs(h.x) > ARENA.w / 2 || Math.abs(h.z) > ARENA.h / 2) { if (s.shield > 0) { s.a += Math.PI; h.x = clamp(h.x, -ARENA.w / 2 + 1, ARENA.w / 2 - 1); h.z = clamp(h.z, -ARENA.h / 2 + 1, ARENA.h / 2 - 1); } else this.kill(s, null); continue; }
+      if (s.shield > 0) continue;
+      for (const o of alive) {
+        if (o === s || o.dead) continue;
+        let hit = false;
+        for (let i = 1; i < o.segs.length; i++) { const q = o.segs[i]; if ((q.x - h.x) ** 2 + (q.z - h.z) ** 2 < (SEG_R * 1.6) ** 2) { hit = true; break; } }
+        if (hit) { this.kill(s, o); break; }
+      }
+    }
+    this.snakes = this.snakes.filter((s) => !s.dead);
+  },
+
+  // ---------- Cena 3D ----------
+  init3d() {
+    if (this.r || !THREE) return;
+    const T = THREE;
+    const scene = new T.Scene();
+    scene.background = new T.Color(0x070b14);
+    const camera = new T.PerspectiveCamera(48, W / H, 0.5, 400);
+    scene.add(new T.HemisphereLight(0xb8c8ff, 0x101020, 1.1));
+    const sun = new T.DirectionalLight(0xffffff, 1.4); sun.position.set(20, 60, 30); scene.add(sun);
+    // Piso da arena com grade e borda neon
+    const grid = G3.tex(256, 256, (g) => { g.fillStyle = '#0d1424'; g.fillRect(0, 0, 256, 256); g.strokeStyle = 'rgba(34,211,238,.18)'; g.lineWidth = 3; g.strokeRect(0, 0, 256, 256); g.fillStyle = 'rgba(255,255,255,.03)'; g.fillRect(8, 8, 240, 240); }, [ARENA.w / 4, ARENA.h / 4]);
+    const floor = new T.Mesh(new T.PlaneGeometry(ARENA.w, ARENA.h), new T.MeshStandardMaterial({ map: grid, roughness: 0.6, metalness: 0.2 }));
+    floor.rotation.x = -Math.PI / 2; scene.add(floor);
+    const wallMat = new T.MeshBasicMaterial({ color: 0x22d3ee });
+    for (const [w, d, x, z] of [[ARENA.w + 1, 0.5, 0, ARENA.h / 2], [ARENA.w + 1, 0.5, 0, -ARENA.h / 2], [0.5, ARENA.h, ARENA.w / 2, 0], [0.5, ARENA.h, -ARENA.w / 2, 0]]) { const m = new T.Mesh(new T.BoxGeometry(w, 0.8, d), wallMat); m.position.set(x, 0.4, z); scene.add(m); }
+    // Gomos de todas as cobras num único desenho instanciado (rápido mesmo com muitas cobras)
+    const segMesh = new T.InstancedMesh(new T.SphereGeometry(SEG_R, 14, 10), new T.MeshStandardMaterial({ roughness: 0.35, metalness: 0.15 }), MAX_SEGS);
+    segMesh.instanceMatrix.setUsage(T.DynamicDrawUsage);
+    segMesh.count = 0; scene.add(segMesh);
+    const foodMesh = new T.InstancedMesh(new T.IcosahedronGeometry(0.32, 0), new T.MeshBasicMaterial(), FOOD_N * 2);
+    foodMesh.instanceMatrix.setUsage(T.DynamicDrawUsage);
+    foodMesh.count = 0; scene.add(foodMesh);
+    const glow = new T.InstancedMesh(new T.PlaneGeometry(1.6, 1.6), new T.MeshBasicMaterial({ map: G3.glowTex(), transparent: true, depthWrite: false, blending: T.AdditiveBlending }), FOOD_N * 2);
+    glow.count = 0; scene.add(glow);
+    this.r = { scene, camera, segMesh, foodMesh, glow, m: new T.Matrix4(), q: new T.Quaternion(), c: new T.Color(), cam: new T.Vector3(0, 70, 48), look: new T.Vector3(0, 0, 4) };
+    for (const s of this.snakes) this.buildHead(s);
+  },
+  buildHead(s) {
+    const T = THREE;
+    const g = new T.Group();
+    const head = new T.Mesh(new T.SphereGeometry(SEG_R * 1.35, 20, 16), new T.MeshStandardMaterial({ color: s.color, roughness: 0.3 }));
+    head.position.y = SEG_R; g.add(head);
+    for (const side of [-1, 1]) { const e = new T.Mesh(new T.SphereGeometry(0.22, 10, 8), new T.MeshBasicMaterial({ color: 0xffffff })); e.position.set(0.45, SEG_R + 0.45, side * 0.4); g.add(e); const p = new T.Mesh(new T.SphereGeometry(0.11, 8, 6), new T.MeshBasicMaterial({ color: 0x000000 })); p.position.set(0.6, SEG_R + 0.5, side * 0.42); g.add(p); }
+    const face = new T.Sprite(new T.SpriteMaterial({ map: G3.faceTex(s.user.pic, s.user.nick, true), depthTest: false, sizeAttenuation: false }));
+    face.center.set(0.5, 0); face.scale.set(0.05, 0.05, 1); face.position.y = 1.6; face.renderOrder = 20; g.add(face);
+    const tag = G3.label(`@${trim(s.user.nick, 12)}`, { scale: 0.11, border: s.color });
+    tag.center.set(0.5, -3.6); tag.position.y = 1.6; g.add(tag);
+    const shield = new T.Mesh(new T.SphereGeometry(1.6, 16, 12), new T.MeshBasicMaterial({ color: 0xfacc15, transparent: true, opacity: 0.25, depthWrite: false }));
+    shield.position.y = SEG_R; g.add(shield);
+    s.head = g; s.shieldMesh = shield;
+    this.r.scene.add(g);
   },
   draw() {
-    background('#0b1a10', '#06100a');
-    roundRect(20, 20, W - 40, 190, 20, 'rgba(0,0,0,.55)');
-    text('🐍 COBRA IA', W / 2, 60, 46, '#7cff6b', 'center', 900);
-    text('A IA joga. O chat tenta matar.', W / 2, 105, 24, '#ddd', 'center', 600);
-    [['TAMANHO', this.snake.length], ['RECORDE', this.record], ['MORTES', this.deaths], ['BOMBAS', this.bombs.length]].forEach(([l, v], i) => {
-      const x = 110 + i * 167;
-      text(l, x, 145, 18, '#9aa0b4', 'center', 700);
-      text(String(v), x, 182, 36);
-    });
-    // Arena
-    roundRect(GX - 6, GY - 6, COLS * CELL + 12, ROWS * CELL + 12, 12, '#1d3b24');
-    for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) {
-      ctx.fillStyle = (x + y) % 2 ? '#14301b' : '#18381f';
-      ctx.fillRect(GX + x * CELL, GY + y * CELL, CELL, CELL);
+    if (!this.r) {
+      this.init3d();
+      background('#070b14', '#0d1424');
+      title('ARENA DE COBRAS', W / 2, H / 2 - 20, 60, '#22d3ee');
+      text('Montando a arena…', W / 2, H / 2 + 40, 26, '#cbd5e1', 'center', 700);
+      three3dReady.then(() => this.init3d());
+      return;
     }
-    for (const a of this.apples) text('🍎', GX + a.x * CELL + CELL / 2, GY + a.y * CELL + CELL / 2 + 2, 28);
-    for (const b of this.bombs) {
-      const s = b.born < 0.3 ? 28 + (0.3 - b.born) * 80 : 28;
-      ctx.globalAlpha = b.t < 3 ? 0.4 + 0.6 * Math.abs(Math.sin(b.t * 6)) : 1;
-      text('💣', GX + b.x * CELL + CELL / 2, GY + b.y * CELL + CELL / 2 + 2, s);
-      ctx.globalAlpha = 1;
-    }
-    this.snake.forEach((s, i) => {
-      const k = 1 - i / (this.snake.length + 4);
-      roundRect(GX + s.x * CELL + 2, GY + s.y * CELL + 2, CELL - 4, CELL - 4, i === 0 ? 12 : 8, `rgb(${Math.round(40 + 80 * k)},${Math.round(160 + 90 * k)},${Math.round(60 + 40 * k)})`);
-    });
-    const h = this.snake[0];
-    text('👀', GX + h.x * CELL + CELL / 2, GY + h.y * CELL + CELL / 2, 22);
-
-    this.log.forEach((l, k) => {
-      const y = 1130 + k * 44;
-      ctx.globalAlpha = clamp(l.t, 0, 1);
-      roundRect(20, y - 20, 430, 40, 20, 'rgba(0,0,0,.6)');
-      text(trim(l.msg, 30), 36, y, 20, l.color, 'left', 700);
-      ctx.globalAlpha = 1;
-    });
-    text('Comente BOMBA 💣', W - 140, 1140, 28, '#fe2c55', 'center', 900);
-    text('🎁 🍎 ajuda a IA', W - 140, 1180, 22, '#7cff6b', 'center', 700);
-    text('🌌 = 30 bombas', W - 140, 1215, 22, '#ffd23f', 'center', 700);
-
-    if (this.dead > 0 && this.killMsg) {
-      const m = this.killMsg;
-      roundRect(50, 480, W - 100, m.user ? 420 : 240, 30, 'rgba(0,0,0,.85)');
-      text(m.msg, W / 2, 550, 46, m.user ? '#fe2c55' : '#ffd23f');
-      text(`Tamanho final: ${m.len}`, W / 2, 610, 30, '#fff', 'center', 600);
-      if (m.user) {
-        avatar(m.user, W / 2, 720, 70, '#fe2c55');
-        text(`@${trim(m.user.nick, 16)}`, W / 2, 835, 40, '#fff');
+    const r = this.r, t = performance.now() / 1000;
+    const alive = this.snakes.filter((s) => !s.dead);
+    let n = 0;
+    for (const s of alive) {
+      if (!s.head) this.buildHead(s);
+      r.c.set(s.color);
+      const dark = r.c.clone().multiplyScalar(0.7);
+      for (let i = 1; i < s.segs.length && n < MAX_SEGS; i++) {
+        const q = s.segs[i], sc = 1 - Math.min(0.35, i / s.segs.length * 0.35);
+        r.m.compose(new THREE.Vector3(q.x, SEG_R * sc, q.z), r.q, new THREE.Vector3(sc, sc, sc));
+        r.segMesh.setMatrixAt(n, r.m); r.segMesh.setColorAt(n, i % 4 < 2 ? r.c : dark); n++;
       }
-      leaderboardSmall(this.killers, 160, m.user ? 940 : 760);
+      const h = s.segs[0];
+      s.head.position.set(h.x, 0, h.z); s.head.rotation.y = -s.a;
+      s.shieldMesh.visible = s.shield > 0;
     }
+    r.segMesh.count = n; r.segMesh.instanceMatrix.needsUpdate = true; if (r.segMesh.instanceColor) r.segMesh.instanceColor.needsUpdate = true;
+    let fn = 0;
+    const qUp = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
+    for (const f of this.food) {
+      const s = f.v > 1 ? 1.5 : 1, y = 0.5 + Math.sin(t * 3 + f.p) * 0.15;
+      r.m.compose(new THREE.Vector3(f.x, y, f.z), r.q, new THREE.Vector3(s, s, s)); r.foodMesh.setMatrixAt(fn, r.m); r.c.set(f.c); r.foodMesh.setColorAt(fn, r.c);
+      r.m.compose(new THREE.Vector3(f.x, 0.05, f.z), qUp, new THREE.Vector3(s, s, s)); r.glow.setMatrixAt(fn, r.m); r.glow.setColorAt(fn, r.c);
+      fn++;
+    }
+    r.foodMesh.count = fn; r.glow.count = fn;
+    r.foodMesh.instanceMatrix.needsUpdate = true; r.glow.instanceMatrix.needsUpdate = true;
+    if (r.foodMesh.instanceColor) r.foodMesh.instanceColor.needsUpdate = true;
+    if (r.glow.instanceColor) r.glow.instanceColor.needsUpdate = true;
+    // Câmera mostra a arena inteira, levemente inclinada, e segue um pouco a maior cobra
+    const top = [...alive].sort((a, b) => b.segs.length - a.segs.length)[0];
+    const fx = top ? top.segs[0].x * 0.25 : 0, fz = top ? top.segs[0].z * 0.2 : 0;
+    r.cam.lerp(new THREE.Vector3(fx, 92, 44 + fz), 0.03); r.look.lerp(new THREE.Vector3(fx, 0, 2 + fz), 0.05);
+    r.camera.position.copy(r.cam); r.camera.lookAt(r.look);
+    G3.render(r.scene, r.camera);
+    this.drawHud(alive);
+  },
+  drawHud(alive) {
+    slant(16, 18, W - 32, 70, { fill: 'rgba(7,11,20,.85)', skew: 14, border: 'rgba(34,211,238,.4)' });
+    title('ARENA DE COBRAS', 40, 46, 32, '#22d3ee', 'left');
+    label(`${alive.filter((s) => !s.bot).length} jogadores · comente COBRA para entrar`, 40, 74, 15, 'rgba(255,255,255,.75)', 'left', 700);
+    // Ranking ao vivo pelo tamanho
+    const rank = [...alive].sort((a, b) => b.segs.length - a.segs.length).slice(0, 5);
+    slant(W - 252, 100, 236, 30 + rank.length * 38, { fill: 'rgba(7,11,20,.82)', skew: 8 });
+    label('MAIORES AGORA', W - 230, 118, 13, 'rgba(255,255,255,.7)', 'left', 800);
+    rank.forEach((s, i) => {
+      const y = 146 + i * 38;
+      posBadge(i + 1, W - 226, y, 22);
+      avatar(s.user, W - 196, y, 13, s.color);
+      label(`@${trim(s.user.nick, 9)}`, W - 178, y + 1, 15, '#fff', 'left', 800);
+      num(String(s.segs.length), W - 30, y, 20, s.color, 'right');
+    });
+    this.log.forEach((l, k) => toast(l.user, trim(`@${trim(l.user.nick, 10)} ${l.msg}`, 36), 20, 1120 + k * 44, { color: l.color, alpha: clamp(l.t, 0, 1), size: 17 }));
+    slant(16, 1226, W - 32, 40, { fill: 'rgba(7,11,20,.85)', skew: 10 });
+    label('ROSA turbo  ·  ROSQUINHA cresce  ·  ÓCULOS escudo  ·  GALÁXIA mega cobra', W / 2, 1247, 14, '#fff', 'center', 800);
   },
 });
