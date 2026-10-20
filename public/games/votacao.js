@@ -7,7 +7,7 @@ registerGame({
   icon: '🗳️',
   configKey: 'votacao',
   config: store.get('cfg:votacao', { duration: 60, autoSwitch: true }),
-  help: '<p>A live escolhe o próximo jogo: comente o <b>número</b> do jogo (1 voto por pessoa, pode trocar).</p><p>🎁 Presente: +10 votos por moeda no jogo que a pessoa escolheu.</p><p>Quando o tempo acaba, o jogo mais votado abre sozinho.</p>',
+  help: '<p>A live escolhe o próximo jogo: comente o <b>número</b> do jogo (1 voto por pessoa, pode trocar).</p><p>🎁 Presente: +10 votos por moeda no jogo que a pessoa escolheu.</p><p>Quando o tempo acaba, o jogo mais votado abre sozinho. Se ninguém votar, abre o <b>Céu de Pipas</b>.</p>',
   getConfig() { return this.config; },
   applyConfig(cfg) { if (!cfg) return; this.config = cfg; store.set('cfg:votacao', cfg); this.reset(); },
   renderSettings(el, save) {
@@ -81,8 +81,10 @@ registerGame({
       this.endT -= dt;
       if (this.endT <= 0) {
         const w = this.leader();
-        if (w >= 0 && this.config.autoSwitch && typeof switchGameById === 'function') { const id = this.options()[w].id; this.reset(); switchGameById(id); }
-        else this.reset();
+        // Abre o mais votado; se ninguém votou, abre o Céu de Pipas.
+        const id = w >= 0 ? this.options()[w].id : 'pipa';
+        this.reset();
+        if (this.config.autoSwitch && typeof switchGameById === 'function') switchGameById(id);
       }
     }
   },
@@ -135,7 +137,10 @@ registerGame({
         title(g.name.toUpperCase(), W / 2, 680, 70, '#ffc93c');
         label(`${this.votes[lead]} votos`, W / 2, 740, 26, '#fff', 'center', 800);
         if (this.config.autoSwitch) label(`Começando em ${Math.ceil(this.endT)}s…`, W / 2, 820, 22, 'rgba(255,255,255,.7)', 'center', 700);
-      } else title('NINGUÉM VOTOU', W / 2, 600, 56, '#fff');
+      } else {
+        title('NINGUÉM VOTOU', W / 2, 520, 56, '#fff');
+        if (this.config.autoSwitch) { title('ABRINDO O CÉU DE PIPAS', W / 2, 600, 40, '#00e5ff'); label(`em ${Math.ceil(this.endT)}s…`, W / 2, 660, 22, 'rgba(255,255,255,.7)', 'center', 700); }
+      }
     }
   },
 });

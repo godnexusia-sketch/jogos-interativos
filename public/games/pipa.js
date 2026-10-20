@@ -1,15 +1,39 @@
 'use strict';
 
-// Céu de Pipas 3D (estilo Pipa Combate): cada comentário vira uma pipa com a foto de quem comentou,
-// presa por linha até a laje. Presente faz a pipa caçar e cortar a linha das outras.
-const KITE_MAX = 30;
+// Céu de Pipas 3D (estilo Pipa Combate): cada pessoa que entra na live (ou comenta) ganha uma pipa com
+// a foto e o nome, presa por linha até a laje. Presente faz a pipa caçar e cortar a linha das outras.
+// O TikTok avisa quem entra, mas não quem sai: a pipa cai quando a pessoa fica um tempo sem interagir
+// ou quando o número de espectadores cai abaixo do número de pipas.
+const PIPA_DEFAULT = { autoJoin: true, idleMin: 5, max: 60, matchViewers: true, cutChance: 30, respawnSecs: 10 };
 const SKY = { w: 26, top: 46, bottom: 14 };
 
 registerGame({
   id: 'pipa',
   name: 'Céu de Pipas',
   icon: '🪁',
-  help: '<p>Comente qualquer coisa e ganhe uma <b>pipa</b> com a sua foto. ❤️ Likes fazem a sua pipa subir. Comente <b>corta</b> para tentar cortar a pipa mais perto (1 a cada 8s).</p><p>🌹 Caça e corta 1 · 🍩 Escudo de 30s · 🕶️ Corta 3 · 🌌 Linha de ouro: corta 10.</p>',
+  help: '<p>Quem <b>entra na live</b> ganha uma pipa com o nome e a foto, sem precisar comentar. Comentar também solta a pipa.</p><p>❤️ Likes fazem a pipa subir. Comente <b>corta</b> para tentar cortar a pipa mais perto. Quem sai da live (ou fica muito tempo sem interagir) tem a pipa derrubada.</p><p>🌹 Caça e corta 1 · 🍩 Escudo de 30s · 🕶️ Corta 3 · 🌌 Linha de ouro: corta 10.</p><p>O admin muda as regras em <b>Configurar</b>.</p>',
+  wantsPresence: true,
+  configKey: 'pipa',
+  config: { ...PIPA_DEFAULT, ...store.get('cfg:pipa', {}) },
+  getConfig() { return this.config; },
+  applyConfig(cfg) { if (!cfg) return; this.config = { ...PIPA_DEFAULT, ...cfg }; store.set('cfg:pipa', this.config); },
+  renderSettings(el, save) {
+    const c = this.config;
+    el.innerHTML = `
+      <label class="row2"><input data-k="autoJoin" type="checkbox" ${c.autoJoin ? 'checked' : ''} style="width:auto"> Pipa automática para quem entra na live</label>
+      <label class="row2"><input data-k="matchViewers" type="checkbox" ${c.matchViewers ? 'checked' : ''} style="width:auto"> Derrubar pipas quando o número de espectadores cair</label>
+      <label>Minutos sem interagir até a pipa cair (0 = nunca) <input data-k="idleMin" type="number" min="0" max="120" value="${c.idleMin}"></label>
+      <label>Máximo de pipas no céu <input data-k="max" type="number" min="5" max="150" value="${c.max}"></label>
+      <label>Chance de cortar comentando "corta" (%) <input data-k="cutChance" type="number" min="0" max="100" value="${c.cutChance}"></label>
+      <label>Segundos para voltar a pipa depois de cortada <input data-k="respawnSecs" type="number" min="0" max="600" value="${c.respawnSecs}"></label>
+      <div class="row"><button data-save class="primary">Salvar</button><button data-clear>Derrubar todas</button></div>`;
+    el.querySelector('[data-save]').addEventListener('click', () => {
+      const v = (k) => el.querySelector(`[data-k="${k}"]`);
+      this.applyConfig({ autoJoin: v('autoJoin').checked, matchViewers: v('matchViewers').checked, idleMin: clamp(Number(v('idleMin').value) || 0, 0, 120), max: clamp(Number(v('max').value) || 60, 5, 150), cutChance: clamp(Number(v('cutChance').value) || 0, 0, 100), respawnSecs: clamp(Number(v('respawnSecs').value) || 0, 0, 600) });
+      save(this.config);
+    });
+    el.querySelector('[data-clear]').addEventListener('click', () => { for (const k of [...this.kites]) this.leave(k, true); });
+  },
   cd: new Cooldown(8000),
   kings: new Map(),
   reset() {
@@ -17,18 +41,23 @@ registerGame({
     this.kites = [];
     this.falling = [];
     this.respawn = new Map();
+    this.comeBack = [];
     this.log = [];
     this.windT = 12;
+    this.viewers = 0;
+    this.checkT = 1;
   },
   sample: () => pick(['oi', 'corta', 'bora', 'kkk', 'manda', 'linha']),
   kite(id) { return this.kites.find((k) => k.id === id); },
   addLog(user, msg, color) { this.log.unshift({ user, msg, color, t: 6 }); this.log.length = Math.min(this.log.length, 3); },
   spawn(user) {
     const id = user.id || user.nick;
-    if (this.kite(id) || this.kites.length >= KITE_MAX) return this.kite(id);
+    if (this.kite(id)) return this.kite(id);
     if ((this.respawn.get(id) || 0) > performance.now()) return null;
+    // Céu cheio: a pipa mais parada dá lugar à nova
+    if (this.kites.length >= this.config.max) { const idle = this.mostIdle(); if (!idle) return null; this.leave(idle, true); }
     const anchor = { x: rand(-14, 14), y: rand(4, 9), z: rand(4, 10) };
-    const k = { id, user, color: colorFor(user.nick), color2: colorFor(user.nick + 'b'), x: anchor.x, y: SKY.bottom, z: rand(-8, 2), alt: 0, phase: rand(0, 6), shield: 0, hunt: [], kills: 0, born: 0, anchor, gold: 0 };
+    const k = { id, user, color: colorFor(user.nick), color2: colorFor(user.nick + 'b'), x: anchor.x, y: SKY.bottom, z: rand(-8, 2), alt: 0, phase: rand(0, 6), shield: 0, hunt: [], kills: 0, born: 0, anchor, gold: 0, lastSeen: performance.now() };
     k.home = { x: rand(-SKY.w / 2 + 3, SKY.w / 2 - 3), y: rand(SKY.bottom + 6, SKY.top - 6), z: rand(-10, 2) };
     this.kites.push(k);
     if (this.r) this.buildKite(k);
@@ -39,24 +68,46 @@ registerGame({
     const d = (a) => (a.x - k.x) ** 2 + (a.y - k.y) ** 2 + (a.z - k.z) ** 2;
     return this.kites.filter((o) => o !== k && o.shield <= 0 && !k.hunt.includes(o)).sort((a, b) => d(a) - d(b)).slice(0, n);
   },
+  mostIdle() { return [...this.kites].sort((a, b) => a.lastSeen - b.lastSeen)[0]; },
+  // A pessoa saiu da live (ou ficou muito tempo parada): a pipa cai sem dar ponto a ninguém.
+  leave(k, silent = false) {
+    const i = this.kites.indexOf(k);
+    if (i < 0) return;
+    this.kites.splice(i, 1);
+    k.fall = { vy: 0, spin: rand(1, 3), t: 4 };
+    this.falling.push(k);
+    this.comeBack = this.comeBack.filter((c) => c.user.nick !== k.user.nick);
+    if (!silent) this.addLog(k.user, 'saiu da live', '#94a3b8');
+  },
+  onViewers(n) { this.viewers = n; },
   cut(victim, by) {
     const i = this.kites.indexOf(victim);
     if (i < 0) return;
     this.kites.splice(i, 1);
     victim.fall = { vy: 0, spin: rand(2, 5), t: 4 };
     this.falling.push(victim);
-    this.respawn.set(victim.id, performance.now() + 10000);
+    this.respawn.set(victim.id, performance.now() + this.config.respawnSecs * 1000);
+    // Quem ainda está na live volta a soltar a pipa depois de um tempo
+    if (this.config.autoJoin) this.comeBack.push({ user: victim.user, at: performance.now() + this.config.respawnSecs * 1000 + 300 });
     if (by) { by.kills++; addScore(this.kings, by.user.nick); this.addLog(by.user, `cortou @${trim(victim.user.nick, 10)}`, by.color); }
     if (this.r) { const p = this.screenOf(victim); burst(p.x, p.y, [victim.color, '#fff'], 26, 320); }
     sfx.tone(520, 0.18, 'sawtooth', 0.08);
   },
   onEvent(ev) {
     const id = uid(ev);
+    const mine = this.kite(id);
+    if (mine) mine.lastSeen = performance.now();
+    if (ev.type === 'join') {
+      if (!this.config.autoJoin || mine) return;
+      const k = this.spawn(ev.user);
+      if (k) this.addLog(ev.user, 'entrou na live 🪁', '#a3e635');
+      return;
+    }
     if (ev.type === 'chat') {
       const k = this.kite(id) || this.spawn(ev.user);
       if (k && /corta|cerol|linha/i.test(ev.text) && this.cd.ok(id)) {
         const [t] = this.nearestTargets(k, 1);
-        if (t && Math.random() < 0.3) k.hunt.push(t);
+        if (t && Math.random() < this.config.cutChance / 100) k.hunt.push(t);
       }
     } else if (ev.type === 'like') {
       const k = this.kite(id);
@@ -97,6 +148,16 @@ registerGame({
     for (const f of this.falling) { f.fall.t -= dt; f.fall.vy += 6 * dt; f.y -= f.fall.vy * dt; f.x += Math.sin(t * 3 + f.phase) * dt * 2; }
     for (const f of this.falling.filter((f) => f.fall.t <= 0 || f.y < -2)) this.r?.scene.remove(f.obj, f.line);
     this.falling = this.falling.filter((f) => f.fall.t > 0 && f.y >= -2);
+    // Presença: pipa cai quando a pessoa some (sem interagir) ou quando há mais pipas que espectadores
+    this.checkT -= dt;
+    if (this.checkT <= 0) {
+      this.checkT = 1;
+      const now = performance.now();
+      if (this.config.idleMin > 0) for (const k of [...this.kites]) if (now - k.lastSeen > this.config.idleMin * 60000) this.leave(k);
+      if (this.config.matchViewers && this.viewers > 0 && this.kites.length > this.viewers) { const idle = this.mostIdle(); if (idle) this.leave(idle); }
+      for (const c of this.comeBack.filter((c) => c.at <= now)) this.spawn(c.user);
+      this.comeBack = this.comeBack.filter((c) => c.at > now);
+    }
     // Vento embola duas pipas de vez em quando, mesmo sem presente
     this.windT -= dt;
     if (this.windT <= 0) {
@@ -210,14 +271,14 @@ registerGame({
   drawHud() {
     slant(16, 18, W - 32, 70, { fill: 'rgba(10,30,70,.82)', skew: 14, border: 'rgba(255,255,255,.3)' });
     title('CÉU DE PIPAS', 40, 46, 34, '#fff', 'left');
-    label(`${this.kites.length}/${KITE_MAX} no céu · comente para soltar a sua pipa`, 40, 74, 15, 'rgba(255,255,255,.85)', 'left', 700);
+    label(`${this.kites.length} pipas no céu${this.viewers ? ` · ${this.viewers} assistindo` : ''} · entrou na live, ganhou pipa`, 40, 74, 15, 'rgba(255,255,255,.85)', 'left', 700);
     const rows = [...this.kings.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3);
     if (rows.length) {
       slant(W - 236, 100, 220, 34 + rows.length * 34, { fill: 'rgba(10,30,70,.82)', skew: 8 });
       label('REI DA LAJE', W - 214, 118, 13, '#ffc93c', 'left', 900);
       rows.forEach(([n, v], i) => { posBadge(i + 1, W - 208, 146 + i * 34, 22); label(`@${trim(n, 9)}`, W - 190, 147 + i * 34, 15, '#fff', 'left', 800); label(`${v} corte${v === 1 ? '' : 's'}`, W - 30, 147 + i * 34, 13, '#ffc93c', 'right', 800); });
     }
-    if (!this.kites.length) { slant(80, 520, W - 160, 110, { fill: 'rgba(10,30,70,.82)', skew: 14, border: '#fff' }); title('O CÉU ESTÁ VAZIO', W / 2, 562, 40, '#fff'); label('Comente qualquer coisa para soltar a sua pipa', W / 2, 604, 18, '#e0f2fe', 'center', 700); }
+    if (!this.kites.length) { slant(80, 520, W - 160, 110, { fill: 'rgba(10,30,70,.82)', skew: 14, border: '#fff' }); title('O CÉU ESTÁ VAZIO', W / 2, 562, 40, '#fff'); label('Quem entrar na live ganha uma pipa · comentar também solta', W / 2, 604, 18, '#e0f2fe', 'center', 700); }
     this.log.forEach((l, k) => toast(l.user, trim(`@${trim(l.user.nick, 10)} ${l.msg}`, 34), 20, 1120 + k * 44, { color: l.color, alpha: clamp(l.t, 0, 1), size: 17 }));
     slant(16, 1226, W - 32, 40, { fill: 'rgba(10,30,70,.85)', skew: 10 });
     label('ROSA corta 1  ·  ROSQUINHA escudo  ·  ÓCULOS corta 3  ·  GALÁXIA linha de ouro', W / 2, 1247, 14, '#fff', 'center', 800);

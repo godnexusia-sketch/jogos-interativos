@@ -9,6 +9,7 @@ if (params.get('clean') === '1') document.body.classList.add('clean');
 let ws = null;
 let wantedUser = '';
 let reconnectTimer = null;
+let viewerCount = 0; // espectadores na live agora (vem do TikTok)
 
 function setStatus(state, msg) {
   const el = $('status');
@@ -35,6 +36,8 @@ function openSocket() {
       GAMES.find((g) => g.configKey === msg.key)?.applyConfig(msg.data);
     } else if (msg.type === 'viewers') {
       $('viewers').textContent = `👀 ${msg.count}`;
+      viewerCount = msg.count;
+      if (current.wantsPresence) current.onViewers?.(msg.count);
     } else {
       handleEvent(msg);
     }
@@ -102,7 +105,8 @@ function handleEvent(ev) {
   else if (ev.type === 'like') addFeed(`❤️ ${who} curtiu ×${ev.count}`);
   else if (ev.type === 'gift') addFeed(`🎁 ${who} enviou ${ev.name} ×${ev.count} (${ev.diamonds} moedas)`);
   else if (ev.type === 'social') addFeed(`⭐ ${who} seguiu/compartilhou`);
-  else return; // entradas na sala não vão para o feed nem para o jogo
+  else if (ev.type === 'join') { if (current.wantsPresence) { addFeed(`👋 ${who} entrou na live`); current.onEvent(ev); } return; }
+  else return;
   current.onEvent(ev);
 }
 
@@ -164,6 +168,7 @@ function simGift(tier, user = fakeUser()) {
 $('simChat').addEventListener('click', () => simChat($('simText').value || current.sample?.() || 'oi'));
 $('simText').addEventListener('keydown', (e) => { if (e.key === 'Enter') simChat($('simText').value || current.sample?.() || 'oi'); });
 $('simLike').addEventListener('click', () => handleEvent({ type: 'like', user: fakeUser(), count: 5 }));
+$('simJoin').addEventListener('click', () => handleEvent({ type: 'join', user: fakeUser() }));
 document.querySelectorAll('[data-gift]').forEach((b) => b.addEventListener('click', () => simGift(Number(b.dataset.gift))));
 let autoTimer = null;
 $('simAuto').addEventListener('click', () => {
@@ -171,7 +176,8 @@ $('simAuto').addEventListener('click', () => {
   if (autoTimer) { clearInterval(autoTimer); autoTimer = null; return; }
   autoTimer = setInterval(() => {
     const r = Math.random();
-    if (r < 0.7) simChat(current.sample?.() || 'oi');
+    if (r < 0.06) handleEvent({ type: 'join', user: fakeUser() });
+    else if (r < 0.7) simChat(current.sample?.() || 'oi');
     else if (r < 0.92) handleEvent({ type: 'like', user: fakeUser(), count: 3 });
     else simGift(r < 0.97 ? 1 : r < 0.99 ? 2 : 3);
   }, 350);
