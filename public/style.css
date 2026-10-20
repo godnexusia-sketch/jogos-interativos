@@ -1,48 +1,71 @@
-:root { --bg:#0e0f14; --panel:#181a22; --line:#2a2d3a; --text:#eef0f6; --muted:#9aa0b4; --accent:#fe2c55; --accent2:#25f4ee; }
-* { box-sizing: border-box; }
-body { margin:0; background:var(--bg); color:var(--text); font:15px/1.4 system-ui, sans-serif; }
+:root {
+  --bg:#07080d; --bg2:#0d1018; --panel:#121624; --panel2:#171c2d; --line:rgba(255,255,255,.08);
+  --text:#eef1f8; --muted:#8e96ad; --accent:#ff2d55; --accent2:#22e3ee; --gold:#ffc93c;
+  --radius:14px;
+}
+* { box-sizing:border-box; }
+html, body { height:100%; }
+body { margin:0; background:radial-gradient(1200px 600px at 70% -10%, #1b1f3a 0%, transparent 60%), var(--bg); color:var(--text); font:15px/1.45 Barlow, system-ui, sans-serif; }
 button, input { font:inherit; color:inherit; }
-button { background:#262938; border:1px solid var(--line); border-radius:8px; padding:8px 12px; cursor:pointer; }
-button:hover { border-color:var(--accent2); }
-input { background:#0b0c10; border:1px solid var(--line); border-radius:8px; padding:8px 10px; min-width:0; }
-.bar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); }
-.logo { margin-right:8px; }
-#connectForm { display:flex; gap:8px; flex:1 1 280px; max-width:460px; }
+button { background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:9px 12px; cursor:pointer; transition:transform .08s, border-color .15s, background .15s; }
+button:hover { border-color:rgba(34,227,238,.5); }
+button:active { transform:scale(.97); }
+input { background:#0a0c14; border:1px solid var(--line); border-radius:10px; padding:9px 12px; min-width:0; outline:none; }
+input:focus { border-color:rgba(34,227,238,.6); }
+
+.topbar { display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--line); background:rgba(7,8,13,.75); backdrop-filter:blur(10px); position:sticky; top:0; z-index:5; }
+.brand { font:italic 800 20px 'Barlow Condensed', sans-serif; letter-spacing:.2px; display:flex; align-items:center; gap:8px; white-space:nowrap; }
+.brand b { color:var(--accent2); }
+.logo-dot { width:12px; height:12px; border-radius:50%; background:conic-gradient(var(--accent), var(--accent2), var(--accent)); box-shadow:0 0 12px var(--accent); }
+#connectForm { display:flex; gap:8px; flex:1 1 260px; max-width:480px; }
 #connectForm input { flex:1; }
-#connectBtn { background:var(--accent); border-color:var(--accent); font-weight:600; }
-.status { font-size:13px; padding:4px 10px; border-radius:99px; background:#262938; }
-.status.connected { background:#14532d; } .status.connecting, .status.offline { background:#713f12; } .status.error, .status.ended, .status.disconnected { background:#7f1d1d; }
+#connectBtn { background:linear-gradient(180deg, #ff4d70, #e01e45); border-color:transparent; font-weight:700; }
+.status { font-size:13px; padding:5px 12px; border-radius:99px; background:var(--panel2); max-width:100%; }
+.status.connected { background:#123d26; color:#8dffb6; } .status.connecting, .status.offline { background:#3d2c0c; color:#ffd88a; } .status.error, .status.ended, .status.disconnected { background:#3f1218; color:#ffb3bd; }
 #viewers { color:var(--muted); font-size:13px; }
-.tabs button.active { background:var(--accent2); color:#000; border-color:var(--accent2); font-weight:600; }
-main { display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:16px; padding:16px; }
-#stage { display:flex; justify-content:center; }
-canvas { width:100%; max-width:calc((100vh - 140px) * 0.5625); aspect-ratio:9/16; background:#000; border-radius:12px; }
-aside { display:flex; flex-direction:column; gap:12px; }
-.panel { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px; }
-.panel h3 { margin:0; font-size:14px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
-.row { display:flex; gap:6px; } .row button { flex:1; }
-#simAuto.on { background:var(--accent2); color:#000; }
+
+/* Abas: uma linha só, com rolagem lateral */
+.tabs { display:flex; gap:8px; overflow-x:auto; padding:10px 16px; border-bottom:1px solid var(--line); scrollbar-width:thin; }
+.tabs button { flex:none; display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:6px; transform:skewX(-10deg); font:italic 700 16px 'Barlow Condensed', sans-serif; letter-spacing:.3px; white-space:nowrap; }
+.tabs button.active { background:linear-gradient(180deg, #2ff0f8, #12b9c4); color:#041014; border-color:transparent; }
+
+main { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:18px; padding:18px; align-items:start; }
+#stage { display:flex; justify-content:center; align-items:flex-start; min-width:0; }
+canvas { display:block; background:#000; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.06); }
+aside { display:flex; flex-direction:column; gap:12px; min-width:0; }
+.panel { background:linear-gradient(180deg, var(--panel2), var(--panel)); border:1px solid var(--line); border-radius:var(--radius); padding:14px; display:flex; flex-direction:column; gap:10px; }
+.panel h3 { margin:0; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+.row { display:flex; gap:8px; } .row button { flex:1; }
+.gifts button { display:flex; flex-direction:column; align-items:center; font-size:20px; line-height:1.1; }
+.gifts small { font-size:10px; color:var(--muted); }
+#simAuto.on { background:linear-gradient(180deg, #2ff0f8, #12b9c4); color:#041014; }
 .feed ul { list-style:none; margin:0; padding:0; max-height:220px; overflow:auto; font-size:13px; }
-.feed li { padding:3px 0; border-bottom:1px solid var(--line); overflow-wrap:anywhere; }
+.feed li { padding:4px 0; border-bottom:1px solid var(--line); overflow-wrap:anywhere; }
 .small { margin:0; font-size:12px; color:var(--muted); }
 code { font-size:12px; overflow-wrap:anywhere; color:var(--accent2); }
 #help p { margin:0 0 6px; font-size:13px; }
-@media (max-width: 860px) { main { grid-template-columns:1fr; padding:16px; } canvas { max-width:100%; } }
-body.clean { background:transparent; }
+
+@media (max-width: 900px) {
+  main { grid-template-columns:1fr; padding:12px 16px; }
+  #stage { justify-content:center; }
+}
+
+/* Modo OBS: só a tela do jogo, centralizada e sem esticar */
+body.clean { background:transparent; overflow:hidden; }
 body.clean .controls { display:none !important; }
 body.clean main { display:block; padding:0; }
-body.clean canvas { max-width:none; width:100vw; height:100vh; border-radius:0; background:transparent; }
-.tabs { gap:6px; }
-.tabs button { padding:6px 10px; font-size:14px; }
+body.clean #stage { position:fixed; inset:0; align-items:center; }
+body.clean canvas { border-radius:0; box-shadow:none; background:transparent; }
+
 #settings { display:flex; flex-direction:column; gap:10px; }
-.cand { display:flex; gap:10px; align-items:flex-start; padding:8px; border:1px solid var(--line); border-radius:10px; }
+.cand { display:flex; gap:10px; align-items:flex-start; padding:10px; border:1px solid var(--line); border-radius:12px; background:rgba(0,0,0,.2); }
 .cand img { width:64px; height:64px; border-radius:10px; object-fit:cover; flex:none; }
 .cand .fields { display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
-#settings label { display:flex; flex-direction:column; gap:2px; font-size:12px; color:var(--muted); }
+#settings label { display:flex; flex-direction:column; gap:3px; font-size:12px; color:var(--muted); }
 #settings label.row2 { flex-direction:row; align-items:center; gap:8px; flex-wrap:wrap; }
 #settings input { width:100%; }
-#settings input[type=color] { width:44px; height:32px; padding:2px; }
-.file { position:relative; overflow:hidden; background:#262938; border:1px solid var(--line); border-radius:8px; padding:6px 10px; color:var(--text); cursor:pointer; }
+#settings input[type=color] { width:44px; height:34px; padding:2px; }
+.file { position:relative; overflow:hidden; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:7px 10px; color:var(--text); cursor:pointer; }
 .file input { position:absolute; inset:0; opacity:0; cursor:pointer; }
 .cfg-extra { display:flex; flex-direction:column; gap:8px; }
-button.primary { background:var(--accent); border-color:var(--accent); font-weight:600; }
+button.primary { background:linear-gradient(180deg, #ff4d70, #e01e45); border-color:transparent; font-weight:700; }

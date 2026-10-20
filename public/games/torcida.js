@@ -1,32 +1,42 @@
 'use strict';
 
-// Corrida de Torcidas: 2 a 4 corredores com foto e nome escolhidos por você.
-// O público escolhe por quem torce comentando o nome ou o número; presentes viram efeitos na pista.
-const TORCIDA_COLORS = ['#2f7cf6', '#e5383b', '#1f9d55', '#f59f00'];
+// Corrida de Torcidas no estilo atletismo olímpico: estádio 3D, pista azul de 8 raias e corredores 3D
+// com o rosto configurado. O público torce comentando o nome ou o número; presentes viram efeitos.
+const TORCIDA_COLORS = ['#2563eb', '#dc2626', '#16a34a', '#f59e0b'];
+const LANE_W = 1.22;
 
 registerGame(withConfig({
   id: 'torcida',
   name: 'Corrida de Torcidas',
   icon: '🏃',
-  help: '<p>Comente o <b>nome</b> ou o <b>número</b> (1, 2…) do corredor para torcer por ele. Cada comentário depois disso empurra um pouco.</p><p>🌹 Impulso · 🍩 Casca de banana no rival da frente · 🕶️ Superarrancada · 🌌 Tropeço em todos os rivais + escudo.</p><p>❤️ Likes enchem a <b>meta coletiva</b>: quando completa, quem está em último ganha uma arrancada.</p>',
+  help: '<p>Comente o <b>nome</b> ou o <b>número</b> (1, 2…) do corredor para torcer por ele. Cada comentário depois disso dá um empurrão.</p><p>🌹 Impulso · 🍩 Casca de banana no rival da frente · 🕶️ Superarrancada · 🌌 Derruba todos os rivais + escudo.</p><p>❤️ Likes enchem a <b>meta coletiva</b>: quando completa, quem está em último ganha uma arrancada.</p><p>Fotos e nomes em <b>Configurar</b>.</p>',
   cd: new Cooldown(1500),
   wins: new Map(),
+  heat: 1,
   reset() {
-    const n = this.config.items.length;
-    this.runners = this.config.items.map((it, i) => ({ ...it, i, pos: 0, boost: 0, mult: 1, slip: 0, shield: 0, fans: 0 }));
-    this.fan = new Map();
+    this.runners = this.config.items.map((it, i) => ({ ...it, i, pos: 0, boost: 0, mult: 1, slip: 0, shield: 0, fans: 0, lane: this.laneFor(i), fall: 0 }));
+    this.fan = this.fan || new Map();
+    for (const [, i] of this.fan) if (this.runners[i]) this.runners[i].fans++;
     this.top = new Map();
-    this.phase = 'countdown';
-    this.timer = 5;
+    this.phase = 'marks';
+    this.timer = 4.2;
+    this.raceT = 0;
     this.log = [];
     this.goal = { n: 0, need: 100, t: 30 };
     this.winner = null;
-    this.speedFx = new Array(n).fill(0);
+    if (this.r) this.rebuildRunners();
+  },
+  laneFor(i) { return [4, 5, 3, 6][i] ?? i + 2; },
+  applyConfig(cfg) {
+    if (!cfg?.items?.length) return;
+    this.config = cfg; store.set('cfg:torcida', cfg);
+    this.fan = new Map();
+    this.reset();
   },
   renderSettings(el, save) {
     renderItemsSettings(el, structuredClone(this.config), {
       min: 2, max: 4, itemLabel: 'Corredor',
-      extras: [{ key: 'length', label: 'Tamanho da pista (100 = uns 2 min)', min: 30, max: 1000 }],
+      extras: [{ key: 'length', label: 'Distância da prova (metros)', min: 60, max: 1500 }],
       newItem: (n) => ({ name: `Corredor ${n + 1}`, color: TORCIDA_COLORS[n], photo: '' }),
     }, (cfg) => { this.applyConfig(cfg); save(this.config); });
   },
@@ -37,15 +47,15 @@ registerGame(withConfig({
     if (m && Number(m[1]) <= this.runners.length) return this.runners[Number(m[1]) - 1];
     return this.runners.find((r) => t.includes(r.name.toLowerCase()));
   },
-  addLog(user, msg, color) { this.log.unshift({ user, msg, color, t: 7 }); this.log.length = Math.min(this.log.length, 4); },
+  addLog(user, msg, color) { this.log.unshift({ user, msg, color, t: 7 }); this.log.length = Math.min(this.log.length, 3); },
   leaderOf(except) { return [...this.runners].filter((r) => r !== except).sort((a, b) => b.pos - a.pos)[0]; },
   apply(r, kind, secs, user) {
-    if (kind === 'boost') { r.boost = Math.max(r.boost, secs); r.mult = Math.max(r.mult, 2); }
-    if (kind === 'super') { r.boost = Math.max(r.boost, secs); r.mult = 3.5; }
+    if (!r) return;
+    if (kind === 'boost') { r.boost = Math.max(r.boost, secs); r.mult = Math.max(r.mult, 1.7); }
+    if (kind === 'super') { r.boost = Math.max(r.boost, secs); r.mult = 2.6; }
     if (kind === 'slip') {
-      if (r.shield > 0) { r.shield = 0; this.addLog(user, `bateu no escudo de ${r.name}`, '#25f4ee'); return; }
+      if (r.shield > 0) { r.shield = 0; this.addLog(user, `bateu no escudo de ${r.name}`, '#00e5ff'); return; }
       r.slip = Math.max(r.slip, secs); r.boost = 0;
-      { const q = this.runnerXY(r); burst(q.x, q.y - 120, ['#ffd23f', '#fff'], 20, 250); }
     }
   },
   onEvent(ev) {
@@ -60,31 +70,27 @@ registerGame(withConfig({
         return;
       }
       const mine = this.fan.has(id) ? this.runners[this.fan.get(id)] : null;
-      if (mine && this.phase === 'race' && this.cd.ok(id)) { mine.pos += 0.35; addScore(this.top, ev.user.nick, 1); }
+      if (mine && this.phase === 'race' && this.cd.ok(id)) { mine.pos += 0.8; addScore(this.top, ev.user.nick, 1); }
     } else if (ev.type === 'like') {
       this.goal.n += ev.count;
       const mine = this.fan.has(id) ? this.runners[this.fan.get(id)] : null;
-      if (mine && this.phase === 'race') mine.pos += Math.min(1, 0.04 * ev.count);
+      if (mine && this.phase === 'race') mine.pos += Math.min(2, 0.1 * ev.count);
     } else if (ev.type === 'social') {
       const mine = this.fan.has(id) ? this.runners[this.fan.get(id)] : null;
-      if (mine) { mine.pos += 2; this.addLog(ev.user, `seguiu/compartilhou: +2 para ${mine.name}`, mine.color); }
+      if (mine) { mine.pos += 4; this.addLog(ev.user, `seguiu: +4 m para ${mine.name}`, mine.color); }
     } else if (ev.type === 'gift') {
       if (!this.fan.has(id)) { this.addLog(ev.user, 'comente o nome do corredor antes!', '#ffd23f'); return; }
       const r = this.runners[this.fan.get(id)];
       const tier = giftTier(ev);
       addScore(this.top, ev.user.nick, coins(ev) * 5);
       if (tier === 1) { this.apply(r, 'boost', 3 + ev.count, ev.user); this.addLog(ev.user, `deu IMPULSO em ${r.name}`, r.color); }
-      else if (tier === 2) {
-        const rival = this.leaderOf(r);
-        this.apply(rival, 'slip', 2.5, ev.user);
-        this.addLog(ev.user, `jogou 🍌 em ${rival.name}`, '#ffd23f');
-      } else if (tier === 3) { this.apply(r, 'super', 5, ev.user); this.addLog(ev.user, `SUPERARRANCADA em ${r.name}`, r.color); announcer.show(`⚡ ${trim(ev.user.nick, 12)}`, r.color, 2, 56); }
+      else if (tier === 2) { const rival = this.leaderOf(r); this.apply(rival, 'slip', 2.2, ev.user); this.addLog(ev.user, `jogou casca de banana em ${rival.name}`, '#ffd23f'); }
+      else if (tier === 3) { this.apply(r, 'super', 5, ev.user); this.addLog(ev.user, `SUPERARRANCADA em ${r.name}`, r.color); announcer.show('SUPERARRANCADA', r.color, 1.6, 54); }
       else {
-        for (const o of this.runners) if (o !== r) this.apply(o, 'slip', 3, ev.user);
-        r.shield = 15;
-        this.apply(r, 'super', 4, ev.user);
-        this.addLog(ev.user, `derrubou todo mundo! 🛡️ ${r.name}`, r.color);
-        announcer.show(`🌪️ ${trim(ev.user.nick, 12)}`, r.color, 2.5, 64);
+        for (const o of this.runners) if (o !== r) this.apply(o, 'slip', 2.6, ev.user);
+        r.shield = 15; this.apply(r, 'super', 4, ev.user);
+        this.addLog(ev.user, `derrubou todos! escudo em ${r.name}`, r.color);
+        announcer.show(`@${trim(ev.user.nick, 12)}`, r.color, 2.2, 60);
         sfx.boom();
       }
     }
@@ -92,216 +98,235 @@ registerGame(withConfig({
   update(dt) {
     for (const l of this.log) l.t -= dt;
     this.log = this.log.filter((l) => l.t > 0);
-    if (this.phase === 'countdown') {
+    if (this.phase === 'marks') {
+      const before = this.timer;
       this.timer -= dt;
-      if (this.timer <= 0) { this.phase = 'race'; this.timer = 0; announcer.show('LARGADA!', '#7cff6b', 1.2, 90); sfx.win(); }
+      if (before > 2.6 && this.timer <= 2.6) sfx.tone(440, 0.15, 'sine', 0.08);
+      if (before > 1.2 && this.timer <= 1.2) sfx.tone(520, 0.15, 'sine', 0.08);
+      if (this.timer <= 0) { this.phase = 'race'; sfx.boom(); announcer.show('VAI!', '#ffffff', 1, 130); }
       return;
     }
     if (this.phase === 'finish') {
       this.timer -= dt;
-      if (this.timer <= 0) { const fans = this.fan; this.reset(); this.fan = fans; for (const [, i] of fans) if (this.runners[i]) this.runners[i].fans++; }
+      if (this.timer <= 0) { this.heat++; this.reset(); }
       return;
     }
-    this.timer += dt;
-    // Meta coletiva de likes
+    this.raceT += dt;
     this.goal.t -= dt;
     if (this.goal.n >= this.goal.need) {
       const last = [...this.runners].sort((a, b) => a.pos - b.pos)[0];
       this.apply(last, 'super', 5);
-      announcer.show(`META BATIDA! ⚡ ${last.name}`, '#7cff6b', 2.5, 50);
+      announcer.show(`META BATIDA · ${last.name}`, '#22c55e', 2.2, 46);
       sfx.win();
       this.goal = { n: 0, need: Math.round(this.goal.need * 1.3), t: 30 };
     } else if (this.goal.t <= 0) this.goal = { n: 0, need: this.goal.need, t: 30 };
-
     const L = this.config.length;
     for (const r of this.runners) {
       r.boost = Math.max(0, r.boost - dt);
       if (r.boost <= 0) r.mult = 1;
       r.slip = Math.max(0, r.slip - dt);
       r.shield = Math.max(0, r.shield - dt);
-      const v = r.slip > 0 ? 0.1 : 0.8 * r.mult;
+      r.fall = r.slip > 0 ? Math.min(1, r.fall + dt * 4) : Math.max(0, r.fall - dt * 3);
+      // Velocidade base ~3,4 m/s: uma prova de 200 m dura cerca de 1 minuto sem ajuda
+      const v = r.slip > 0 ? 0.3 : (3.2 + Math.sin(this.raceT * 0.8 + r.i * 2) * 0.35) * r.mult;
+      r.v = v;
       r.pos = Math.min(L, r.pos + v * dt);
     }
     const w = this.runners.find((r) => r.pos >= L);
     if (w) {
-      this.winner = w;
-      this.phase = 'finish';
-      this.timer = 15;
+      this.winner = w; this.finalT = this.raceT;
+      this.phase = 'finish'; this.timer = 14;
       addScore(this.wins, w.name);
       sfx.win();
+      announcer.items.length = 0;
       for (let k = 0; k < 5; k++) setTimeout(() => burst(rand(100, W - 100), rand(250, 700), [w.color, '#ffd23f', '#fff'], 70, 550), k * 250);
     }
   },
-  // ---------- Desenho ----------
-  // Pistas em profundidade: a de trás mais alta e menor, a da frente mais baixa e maior.
-  laneY(i) { return this.runners.length > 2 ? 800 + i * 96 : 880 + i * 200; },
-  laneScale(i) { return this.runners.length > 2 ? 0.7 + i * 0.12 : 1.0 + i * 0.28; },
-  // Câmera segue o líder: 1 unidade de pista = 4 m, 18 px por metro.
-  runnerXY(r) {
-    const lead = Math.max(...this.runners.map((o) => o.pos));
-    const spread = Math.max(1, (lead - Math.min(...this.runners.map((o) => o.pos))) * 4 * 18 / 380);
-    return { x: 520 - ((lead - r.pos) * 4 * 18) / spread, y: this.laneY(r.i) };
+
+  // ---------- Estádio 3D ----------
+  init3d() {
+    if (this.r || !THREE) return;
+    const T = THREE;
+    const scene = new T.Scene();
+    scene.background = G3.skyTex('#1e3a8a', '#60a5fa', '#fde68a');
+    scene.fog = new T.Fog(0xa7c4f2, 90, 260);
+    const camera = new T.PerspectiveCamera(40, W / H, 0.1, 600);
+    const sun = G3.lights(scene, { ground: 0x335533, hemi: 1.0, sun: 2.6, pos: [-30, 50, 40] });
+    const len = 260;
+    // Pista azul de 8 raias, com linhas brancas e números
+    const track = G3.tex(1024, 256, (g) => {
+      g.fillStyle = '#1e5aa8'; g.fillRect(0, 0, 1024, 256);
+      for (let i = 0; i < 9000; i++) { g.fillStyle = `rgba(255,255,255,${Math.random() * 0.06})`; g.fillRect(Math.random() * 1024, Math.random() * 256, 2, 2); }
+      g.fillStyle = '#f8fafc'; for (let l = 0; l <= 8; l++) g.fillRect(0, l * 32 - (l === 8 ? 3 : 0), 1024, 3);
+    }, [len / 40, 1]);
+    const trackMesh = new T.Mesh(new T.PlaneGeometry(len, 8 * LANE_W), new T.MeshStandardMaterial({ map: track, roughness: 0.85 }));
+    trackMesh.rotation.x = -Math.PI / 2; trackMesh.position.set(len / 2 - 20, 0.01, 0); trackMesh.receiveShadow = true;
+    scene.add(trackMesh);
+    const infield = G3.tex(256, 256, (g) => { for (let y = 0; y < 256; y += 32) { g.fillStyle = (y / 32) % 2 ? '#2f8f3a' : '#37a344'; g.fillRect(0, y, 256, 32); } }, [30, 6]);
+    const grass = new T.Mesh(new T.PlaneGeometry(600, 120), new T.MeshLambertMaterial({ map: infield }));
+    grass.rotation.x = -Math.PI / 2; grass.position.set(len / 2 - 20, 0, -64); grass.receiveShadow = true; scene.add(grass);
+    const apron = new T.Mesh(new T.PlaneGeometry(600, 30), new T.MeshLambertMaterial({ color: 0x1b4f96 }));
+    apron.rotation.x = -Math.PI / 2; apron.position.set(len / 2 - 20, 0, 19.5); scene.add(apron);
+    // Números das raias na largada e linha de chegada
+    for (let l = 1; l <= 8; l++) {
+      const n = G3.tex(128, 128, (g) => { g.fillStyle = '#fff'; g.font = 'italic 900 100px "Barlow Condensed", Impact'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(String(l), 64, 70); });
+      const m = new T.Mesh(new T.PlaneGeometry(0.9, 0.9), new T.MeshBasicMaterial({ map: n, transparent: true }));
+      m.rotation.x = -Math.PI / 2; m.rotation.z = -Math.PI / 2; m.position.set(-1.2, 0.02, this.laneZ(l)); scene.add(m);
+    }
+    this.finishMark = new T.Group();
+    const fl = new T.Mesh(new T.PlaneGeometry(0.4, 8 * LANE_W), new T.MeshBasicMaterial({ color: 0xffffff }));
+    fl.rotation.x = -Math.PI / 2; this.finishMark.add(fl);
+    const gantryMat = new T.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.4, roughness: 0.4 });
+    for (const z of [-5.6, 5.6]) { const p = new T.Mesh(new T.BoxGeometry(0.3, 4, 0.3), gantryMat); p.position.set(0, 2, z); this.finishMark.add(p); }
+    const banner = G3.tex(512, 64, (g) => { g.fillStyle = '#0f172a'; g.fillRect(0, 0, 512, 64); g.fillStyle = '#facc15'; g.font = 'italic 900 48px "Barlow Condensed", Impact'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('CHEGADA', 256, 34); });
+    const top = new T.Mesh(new T.BoxGeometry(0.3, 0.8, 11.5), [new T.MeshBasicMaterial({ map: banner }), new T.MeshBasicMaterial({ map: banner }), gantryMat, gantryMat, gantryMat, gantryMat]);
+    top.position.y = 4; this.finishMark.add(top);
+    scene.add(this.finishMark);
+    // Blocos de largada
+    for (let l = 1; l <= 8; l++) { const b = new T.Mesh(new T.BoxGeometry(0.4, 0.15, 0.5), new T.MeshStandardMaterial({ color: 0xdc2626 })); b.position.set(-0.4, 0.08, this.laneZ(l)); scene.add(b); }
+    // Arquibancadas e torcida dos dois lados
+    const crowdTex = G3.tex(512, 256, (g) => {
+      g.fillStyle = '#334155'; g.fillRect(0, 0, 512, 256);
+      for (let r = 0; r < 16; r++) { g.fillStyle = r % 2 ? '#3b4a61' : '#2c3a4f'; g.fillRect(0, r * 16, 512, 16); for (let i = 0; i < 64; i++) { g.fillStyle = `hsl(${Math.random() * 360},${50 + Math.random() * 40}%,${45 + Math.random() * 25}%)`; g.beginPath(); g.arc(i * 8 + Math.random() * 3, r * 16 + 7, 3.2, 0, 7); g.fill(); } }
+    }, [8, 1]);
+    for (const [z, rot] of [[24, -0.6], [-46, 0.6]]) {
+      const stand = new T.Mesh(new T.PlaneGeometry(640, 34), new T.MeshLambertMaterial({ map: crowdTex, side: T.DoubleSide }));
+      stand.position.set(len / 2 - 20, 12, z); stand.rotation.x = rot * (z > 0 ? 1 : -1) + (z > 0 ? 0 : 0); stand.rotation.y = z > 0 ? Math.PI : 0;
+      scene.add(stand);
+      const roof = new T.Mesh(new T.BoxGeometry(640, 1, 10), new T.MeshStandardMaterial({ color: 0xe5e7eb }));
+      roof.position.set(len / 2 - 20, 28, z + (z > 0 ? 4 : -4)); scene.add(roof);
+    }
+    // Torres de luz
+    for (let x = -20; x < 260; x += 60) for (const z of [32, -54]) {
+      const pole = new T.Mesh(new T.CylinderGeometry(0.4, 0.6, 36, 8), new T.MeshStandardMaterial({ color: 0x94a3b8 })); pole.position.set(x, 18, z); scene.add(pole);
+      const lamp = new T.Mesh(new T.BoxGeometry(5, 3, 0.6), new T.MeshBasicMaterial({ color: 0xffffff })); lamp.position.set(x, 37, z); lamp.lookAt(x, 0, 0); scene.add(lamp);
+    }
+    this.r = { scene, camera, sun, camX: 0, len };
+    this.rebuildRunners();
   },
-  drawStadium() {
-    const g = ctx.createLinearGradient(0, 0, 0, 560);
-    g.addColorStop(0, '#2563eb'); g.addColorStop(1, '#93c5fd');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, 560);
-    // Arquibancada desfocada: desenhada pequena e ampliada
-    const c = document.createElement('canvas'); c.width = 120; c.height = 60;
-    const cg = c.getContext('2d');
-    cg.fillStyle = '#1e293b'; cg.fillRect(0, 0, 120, 60);
-    for (let i = 0; i < 900; i++) { cg.fillStyle = ['#f87171', '#facc15', '#60a5fa', '#f1f5f9', '#4ade80', '#fb923c'][i % 6]; cg.fillRect(Math.random() * 120, 6 + Math.random() * 54, 1.5, 1.5); }
-    ctx.save(); ctx.filter = 'blur(3px)'; ctx.drawImage(c, -10, 296, W + 20, 310); ctx.restore();
-    ctx.fillStyle = 'rgba(255,255,255,.15)'; ctx.fillRect(0, 300, W, 300);
-    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 596, W, 14);
-    for (let i = 0; i < 20; i++) { ctx.fillStyle = i % 2 ? '#facc15' : '#f97316'; ctx.fillRect(i * 36, 596, 30, 14); }
-    // Pista
-    const tg = ctx.createLinearGradient(0, 610, 0, 1110);
-    tg.addColorStop(0, '#c2410c'); tg.addColorStop(1, '#9a3412');
-    ctx.fillStyle = tg; ctx.fillRect(0, 610, W, 500);
-    for (let i = 0; i < 2000; i++) { ctx.fillStyle = 'rgba(0,0,0,.08)'; ctx.fillRect(Math.random() * W, 610 + Math.random() * 500, 2, 2); }
-    // Grama e faixa de velocidade em primeiro plano
-    ctx.fillStyle = '#16a34a'; ctx.fillRect(0, 1110, W, H - 1110);
-    for (let i = 0; i < 7; i++) { ctx.fillStyle = i % 2 ? '#15803d' : '#22c55e'; ctx.fillRect(0, 1110 + i * 26, W, 13); }
-  },
-  drawRunner(r, x, y, t, s = 1, alpha = 1) {
-    ctx.save();
-    ctx.globalAlpha *= alpha;
-    ctx.translate(x, y);
-    ctx.scale(s, s);
-    const fallen = r.slip > 0;
-    if (fallen) { ctx.rotate(-1.2); ctx.translate(-30, -10); }
-    const ph = fallen ? 0 : t * (9 + r.mult * 3) + r.i;
-    const skin = '#c68642', shorts = shade(r.color, -70), shoe = '#f8fafc';
-    const seg = (x0, y0, a, len, w, col) => {
-      const x1 = x0 + Math.sin(a) * len, y1 = y0 + Math.cos(a) * len;
-      ctx.strokeStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
-      return [x1, y1];
-    };
-    const leg = (p, dark) => {
-      const th = Math.sin(p) * 0.85;
-      const kneeBend = 0.25 + Math.max(0, Math.sin(p + 1.4)) * 1.5;
-      const [kx, ky] = seg(0, -92, th, 46, 17, dark ? shade(skin, -30) : skin);
-      const [fx, fy] = seg(kx, ky, th - kneeBend, 44, 14, dark ? shade(skin, -30) : skin);
-      ctx.fillStyle = dark ? '#cbd5e1' : shoe; ctx.beginPath(); ctx.roundRect(fx - 8, fy - 6, 26, 12, 6); ctx.fill();
-      ctx.fillStyle = r.color; ctx.fillRect(fx - 4, fy - 2, 14, 3);
-    };
-    const arm = (p, dark) => {
-      const ua = -Math.sin(p) * 0.9 + Math.PI;
-      const [ex, ey] = seg(0, -150, ua, 34, 12, dark ? shade(skin, -30) : skin);
-      seg(ex, ey, ua - 1.6 * (Math.sin(p) > 0 ? 1 : 0.6), 30, 11, dark ? shade(skin, -30) : skin);
-    };
-    // Sombra
-    ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(6, 0, 46, 8, 0, 0, 7); ctx.fill();
-    arm(ph + Math.PI, true); leg(ph + Math.PI, true);
-    // Short e camisa
-    ctx.fillStyle = shorts; ctx.beginPath(); ctx.roundRect(-20, -110, 42, 30, 8); ctx.fill();
-    const jg = ctx.createLinearGradient(-22, 0, 24, 0);
-    jg.addColorStop(0, shade(r.color, -30)); jg.addColorStop(0.5, shade(r.color, 25)); jg.addColorStop(1, shade(r.color, -40));
-    ctx.fillStyle = jg; ctx.beginPath(); ctx.roundRect(-22, -166, 46, 62, 14); ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.fillRect(-22, -140, 46, 6);
-    leg(ph, false); arm(ph, false);
-    ctx.restore();
-    // Cabeça grande com a foto (fica de fora da rotação para não distorcer)
-    const hx = fallen ? x - 70 * s : x + 2 * s, hy = fallen ? y - 30 * s : y - 202 * s;
-    ctx.save(); ctx.globalAlpha *= alpha;
-    avatar({ nick: r.name, pic: r.photo }, hx, hy, 40 * s, '#fff');
-    ctx.restore();
+  laneZ(l) { return (l - 4.5) * LANE_W; },
+  rebuildRunners() {
+    if (!this.r) return;
+    for (const r of this.r.rigs || []) this.r.scene.remove(r.root);
+    this.r.rigs = this.runners.map((r) => {
+      const rig = makeHuman({ color: r.color, shorts: shade(r.color, -70), photo: r.photo, seed: r.name + r.i, shoes: '#f97316' });
+      // Número no peito
+      const bib = G3.tex(128, 96, (g) => { g.fillStyle = '#fff'; g.fillRect(0, 0, 128, 96); g.fillStyle = '#111'; g.font = 'italic 900 70px "Barlow Condensed", Impact'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(String(r.i + 1), 64, 52); });
+      const b = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.32), new THREE.MeshBasicMaterial({ map: bib }));
+      b.position.set(0, 0.42, 0.29); rig.torso.add(b);
+      const tag = G3.label(trim(r.name, 12).toUpperCase(), { border: r.color, scale: 0.13 });
+      tag.center.set(0.5, 0); tag.position.set(0, 3.15, 0); rig.root.add(tag);
+      rig.tag = tag;
+      const bubble = new THREE.Mesh(new THREE.SphereGeometry(1.5, 24, 18), new THREE.MeshBasicMaterial({ color: 0x7dd3fc, transparent: true, opacity: 0.22, depthWrite: false }));
+      bubble.position.y = 1.5; bubble.visible = false; rig.root.add(bubble); rig.bubble = bubble;
+      const trail = new THREE.Mesh(new THREE.PlaneGeometry(3, 1.6), new THREE.MeshBasicMaterial({ color: new THREE.Color(r.color), transparent: true, opacity: 0.25, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }));
+      trail.position.set(0, 1.4, -1.8); trail.rotation.y = Math.PI / 2; trail.visible = false; rig.root.add(trail); rig.trail = trail;
+      this.r.scene.add(rig.root);
+      return rig;
+    });
   },
   draw() {
-    cachedScene('estadio', () => this.drawStadium());
+    if (!this.r) {
+      this.init3d();
+      background('#1e3a8a', '#60a5fa');
+      title('CORRIDA DE TORCIDAS', W / 2, H / 2 - 20, 54, '#fff');
+      text('Montando o estádio…', W / 2, H / 2 + 40, 26, '#e0f2fe', 'center', 700);
+      three3dReady.then(() => this.init3d());
+      return;
+    }
+    const T = THREE, t = performance.now() / 1000;
     const L = this.config.length;
-    const t = performance.now() / 1000;
-    const lead = Math.max(...this.runners.map((o) => o.pos));
-    // Linhas da pista andando com a câmera
-    const off = -((lead * 4 * 18) % 120);
-    ctx.fillStyle = 'rgba(255,255,255,.85)';
-    ctx.fillRect(0, 640, W, 3);
-    for (let i = 0; i < this.runners.length; i++) ctx.fillRect(0, this.laneY(i) + 16, W, 3);
-    for (let x = off; x < W; x += 120) { ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.fillRect(x, 640, 4, 470); }
-    // Faixas de velocidade no primeiro plano
-    for (let k = 0; k < 6; k++) { const x = ((-(lead * 4 * 40) + k * 260) % (W + 300) + W + 300) % (W + 300) - 150; ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(x, 1124 + k * 24, 140, 8); }
+    // A prova ocupa 200 unidades de pista na cena, qualquer que seja a distância configurada.
+    const k = 200 / L;
+    this.finishMark.position.set(L * k, 0, 0);
+    const lead = Math.max(...this.runners.map((r) => r.pos));
+    this.runners.forEach((r, i) => {
+      const rig = this.r.rigs[i];
+      rig.root.position.set(r.pos * k, 0, this.laneZ(r.lane));
+      rig.root.rotation.set(0, Math.PI / 2, 0);
+      if (this.phase === 'marks') {
+        // Agachado no bloco: "às suas marcas" e "prepara"
+        const set = this.timer < 1.2;
+        poseHuman(rig, { torso: [set ? 1.0 : 1.2, 0, 0], head: [-0.6, 0, 0], y: set ? -0.35 : -0.55, sL: [-1.4, 0, 0.1], eL: [0], sR: [-1.4, 0, -0.1], eR: [0], hL: [-1.6, 0, 0], kL: [1.9], hR: [-0.7, 0, 0], kR: [1.4] });
+      } else if (this.phase === 'finish') {
+        const won = r === this.winner;
+        poseHuman(rig, won ? { sL: [-2.9, 0, 0.4], sR: [-2.9, 0, -0.4], eL: [-0.2], eR: [-0.2], y: Math.abs(Math.sin(t * 5)) * 0.2 } : { torso: [0.5, 0, 0], sL: [-0.3, 0, 0.3], sR: [-0.3, 0, -0.3], eL: [-0.5], eR: [-0.5], hL: [-0.2], kL: [0.3], hR: [-0.2], kR: [0.3], y: -0.1 });
+      } else {
+        poseHuman(rig, runPose(t + i * 0.37, clamp(r.v / 3.4, 0.2, 1.6) * 0.9));
+      }
+      rig.root.rotation.z = r.fall ? -r.fall * 1.3 : 0;
+      if (r.fall) rig.root.position.y = 0.1;
+      rig.bubble.visible = r.shield > 0;
+      rig.trail.visible = r.boost > 0;
+      if (rig.trail.visible) { rig.trail.scale.x = 1 + Math.random() * 0.4; rig.trail.material.opacity = 0.18 + Math.random() * 0.12; }
+    });
+    // Câmera de TV acompanhando o líder pela lateral
+    const target = lead * k;
+    const c = this.r;
+    c.camX += (target - c.camX) * (Math.abs(target - c.camX) > 15 ? 1 : 0.08);
+    const finishing = this.phase === 'finish';
+    // Câmera de TV na frente, de três quartos: os corredores vêm na direção dela e o rosto aparece.
+    const marks = this.phase === 'marks';
+    // Abre o enquadramento quando os corredores se separam, para ninguém sumir da tela.
+    const last = Math.min(...this.runners.map((r) => r.pos)) * k;
+    const spread = clamp(target - last, 0, 24);
+    c.spread = (c.spread || 0) + (spread - (c.spread || 0)) * 0.05;
+    const ahead = (finishing ? 5 : marks ? 8.5 : 9) + c.spread * 0.25, side = (finishing ? 4.5 : 7.5) + c.spread * 0.45, camY = (marks ? 2.8 : 3.0) + c.spread * 0.12;
+    c.camera.position.set(c.camX + ahead, camY, side);
+    c.camera.lookAt(c.camX - (marks ? 0.5 : 2.5) - c.spread * 0.45, marks ? 0.9 : 1.3, -0.4);
+    c.sun.position.set(c.camX - 30, 50, 40); c.sun.target.position.set(c.camX, 0, 0);
+    G3.render(c.scene, c.camera);
+    this.drawHud();
+  },
+  drawHud() {
+    const L = this.config.length;
     const order = [...this.runners].sort((a, b) => b.pos - a.pos);
-    // Marcador de distância entre 1º e 2º
-    if (order.length > 1 && this.phase === 'race') {
-      const a = this.runnerXY(order[0]), b = this.runnerXY(order[1]);
-      const y = Math.max(a.y, b.y) + 40;
-      ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(b.x, y); ctx.lineTo(a.x, y); ctx.moveTo(b.x, y - 10); ctx.lineTo(b.x, y + 10); ctx.moveTo(a.x, y - 10); ctx.lineTo(a.x, y + 10); ctx.stroke();
-      pill(`+${((order[0].pos - order[1].pos) * 4).toFixed(1).replace('.', ',')} m`, (a.x + b.x) / 2, y, { bg: '#dc2626', size: 16, font: F_NUM });
-    }
-    for (const r of [...this.runners].sort((a, b) => a.i - b.i)) {
-      const p = this.runnerXY(r);
-      const s = this.laneScale(r.i);
-      if (r.boost > 0) for (let k = 3; k >= 1; k--) this.drawRunner(r, p.x - k * 34, p.y, t - k * 0.05, s, 0.18 * (4 - k));
-      if (r.shield > 0) { ctx.save(); ctx.beginPath(); ctx.arc(p.x, p.y - 120 * s, 150 * s, 0, 7); const sg = ctx.createRadialGradient(p.x, p.y - 120 * s, 40, p.x, p.y - 120 * s, 150 * s); sg.addColorStop(0, 'rgba(255,255,255,0)'); sg.addColorStop(1, 'rgba(165,243,252,.45)'); ctx.fillStyle = sg; ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 3; ctx.stroke(); ctx.restore(); }
-      this.drawRunner(r, p.x, p.y, t, s);
-      const rank = order.indexOf(r) + 1;
-      const ty = p.y - 268 * s;
-      const w = pill(trim(r.name, 10).toUpperCase(), p.x + 16, ty, { bg: shade(r.color, -50), border: r.color, size: 18, font: F_TITLE });
-      posBadge(rank, p.x + 16 - w / 2 - 18, ty, 28);
-      if (r.slip > 0) text('🍌💫', p.x - 40, p.y - 120, 30);
-    }
-    this.drawHud(order);
-    if (this.phase === 'finish' && this.winner) this.drawWinner();
-  },
-  drawHud(order) {
-    const L = this.config.length;
-    title('CORRIDA DE TORCIDAS', 24, 46, 26, '#fff', 'left');
-    panel(W - 170, 18, 150, 58, { r: 10, from: '#111827', to: '#030712', border: '#facc15' });
-    num(this.phase === 'race' ? fmtTime(this.timer) : this.phase === 'countdown' ? `0:0${Math.ceil(this.timer)}` : 'FIM', W - 95, 48, 36, '#facc15');
-    const rowsH = 18 + order.length * 50;
-    panel(16, 88, W - 32, rowsH, { r: 12, from: 'rgba(10,15,40,.92)', to: 'rgba(5,8,20,.92)', border: '#fff' });
+    // Faixa olímpica: prova e cronômetro
+    slant(16, 22, 400, 58, { fill: 'rgba(10,20,45,.92)', skew: 12, border: 'rgba(255,255,255,.2)' });
+    title(`${L} M · BATERIA ${this.heat}`, 40, 52, 30, '#fff', 'left');
+    slant(W - 220, 22, 204, 58, { fill: '#facc15', skew: 12 });
+    const tt = this.phase === 'finish' ? this.finalT : this.raceT;
+    num(`${tt.toFixed(2).replace('.', ',')}`, W - 118, 52, 38, '#0f172a');
+    // Classificação ao vivo
     order.forEach((r, k) => {
-      const y = 116 + k * 50;
-      posBadge(k + 1, 42, y, 28);
-      label(trim(r.name, 9).toUpperCase(), 66, y + 1, 20, r.color === '#ffffff' ? '#fff' : shade(r.color, 40), 'left', 400, F_TITLE);
-      const bx = 250, bw = 300;
-      ctx.fillStyle = '#7f1d1d'; ctx.fillRect(bx, y - 5, bw, 10);
-      ctx.fillStyle = r.color; ctx.fillRect(bx, y - 5, bw * clamp(r.pos / L, 0, 1), 10);
-      photo(r.photo, bx + bw * clamp(r.pos / L, 0, 1) - 18, y - 18, 36, 36, 6, (r.name[0] || '?').toUpperCase(), r.color);
-      text('🏁', bx + bw + 16, y, 18);
-      num(`${Math.round((r.pos / L) * 100)}%`, W - 30, y - 8, 24, '#fff', 'right');
-      const kmh = (r.slip > 0 ? 0.1 : 0.8 * r.mult) * 4 * 3.6 * (this.phase === 'race' ? 1 : 0);
-      label(`${kmh.toFixed(0)} KM/H`, W - 30, y + 14, 11, '#9aa0b4', 'right', 800);
+      const y = 96 + k * 50;
+      slant(16, y, W - 32, 44, { fill: k === 0 ? 'rgba(250,204,21,.18)' : 'rgba(10,20,45,.86)', skew: 10, border: k === 0 ? '#facc15' : null });
+      num(String(k + 1), 44, y + 22, 28, k === 0 ? '#facc15' : '#fff');
+      ctx.fillStyle = r.color; ctx.fillRect(66, y + 8, 8, 28);
+      photo(r.photo || fakeFace(r.name + r.i), 82, y + 4, 36, 36, 6, (r.name[0] || '?').toUpperCase(), r.color);
+      label(trim(r.name, 12).toUpperCase(), 128, y + 23, 20, '#fff', 'left', 400, F_TITLE);
+      label(`RAIA ${r.lane}`, 300, y + 23, 13, 'rgba(255,255,255,.6)', 'left', 800);
+      glossBar(370, y + 17, 210, 10, r.pos / L, r.color);
+      num(`${Math.round(r.pos)} m`, W - 34, y + 23, 22, '#fff', 'right');
     });
-    // Cartões de evento e meta coletiva
-    const cy = 88 + rowsH + 14;
-    this.log.slice(0, 2).forEach((l, k) => {
-      const y = cy + k * 58;
-      ctx.globalAlpha = clamp(l.t, 0, 1);
-      panel(16, y, 404, 50, { r: 8, from: 'rgba(10,15,40,.92)', to: 'rgba(5,8,20,.92)', border: l.color, shadow: false });
-      avatar(l.user, 42, y + 25, 17, l.color);
-      label(`@${trim(l.user.nick, 12)}`, 68, y + 16, 15, '#fff', 'left', 900);
-      label(trim(l.msg, 34), 68, y + 36, 13, l.color, 'left', 800);
-      ctx.globalAlpha = 1;
-    });
-    panel(432, cy, W - 448, 108, { r: 8, from: 'rgba(10,15,40,.92)', to: 'rgba(5,8,20,.92)', border: '#fff', shadow: false });
-    label('META COLETIVA', 446, cy + 18, 12, '#cbd5e1', 'left', 900);
-    label(`${Math.ceil(this.goal.t)}s`, W - 28, cy + 18, 12, '#cbd5e1', 'right', 900);
-    text('❤️', 462, cy + 56, 30);
-    num(`${this.goal.n}/${this.goal.need}`, 492, cy + 52, 30, '#facc15', 'left');
-    label('likes → ajuda quem está atrás', 446, cy + 84, 11, '#cbd5e1', 'left', 800);
-    glossBar(446, cy + 94, W - 476, 8, this.goal.n / this.goal.need, '#facc15');
-    if (this.phase === 'countdown') { panel(W / 2 - 230, 1080, 460, 90, { r: 20, from: 'rgba(10,15,40,.92)', to: 'rgba(5,8,20,.92)', border: '#facc15' }); title(`LARGADA EM ${Math.ceil(this.timer)}`, W / 2, 1112, 28, '#facc15'); label('Comente o nome ou o número do seu corredor', W / 2, 1148, 16, '#fff', 'center', 800); }
-    else { pill(`💬 Comente ${this.runners.map((r, i) => `${i + 1} = ${trim(r.name, 8)}`).join(' · ')}`, W / 2, 1190, { size: 18, bg: 'rgba(10,15,40,.9)', border: '#fff' }); }
-  },
-  drawWinner() {
-    const w = this.winner;
-    ctx.fillStyle = 'rgba(0,0,0,.8)'; ctx.fillRect(0, 0, W, H);
-    title('VENCEU', W / 2, 230, 70, '#ffd23f');
-    ctx.save(); ctx.shadowColor = w.color; ctx.shadowBlur = 40;
-    avatar({ nick: w.name, pic: w.photo }, W / 2, 440, 150, w.color);
-    ctx.restore();
-    title(trim(w.name, 14).toUpperCase(), W / 2, 640, 50, '#fff');
-    text(`${w.fans} torcedores`, W / 2, 704, 30, '#ddd', 'center', 700);
-    leaderboard(this.top, 'Quem mais empurrou', W / 2, 790, 3, 30);
-    text(`Nova corrida em ${Math.ceil(this.timer)}s`, W / 2, 1100, 30, '#ddd', 'center', 700);
+    // Cartões e meta coletiva
+    const cy = 96 + order.length * 50 + 10;
+    this.log.slice(0, 2).forEach((l, k) => toast(l.user, trim(`@${trim(l.user.nick, 12)} ${l.msg}`, 34), 16, cy + 20 + k * 44, { color: l.color, alpha: clamp(l.t, 0, 1), size: 16 }));
+    slant(16, 1130, W - 32, 110, { fill: 'rgba(10,20,45,.9)', skew: 12, border: 'rgba(255,255,255,.18)' });
+    label('META COLETIVA DE LIKES', 40, 1154, 14, 'rgba(255,255,255,.7)', 'left', 800);
+    num(`${this.goal.n}/${this.goal.need}`, 40, 1186, 34, '#facc15', 'left');
+    label(`${Math.ceil(this.goal.t)}s · completa e ajuda quem está atrás`, 210, 1186, 15, '#fff', 'left', 700);
+    glossBar(40, 1210, W - 100, 10, this.goal.n / this.goal.need, '#facc15');
+    if (this.phase === 'marks') {
+      const msg = this.timer > 2.6 ? 'ÀS SUAS MARCAS' : this.timer > 1.2 ? 'PREPARA…' : '';
+      if (msg) { slant(W / 2 - 220, 540, 440, 84, { fill: 'rgba(10,20,45,.9)', skew: 14, border: '#facc15' }); title(msg, W / 2, 584, 46, '#fff'); }
+      label(`Comente ${this.runners.map((r, i) => `${i + 1} = ${trim(r.name, 8)}`).join(' · ')}`, W / 2, 1100, 18, '#fff', 'center', 800);
+    }
+    if (this.phase === 'finish' && this.winner && this.timer < 12) {
+      const w = this.winner;
+      ctx.fillStyle = 'rgba(5,10,25,.72)'; ctx.fillRect(0, 380, W, 500);
+      title('OURO', W / 2, 440, 50, '#facc15');
+      photo(w.photo || fakeFace(w.name + w.i), W / 2 - 110, 480, 220, 220, 20, (w.name[0] || '?').toUpperCase(), w.color);
+      ctx.strokeStyle = '#facc15'; ctx.lineWidth = 6; ctx.strokeRect(W / 2 - 110, 480, 220, 220);
+      title(trim(w.name, 14).toUpperCase(), W / 2, 740, 50, '#fff');
+      label(`${this.finalT.toFixed(2).replace('.', ',')} s · ${w.fans} torcedores`, W / 2, 790, 22, '#e0f2fe', 'center', 800);
+      leaderboardSmall(this.top, W / 2 - 150, 850);
+    }
   },
 }, {
-  length: 100,
+  length: 200,
   items: [
-    { name: 'Azul', color: '#2f7cf6', photo: '' },
-    { name: 'Vermelho', color: '#e5383b', photo: '' },
+    { name: 'Azul', color: '#2563eb', photo: '' },
+    { name: 'Vermelho', color: '#dc2626', photo: '' },
   ],
 }));

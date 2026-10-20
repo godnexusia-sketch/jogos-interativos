@@ -42,7 +42,7 @@ async function robloxAvatar(nick) {
   let result = null;
   if (user) {
     for (let attempt = 0; attempt < 3 && !result; attempt++) {
-      const thumb = await fetch(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${user.id}&size=420x420&format=Png&isCircular=false`, { signal: AbortSignal.timeout(8000) }).then((r) => r.json());
+      const thumb = await fetch(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${user.id}&size=720x720&format=Png&isCircular=false`, { signal: AbortSignal.timeout(8000) }).then((r) => r.json());
       const t = thumb?.data?.[0];
       if (t?.state === 'Completed' && t.imageUrl) result = { name: user.name, display: user.displayName, img: t.imageUrl };
       else await new Promise((r) => setTimeout(r, 1200));

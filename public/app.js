@@ -114,7 +114,7 @@ const tabs = $('tabs');
 for (const g of GAMES) {
   const b = document.createElement('button');
   b.dataset.game = g.id;
-  b.textContent = `${g.icon} ${g.name}`;
+  b.innerHTML = `<span>${g.icon}</span>${g.name}`;
   b.addEventListener('click', () => selectGame(g));
   tabs.append(b);
 }
@@ -130,6 +130,8 @@ function selectGame(game) {
   if (game.renderSettings) game.renderSettings($('settings'), (cfg) => shareConfig(game.configKey, cfg));
   updateObsUrl();
 }
+// Usado pela votação para abrir o jogo escolhido pela live.
+function switchGameById(id) { const g = GAMES.find((x) => x.id === id); if (g) { g.reset(); selectGame(g); } }
 $('resetGame').addEventListener('click', () => { current.reset(); particles.length = 0; });
 $('editGame').addEventListener('click', () => current.edit?.());
 
@@ -175,10 +177,31 @@ $('simAuto').addEventListener('click', () => {
   }, 350);
 });
 
+// ---------- Tela sempre em 9:16 ----------
+// O canvas é encaixado no espaço disponível mantendo 9:16: nunca estica nem achata.
+function fitStage() {
+  const stage = $('stage');
+  let maxW, maxH;
+  if (isClean) { maxW = window.innerWidth; maxH = window.innerHeight; }
+  else {
+    const top = stage.getBoundingClientRect().top + window.scrollY;
+    maxW = stage.clientWidth;
+    maxH = window.innerWidth <= 900 ? Infinity : window.innerHeight - top - 18;
+    maxH = Math.max(maxH, 420);
+  }
+  let w = maxW, h = (w * 16) / 9;
+  if (h > maxH) { h = maxH; w = (h * 9) / 16; }
+  canvas.style.width = `${Math.floor(w)}px`;
+  canvas.style.height = `${Math.floor(h)}px`;
+}
+window.addEventListener('resize', fitStage);
+new ResizeObserver(fitStage).observe($('stage'));
+fitStage();
+
 // ---------- Loop ----------
 let last = performance.now();
 function loop(now) {
-  const dt = Math.min(0.05, (now - last) / 1000);
+  const dt = Math.min(0.1, (now - last) / 1000);
   last = now;
   current.update(dt);
   updateParticles(dt);

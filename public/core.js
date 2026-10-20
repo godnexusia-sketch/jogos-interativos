@@ -6,7 +6,13 @@ let ctx = canvas.getContext('2d');
 function ctxSwap(c) { ctx = c; }
 // Os jogos desenham em 720×1280; o canvas real é 1080×1920 (Full HD vertical), escalado.
 const W = 720, H = 1280, SCALE = canvas.width / W;
-const F_TEXT = 'Inter, system-ui, sans-serif', F_NUM = 'Anton, Impact, sans-serif', F_TITLE = 'Bungee, Impact, sans-serif';
+const F_TEXT = 'Barlow, system-ui, sans-serif', F_NUM = '"Barlow Condensed", Impact, sans-serif', F_TITLE = 'F_TITLE';
+// Números e títulos em Barlow Condensed itálico (estilo placar de transmissão esportiva).
+function fontCss(weight, size, font) {
+  if (font === F_NUM) return `italic 800 ${size}px "Barlow Condensed", Impact, sans-serif`;
+  if (font === F_TITLE) return `italic 900 ${size}px "Barlow Condensed", Impact, sans-serif`;
+  return `${weight} ${size}px ${font}`;
+}
 const COLORS = ['#fe2c55', '#25f4ee', '#ffd23f', '#7cff6b', '#b36bff', '#ff8a3d', '#4d9bff', '#ff6bd6'];
 const GAMES = [];
 
@@ -41,7 +47,7 @@ class Cooldown {
 // Texto com sombra suave (sem contorno). font: F_TEXT, F_NUM (números grandes) ou F_TITLE (títulos).
 function text(str, x, y, size = 40, color = '#fff', align = 'center', weight = 800, font = F_TEXT) {
   ctx.save();
-  ctx.font = `${font === F_TEXT ? weight : 400} ${size}px ${font}`;
+  ctx.font = fontCss(weight, size, font);
   ctx.textAlign = align;
   ctx.textBaseline = 'middle';
   ctx.shadowColor = 'rgba(0,0,0,.65)';
@@ -260,7 +266,7 @@ const store = {
 
 // Texto sem contorno, para fundos claros e letras pequenas.
 function label(str, x, y, size = 20, color = '#111', align = 'center', weight = 700, font = F_TEXT) {
-  ctx.font = `${font === F_TEXT ? weight : 400} ${size}px ${font}`;
+  ctx.font = fontCss(weight, size, font);
   ctx.textAlign = align;
   ctx.textBaseline = 'middle';
   ctx.fillStyle = color;
@@ -325,8 +331,8 @@ function renderItemsSettings(el, cfg, { min = 2, max = 2, extras = [], itemLabel
 function withConfig(game, defaults) {
   game.configKey = game.id;
   game.config = store.get('cfg:' + game.id, defaults);
-  game.getConfig = function () { return this.config; };
-  game.applyConfig = function (cfg) {
+  game.getConfig = game.getConfig || function () { return this.config; };
+  game.applyConfig = game.applyConfig || function (cfg) {
     if (!cfg?.items?.length) return;
     this.config = cfg;
     store.set('cfg:' + this.id, cfg);

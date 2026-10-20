@@ -25,7 +25,7 @@ function panel(x, y, w, h, { r = 18, from = '#1d2436', to = '#0c0f18', border = 
 
 // Etiqueta arredondada. Devolve a largura usada.
 function pill(str, x, y, { bg = 'rgba(0,0,0,.7)', color = '#fff', size = 18, h = size * 1.7, padX = size * 0.7, align = 'center', border = null, weight = 800, font = F_TEXT } = {}) {
-  ctx.font = `${font === F_TEXT ? weight : 400} ${size}px ${font}`;
+  ctx.font = fontCss(weight, size, font);
   const w = ctx.measureText(str).width + padX * 2;
   const x0 = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
   ctx.save();
@@ -190,4 +190,18 @@ function cachedScene(key, drawFn) {
     sceneCache.set(key, c);
   }
   ctx.drawImage(c, 0, 0, W, H);
+}
+
+// Faixa inclinada no estilo de placar de transmissão esportiva.
+function slant(x, y, w, h, { fill = 'rgba(10,12,18,.9)', skew = 12, border = null, glow = null } = {}) {
+  ctx.save();
+  if (glow) { ctx.shadowColor = glow; ctx.shadowBlur = 16; }
+  else { ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 4; }
+  ctx.beginPath(); ctx.moveTo(x + skew, y); ctx.lineTo(x + w, y); ctx.lineTo(x + w - skew, y + h); ctx.lineTo(x, y + h); ctx.closePath();
+  ctx.fillStyle = fill; ctx.fill();
+  ctx.restore();
+  if (border) {
+    ctx.beginPath(); ctx.moveTo(x + skew, y); ctx.lineTo(x + w, y); ctx.lineTo(x + w - skew, y + h); ctx.lineTo(x, y + h); ctx.closePath();
+    ctx.lineWidth = 2; ctx.strokeStyle = border; ctx.stroke();
+  }
 }
