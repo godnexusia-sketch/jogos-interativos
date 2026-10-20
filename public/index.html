@@ -17,11 +17,7 @@
     <span id="viewers"></span>
   </header>
 
-  <nav class="bar controls tabs">
-    <button data-game="votacao" class="active">🗳️ Votação</button>
-    <button data-game="corrida">🏁 Corrida</button>
-    <button data-game="flappy">🐤 Flappy</button>
-  </nav>
+  <nav id="tabs" class="bar controls tabs"></nav>
 
   <main>
     <section id="stage">
@@ -31,18 +27,28 @@
       <div class="panel">
         <h3>Como jogar</h3>
         <div id="help"></div>
-        <button id="editPoll" hidden>Editar votação</button>
+        <button id="editGame" hidden>Editar nomes / pergunta</button>
         <button id="resetGame">Reiniciar jogo</button>
+      </div>
+      <div class="panel" id="settingsPanel" hidden>
+        <h3>Configurar</h3>
+        <div id="settings"></div>
       </div>
       <div class="panel">
         <h3>Simulador</h3>
-        <input id="simText" placeholder="comentário (ex.: 1, !entrar, pula)">
+        <input id="simText" placeholder="comentário (vazio = exemplo do jogo)">
         <div class="row">
-          <button id="simChat">💬</button>
-          <button id="simLike">❤️</button>
-          <button id="simGift">🎁</button>
+          <button id="simChat" title="Comentário">💬</button>
+          <button id="simLike" title="Likes">❤️</button>
           <button id="simAuto">Auto</button>
         </div>
+        <div class="row">
+          <button data-gift="1" title="Rosa (1 moeda)">🌹</button>
+          <button data-gift="2" title="Rosquinha (30 moedas)">🍩</button>
+          <button data-gift="3" title="Óculos (199 moedas)">🕶️</button>
+          <button data-gift="4" title="Galáxia (1000 moedas)">🌌</button>
+        </div>
+        <p class="small">Presentes contam pelo valor: 🌹 até 4 moedas · 🍩 5–99 · 🕶️ 100–499 · 🌌 500+.</p>
       </div>
       <div class="panel feed">
         <h3>Eventos</h3>
@@ -55,6 +61,12 @@
       </div>
     </aside>
   </main>
+  <script src="core.js"></script>
+  <script src="games/votacao.js"></script>
+  <script src="games/simnao.js"></script>
+  <script src="games/urna.js"></script>
+  <script src="games/corrida.js"></script>
+  <script src="games/flappy.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -70,7 +70,7 @@ function openRoom(username) {
     enableExtendedGiftInfo: true,
     signApiKey: SIGN_API_KEY,
   });
-  const room = { conn, clients: new Set(), state: null };
+  const room = { conn, clients: new Set(), state: null, configs: {} };
   rooms.set(username, room);
 
   conn.on(WebcastEvent.CHAT, (d) => broadcast(room, { type: 'chat', user: userInfo(d.user), text: d.comment || '' }));
@@ -127,7 +127,7 @@ function leave(ws) {
   ws.username = null;
 }
 
-const wss = new WebSocketServer({ server, path: '/ws' });
+const wss = new WebSocketServer({ server, path: '/ws', maxPayload: 4 * 1024 * 1024 });
 
 wss.on('connection', (ws) => {
   ws.isAlive = true;
@@ -144,7 +144,15 @@ wss.on('connection', (ws) => {
       ws.username = username;
       const room = rooms.get(username) || openRoom(username);
       room.clients.add(ws);
+      for (const [key, data] of Object.entries(room.configs)) ws.send(JSON.stringify({ type: 'config', key, data }));
       ws.send(JSON.stringify(room.state ? { type: 'status', ...room.state } : { type: 'status', state: 'connecting', message: `Conectando a @${username}…` }));
+    } else if (msg.type === 'config') {
+      // Configuração de um jogo (fotos, nomes) repassada às outras telas do mesmo @, como a fonte do OBS.
+      const room = ws.username && rooms.get(ws.username);
+      if (!room || typeof msg.key !== 'string' || !/^[a-z]{1,20}$/.test(msg.key)) return;
+      room.configs[msg.key] = msg.data;
+      const data = JSON.stringify({ type: 'config', key: msg.key, data: msg.data });
+      for (const other of room.clients) if (other !== ws && other.readyState === other.OPEN) other.send(data);
     } else if (msg.type === 'disconnect') {
       leave(ws);
       ws.send(JSON.stringify({ type: 'status', state: 'idle', message: 'Desconectado.' }));

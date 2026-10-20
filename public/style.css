@@ -32,3 +32,17 @@ body.clean { background:transparent; }
 body.clean .controls { display:none !important; }
 body.clean main { display:block; padding:0; }
 body.clean canvas { max-width:none; width:100vw; height:100vh; border-radius:0; background:transparent; }
+.tabs { gap:6px; }
+.tabs button { padding:6px 10px; font-size:14px; }
+#settings { display:flex; flex-direction:column; gap:10px; }
+.cand { display:flex; gap:10px; align-items:flex-start; padding:8px; border:1px solid var(--line); border-radius:10px; }
+.cand img { width:64px; height:64px; border-radius:10px; object-fit:cover; flex:none; }
+.cand .fields { display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
+#settings label { display:flex; flex-direction:column; gap:2px; font-size:12px; color:var(--muted); }
+#settings label.row2 { flex-direction:row; align-items:center; gap:8px; flex-wrap:wrap; }
+#settings input { width:100%; }
+#settings input[type=color] { width:44px; height:32px; padding:2px; }
+.file { position:relative; overflow:hidden; background:#262938; border:1px solid var(--line); border-radius:8px; padding:6px 10px; color:var(--text); cursor:pointer; }
+.file input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.cfg-extra { display:flex; flex-direction:column; gap:8px; }
+button.primary { background:var(--accent); border-color:var(--accent); font-weight:600; }
