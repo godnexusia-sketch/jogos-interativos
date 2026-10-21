@@ -16,3 +16,15 @@ Arquivos originais em `Personagens.zip`, otimizados em `public/assets/chars/`:
 - O (Observer) e Robot — Polygonal Mind.
 - Soldier — madtrollstudio. Super Robot! — Romain Revert. Orangutan — cameron_.
 A licença de cada modelo é a da página dele na Poly Pizza (CC0 ou CC-BY). Os CC-BY pedem crédito ao autor (acima).
+
+## Segundo pacote de personagens (Poly Pizza)
+- Bull, Demon, Dragon Evolved, Mech, Skeleton — Quaternius (CC0).
+- Alien, Alien Skeleton, Carrot Character, Cool Bannana Guy, Eye Summoner, Eye Wizard, Lalobot, Skeleton Boy, Skeleton Costume — Polygonal Mind.
+- Adventurer e Dog — madtrollstudio. Astronaut — Poly by Google. Dragon Rigged — na3ee1. Rigged robot — joney_lol.
+- Mech Assault Walker — Alimayo Arango. MechQuadruped — 3Donimus. Zombie — cs_aaron.
+- Não usados como personagem (são kits de peças): Castle Kit (Kenney), Knights Character Kit (Jacques Fourie), Robot Kit v.1 (Jarlan Perez).
+Licença de cada um: a da página do modelo na Poly Pizza (CC0 ou CC-BY; os CC-BY pedem crédito ao autor, como acima).
+
+## Cabeças do Apresentador IA
+- male_base — hedy magroun; HeadRef — Christian Venables; Skull — CreativeTechLab (licença da página de cada um).
+- "Zuck Head" (Brielle Garcia) não foi usada: é o rosto de uma pessoa real, e um apresentador de IA falando com esse rosto numa live seria falsificação de identidade.
