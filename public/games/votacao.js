@@ -86,7 +86,7 @@ registerGame({
     if (this.phase === 'vote') {
       this.timeLeft -= dt;
       if (this.timeLeft <= 0) {
-        this.phase = 'result'; this.endT = 6; sfx.win();
+        this.phase = 'result'; this.endT = 6; this.revealT = 0; sfx.win(); confetti(120);
         const w = this.leader();
         if (w >= 0) for (let k = 0; k < 4; k++) setTimeout(() => burst(rand(100, W - 100), rand(300, 700), ['#ffc93c', '#00e5ff', '#ff2e63', '#fff'], 60, 520), k * 250);
       }
@@ -130,10 +130,14 @@ registerGame({
       ctx.fillStyle = isLead ? 'rgba(255,201,60,.30)' : 'rgba(0,229,255,.16)'; ctx.fillRect(x, y, cw * pct, ch);
       if (this.pulse[i]) { ctx.fillStyle = `rgba(255,255,255,${this.pulse[i] * 0.25})`; ctx.fillRect(x, y, cw, ch); }
       ctx.restore();
-      num(String(i + 1), x + 34, y + ch / 2, 46, isLead ? '#ffc93c' : '#00e5ff');
-      text(g.icon, x + 82, y + ch / 2 - 2, 30);
-      label(trim(g.name, 16), x + 106, y + ch / 2 - 12, 19, '#fff', 'left', 800);
-      label(`${this.votes[i]} voto${this.votes[i] === 1 ? '' : 's'}`, x + 106, y + ch / 2 + 14, 14, 'rgba(255,255,255,.65)', 'left', 700);
+      num(String(i + 1), x + 30, y + ch / 2, 42, isLead ? '#ffc93c' : '#00e5ff');
+      // Capa do jogo (tirada do próprio jogo); sem capa, o ícone
+      const cov = getImg(`/assets/capas/${g.id}.webp`), cwid = Math.min(ch - 14, 70) * 0.75, chh = Math.min(ch - 14, 70);
+      if (cov) { ctx.save(); ctx.beginPath(); ctx.roundRect(x + 58, y + (ch - chh) / 2, cwid, chh, 8); ctx.clip(); ctx.drawImage(cov, 0, cov.naturalHeight * 0.12, cov.naturalWidth, cov.naturalWidth / 0.75, x + 58, y + (ch - chh) / 2, cwid, chh); ctx.restore(); ctx.strokeStyle = isLead ? '#ffc93c' : 'rgba(255,255,255,.25)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect(x + 58, y + (ch - chh) / 2, cwid, chh, 8); ctx.stroke(); }
+      else text(g.icon, x + 58 + cwid / 2, y + ch / 2 - 2, 30);
+      const tx = x + 66 + cwid;
+      label(trim(g.name, 13), tx, y + ch / 2 - 12, 18, '#fff', 'left', 800);
+      label(`${this.votes[i]} voto${this.votes[i] === 1 ? '' : 's'}`, tx, y + ch / 2 + 14, 14, 'rgba(255,255,255,.65)', 'left', 700);
       this.faces[i].forEach((u, k) => avatar(u, x + cw - 30 - k * 22, y + ch / 2, 13, '#fff'));
     });
     const by = top + rows * (ch + 8) + 20;
@@ -145,11 +149,19 @@ registerGame({
       ctx.fillStyle = 'rgba(0,0,0,.78)'; ctx.fillRect(0, 0, W, H);
       if (lead >= 0) {
         const g = opts[lead];
-        title('A LIVE ESCOLHEU', W / 2, 420, 44, 'rgba(255,255,255,.8)');
-        text(g.icon, W / 2, 540, 120);
-        title(g.name.toUpperCase(), W / 2, 680, 70, '#ffc93c');
-        label(`${this.votes[lead]} votos`, W / 2, 740, 26, '#fff', 'center', 800);
-        if (this.config.autoSwitch) label(`Começando em ${Math.ceil(this.endT)}s…`, W / 2, 820, 22, 'rgba(255,255,255,.7)', 'center', 700);
+        // Revelação: a capa do vencedor cresce girando, com brilho atrás
+        this.revealT = (this.revealT || 0) + 1 / 60;
+        const k = Math.min(1, this.revealT / 0.6), e = 1 - Math.pow(1 - k, 3);
+        title('A LIVE ESCOLHEU', W / 2, 250, 44, 'rgba(255,255,255,.8)');
+        const cov = getImg(`/assets/capas/${g.id}.webp`), cw2 = 300 * e, ch2 = 533 * e;
+        ctx.save(); ctx.translate(W / 2, 600); ctx.rotate((1 - e) * -0.6);
+        const glow = ctx.createRadialGradient(0, 0, 50, 0, 0, 420); glow.addColorStop(0, 'rgba(255,201,60,.45)'); glow.addColorStop(1, 'rgba(255,201,60,0)'); ctx.fillStyle = glow; ctx.fillRect(-420, -420, 840, 840);
+        if (cov) { ctx.beginPath(); ctx.roundRect(-cw2 / 2, -ch2 / 2, cw2, ch2, 24); ctx.save(); ctx.clip(); ctx.drawImage(cov, -cw2 / 2, -ch2 / 2, cw2, ch2); ctx.restore(); ctx.lineWidth = 6; ctx.strokeStyle = '#ffc93c'; ctx.stroke(); }
+        else text(g.icon, 0, 0, 160 * e);
+        ctx.restore();
+        title(g.name.toUpperCase(), W / 2, 930, 62, '#ffc93c');
+        label(`${this.votes[lead]} votos`, W / 2, 985, 26, '#fff', 'center', 800);
+        if (this.config.autoSwitch) label(`Começando em ${Math.ceil(this.endT)}s…`, W / 2, 1040, 22, 'rgba(255,255,255,.7)', 'center', 700);
       } else {
         title('NINGUÉM VOTOU', W / 2, 520, 56, '#fff');
         if (this.config.autoSwitch) { title('ABRINDO O CÉU DE PIPAS', W / 2, 600, 40, '#00e5ff'); label(`em ${Math.ceil(this.endT)}s…`, W / 2, 660, 22, 'rgba(255,255,255,.7)', 'center', 700); }

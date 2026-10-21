@@ -351,6 +351,7 @@ class Character3D {
   dispose() {
     this.disposed = true;
     this.mixer?.stopAllAction();
+    if (this.model) this.mixer?.uncacheRoot(this.model);
     this.root.parent?.remove(this.root);
     this.root.traverse((o) => {
       // Geometrias do GLB são compartilhadas entre as cópias (ficam no cache); as do reserva são só deste boneco.
