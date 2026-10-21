@@ -7,7 +7,7 @@ const BASE = process.env.BASE || 'http://localhost:3123';
   const p = await b.newPage({ viewport: { width: 540, height: 960 } });
   p.on('pageerror', (e) => console.log('ERR', e.message));
   await p.goto(BASE + '/?clean=1&game=votacao'); await p.waitForTimeout(1500);
-  const kinds = await p.evaluate(() => Object.keys(CHARACTERS).filter((k) => !CHARACTERS[k].undead));
+  const kinds = process.argv.slice(2).length ? process.argv.slice(2) : await p.evaluate(() => Object.keys(CHARACTERS).filter((k) => !CHARACTERS[k].undead));
   for (const k of kinds) {
     await p.evaluate(async (k) => {
       await three3dReady;

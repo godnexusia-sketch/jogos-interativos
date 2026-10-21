@@ -75,7 +75,7 @@
       });
       // Um capitão de cada time ao lado do castelo
       const captains = this.castles.map((c, i) => {
-        const cap = new Character3D({ kind: pickKind('', i), loadout: 'weapon', height: 1.7, tint: this.teamsI[i].color, plate: false, base: 'idle' });
+        const cap = new Character3D({ kind: this.capOvr?.[i] || pickKind('', i), loadout: 'weapon', height: 1.7, tint: this.teamsI[i].color, plate: false, base: 'idle' });
         cap.root.position.copy(this.cellPos(c.x, c.y)).add(new T.Vector3(0, 0.3, 1.9));
         scene.add(cap.root);
         return cap;
@@ -98,6 +98,15 @@
       else if (id === 'boss') { cap.play('powerUp'); r.dir.shake(0.2, 0.4); r.fx.ring(at.clone().setY(0.4), { color: this.teamsI[t].color, size: 8 }); }
       else if (id === 'shield') { cap.play('block'); r.fx.burst(at, { color: '#9be7ff', n: 18, speed: 2, up: 2, size: 0.3, tex: 'star', additive: false, life: 0.9 }); }
       else if (id === 'speed_up' && Math.random() < 0.3 && !cap.busy) cap.play('jump');
+    },
+    // Presente de troca: muda o capitão do time de quem mandou
+    onCharPick(user, k) {
+      const t = this.who.get(user), r = this.r;
+      if (t === undefined) return;
+      this.capOvr = this.capOvr || []; this.capOvr[t] = k;
+      if (!r) return;
+      const old = r.captains[t], n = new Character3D({ kind: k, loadout: 'weapon', height: 1.7, tint: this.teamsI[t].color, plate: false, base: 'idle' });
+      n.root.position.copy(old.root.position); old.dispose(); r.scene.add(n.root); r.captains[t] = n; n.play('spawnAir');
     },
     onChat(ev) {
       const before = this.who.get(ev.user);

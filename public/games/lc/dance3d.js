@@ -79,6 +79,14 @@
       else if (id === 'spotlight') { c.play('victory', { then: 'taunt' }); }
       else if (id === 'disco_ball') { r.fx.burst(r.ball.position.clone(), { color: COLORS.slice(0, 6), n: 40, speed: 6, size: 0.3, life: 1.2 }); }
     },
+    onCharPick(user, k) {
+      const key = user.id || user.nick, r = this.r, c = r?.chars.get(key), d = this.d.find((x) => x.k === key);
+      if (!c || !d) return;
+      const n = new Character3D({ kind: k, user: d.user, plate: !d.user.bot, height: 1.55, tint: d.shirt, base: 'idle' });
+      n.root.position.copy(c.root.position); n.danceI = c.danceI; n.moveN = 0;
+      c.dispose(); r.scene.add(n.root); r.chars.set(key, n); n.play('spawnAir');
+      r.fx.burst(n.root.position.clone().setY(1.2), { color: ['#e879f9', '#ffffff'], n: 24, speed: 3, up: 2, size: 0.25, life: 0.8 });
+    },
     onChat(ev) {
       base.onChat.call(this, ev);
       const d = this.d.find((x) => x.k === uid(ev)), c = d && this.r?.chars.get(d.k);

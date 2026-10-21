@@ -13,6 +13,7 @@
     enter() { Assets3D.preload(HERO_KINDS.slice(0, 4)); },
     leave() { if (this.r?.ch) { for (const c of this.r.ch) c?.dispose(); this.r.ch = [null, null]; } },
     reset() { base.reset.call(this); if (this.r?.ch) { for (const c of this.r.ch) c?.dispose(); this.r.ch = [null, null]; } },
+    onCharPick(user) { const key = user.id || user.nick; if (this.f.some((e) => e && e.k === key)) this.rebuild = true; },
     buildFighters() {
       const r = this.r, T = THREE;
       r.ch = r.ch || [null, null];

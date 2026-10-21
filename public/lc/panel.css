@@ -312,3 +312,18 @@ button.primary:hover { box-shadow:0 8px 26px rgba(34,227,238,.45); }
 .chcard b { font:italic 800 17px 'Barlow Condensed', sans-serif; }
 .chcard small { color:var(--muted); font-size:11px; }
 .chcard code { color:#9ef0ff; }
+
+/* Lista de personagens na tela da live */
+.chgal { position:absolute; left:16px; right:16px; top:70px; padding:16px 12px 14px; border-radius:30px; background:linear-gradient(180deg, rgba(20,24,58,.94), rgba(8,10,28,.94)); border:2px solid rgba(34,227,238,.55); box-shadow:0 20px 60px rgba(0,0,0,.6), 0 0 40px rgba(124,92,255,.35); text-align:center; animation:chgalIn .5s cubic-bezier(.2,1.4,.4,1) both; z-index:5; }
+.chgal.out { animation:chgalOut .5s ease both; }
+.chgal h2 { margin:0; font:italic 900 40px 'Barlow Condensed', sans-serif; letter-spacing:.5px; background:linear-gradient(90deg, #fff, #9ef0ff 50%, #c4b5fd); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.chgal-how { margin:4px 0 14px; font:800 20px Barlow, sans-serif; color:#e2e8f0; }
+.chgal-how b { color:#fde047; }
+.chgal-grid { display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; }
+.chgal-c { display:flex; flex-direction:column; align-items:center; gap:1px; padding:6px 4px 6px; border-radius:14px; background:radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--c1) 40%, #1b2040), #0c0f22); border:1px solid color-mix(in srgb, var(--c1) 55%, transparent); }
+.chgal-c img { width:100%; aspect-ratio:1; object-fit:contain; }
+.chgal-c b { font:italic 800 13px 'Barlow Condensed', sans-serif; color:#fff; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+.chgal-c small { font:700 10px Barlow, sans-serif; color:#9ef0ff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+@keyframes chgalIn { from { transform:translateY(40px) scale(.9); opacity:0; } to { transform:none; opacity:1; } }
+@keyframes chgalOut { to { transform:translateY(-30px); opacity:0; } }
+@media (prefers-reduced-motion: reduce) { .chgal, .chgal.out { animation:none; } }

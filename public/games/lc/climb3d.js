@@ -59,7 +59,10 @@ function defineClimb(v) {
     sample() { return pick(['vai', 'sobe', 'bora', 'pula']); },
     enter() { Assets3D.preload([this.kind()]); },
     leave() { this.dispose3d(); },
-    kind() { const k = this.s.character; return k && CHARACTERS[k] ? k : HERO_KINDS[0] || 'sapo'; },
+    kind() { if (this.charOverride && CHARACTERS[this.charOverride]) return this.charOverride; const k = this.s.character; return k && CHARACTERS[k] ? k : pickKind('', 0, v.id); },
+    // Presente de troca: o escalador vira o personagem escolhido (ou um sorteado)
+    onCharPick(user, k) { this.charOverride = k; },
+    onSettings() { this.charOverride = null; },
     reset() {
       this.step = 0; this.best = 0; this.cp = 0; this.wins = this.wins || 0;
       this.ph = 'countdown'; this.t = this.s.startDelay; this.hopT = 0;

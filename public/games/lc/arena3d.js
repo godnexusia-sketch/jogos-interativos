@@ -89,6 +89,7 @@
       if (id === 'grow_hp') { this.r.fx.burst(c.root.position.clone().setY(1), { color: ['#4ade80', '#ffffff'], n: 6, speed: 1.2, up: 2, gravity: 0.5, size: 0.18, tex: 'star', additive: false }); if (!c.busy) c.play('powerUp', { speed: 1.4 }); }
       if (had && id.startsWith('attack') && !c.busy) c.play('cast', { speed: 1.3 });
     },
+    onCharPick(user) { const key = user.id || user.nick, c = this.r?.chars.get(key); if (c) { c.dispose(); this.r.chars.delete(key); } },
     onChat(ev) {
       const fi = this.f.find((x) => x.k === (ev.user.id || ev.user.nick));
       const c = fi && this.r?.chars.get(fi.k);

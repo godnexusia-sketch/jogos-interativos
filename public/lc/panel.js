@@ -467,6 +467,13 @@ if (!isClean) (() => {
       <div class="panel"><h3>Como escolher</h3>
         <label class="f tog"><input type="checkbox" id="chPick" ${cfg.viewerPick ? 'checked' : ''}><b></b><span>Espectador escolhe o próprio personagem comentando <strong>!nome</strong> (ex.: <code>!sapo</code>, <code>!astronauta</code>)</span></label>
         <label class="f"><span>Personagem fixo para todos (vazio = cada espectador ganha um dos ativos)</span><select id="chFixed"><option value="">— cada um o seu —</option>${kinds.map((k) => `<option value="${k}" ${cfg.fixed === k ? 'selected' : ''}>${esc(CHARACTERS[k].name)}</option>`).join('')}</select></label>
+        <label class="f"><span>🎁 Presente que troca o personagem de quem mandou (pega o que ele pediu com !nome, ou sorteia)</span><select id="chGift">${GIFT_CATALOG.filter((g) => g.coins <= 1000).sort((a, b) => a.coins - b.coins).map((g) => `<option value="${g.id}" ${String(cfg.changeGiftId) === g.id ? 'selected' : ''}>${esc(g.name)} · ${g.coins} 🪙</option>`).join('')}</select></label>
+        <label class="f tog"><input type="checkbox" id="chMascot" ${cfg.mascotOn ? 'checked' : ''}><b></b><span>Personagem na tela nos jogos que não têm personagem próprio (reage a comentários, likes e presentes)</span></label>
+        <div class="grid2"><label class="f"><span>Personagem desses jogos</span><select id="chMascotKind"><option value="">— sorteado e fixo para cada jogo —</option>${kinds.map((k) => `<option value="${k}" ${cfg.mascotKind === k ? 'selected' : ''}>${esc(CHARACTERS[k].name)}</option>`).join('')}</select></label>
+          <label class="f"><span>Lado da tela</span><select id="chMascotPos"><option value="right" ${cfg.mascotPos !== 'left' ? 'selected' : ''}>Direita</option><option value="left" ${cfg.mascotPos === 'left' ? 'selected' : ''}>Esquerda</option></select></label></div>
+        <div class="grid2"><label class="f"><span>Mostrar a lista de personagens na tela a cada (minutos, 0 = nunca)</span><input id="chEvery" type="number" min="0" max="120" value="${Number(cfg.galleryEvery) || 0}"></label>
+          <label class="f tog"><input type="checkbox" id="chCmd" ${cfg.galleryCmd ? 'checked' : ''}><b></b><span>Espectador abre a lista comentando <strong>!personagens</strong></span></label></div>
+        <div class="row"><button class="primary" id="chShow">📋 Mostrar a lista na tela agora</button></div>
         <div class="row wrap"><button id="chAll">Ativar todos</button><button id="chPack2">Só o pacote 2</button><button id="chPack">Só o pacote 1</button><button id="chKay">Só os clássicos</button></div>
         <p class="note">Vale para todos os jogos 3D com personagens: Lutadores, Arena de Batalha, Pista de Dança, Guerra das Torres, Guerra de Territórios, Colina dos Zumbis, MMA dos Países, Festa Pixel 3D e as escaladas. Quem já está na tela troca quando entrar de novo.</p></div>
       ${group('Pacote 2', PACK2_KINDS, 'Touro, Demônio, Dragão Evoluído, Mech e Caveira têm animações próprias; os outros se movem por movimento simples.')}
@@ -479,6 +486,13 @@ if (!isClean) (() => {
       save({ enabled: [...en] });
     }));
     q('#chPick').addEventListener('change', (e) => save({ viewerPick: e.target.checked }));
+    q('#chGift').addEventListener('change', (e) => { const g = GIFT_CATALOG.find((x) => x.id === e.target.value); save({ changeGiftId: g?.id || '', changeGiftName: g?.name || '' }); });
+    q('#chMascot').addEventListener('change', (e) => save({ mascotOn: e.target.checked }));
+    q('#chMascotKind').addEventListener('change', (e) => save({ mascotKind: e.target.value }));
+    q('#chMascotPos').addEventListener('change', (e) => save({ mascotPos: e.target.value }));
+    q('#chEvery').addEventListener('change', (e) => save({ galleryEvery: clamp(Number(e.target.value) || 0, 0, 120) }));
+    q('#chCmd').addEventListener('change', (e) => save({ galleryCmd: e.target.checked }));
+    q('#chShow').addEventListener('click', () => busDo({ t: 'charGallery' }));
     q('#chFixed').addEventListener('change', (e) => save({ fixed: e.target.value }));
     q('#chAll').addEventListener('click', () => save({ enabled: kinds }));
     q('#chPack').addEventListener('click', () => save({ enabled: [...PACK_KINDS] }));

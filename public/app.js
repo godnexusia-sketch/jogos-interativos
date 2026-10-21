@@ -152,6 +152,7 @@ function onBus(b, fromScreen = false) {
   else if (b.t === 'panic') { overlay.panic(); window.onPanic?.(); }
   else if (b.t === 'stats') stats.reset();
   else if (b.t === 'host') current.onHostCmd?.(b);
+  else if (b.t === 'charGallery') { charLive.lastGallery = 0; charLive.showGallery(); }
   else if (b.t === 'ptr') { pointer.x = b.x; pointer.y = b.y; pointer.down = true; current.onPointer?.(pointer); pointer.down = false; }
 }
 
@@ -169,6 +170,7 @@ function handleEvent(ev) {
   // Com a Tela da Live aberta, quem roda o jogo é ela: o painel só repassa o evento.
   if (mirrorOn()) { overlayOnly(ev); return toMirror({ t: 'ev', ev }); }
   overlay.onEvent(ev);
+  charLive.onEvent(ev);
   if (ev.type === 'join') { if (current.wantsPresence || current.v2) current.v2 ? dispatchV2(ev) : current.onEvent(ev); return; }
   if (!current.v2 && (ev.type === 'gift' || ev.type === 'social')) giftMeter.push(ev);
   if (current.v2) dispatchV2(ev);
@@ -179,7 +181,11 @@ function overlayOnly(ev) { stats.onEvent(ev); }
 function dispatchV2(ev) {
   if (paused) return;
   const pk = typeof charPickFromChat === 'function' && charPickFromChat(ev);
-  if (pk) { current.onCharPick?.(ev.user, pk); announcer.show(`${trim(ev.user?.nick || '', 14)} escolheu ${CHARACTERS[pk].name}!`, '#9ef0ff', 2, 34); }
+  if (pk) {
+    const nick = trim(ev.user?.nick || '', 14);
+    if (current.hasChars || HAS_CHARS.includes(current.id)) { current.onCharPick?.(ev.user, pk); announcer.show(`${nick} escolheu ${CHARACTERS[pk].name}!`, '#9ef0ff', 2, 34); }
+    else announcer.show(`${nick}: mande 🎁 ${charCfg().changeGiftName} para virar ${CHARACTERS[pk].name}`, '#9ef0ff', 2.5, 28);
+  }
   if (ev.type === 'chat' && current.onChat && canPlay(current, ev.user)) current.onChat(ev);
   current.onEvent?.(ev);
   runTriggers(current, ev);
@@ -303,11 +309,12 @@ function loop(now) {
   if (mirrorOn()) { if (!pausedDrawn) drawPaused(); requestAnimationFrame(loop); return; }
   pausedDrawn = false;
   try {
-    if (!paused) { current.update(dt); updateParticles(dt); announcer.update(dt); giftMeter.update(dt); }
+    if (!paused) { current.update(dt); updateParticles(dt); announcer.update(dt); giftMeter.update(dt); charLive.tick(dt); }
     overlay.update(dt);
     ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
     ctx.clearRect(0, 0, W, H);
     current.draw();
+    mascot.draw(dt);
     drawParticles();
     announcer.draw();
     if (!current.v2) giftMeter.draw(current.meterY ?? 200);

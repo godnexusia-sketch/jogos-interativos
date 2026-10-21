@@ -66,6 +66,15 @@ defineGame(Object.assign({}, DuelBase, {
     if (ev.type === 'like') this.hype(Math.min(0.05, (ev.count || 1) * 0.004));
     if (ev.type === 'gift') this.hype(Math.min(0.6, Math.log10(1 + coins(ev)) * 0.15));
   },
+  // Troca de personagem (presente de troca ou !nome): o novo aparece no mesmo lugar, com faíscas
+  onCharPick(user) {
+    const key = user.id || user.nick, r = this.r, c = r?.chars.get(key);
+    if (!c) return;
+    const pos = c.root.position.clone(), rot = c.root.rotation.y;
+    c.dispose(); r.chars.delete(key); this.syncChars();
+    const n = r.chars.get(key);
+    if (n) { n.root.position.copy(pos); n.root.rotation.y = rot; n.entering = false; n.play('spawnAir'); r.fx.burst(pos.clone().setY(1.2), { color: ['#22e3ee', '#ffffff', '#fde047'], n: 30, speed: 4, up: 2, size: 0.25, life: 0.8 }); }
+  },
   hype(n) { if (this.r) this.r.arena.hype = Math.min(1, this.r.arena.hype + n); },
 
   // ---------- Cena ----------

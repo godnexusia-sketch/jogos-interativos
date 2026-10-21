@@ -13,6 +13,8 @@
   ]);
   const base = { reset: g.reset, damage: g.damage, draw: g.draw };
   const kindOf = (gm, zb) => {
+    const own = CHAR_PICKS.get(charKeyOf(zb.user));
+    if (own) return own; // quem escolheu (!nome ou presente de troca) vira o próprio personagem
     if (gm.s.zombieSet === 'one') return pickKind(gm.s.zombieKind);
     return kindFor(zb.user, gm.s.zombieSet === 'all' ? HERO_KINDS : UNDEAD_KINDS);
   };
@@ -20,6 +22,7 @@
     enter() { Assets3D.preload(this.s.zombieSet === 'all' ? HERO_KINDS.slice(0, 6) : UNDEAD_KINDS); },
     leave() { if (this.r?.zc) { for (const c of this.r.zc.values()) c.dispose(); this.r.zc.clear(); } },
     onSettings() { this.leave(); },
+    onCharPick(user) { const key = user.id || user.nick; for (const [zb, c] of this.r?.zc || []) if (zb.k === key) { c.dispose(); this.r.zc.delete(zb); } },
     reset() { base.reset.call(this); if (this.r?.zc) { for (const c of this.r.zc.values()) c.dispose(); this.r.zc.clear(); } },
     damage(zb, d) {
       const alive = zb.alive;
