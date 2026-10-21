@@ -15,10 +15,12 @@ const PUBLIC_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), 'publ
 const USERNAME_RE = /^[a-zA-Z0-9_.]{2,24}$/;
 const THREE_PATH = fileURLToPath(new URL('./node_modules/three/build/three.module.min.js', import.meta.url));
 const IMG_HOSTS = ['tiktokcdn.com', 'tiktokcdn-us.com', 'tiktokcdn-eu.com', 'ibyteimg.com', 'muscdn.com', 'byteimg.com', 'rbxcdn.com',
-  'flagcdn.com', 'upload.wikimedia.org', 'www.google.com', 'gstatic.com', 'mc-heads.net', 'crafatar.com'];
+  'flagcdn.com', 'wikimedia.org', 'www.google.com', 'gstatic.com', 'mc-heads.net', 'crafatar.com'];
 const MEDIA_DIR = path.join(os.tmpdir(), 'jogos-media');
 const MEDIA_MAX = 60 * 1024 * 1024;
 const imgCache = new Map();
+const wikiCache = new Map();
+const UA = 'JogosInterativos/1.0 (jogos para lives; contato pelo GitHub godnexusia-sketch)';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -190,11 +192,11 @@ const server = http.createServer(async (req, res) => {
     const send = (img) => { res.writeHead(200, { 'content-type': img.type, 'access-control-allow-origin': '*', 'cache-control': 'public, max-age=3600' }); res.end(img.body); };
     if (cached) return send(cached);
     try {
-      const r = await fetch(target, { signal: AbortSignal.timeout(8000) });
+      const r = await fetch(target, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(8000) });
       const type = r.headers.get('content-type') || '';
       if (!r.ok || !type.startsWith('image/')) { res.writeHead(502); return res.end(); }
       const body = Buffer.from(await r.arrayBuffer());
-      if (body.length > 2_000_000) { res.writeHead(413); return res.end(); }
+      if (body.length > 6_000_000) { res.writeHead(413); return res.end(); }
       if (imgCache.size > 500) imgCache.delete(imgCache.keys().next().value);
       const img = { type, body };
       imgCache.set(target.href, img);
@@ -245,6 +247,32 @@ const server = http.createServer(async (req, res) => {
       console.error('ia falhou:', err?.message);
       return sendJson(res, 502, { error: err?.message || 'falha' });
     }
+  }
+  if (url.pathname === '/api/wiki') {
+    // Foto e resumo de um lugar na Wikipédia (português primeiro, depois inglês), para o jogo Onde Fica.
+    const titles = [url.searchParams.get('pt'), url.searchParams.get('en')].filter(Boolean).map((t) => String(t).slice(0, 80));
+    const key = titles.join('|');
+    if (wikiCache.has(key)) return sendJson(res, 200, wikiCache.get(key));
+    for (const [i, t] of titles.entries()) {
+      try {
+        const r = await fetch(`https://${i === 0 && url.searchParams.get('pt') ? 'pt' : 'en'}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(t.replace(/ /g, '_'))}`, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(8000) });
+        if (!r.ok) continue;
+        const j = await r.json();
+        let img = String(j.originalimage?.source || j.thumbnail?.source || '').split('?')[0];
+        // Pede uma versão de até 960px (tamanho padrão aceito pela Wikimedia) em vez do arquivo original (que pode ser enorme)
+        if (/\/\d+px-[^/]+$/.test(img)) img = img.replace(/\/(\d+)px-([^/]+)$/, (m0, n, f) => `/${Math.min(Number(n), 960)}px-${f}`);
+        else {
+          const m = img.match(/^(https:\/\/upload\.wikimedia\.org\/wikipedia\/commons)\/(\w)\/(\w\w)\/([^/]+)$/);
+          if (m && (j.originalimage?.width || 0) > 960 && !/\.svg$/i.test(m[4])) img = `${m[1]}/thumb/${m[2]}/${m[3]}/${m[4]}/960px-${m[4]}`;
+        }
+        if (!img || /\.svg/i.test(img)) continue;
+        const out = { img, title: j.title, w: j.originalimage?.width, h: j.originalimage?.height };
+        if (wikiCache.size > 500) wikiCache.delete(wikiCache.keys().next().value);
+        wikiCache.set(key, out);
+        return sendJson(res, 200, out);
+      } catch {}
+    }
+    return sendJson(res, 404, { error: 'sem foto' });
   }
   if (url.pathname === '/api/ai-status') return sendJson(res, 200, { provider: anthropic ? 'claude' : 'gratis', model: anthropic ? AI_MODEL : 'pollinations' });
   if (url.pathname === '/api/media' && req.method === 'POST') {

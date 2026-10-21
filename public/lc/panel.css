@@ -168,7 +168,7 @@ body.clean #pausedTag { display:none; }
 
 .alert { position:absolute; left:0; width:720px; padding:0 30px; display:flex; flex-direction:column; align-items:center; gap:10px; animation:alIn .45s cubic-bezier(.2,1.4,.4,1) both; }
 .alert.out { animation:alOut .4s ease-in both; }
-.alert.pos-top { top:150px; } .alert.pos-middle { top:470px; } .alert.pos-bottom { top:900px; }
+.alert.pos-top { top:118px; } .alert.pos-middle { top:470px; } .alert.pos-bottom { top:900px; }
 .al-media { max-width:300px; max-height:260px; border-radius:14px; }
 .al-box { display:flex; align-items:center; gap:14px; padding:14px 22px 14px 14px; border-radius:999px; background:rgba(8,10,20,.9); border:3px solid var(--c); box-shadow:0 0 30px color-mix(in srgb, var(--c) 60%, transparent), 0 12px 30px rgba(0,0,0,.5); }
 .al-pic { width:70px; height:70px; border-radius:50%; object-fit:cover; border:3px solid var(--c); }

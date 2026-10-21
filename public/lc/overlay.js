@@ -6,8 +6,8 @@
 const ALERT_DEFAULTS = {
   on: true,
   font: 'Barlow',
-  gift: { on: true, text: '{user} mandou {gift} ×{count}', sub: '{coins} moedas', sound: 'chime', media: '', read: false, pos: 'top', size: 'medium', color: '#ff2d55', style: 'bubble', secs: 4, min: 1, other: true, variations: [] },
-  follow: { on: true, text: '{user} começou a seguir!', sub: 'Obrigado! 💖', sound: 'pop', media: '', read: false, pos: 'top', size: 'medium', color: '#ffc93c', style: 'bubble', secs: 3.5 },
+  gift: { on: true, text: '{user} mandou {gift} ×{count}', sub: '{coins} moedas', sound: 'chime', media: '', read: false, pos: 'top', size: 'small', color: '#ff2d55', style: 'bubble', secs: 4, min: 1, other: true, variations: [] },
+  follow: { on: true, text: '{user} começou a seguir!', sub: 'Obrigado! 💖', sound: 'pop', media: '', read: false, pos: 'top', size: 'small', color: '#ffc93c', style: 'bubble', secs: 3.5 },
   share: { on: true, text: '{user} compartilhou a live!', sub: '🔁 valeu demais', sound: 'whoosh', media: '', read: false, pos: 'top', size: 'small', color: '#22e3ee', style: 'bubble', secs: 3 },
   join: { on: false, text: 'Olá {user}!', sub: 'Bem-vindo à live', sound: '', media: '', read: false, pos: 'bottom', size: 'small', color: '#7cff6b', style: 'sticker', secs: 2.5, once: true, gap: 3 },
   likes: { on: false, text: '{user} mandou {count} likes!', sub: '❤️❤️❤️', sound: 'pop', media: '', read: false, pos: 'middle', size: 'small', color: '#ff6bd6', style: 'burst', secs: 3, min: 100 },
@@ -257,8 +257,9 @@ const fx = {
   onEvent(ev) {
     const E = liveCfg.effects;
     if (ev.type === 'like' && E.likeFountain.on) {
-      const n = { few: 1, some: 2, lots: 4 }[E.likeFountain.amount] || 2;
-      for (let i = 0; i < Math.min(8, n * Math.ceil((ev.count || 1) / 5)); i++) this.heart(ev.user, i === 0 && E.likeFountain.pics);
+      const n = { few: 0.5, some: 1, lots: 2.5 }[E.likeFountain.amount] || 1;
+      const k = Math.min(6, Math.round(n * Math.ceil((ev.count || 1) / 8)) || (Math.random() < n ? 1 : 0));
+      for (let i = 0; i < k; i++) this.heart(ev.user, i === 0 && E.likeFountain.pics);
     } else if (ev.type === 'social' && ev.action !== 'share' && E.followBalloon.on) {
       this.items.push({ k: 'balloon', user: ev.user, x: rand(120, W - 120), y: H + 120, t: 0, life: E.followBalloon.secs || 6, s: E.followBalloon.size || 1, hue: rand(0, 360) });
       if (E.followBalloon.sound) playSound('pop', 'fx', 0.6);
@@ -271,7 +272,7 @@ const fx = {
       if (E.giftFirework.on && c >= (E.giftFirework.min || 10)) {
         this.items.push({ k: 'rocket', user: ev.user, img: ev.img, name: E.giftFirework.name ? ev.user?.nick : '', x: rand(140, W - 140), y: H + 40, ty: rand(300, 560), t: 0, life: 4, rings: (ev.count || 1) >= 20 ? 3 : (ev.count || 1) >= 5 ? 2 : 1, s: E.giftFirework.size || 1, boom: false });
         if (E.giftFirework.sound) playSound('laser', 'fx', 0.4);
-      } else if (E.giftFx.on && c <= (E.giftFx.max || 9)) {
+      } else if (E.giftFx.on && c <= (E.giftFx.max || 9) && ev.img) {
         this.items.push({ k: 'giftfx', img: ev.img, user: ev.user, t: 0, life: 2.2, s: E.giftFx.size || 1, x: rand(200, W - 200), y: rand(500, 800) });
         if (E.giftFx.sound) playSound('coin', 'fx', 0.5);
       }
@@ -346,7 +347,7 @@ const fx = {
           for (const p of it.parts) {
             if (it.t - 1.1 < p.d) continue;
             if (img) ctx.drawImage(img, p.x - 16 * it.s, p.y - 16 * it.s, 32 * it.s, 32 * it.s);
-            else drawHeart(p.x, p.y, 10 * it.s, '#ffc93c');
+            else { ctx.fillStyle = p.c || (p.c = pick(['#ffc93c', '#ff2d55', '#22e3ee', '#fff'])); ctx.beginPath(); ctx.arc(p.x, p.y, 5 * it.s, 0, 7); ctx.fill(); }
           }
           if (it.name) { ctx.globalAlpha = a * clamp((it.t - 1.1) * 3, 0, 1); pill(it.name, it.x, it.y, { size: 20, bg: 'rgba(0,0,0,.7)', color: '#ffc93c' }); }
         }
@@ -355,7 +356,6 @@ const fx = {
         const k = Math.sin(clamp(it.t / it.life, 0, 1) * Math.PI), sz = (120 + 160 * k) * it.s;
         ctx.globalAlpha = a;
         if (img) ctx.drawImage(img, it.x - sz / 2, it.y - sz / 2 - it.t * 40, sz, sz);
-        else label('🎁', it.x, it.y - it.t * 40, sz * 0.7, '#fff', 'center', 400);
       }
       ctx.restore();
     }
