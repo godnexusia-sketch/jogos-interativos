@@ -23,8 +23,11 @@ const shots = process.argv[2];
   }
   // Troca de jogo pelo painel
   await panel.click('#rail [data-view="jogos"]');
-  await panel.click('.card[data-id="trivia-time"]');
+  await panel.click('.gcard[data-id="trivia-time"]');
   await panel.waitForTimeout(1200);
+  // Iniciar deixa o jogo no ar; o destaque abre as configurações
+  await panel.click('#heroOpen');
+  await panel.waitForTimeout(400);
   const g1 = await screen.evaluate(() => current.id);
   // Configuração ao vivo
   await panel.evaluate(() => document.querySelectorAll('#sets details').forEach((d) => (d.open = true)));

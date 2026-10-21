@@ -9,6 +9,8 @@ const OUT = __dirname + '/../public/assets/capas/';
   const p = await b.newPage({ viewport: { width: 540, height: 960 } });
   const errs = []; p.on('pageerror', (e) => errs.push(e.message));
   await p.goto(BASE + '/?clean=1&game=votacao'); await p.waitForTimeout(2500);
+  // Capa limpa: sem os efeitos da live (chafariz de likes, balões) e sem o selo de teste
+  await p.evaluate(() => { for (const k of Object.keys(liveCfg.effects)) if (liveCfg.effects[k] && typeof liveCfg.effects[k] === 'object') liveCfg.effects[k].on = false; window.sim = (ev) => handleEvent(ev); });
   const ids = process.argv.slice(2).length ? process.argv.slice(2) : await p.evaluate(() => GAMES.map((g) => g.id));
   for (const id of ids) {
     await p.evaluate((id) => {
