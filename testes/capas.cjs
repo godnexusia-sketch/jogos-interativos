@@ -22,7 +22,7 @@ const OUT = __dirname + '/../public/assets/capas/';
       simGift(2); simGift(3);
       for (const a of (g.actions || []).slice(0, 4)) try { busDo({ t: 'action', game: g.id, id: a.id, coins: 30, user: fakeUser() }); } catch {}
     }, id);
-    await p.waitForTimeout(id === 'votacao' ? 1500 : 5000);
+    await p.waitForTimeout(id === 'votacao' ? 1500 : Number(process.env.WAIT || 5000));
     const data = await p.evaluate(() => {
       // Sem os alertas e o guia: só a tela do jogo
       const src = document.getElementById('canvas');
