@@ -1,0 +1,21 @@
+const { chromium } = require('/opt/node-tools/node_modules/playwright');
+(async () => {
+  const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+  const errs = [];
+  const a = await b.newPage({ viewport: { width: 1366, height: 768 } }); a.on('pageerror', e => errs.push('admin ' + e.message));
+  await a.goto('http://localhost:3123/?game=cobra'); await a.waitForTimeout(1500);
+  await a.fill('#user', 'paidegamers'); await a.click('#connectBtn'); await a.waitForTimeout(4000);
+  console.log('status', await a.textContent('#status'));
+  const c = await b.newPage({ viewport: { width: 540, height: 960 } }); c.on('pageerror', e => errs.push('link ' + e.message));
+  await c.goto('http://localhost:3123/?clean=1&game=urna&user=paidegamers'); await c.waitForTimeout(4000);
+  console.log('link game at start', await c.evaluate(() => current.id));
+  await a.click('#tabs button[data-game="pipa"]'); await a.waitForTimeout(800);
+  for (let i = 0; i < 3; i++) await a.click('#simJoin'); await a.waitForTimeout(800);
+  console.log('link after tab', await c.evaluate(() => current.id + ' kites ' + current.kites.length));
+  await a.click('#tabs button[data-game="votacao"]'); await a.waitForTimeout(800);
+  await c.evaluate(() => { const g = current; for (let i = 0; i < 20 * 400 && current === g; i++) g.update(0.05); });
+  await a.waitForTimeout(1000);
+  console.log('vote end link', await c.evaluate(() => current.id), 'admin', await a.evaluate(() => current.id));
+  console.log('errors', errs);
+  await b.close();
+})();
