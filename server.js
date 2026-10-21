@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
 import os from 'node:os';
 import crypto from 'node:crypto';
+import zlib from 'node:zlib';
 import { TikTokLiveConnection, WebcastEvent, ControlEvent } from 'tiktok-live-connector';
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 import Anthropic from '@anthropic-ai/sdk';
@@ -15,6 +16,7 @@ const SIGN_API_KEY = process.env.SIGN_API_KEY || undefined;
 const PUBLIC_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), 'public');
 const USERNAME_RE = /^[a-zA-Z0-9_.]{2,24}$/;
 const THREE_PATH = fileURLToPath(new URL('./node_modules/three/build/three.module.min.js', import.meta.url));
+const THREE_JSM = fileURLToPath(new URL('./node_modules/three/examples/jsm', import.meta.url));
 const IMG_HOSTS = ['tiktokcdn.com', 'tiktokcdn-us.com', 'tiktokcdn-eu.com', 'ibyteimg.com', 'muscdn.com', 'byteimg.com', 'rbxcdn.com',
   'flagcdn.com', 'wikimedia.org', 'www.google.com', 'gstatic.com', 'mc-heads.net', 'crafatar.com'];
 const MEDIA_DIR = path.join(os.tmpdir(), 'jogos-media');
@@ -45,7 +47,25 @@ const MIME = {
   '.gif': 'image/gif',
   '.mp3': 'audio/mpeg',
   '.woff2': 'font/woff2',
+  '.glb': 'model/gltf-binary',
+  '.txt': 'text/plain; charset=utf-8',
 };
+// Arquivos de texto e modelos 3D vão comprimidos (gzip), guardados prontos na memória.
+const GZIP_EXT = new Set(['.html', '.js', '.css', '.json', '.svg', '.glb', '.txt']);
+const gzCache = new Map();
+async function sendStatic(req, res, file, cache = 'no-cache') {
+  const ext = path.extname(file);
+  const st = await fs.stat(file);
+  const head = { 'content-type': MIME[ext] || 'application/octet-stream', 'cache-control': cache, vary: 'accept-encoding' };
+  if (GZIP_EXT.has(ext) && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) {
+    let c = gzCache.get(file);
+    if (!c || c.mtime !== st.mtimeMs) { c = { mtime: st.mtimeMs, body: zlib.gzipSync(await fs.readFile(file), { level: 6 }) }; gzCache.set(file, c); }
+    res.writeHead(200, { ...head, 'content-encoding': 'gzip', 'content-length': c.body.length });
+    return res.end(c.body);
+  }
+  res.writeHead(200, { ...head, 'content-length': st.size });
+  res.end(await fs.readFile(file));
+}
 const MEDIA_EXT = { 'image/png': '.png', 'image/jpeg': '.jpg', 'image/gif': '.gif', 'image/webp': '.webp', 'audio/mpeg': '.mp3', 'audio/mp3': '.mp3',
   'audio/ogg': '.ogg', 'audio/wav': '.wav', 'audio/x-wav': '.wav', 'video/mp4': '.mp4', 'video/webm': '.webm' };
 const MEDIA_TYPE = Object.fromEntries(Object.entries(MEDIA_EXT).map(([t, e]) => [e, t]));
@@ -188,10 +208,12 @@ const server = http.createServer(async (req, res) => {
       return res.end(JSON.stringify({ user, error: err?.message, details: detailErrors(err), signKey: Boolean(SIGN_API_KEY) }));
     }
   }
-  if (url.pathname === '/vendor/three.module.min.js') {
-    const body = await fs.readFile(THREE_PATH);
-    res.writeHead(200, { 'content-type': MIME['.js'], 'cache-control': 'public, max-age=86400' });
-    return res.end(body);
+  if (url.pathname === '/vendor/three.module.min.js') return sendStatic(req, res, THREE_PATH, 'public, max-age=86400');
+  if (url.pathname.startsWith('/vendor/jsm/')) {
+    // Módulos extras do three.js (carregador de GLB, utilidades de esqueleto), só quando um jogo pede.
+    const file = path.normalize(path.join(THREE_JSM, url.pathname.slice('/vendor/jsm/'.length)));
+    if (!file.startsWith(THREE_JSM + path.sep) || !file.endsWith('.js')) { res.writeHead(403); return res.end(); }
+    try { return await sendStatic(req, res, file, 'public, max-age=86400'); } catch { res.writeHead(404); return res.end(); }
   }
   if (url.pathname === '/api/img') {
     // Repassa fotos de perfil (TikTok/Roblox) com CORS liberado, para poderem virar textura no 3D.
@@ -333,9 +355,7 @@ const server = http.createServer(async (req, res) => {
     return res.end();
   }
   try {
-    const body = await fs.readFile(file);
-    res.writeHead(200, { 'content-type': MIME[path.extname(file)] || 'application/octet-stream' });
-    res.end(body);
+    await sendStatic(req, res, file, rel.startsWith('assets/') ? 'public, max-age=604800' : 'no-cache');
   } catch {
     res.writeHead(404, { 'content-type': 'text/plain' });
     res.end('Não encontrado');
