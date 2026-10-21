@@ -1,28 +1,33 @@
 'use strict';
 
 // Escolha do jogo: a live vota pelo número qual jogo vem agora. No fim do tempo, o vencedor abre sozinho.
+// Jogos que entram na votação (até 16 cabem na tela). O admin escolhe em Configurar.
+const VOTE_DEFAULT = ['pipa', 'combate', 'kart', 'cobra', 'trivia-time', 'million-quiz', 'boys-vs-girls', 'blob-battle', 'tower-war', 'zombie-hill', 'car-race', 'guess-the-flag', 'five-letters', 'ai-host'];
 registerGame({
   id: 'votacao',
   meterY: 900, // posição do medidor de presentes (livre de HUD)
   name: 'Escolha o Jogo',
   icon: '🗳️',
   configKey: 'votacao',
-  config: store.get('cfg:votacao', { duration: 60, autoSwitch: true }),
+  config: { duration: 60, autoSwitch: true, games: VOTE_DEFAULT, ...store.get('cfg:votacao', {}) },
   help: '<p>A live escolhe o próximo jogo: comente o <b>número</b> do jogo (1 voto por pessoa, pode trocar).</p><p>🎁 Presente: +10 votos por moeda (preço × combo) no jogo que a pessoa escolheu. ❤️ 25 likes = +10 votos · ⭐ seguir +50 · 🔁 compartilhar +100.</p>' + TIER_HELP + '<p>Quando o tempo acaba, o jogo mais votado abre sozinho. Se ninguém votar, abre o <b>Céu de Pipas</b>.</p>',
   getConfig() { return this.config; },
-  applyConfig(cfg) { if (!cfg) return; this.config = cfg; store.set('cfg:votacao', cfg); this.reset(); },
+  applyConfig(cfg) { if (!cfg) return; this.config = { games: VOTE_DEFAULT, ...cfg }; store.set('cfg:votacao', this.config); this.reset(); },
   renderSettings(el, save) {
     const c = this.config;
     el.innerHTML = `
       <label>Tempo da votação (segundos) <input data-k="duration" type="number" min="15" max="600" value="${c.duration}"></label>
       <label class="row2"><input data-k="autoSwitch" type="checkbox" ${c.autoSwitch ? 'checked' : ''} style="width:auto"> Abrir o jogo vencedor sozinho</label>
+      <p class="small">Jogos na votação (até 16):</p>
+      <div class="vote-pick" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;max-height:260px;overflow:auto">${GAMES.filter((g) => g.id !== 'votacao').map((g) => `<label class="row2" style="font-size:12px"><input type="checkbox" data-g="${g.id}" ${c.games.includes(g.id) ? 'checked' : ''} style="width:auto"> ${g.icon} ${g.name}</label>`).join('')}</div>
       <button data-save class="primary">Salvar e reiniciar</button>`;
     el.querySelector('[data-save]').addEventListener('click', () => {
-      this.applyConfig({ duration: clamp(Number(el.querySelector('[data-k="duration"]').value) || 60, 15, 600), autoSwitch: el.querySelector('[data-k="autoSwitch"]').checked });
+      const games = [...el.querySelectorAll('[data-g]:checked')].map((x) => x.dataset.g).slice(0, 16);
+      this.applyConfig({ duration: clamp(Number(el.querySelector('[data-k="duration"]').value) || 60, 15, 600), autoSwitch: el.querySelector('[data-k="autoSwitch"]').checked, games: games.length >= 2 ? games : VOTE_DEFAULT });
       save(this.config);
     });
   },
-  options() { return GAMES.filter((g) => g.id !== 'votacao'); },
+  options() { const ids = this.config.games || VOTE_DEFAULT; const list = ids.map((id) => GAMES.find((g) => g.id === id)).filter(Boolean); return list.length >= 2 ? list : GAMES.filter((g) => g.id !== 'votacao').slice(0, 14); },
   reset() {
     const n = this.options().length;
     this.votes = new Array(n).fill(0);

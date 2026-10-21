@@ -61,7 +61,8 @@ details.panel:not([open]) { gap:0; }
 .sl input[type=range] { flex:1; }
 .sl output { min-width:34px; text-align:right; color:#fff; }
 input[type=color] { padding:2px; height:34px; width:60px !important; }
-.tog { flex-direction:row; align-items:center; gap:10px; cursor:pointer; }
+.tog { display:inline-flex; flex-direction:row; align-items:center; gap:10px; cursor:pointer; position:relative; }
+label.f.tog { display:flex; }
 .tog input { position:absolute; opacity:0; width:0; height:0; }
 .tog b { flex:none; width:38px; height:22px; border-radius:99px; background:#2a3142; position:relative; transition:background .15s; }
 .tog b::after { content:''; position:absolute; left:3px; top:3px; width:16px; height:16px; border-radius:50%; background:#fff; transition:transform .15s; }
