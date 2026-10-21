@@ -209,7 +209,7 @@ registerGame({
         else {
           c.root.rotation.y = p.dir > 0 ? 0 : Math.PI;
           if (dance && !c.busy && (m.stepT = (m.stepT || 0) - dt) <= 0) { m.stepT = 1.4; c.play(pick(['spin', 'taunt', 'jump', 'victory'])); }
-          else if (!c.busy && c.state !== 'walk') c.play('walk');
+          else if (!c.busy && c.state !== 'walk') c.play('walk', { speed: 1.7 }); // passarela é rápida: passo acelerado
         }
         c.update(dt);
       }

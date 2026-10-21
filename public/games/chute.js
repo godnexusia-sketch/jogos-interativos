@@ -3,6 +3,24 @@
 // Bola no Ursinho: um personagem (pode ser a sua foto) segura um ursinho de pelúcia. Presentes lançam bolas nele.
 // O ursinho tem barra de vida; quando zera, a rodada acaba e recomeça sozinha.
 
+// Seletor do personagem 3D em cada item da tela Configurar (usado aqui e no Combate).
+// def(i) dá o padrão do item; a escolha fica em cfg.items[i].kind e é salva junto com o resto.
+function charKindSelects(el, cfg, label, def) {
+  const add = () => el.querySelectorAll('.cand').forEach((box, i) => {
+    if (box.querySelector('[data-kind]') || !cfg.items[i]) return;
+    const l = document.createElement('label');
+    l.innerHTML = `${label} <select data-kind>${ALL_KINDS.map((k) => `<option value="${k}">${CHARACTERS[k].name}</option>`).join('')}</select>`;
+    const sel = l.querySelector('select');
+    sel.value = CHARACTERS[cfg.items[i].kind] ? cfg.items[i].kind : def(i);
+    sel.addEventListener('change', () => { cfg.items[i].kind = sel.value; });
+    box.querySelector('.fields')?.append(l);
+  });
+  add();
+  // A lista é redesenhada ao trocar foto/adicionar: recoloca os seletores
+  el._kindObs?.disconnect();
+  el._kindObs = new MutationObserver(add); el._kindObs.observe(el, { childList: true });
+}
+
 registerGame(withConfig({
   id: 'chute',
   meterY: 900, // posição do medidor de presentes (livre de HUD)

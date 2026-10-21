@@ -61,7 +61,7 @@ defineGame({
   update(dt) {
     this.feed.update(dt);
     // Corredor 3D: corre em loop, para e comemora na chegada
-    const c = Hero3D.tick(this, dt, { height: 1.8, base: this.cele ? 'idle' : 'run' });
+    const c = Hero3D.tick(this, dt, { height: 2.2, base: this.cele ? 'idle' : 'run' });
     if (c) { if (!this.cele && c.base !== 'run') c.play('run'); if (c.state === 'run' && c.cur) c.cur.timeScale = clamp(0.8 + Math.abs(this.vel) * 0.12, 0.8, 1.8); }
     this.cele = Math.max(0, this.cele - dt); this.lift = Math.max(0, this.lift - dt);
     if (this.vehicle && (this.vehicle.t -= dt) <= 0) this.vehicle = null;
@@ -100,7 +100,7 @@ defineGame({
     scene.add(ufo);
     const cam = new T.PerspectiveCamera(50, W / H, 0.1, 400);
     this.r = { scene, cam, ground, flag, ufo };
-    Hero3D.make(this, { height: 1.8, base: 'run' }).root.rotation.y = Math.PI; // corre para -z (de costas para a câmera)
+    Hero3D.make(this, { height: 2.2, base: 'run' }).root.rotation.y = Math.PI; // corre para -z (de costas para a câmera)
     return this.r;
   },
   draw() {
@@ -178,7 +178,7 @@ defineGame({
   gameOver() { sfx.boom(); this.overT = 2.5; Hero3D.play(this, 'hit'); this.r?.char?.hitFlash('#ff4d6d', 1); voice.say(`Caiu! A torre teve ${this.stack.length - 1} andares.`); },
   // Mago(a) 3D num disco flutuante ao lado da torre: sobe junto com o topo e reage ao chat
   hero(dt) {
-    const c = Hero3D.tick(this, dt, { height: 3.2, loadout: 'weapon' }), r = this.r; if (!c) return;
+    const c = Hero3D.tick(this, dt, { height: 3.6, loadout: 'weapon' }), r = this.r; if (!c) return;
     const y = Math.max(-0.5, this.stack.length - 1.5), p = c.root.position;
     p.y += (y - p.y) * Math.min(1, dt * 4);
     r.disc.position.set(p.x, p.y - 0.18, p.z); r.disc.rotation.y += dt;
@@ -217,9 +217,9 @@ defineGame({
     const stars = new T.Points(new T.BufferGeometry().setAttribute('position', new T.Float32BufferAttribute(Array.from({ length: 2400 }, () => rand(-120, 120)), 3)), new T.PointsMaterial({ color: 0xffffff, size: 0.5, transparent: true, opacity: 0 }));
     scene.add(stars);
     const cam = new T.OrthographicCamera(-9, 9, 16, -16, 0.1, 400);
-    const disc = new T.Mesh(new T.CylinderGeometry(1.5, 1.1, 0.35, 32), new T.MeshStandardMaterial({ color: 0xf5f3ff, emissive: 0xa78bfa, emissiveIntensity: 0.45, roughness: 0.4 })); scene.add(disc);
+    const disc = new T.Mesh(new T.CylinderGeometry(1.6, 1.2, 0.35, 32), new T.MeshStandardMaterial({ color: 0xf5f3ff, emissive: 0xa78bfa, emissiveIntensity: 0.45, roughness: 0.4 })); scene.add(disc);
     this.r = { scene, blocks, cur, fall, stars, cam, disc, d: new T.Object3D(), col: new T.Color() };
-    const c = Hero3D.make(this, { height: 3.2, loadout: 'weapon' }); c.root.position.set(5, Math.max(-0.5, this.stack.length - 1.5), -5); c.root.rotation.y = Math.PI / 4;
+    const c = Hero3D.make(this, { height: 3.6, loadout: 'weapon' }); c.root.position.set(4.4, Math.max(-0.5, this.stack.length - 1.5), -4.4); c.root.rotation.y = Math.PI / 4;
     return this.r;
   },
   draw() {
@@ -301,7 +301,7 @@ defineGame({
   },
   // Construtor 3D: anda até a coluna do último bloco, vira para a muralha e martela/usa/encaixa
   builder(dt) {
-    const c = Hero3D.tick(this, dt, { height: 2.2 }); if (!c) return;
+    const c = Hero3D.tick(this, dt, { height: 3 }); if (!c) return;
     const p = c.root.position, dx = (this.goX ?? -4) - p.x, cele = this.cele > 0;
     if (cele) { c.root.rotation.y = 0; return; } // comemora de frente para a câmera
     if (c.busy) return;
@@ -324,7 +324,7 @@ defineGame({
     const debris = new T.InstancedMesh(new T.BoxGeometry(0.9, 0.9, 0.9), mats, 60); debris.frustumCulled = false; scene.add(debris);
     const cam = new T.PerspectiveCamera(45, W / H, 0.1, 200); cam.position.set(0, 7, 36); cam.lookAt(0, 4, 0);
     this.r = { scene, blocks, debris, cam, d: new T.Object3D() };
-    Hero3D.make(this, { height: 2.2 }).root.position.set(-4, -0.5, 1.6);
+    Hero3D.make(this, { height: 3 }).root.position.set(-4, -0.5, 1.6);
     return this.r;
   },
   draw() {

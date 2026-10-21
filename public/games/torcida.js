@@ -260,7 +260,7 @@ registerGame(withConfig({
       if (this.phase === 'marks') { if (c.state !== 'idle' && !c.busy) c.play('idle'); c.timeScale = 1; }
       else if (this.phase === 'finish') {
         // Vencedor comemora sem parar; os outros param e respiram
-        if (r === this.winner) { if (!c.busy) c.play('victory'); } else if (c.state === 'run') c.play('idle');
+        if (r === this.winner) { if (!c.busy) c.play('victory'); } else if (c.state !== 'idle' && !c.busy) c.play('idle');
         c.timeScale = 1;
       } else {
         if (r.slip > 0 && !rig.slip) c.play(r.slip > 1.2 ? 'death' : 'hit', { hold: r.slip > 1.2 }); // escorregou na banana / derrubado
@@ -289,7 +289,8 @@ registerGame(withConfig({
     c.spread = (c.spread || 0) + (spread - (c.spread || 0)) * 0.05;
     const ahead = (finishing ? 5 : marks ? 8.5 : 9) + c.spread * 0.25, side = (finishing ? 4.5 : 7.5) + c.spread * 0.45, camY = (marks ? 2.8 : 3.0) + c.spread * 0.12;
     c.camera.position.set(c.camX + ahead, camY, side);
-    c.camera.lookAt(c.camX - (marks ? 0.5 : 2.5) - c.spread * 0.45, marks ? 0.9 : 1.3, -0.4);
+    // Na chegada, a câmera olha para o vencedor comemorando.
+    c.camera.lookAt(finishing ? c.camX - 1 : c.camX - (marks ? 0.5 : 2.5) - c.spread * 0.45, marks ? 0.9 : 1.3, -0.4);
     c.sun.position.set(c.camX - 30, 50, 40); c.sun.target.position.set(c.camX, 0, 0);
     G3.render(c.scene, c.camera);
     this.drawHud();

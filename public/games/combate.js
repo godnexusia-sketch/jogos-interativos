@@ -12,12 +12,17 @@ const MOVES = {
 };
 const FIGHT_X = 1.15;
 const FACE_TURN = 0.8; // vira os lutadores três quartos para a câmera, para o rosto aparecer
+const FIGHT_H = 2.5; // altura dos lutadores 3D
+const FIGHT_KINDS = ['barbaro', 'cavaleiro']; // personagens padrão de cada lado
+// Golpe do jogo → animação do personagem 3D
+const FIGHT_ANIM = { jab: 'punch', cross: 'punch', kick: 'kick', fireball: 'cast', upper: 'jumpAttack' };
 
 registerGame(withConfig({
   id: 'combate',
   name: 'Combate 3D',
   icon: '🥊',
   help: '<p>Comente <b>1</b> ou <b>2</b> (ou o nome) para escolher seu lutador. Depois, cada comentário é um jab (1 a cada 2s).</p><p>1–9 🪙 Direto · 10–99 🪙 Chute · 100–999 🪙 Bola de energia · 1.000+ 🪙 Golpe final em câmera lenta. O dano é 3 × √moedas: Rosa tira 3, Rosquinha 16, Mãos em coração 30, 1.000 🪙 tira 95. ❤️ Likes, ⭐ seguir (+30%) e 🔁 compartilhar (+60%) enchem o especial da torcida.</p>' + TIER_HELP + '<p>Coloque a <b>foto do rosto</b> de cada lutador em <b>Configurar</b>.</p>',
+  hasChars: true,
   cd: new Cooldown(2000),
   roundsWon: [0, 0],
   round: 1,
@@ -40,22 +45,24 @@ registerGame(withConfig({
     this.shake = 0;
     this.flash = 0;
     this.act = [this.newAct(), this.newAct()];
-    if (this.r) this.placeFighters();
+    if (this.r) { for (const f of this.r.fighters) { f.c.play('fightIdle'); f.c.root.rotation.z = 0; } this.placeFighters(); }
   },
   newAct() { return { kind: null, t: 0, dur: 0, hit: 0, ko: 0, push: 0, winT: 0 }; },
   applyConfig(cfg) {
     if (!cfg?.items?.length) return;
     this.config = cfg;
     store.set('cfg:combate', cfg);
-    if (this.r) { for (const f of this.r.fighters) this.r.scene.remove(f.root); this.r.fighters = this.config.items.map((it, i) => this.buildFighter(it, i)); }
-    this.side = new Map(); this.fans = [0, 0];
+    if (this.r) this.rebuildFighters();
+    this.side = new Map(); this.fans = [0, 0]; this.ovr = {};
     this.reset();
   },
   renderSettings(el, save) {
-    renderItemsSettings(el, structuredClone(this.config), {
+    const cfg = structuredClone(this.config);
+    renderItemsSettings(el, cfg, {
       min: 2, max: 2, itemLabel: 'Lutador',
       extras: [{ key: 'hp', label: 'Vida de cada lutador', min: 20, max: 100000 }],
-    }, (cfg) => { this.applyConfig(cfg); save(this.config); });
+    }, (c) => { this.applyConfig(c); save(this.config); });
+    charKindSelects(el, cfg, 'Personagem 3D', (i) => FIGHT_KINDS[i]);
   },
   sample() { return Math.random() < 0.3 ? String(randInt(1, 2)) : pick(['bate!', 'vai', 'pow']); },
   addLog(user, msg, color) { this.log.unshift({ user, msg, color, t: 6 }); this.log.length = Math.min(this.log.length, 3); },
@@ -123,15 +130,29 @@ registerGame(withConfig({
     const ballLight = new T.PointLight(0x00e5ff, 30, 8); ball.add(ballLight);
     ball.visible = false; scene.add(ball);
     this.r = { scene, camera, spots, flashes, ball, cam: { a: 0, d: 10.5, y: 2.2 } };
+    this.rebuildFighters();
+  },
+  // Lutadores 3D animados: personagem do lado (configurado, escolhido pelo torcedor com !nome ou o padrão)
+  kindOf(i) { const k = this.ovr?.[i] || this.config.items[i]?.kind; return CHARACTERS[k] ? k : FIGHT_KINDS[i]; },
+  buildFighter(it, i) {
+    const c = new Character3D({ kind: this.kindOf(i), height: FIGHT_H, plate: false, base: 'fightIdle', tint: it.color });
+    c.setTint(it.color);
+    this.r.scene.add(c.root);
+    return { c, root: c.root };
+  },
+  rebuildFighters() {
+    for (const f of this.r.fighters || []) f.c.dispose();
     this.r.fighters = this.config.items.map((it, i) => this.buildFighter(it, i));
     this.placeFighters();
   },
-  buildFighter(it, i) {
-    const rig = makeHuman({ color: it.color, shorts: shade(it.color, -60), photo: it.photo, seed: it.name + i, gloves: true, shoes: '#111827' });
-    rig.gloveL.material = rig.gloveL.material.clone(); rig.gloveL.material.color.set(it.color);
-    rig.gloveR.material = rig.gloveL.material;
-    this.r.scene.add(rig.root);
-    return rig;
+  onCharPick(user, k) {
+    const s = this.side?.get(uid({ user }));
+    if (s == null || !this.r) return;
+    (this.ovr ||= {})[s] = k;
+    const old = this.r.fighters[s];
+    old.c.dispose();
+    this.r.fighters[s] = this.buildFighter(this.config.items[s], s);
+    this.placeFighters();
   },
   placeFighters() {
     this.r.fighters.forEach((f, i) => { f.root.position.set(i ? FIGHT_X : -FIGHT_X, 0, 0); f.root.rotation.set(0, i ? -Math.PI / 2 + FACE_TURN : Math.PI / 2 - FACE_TURN, 0); });
@@ -175,6 +196,9 @@ registerGame(withConfig({
   start(item) {
     const a = this.act[item.s];
     a.kind = item.move.anim; a.t = 0; a.dur = item.move.time; a.item = item; a.done = false;
+    // Animação do golpe acompanha a duração do movimento (jab rápido, golpe final pesado)
+    const c = this.r?.fighters[item.s]?.c;
+    if (c) c.play(item.move === MOVES.special ? 'heavy' : FIGHT_ANIM[a.kind] || 'punch', { speed: item.tier === 4 ? 1 : a.kind === 'jab' ? 2 : a.kind === 'cross' ? 1.6 : 1.3 });
     if (item.tier === 4) { this.slowmo = 1.4; announcer.show('GOLPE FINAL', '#00e5ff', 1.6, 70); }
   },
   land(item) {
@@ -184,6 +208,8 @@ registerGame(withConfig({
     this.hp[o] = Math.max(0, this.hp[o] - move.dmg);
     const v = this.act[o];
     v.hit = Math.min(0.6, 0.25 + move.dmg / 60); v.push = Math.min(0.9, 0.15 + move.dmg / 40);
+    const vc = this.r?.fighters[o]?.c;
+    if (vc) { vc.hitFlash(tier >= 3 ? 0x00e5ff : 0xffffff, Math.min(1, 0.4 + move.dmg / 30)); if (this.hp[o] > 0 && !this.act[o].kind) vc.play('hit', { speed: 1.4 }); }
     addScore(this.hitters, user.nick, move.dmg);
     const p = this.screenOf(o);
     floatText(`-${move.dmg}`, p.x, p.y - 40, move.color, 34 + Math.min(40, move.dmg));
@@ -199,7 +225,10 @@ registerGame(withConfig({
     this.winner = w;
     this.endT = 9;
     this.queue = [];
-    if (w >= 0) { this.roundsWon[w]++; this.act[1 - w].ko = 0.001; this.act[w].winT = 0.001; }
+    if (w >= 0) {
+      this.roundsWon[w]++; this.act[1 - w].ko = 0.001; this.act[w].winT = 0.001;
+      this.r?.fighters[1 - w].c.play('death', { hold: true });
+    }
     sfx.win();
     announcer.items.length = 0;
     this.slowmo = 1.2;
@@ -237,51 +266,27 @@ registerGame(withConfig({
   },
 
   // ---------- Animação dos lutadores ----------
-  animate(i, t) {
-    const f = this.r.fighters[i], a = this.act[i];
+  animate(i, dt) {
+    const f = this.r.fighters[i], a = this.act[i], c = f.c;
     const side = i ? -1 : 1;
-    const bob = Math.sin(t * 6 + i) * 0.04;
-    // Guarda
-    const p = {
-      torso: [0.15, 0, 0], head: [-0.05, 0, 0], y: -0.08 + bob,
-      sL: [-1.15, 0, 0.35], eL: [-2.0], sR: [-1.0, 0, -0.35], eR: [-2.1],
-      hL: [-0.35, 0, 0.12], kL: [0.55], hR: [0.25, 0, -0.12], kR: [0.45],
-    };
+    // Avanço no golpe e recuo ao apanhar (a animação do personagem faz o resto)
     let lunge = 0;
     if (a.kind) {
       const k = clamp(a.t / a.dur, 0, 1);
       const hitk = Math.sin(Math.min(1, k / 0.55) * Math.PI / 2) * (k < 0.55 ? 1 : 1 - (k - 0.55) / 0.45);
-      lunge = hitk * 0.4;
-      if (a.kind === 'jab') { p.sL = [-1.55 * hitk - 1.15 * (1 - hitk), 0, 0.15]; p.eL = [-2.0 * (1 - hitk) - 0.05]; }
-      else if (a.kind === 'cross') { p.sR = [-1.6 * hitk - 1.0 * (1 - hitk), 0, -0.1]; p.eR = [-2.1 * (1 - hitk) - 0.05]; p.torso = [0.2, -0.7 * hitk, 0]; lunge = hitk * 0.6; }
-      else if (a.kind === 'kick') { p.hR = [-1.6 * hitk, 0, -0.2]; p.kR = [0.2 * (1 - hitk)]; p.torso = [-0.35 * hitk, 0, 0]; lunge = hitk * 0.5; }
-      else if (a.kind === 'fireball') {
-        // Junta as mãos atrás e empurra para a frente (bola de energia)
-        const charge = Math.min(1, k / 0.35), push = clamp((k - 0.35) / 0.2, 0, 1);
-        p.sL = [-1.0 - 0.55 * push, 0, 0.6 - 0.75 * push]; p.sR = [-1.0 - 0.55 * push, 0, -0.6 + 0.75 * push];
-        p.eL = [-1.6 * (1 - push) - 0.1]; p.eR = [-1.6 * (1 - push) - 0.1];
-        p.torso = [0.25, 0.5 * (1 - push) * charge, 0]; p.hL = [-0.6, 0, 0.15]; p.kL = [0.7]; p.hR = [0.5, 0, -0.15]; p.kR = [0.3]; p.y = -0.18;
-        lunge = 0;
-      }
-      else if (a.kind === 'upper') { p.sR = [-2.8 * hitk - 1.0 * (1 - hitk), 0, -0.2]; p.eR = [-1.2 * (1 - hitk) - 0.3]; p.torso = [-0.3 * hitk, -0.4, 0]; p.y = -0.3 * (1 - hitk) + 0.25 * hitk; lunge = hitk * 0.9; }
+      lunge = a.kind === 'fireball' ? 0 : hitk * (a.kind === 'upper' ? 0.9 : a.kind === 'jab' ? 0.3 : 0.5);
     }
-    if (a.hit > 0) { const h = a.hit * 1.6; p.torso = [-0.45 * h, 0.2 * h, 0]; p.head = [-0.6 * h, 0.3 * h, 0]; }
-    if (a.winT) { const w = Math.min(1, a.winT * 2); p.sL = [-2.9 * w, 0, 0.3]; p.sR = [-2.9 * w, 0, -0.3]; p.eL = [-0.3]; p.eR = [-0.3]; p.y = Math.abs(Math.sin(a.winT * 6)) * 0.15; p.torso = [-0.1, 0, 0]; }
-    poseHuman(f, p);
-    const baseX = i ? FIGHT_X : -FIGHT_X;
-    f.root.position.x = baseX + side * lunge - side * a.push;
+    // Vencedor comemora sem parar
+    if (a.winT && !c.busy) c.play('victory');
+    f.root.position.x = (i ? FIGHT_X : -FIGHT_X) + side * lunge - side * a.push;
     f.root.position.y = 0;
-    // Nocaute: cai de costas
-    f.root.rotation.z = a.ko ? side * -a.ko * 1.5 : 0;
-    if (a.ko) f.root.position.y = Math.sin(a.ko * Math.PI) * 0.4;
-    const glow = a.kind === 'fireball' || a.kind === 'upper';
-    f.gloveR.material.emissive?.set(glow ? 0x00e5ff : 0x000000);
-    if (f.gloveR.material.emissiveIntensity !== undefined) f.gloveR.material.emissiveIntensity = glow ? 1.4 : 0;
+    c.timeScale = this.slowmo > 0 ? 0.3 : 1;
+    c.update(dt);
   },
   screenOf(i) {
     if (!this.r) return { x: i ? 500 : 220, y: 560 };
     const T = THREE;
-    const v = new T.Vector3(); this.r.fighters[i].head.getWorldPosition(v);
+    const v = new T.Vector3(); this.r.fighters[i].root.getWorldPosition(v); v.y += FIGHT_H * 0.85;
     v.project(this.r.camera);
     return { x: (v.x + 1) / 2 * W, y: (1 - v.y) / 2 * H };
   },
@@ -294,8 +299,9 @@ registerGame(withConfig({
       three3dReady.then(() => this.init3d());
       return;
     }
-    const t = performance.now() / 1000;
-    this.animate(0, t); this.animate(1, t);
+    const now = performance.now(), t = now / 1000, dt = clamp((now - (this.lastT || now)) / 1000, 0, 0.1) || 1 / 60;
+    this.lastT = now;
+    this.animate(0, dt); this.animate(1, dt);
     // Câmera: lateral, girando devagar; no nocaute, gira em volta do vencedor
     const c = this.r.cam;
     if (this.phase === 'intro') { c.a = -0.7 + (2.2 - this.introT) * 0.3; c.d = 9; }
@@ -313,7 +319,7 @@ registerGame(withConfig({
       const x0 = (fa ? FIGHT_X : -FIGHT_X) + side * 0.9, x1 = (fa ? -FIGHT_X : FIGHT_X);
       ball.visible = k < 0.62;
       const travel = clamp((k - 0.35) / 0.2, 0, 1);
-      ball.position.set(x0 + (x1 - x0) * travel, 1.85, 0.25);
+      ball.position.set(x0 + (x1 - x0) * travel, FIGHT_H * 0.55, 0.25);
       ball.scale.setScalar(0.4 + Math.min(1, k / 0.35) * 0.6 + Math.sin(t * 40) * 0.05);
       ball.rotation.z += 0.3;
     } else ball.visible = false;
