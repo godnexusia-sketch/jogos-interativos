@@ -467,9 +467,10 @@ if (!isClean) (() => {
       <div class="panel"><h3>Como escolher</h3>
         <label class="f tog"><input type="checkbox" id="chPick" ${cfg.viewerPick ? 'checked' : ''}><b></b><span>Espectador escolhe o próprio personagem comentando <strong>!nome</strong> (ex.: <code>!sapo</code>, <code>!astronauta</code>)</span></label>
         <label class="f"><span>Personagem fixo para todos (vazio = cada espectador ganha um dos ativos)</span><select id="chFixed"><option value="">— cada um o seu —</option>${kinds.map((k) => `<option value="${k}" ${cfg.fixed === k ? 'selected' : ''}>${esc(CHARACTERS[k].name)}</option>`).join('')}</select></label>
-        <div class="row"><button id="chAll">Ativar todos</button><button id="chPack">Só o pacote novo</button><button id="chKay">Só os clássicos</button></div>
-        <p class="note">Vale para os jogos 3D com personagens: Lutadores, Arena de Batalha, Pista de Dança, as escaladas e outros. Quem já está na tela troca quando entrar de novo.</p></div>
-      ${group('Pacote novo', PACK_KINDS, 'Os de movimento simples não têm esqueleto: pulam, inclinam, giram e amassam/esticam.')}
+        <div class="row wrap"><button id="chAll">Ativar todos</button><button id="chPack2">Só o pacote 2</button><button id="chPack">Só o pacote 1</button><button id="chKay">Só os clássicos</button></div>
+        <p class="note">Vale para todos os jogos 3D com personagens: Lutadores, Arena de Batalha, Pista de Dança, Guerra das Torres, Guerra de Territórios, Colina dos Zumbis, MMA dos Países, Festa Pixel 3D e as escaladas. Quem já está na tela troca quando entrar de novo.</p></div>
+      ${group('Pacote 2', PACK2_KINDS, 'Touro, Demônio, Dragão Evoluído, Mech e Caveira têm animações próprias; os outros se movem por movimento simples.')}
+      ${group('Pacote 1', PACK_KINDS, 'Os de movimento simples não têm esqueleto: pulam, inclinam, giram e amassam/esticam.')}
       ${group('Clássicos (KayKit)', KAYKIT_HEROES)}`);
     const save = (patch) => { liveCfg.save('chars', { ...charCfg(), ...patch }); RENDER.personagens(); };
     qa('[data-ch]').forEach((cb) => cb.addEventListener('change', () => {
@@ -481,6 +482,7 @@ if (!isClean) (() => {
     q('#chFixed').addEventListener('change', (e) => save({ fixed: e.target.value }));
     q('#chAll').addEventListener('click', () => save({ enabled: kinds }));
     q('#chPack').addEventListener('click', () => save({ enabled: [...PACK_KINDS] }));
+    q('#chPack2').addEventListener('click', () => save({ enabled: [...PACK2_KINDS] }));
     q('#chKay').addEventListener('click', () => save({ enabled: [...KAYKIT_HEROES] }));
   };
 

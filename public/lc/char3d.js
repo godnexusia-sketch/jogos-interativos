@@ -35,18 +35,66 @@ const CHARACTERS = {
   super_robo: { name: 'Super Robô', file: 'super_robo', family: 'static', accent: '#f97316', props: [], weapon: [], special: [] },
   orangotango: { name: 'Orangotango', file: 'orangotango', family: 'static', yaw: Math.PI, accent: '#ea580c', props: [], weapon: [], special: [] },
   soldado: { name: 'Soldado', file: 'soldado', family: 'static', accent: '#a3a3a3', props: [], weapon: [], special: [] },
+  // Segundo pacote do dono (Poly Pizza)
+  touro: { name: 'Touro', file: 'touro', family: 'quat', accent: '#b45309', props: [], weapon: [], special: [] },
+  demonio: { name: 'Demônio', file: 'demonio', family: 'quat', accent: '#ef4444', props: [], weapon: [], special: [] },
+  dragao_evoluido: { name: 'Dragão Evoluído', file: 'dragao_evoluido', family: 'quat', accent: '#a855f7', props: [], weapon: [], special: [] },
+  mech: { name: 'Mech', file: 'mech', family: 'quat', accent: '#f59e0b', props: [], weapon: [], special: [] },
+  caveira: { name: 'Caveira', file: 'caveira', family: 'quat', accent: '#e5e7eb', props: [], weapon: [], special: [] },
+  cachorro: { name: 'Cachorro', file: 'cachorro', family: 'static', accent: '#d97706', props: [], weapon: [], special: [] },
+  zumbi: { name: 'Zumbi', file: 'zumbi', family: 'static', accent: '#65a30d', props: [], weapon: [], special: [] },
+  alien: { name: 'Alien', file: 'alien', family: 'static', yaw: -Math.PI / 2, accent: '#22c55e', props: [], weapon: [], special: [] },
+  esqueleto_alien: { name: 'Esqueleto Alien', file: 'esqueleto_alien', family: 'static', yaw: -Math.PI / 2, accent: '#a3e635', props: [], weapon: [], special: [] },
+  explorador: { name: 'Explorador', file: 'explorador', family: 'static', accent: '#ca8a04', props: [], weapon: [], special: [] },
+  astronauta_retro: { name: 'Astronauta Retrô', file: 'astronauta_retro', family: 'static', accent: '#f8fafc', props: [], weapon: [], special: [] },
+  cenoura: { name: 'Cenoura', file: 'cenoura', family: 'static', yaw: -Math.PI / 2, accent: '#f97316', props: [], weapon: [], special: [] },
+  banana: { name: 'Banana', file: 'banana', family: 'static', yaw: -Math.PI / 2, accent: '#facc15', props: [], weapon: [], special: [] },
+  olho_invocador: { name: 'Olho Invocador', file: 'olho_invocador', family: 'static', yaw: -Math.PI / 2, accent: '#8b5cf6', props: [], weapon: [], special: [] },
+  olho_mago: { name: 'Olho Mago', file: 'olho_mago', family: 'static', yaw: -Math.PI / 2, accent: '#6366f1', props: [], weapon: [], special: [] },
+  lalobot: { name: 'Lalobot', file: 'lalobot', family: 'static', yaw: -Math.PI / 2, accent: '#06b6d4', props: [], weapon: [], special: [] },
+  esqueletinho: { name: 'Esqueletinho', file: 'esqueletinho', family: 'static', yaw: -Math.PI / 2, accent: '#cbd5e1', props: [], weapon: [], special: [] },
+  fantasia_esqueleto: { name: 'Fantasia de Esqueleto', file: 'fantasia_esqueleto', family: 'static', yaw: -Math.PI / 2, accent: '#94a3b8', props: [], weapon: [], special: [] },
+  dragao: { name: 'Dragão', file: 'dragao', family: 'static', accent: '#dc2626', props: [], weapon: [], special: [] },
+  robo_articulado: { name: 'Robô Articulado', file: 'robo_articulado', family: 'static', accent: '#64748b', props: [], weapon: [], special: [] },
+  mech_andador: { name: 'Mech Andador', file: 'mech_andador', family: 'static', accent: '#78716c', props: [], weapon: [], special: [] },
+  mech_aranha: { name: 'Mech Aranha', file: 'mech_aranha', family: 'static', accent: '#57534e', props: [], weapon: [], special: [] },
 };
 const KAYKIT_HEROES = ['cavaleiro', 'barbaro', 'maga', 'ladino', 'encapuzado'];
 const PACK_KINDS = ['aventureiro', 'swat', 'astronauta', 'cactoro', 'sapo', 'observador', 'robo', 'super_robo', 'orangotango', 'soldado'];
+const PACK2_KINDS = ['touro', 'demonio', 'dragao_evoluido', 'mech', 'caveira', 'cachorro', 'zumbi', 'alien', 'esqueleto_alien', 'explorador', 'astronauta_retro', 'cenoura', 'banana', 'olho_invocador', 'olho_mago', 'lalobot', 'esqueletinho', 'fantasia_esqueleto', 'dragao', 'robo_articulado', 'mech_andador', 'mech_aranha'];
+const ALL_KINDS = Object.keys(CHARACTERS).filter((k) => !CHARACTERS[k].undead);
 // Personagens ativos (escolhidos no painel em 🧍 Personagens). Os jogos usam esta lista; ela muda ao vivo.
-const HERO_KINDS = [...PACK_KINDS];
-const CHAR_DEFAULTS = { enabled: [...PACK_KINDS], viewerPick: true, fixed: '' };
-function charCfg() { return { ...CHAR_DEFAULTS, ...(typeof liveCfg !== 'undefined' && liveCfg.chars || {}) }; }
+// Padrão: todos à disposição em todos os jogos.
+const HERO_KINDS = [...ALL_KINDS];
+const CHAR_DEFAULTS = { enabled: [...ALL_KINDS], viewerPick: true, fixed: '', known: [...ALL_KINDS] };
+function charCfg() {
+  const c = { ...CHAR_DEFAULTS, ...(typeof liveCfg !== 'undefined' && liveCfg.chars || {}) };
+  // Personagem novo (que ainda não existia quando a lista foi salva) já entra ativo
+  const known = new Set(c.known || PACK_KINDS);
+  const fresh = ALL_KINDS.filter((k) => !known.has(k));
+  if (fresh.length) c.enabled = [...new Set([...c.enabled, ...fresh])];
+  c.known = [...ALL_KINDS];
+  return c;
+}
 function applyRoster() {
   const c = charCfg(), on = c.enabled.filter((k) => CHARACTERS[k] && !CHARACTERS[k].undead);
   HERO_KINDS.splice(0, HERO_KINDS.length, ...(c.fixed && CHARACTERS[c.fixed] ? [c.fixed] : on.length ? on : PACK_KINDS));
 }
 applyRoster();
+// Configuração "Personagem" para qualquer jogo: vazio = automático (um dos ativos no painel).
+function charSetting(key, label, group = 'Personagens') {
+  return { key, type: 'select', label, group, default: '', options: [['', 'Automático (dos ativos no painel)'], ...ALL_KINDS.map((k) => [k, CHARACTERS[k].name])] };
+}
+// Automático: sorteio fixo por jogo (seed = id do jogo), para cada jogo ter a sua cara e não repetir sempre os mesmos.
+function pickKind(choice, i = 0, seed = current?.id || '') {
+  if (choice && CHARACTERS[choice]) return choice;
+  if (!HERO_KINDS.length) return 'sapo';
+  let h = 0; for (const c of String(seed)) h = (h * 131 + c.charCodeAt(0)) >>> 0;
+  return HERO_KINDS[(h + i * 7) % HERO_KINDS.length];
+}
+// Acrescenta configurações a um jogo já registrado (os *3d.js que melhoram jogos antigos)
+function addSettings(g, list) { const at = g.settings.findIndex((x) => x.key === 'whoCanPlay'); g.settings.splice(at < 0 ? g.settings.length : at, 0, ...list); g.s = loadSettings(g); }
+
 // Espectador escolhe o próprio personagem pelo chat: "!sapo", "!robô", "personagem astronauta".
 const CHAR_PICKS = new Map();
 const charKeyOf = (u) => String(u?.id || u?.nick || '?');
@@ -62,7 +110,8 @@ function charPickFromChat(ev) {
   CHAR_PICKS.set(charKeyOf(ev.user), k);
   return k;
 }
-const UNDEAD_KINDS = ['esqueleto', 'esq_guerreiro', 'esq_mago', 'esq_ladino'];
+// Monstros para os bots de demonstração: os esqueletos clássicos e os monstros do segundo pacote
+const UNDEAD_KINDS = ['esqueleto', 'esq_guerreiro', 'esq_mago', 'esq_ladino', 'zumbi', 'caveira', 'esqueletinho', 'esqueleto_alien'];
 // Mesmo espectador, mesmo personagem (em todas as telas e jogos).
 function kindFor(user, list = HERO_KINDS) {
   if (list === HERO_KINDS) { const pk = CHAR_PICKS.get(charKeyOf(user)); if (pk && HERO_KINDS.includes(pk)) return pk; }
@@ -84,14 +133,14 @@ const ANIM = {
 };
 // Mesmos estados para os personagens Quaternius (nomes de clipe sem o prefixo "CharacterArmature|").
 const QUAT_ANIM = {
-  idle: ['Idle', 'Idle_Neutral'], fightIdle: ['Idle_Sword', 'Idle', 'Idle_Neutral'], walk: ['Walk'], walkBack: ['Run_Back', 'Walk'], run: ['Run'], strafeL: ['Run_Left', 'Run'], strafeR: ['Run_Right', 'Run'],
-  punch: ['Punch_Left', 'Punch_Right', 'Punch'], kick: ['Kick_Left', 'Kick_Right', 'Punch'], slash: ['Sword_Slash', 'Punch_Right', 'Punch'], stab: ['Punch_Right', 'Punch'], jumpAttack: ['Sword_Slash', 'Kick_Right', 'Jump', 'Punch'], spin: ['Roll', 'Jump'], heavy: ['Sword_Slash', 'Kick_Left', 'Punch'],
-  block: ['Duck', 'HitRecieve_2', 'HitReact'], blocking: ['Duck', 'Idle'], blockHit: ['HitRecieve_2', 'HitRecieve', 'HitReact'], blockAttack: ['Punch_Left', 'Punch'],
-  dodge: ['Roll', 'Duck'], dodgeL: ['Roll', 'Duck'], dodgeR: ['Roll', 'Duck'], dodgeF: ['Roll', 'Jump'],
-  hit: ['HitRecieve', 'HitRecieve_2', 'HitReact'], death: ['Death'], deadPose: ['Death'],
-  victory: ['Wave', 'Yes'], taunt: ['Yes', 'Wave', 'No'], jump: ['Jump', 'Roll'], jumpLong: ['Jump', 'Roll'], spawn: ['Wave', 'Yes'], spawnAir: ['Jump_Land', 'Jump', 'Wave'],
-  cast: ['Gun_Shoot', 'Weapon', 'Punch_Right', 'Punch'], powerUp: ['Yes', 'Wave', 'Interact'], channel: ['Interact', 'Idle'], throw: ['Punch_Right', 'Punch', 'Weapon'], interact: ['Interact', 'Yes'], use: ['Interact', 'Yes'], pickup: ['Interact', 'Duck'],
-  sit: ['Duck', 'Idle'], standUp: ['Jump_Land', 'Idle'], shoot: ['Gun_Shoot', 'Weapon', 'Punch'],
+  idle: ['Idle', 'Idle_Neutral', 'Flying_Idle', 'Idle_2'], fightIdle: ['Idle_Sword', 'Idle', 'Idle_Neutral', 'Flying_Idle'], walk: ['Walk', 'Flying_Idle'], walkBack: ['Run_Back', 'Walk', 'Flying_Idle'], run: ['Run', 'Gallop', 'Fast_Flying'], strafeL: ['Run_Left', 'Run', 'Gallop', 'Fast_Flying'], strafeR: ['Run_Right', 'Run', 'Gallop', 'Fast_Flying'],
+  punch: ['Punch_Left', 'Punch_Right', 'Punch', 'Attack', 'Headbutt', 'Attack_Headbutt'], kick: ['Kick_Left', 'Kick_Right', 'Kick', 'Attack_Kick'], slash: ['Sword_Slash', 'Punch_Right', 'Attack', 'Headbutt', 'Attack_Headbutt'], stab: ['Punch_Right', 'Punch', 'Attack', 'Headbutt'], jumpAttack: ['Sword_Slash', 'Kick_Right', 'Attack_Kick', 'Headbutt'], spin: ['Roll', 'Jump', 'Gallop_Jump'], heavy: ['Sword_Slash', 'Kick_Left', 'Attack_Headbutt', 'Shoot_Big', 'Attack'],
+  block: ['Duck', 'HitRecieve_2', 'HitReact', 'No'], blocking: ['Duck', 'Idle'], blockHit: ['HitRecieve_2', 'HitRecieve', 'HitRecieve_1', 'HitReact', 'Idle_HitReact_Left'], blockAttack: ['Punch_Left', 'Punch', 'Attack'],
+  dodge: ['Roll', 'Duck', 'Jump_NoHeight', 'No'], dodgeL: ['Roll', 'Duck', 'Idle_HitReact_Left', 'No'], dodgeR: ['Roll', 'Duck', 'Idle_HitReact_Right', 'No'], dodgeF: ['Roll', 'Jump', 'Gallop_Jump'],
+  hit: ['HitRecieve', 'HitRecieve_2', 'HitRecieve_1', 'HitReact', 'Idle_HitReact_Left', 'Idle_HitReact_Right'], death: ['Death'], deadPose: ['Death'],
+  victory: ['Wave', 'Yes', 'Dance', 'Hello'], taunt: ['Yes', 'Wave', 'No', 'Dance'], jump: ['Jump', 'Roll', 'Gallop_Jump', 'Jump_NoHeight'], jumpLong: ['Jump', 'Roll', 'Gallop_Jump'], spawn: ['Wave', 'Yes', 'Hello'], spawnAir: ['Jump_Land', 'Jump_Landing', 'Jump_toIdle', 'Jump', 'Wave', 'Yes'],
+  cast: ['Gun_Shoot', 'Weapon', 'Shoot_Big', 'Shoot_Small', 'Punch_Right', 'Attack', 'Headbutt'], powerUp: ['Yes', 'Wave', 'Interact', 'Dance', 'Hello'], channel: ['Interact', 'Idle', 'Flying_Idle'], throw: ['Punch_Right', 'Punch', 'Weapon', 'Shoot_Small', 'Attack'], interact: ['Interact', 'Yes', 'Pickup', 'Eating'], use: ['Interact', 'Yes', 'Pickup'], pickup: ['Interact', 'Duck', 'Pickup', 'Eating'],
+  sit: ['Duck', 'Idle', 'Idle_Headlow', 'Eating'], standUp: ['Jump_Land', 'Jump_Landing', 'Jump_toIdle', 'Idle'], shoot: ['Gun_Shoot', 'Weapon', 'Shoot_Small', 'Shoot_Big', 'Punch', 'Attack'],
 };
 // Duração (s) dos estados quando o personagem não tem esqueleto (movimento procedural).
 const PROC_DUR = { jump: 0.55, jumpLong: 0.75, punch: 0.45, kick: 0.5, slash: 0.5, stab: 0.45, jumpAttack: 0.7, spin: 0.7, heavy: 0.65, cast: 0.6, shoot: 0.4, throw: 0.5, hit: 0.4, blockHit: 0.35, block: 0.5, dodge: 0.5, dodgeL: 0.5, dodgeR: 0.5, dodgeF: 0.5, death: 0.9, victory: 1.3, taunt: 1.1, powerUp: 1, spawn: 0.8, spawnAir: 0.7, interact: 0.7, use: 0.7, pickup: 0.6, standUp: 0.6 };

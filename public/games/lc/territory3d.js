@@ -12,10 +12,9 @@
   g.three = true;
   const base = { reset: g.reset, update: g.update, draw: g.draw, onAction: g.onAction, onChat: g.onChat, finish: g.finish, addBall: g.addBall };
   const S = 0.56; // tamanho de uma casa na cena
-  const KINDS = ['cavaleiro', 'barbaro', 'maga', 'ladino', 'encapuzado', 'esq_guerreiro', 'esq_mago', 'esqueleto', 'esq_ladino', 'cavaleiro'];
 
   Object.assign(g, {
-    enter() { Assets3D.preload(KINDS.slice(0, this.s.teamCount)); },
+    enter() { Assets3D.preload(Array.from({ length: this.s.teamCount }, (_, i) => pickKind('', i))); },
     leave() { this.dispose3d(); },
     dispose3d() {
       const r = this.r;
@@ -76,7 +75,7 @@
       });
       // Um capitão de cada time ao lado do castelo
       const captains = this.castles.map((c, i) => {
-        const cap = new Character3D({ kind: KINDS[i % KINDS.length], loadout: 'weapon', height: 1.7, tint: this.teamsI[i].color, plate: false, base: 'idle' });
+        const cap = new Character3D({ kind: pickKind('', i), loadout: 'weapon', height: 1.7, tint: this.teamsI[i].color, plate: false, base: 'idle' });
         cap.root.position.copy(this.cellPos(c.x, c.y)).add(new T.Vector3(0, 0.3, 1.9));
         scene.add(cap.root);
         return cap;

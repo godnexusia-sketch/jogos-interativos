@@ -10,8 +10,10 @@
   if (!g) return;
   const base = { reset: g.reset, onAction: g.onAction, add: g.add, update: g.update, draw: g.draw, scene3d: g.scene3d };
   const TX = [-5.2, 5.2];
+  addSettings(g, [charSetting('charLeft', 'Construtor da torre 1'), charSetting('charRight', 'Construtor da torre 2')]);
   Object.assign(g, {
-    enter() { Assets3D.preload(['cavaleiro', 'barbaro']); },
+    enter() { Assets3D.preload([pickKind(this.s.charLeft, 0), pickKind(this.s.charRight, 1)]); },
+    onSettings() { this.leave?.(); },
     leave() { if (this.r?.builders) { for (const b of this.r.builders) b.dispose(); this.r.builders = null; for (const p of this.r.plates || []) if (p) { p.parent?.remove(p); p.material.map.dispose(); p.material.dispose(); } this.r.plates = [null, null]; this.r.fx?.clear(); } },
     reset() {
       base.reset.call(this);
@@ -43,7 +45,7 @@
       }
       // Um construtor em cada torre (cavaleiro de um lado, bárbaro do outro), com a capa do time
       r.builders = [0, 1].map((s) => {
-        const c = new Character3D({ kind: s ? 'barbaro' : 'cavaleiro', loadout: 'weapon', height: 3.4, tint: s ? this.s.rightColor : this.s.leftColor, plate: false, base: 'idle' });
+        const c = new Character3D({ kind: pickKind(s ? this.s.charRight : this.s.charLeft, s), loadout: 'weapon', height: 3.4, tint: s ? this.s.rightColor : this.s.leftColor, plate: false, base: 'idle' });
         c.root.position.set(TX[s] + (s ? -1 : 1), 0.8, 1.2);
         c.root.rotation.y = s ? -0.5 : 0.5;
         r.caps[s].parent.add(c.root);
