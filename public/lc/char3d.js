@@ -69,6 +69,11 @@ const CHARACTERS = {
   tucano: { name: 'Tucano', file: 'tucano', family: 'static', accent: '#f97316', props: [], weapon: [], special: [] },
   robo645: { name: 'Robô 645', file: 'robo645', family: 'static', accent: '#94a3b8', props: [], weapon: [], special: [] },
 };
+// Tipo de esqueleto automático dos personagens sem articulação (lc/autorig.js). Os outros são humanos.
+for (const [k, r] of Object.entries({ cachorro: 'quadrupede', mech_aranha: 'quadrupede', macaquinho: 'quadrupede', pinguim: 'ave', papagaio: 'ave', tucano: 'ave', dragao: 'ave' })) CHARACTERS[k].rig = r;
+// Ajustes do esqueleto automático: reach = quanto o braço sobe; noArms = braços acompanham o peito (modelo agachado);
+// core = largura do miolo do corpo que não segue os braços (roupas e ombreiras largas).
+for (const [k, c] of Object.entries({ super_robo: { reach: 0.3, core: 1.9 }, robo_articulado: { reach: 0.4, torso: 0.6, core: 1.9 }, robo645: { noArms: true }, mech_andador: { reach: 0.4 }, astronauta_retro: { reach: 0.2, core: 1.7 }, soldado: { core: 1.45 }, olho_mago: { reach: 0.7 } })) CHARACTERS[k].rigCfg = c;
 const KAYKIT_HEROES = ['cavaleiro', 'barbaro', 'maga', 'ladino', 'encapuzado'];
 const PACK_KINDS = ['aventureiro', 'swat', 'astronauta', 'cactoro', 'sapo', 'observador', 'robo', 'super_robo', 'orangotango', 'soldado'];
 const PACK2_KINDS = ['touro', 'demonio', 'dragao_evoluido', 'mech', 'caveira', 'cachorro', 'zumbi', 'alien', 'esqueleto_alien', 'explorador', 'astronauta_retro', 'cenoura', 'banana', 'olho_invocador', 'olho_mago', 'lalobot', 'esqueletinho', 'fantasia_esqueleto', 'dragao', 'robo_articulado', 'mech_andador', 'mech_aranha'];
@@ -335,12 +340,14 @@ class Character3D {
       const fam = this.def.family || 'kaykit';
       const [{ clone }, gltf, shared] = await Promise.all([Assets3D.modules(), Assets3D.load(this.def.file), fam === 'kaykit' ? Assets3D.anims() : null]);
       if (this.disposed) return;
-      const model = clone(gltf.scene);
+      // Sem esqueleto: ganha um esqueleto automático com a mesma forma (o modelo não muda, só passa a dobrar).
+      const tpl = fam === 'static' && typeof AutoRig !== 'undefined' ? AutoRig.template(gltf, this.def) : null;
+      const model = clone(tpl ? tpl.scene : gltf.scene);
       // Escala pela altura real do modelo e pés no chão (calculado uma vez por tipo).
       if (!gltf.userData.h) { const b = new THREE.Box3().setFromObject(gltf.scene); gltf.userData.h = b.max.y - b.min.y || 2.4; gltf.userData.minY = b.min.y; }
-      const sc = this.height / gltf.userData.h;
+      const hh = tpl ? tpl.H : gltf.userData.h, sc = this.height / hh;
       model.scale.multiplyScalar(sc);
-      model.position.y -= (gltf.userData.minY || 0) * sc;
+      model.position.y -= ((tpl ? tpl.minY : gltf.userData.minY) || 0) * sc;
       let clips = shared;
       if (fam === 'quat') {
         if (!gltf.userData.clips) { gltf.userData.clips = new Map(); for (const c of gltf.animations) gltf.userData.clips.set(c.name.split('|').pop(), c); }
@@ -362,8 +369,16 @@ class Character3D {
       this.setLoadout(this.loadoutName);
       this.body.remove(this.placeholder); this.placeholder.geometry.dispose(); this.placeholder.material.dispose(); this.placeholder = null;
       // Pivô: recebe o giro de frente do modelo e o movimento procedural dos personagens sem esqueleto.
-      this.pivot = new THREE.Group(); this.pivot.add(model); this.pivot.rotation.y = this.def.yaw || 0;
+      this.yaw0 = tpl ? 0 : this.def.yaw || 0; // no molde articulado o giro de frente já vem aplicado
+      this.pivot = new THREE.Group(); this.pivot.add(model); this.pivot.rotation.y = this.yaw0;
       this.body.add(this.pivot);
+      if (tpl) {
+        const bones = {}; let jaw = null;
+        model.traverse((o) => { if (o.isBone && o.name.startsWith('ar_')) bones[o.name.slice(3)] = o; if (o.name === 'ar_jawmesh') (jaw ||= []).push(o); });
+        if (bones.hips) bones.hips.userData.restY = bones.hips.position.y;
+        this.rigInst = { type: tpl.type, bones, rest: tpl.rest, H: tpl.H, root: model, reach: tpl.reach };
+        this.jawMeshes = jaw || [];
+      }
       if (!this.staticMode) {
         this.mixer = new THREE.AnimationMixer(model);
         this.clips = clips;
@@ -438,7 +453,7 @@ class Character3D {
   get proc() { return Boolean(this.rig || this.staticMode); }
   get busy() { return this.state && !LOOPS.has(this.state) && !this.hold && (this.proc ? this.stateT < this.fbDur : this.cur?.isRunning()); }
   // Reações visuais
-  say(text, o) { this.bubble.userData.show(text, o); }
+  say(text, o) { this.bubble.userData.show(text, o); this.talkT = clamp(String(text || '').length * 0.07, 1, 4); }
   hitFlash(color = 0xffffff, k = 1) { this.flash = k; this.flashColor = new THREE.Color(color); }
   // Troca a cor da capa/roupa do time (ex.: "trocar roupa" na pista de dança)
   setTint(c) { this.tint = c; for (const m of this.capeMats || []) m.color.set(c); this.ring?.material.color.set(c); }
@@ -464,13 +479,14 @@ class Character3D {
       this.flash = Math.max(0, this.flash - dt * 5);
       for (const m of this.mats || []) { m.emissive.copy(this.flashColor).multiplyScalar(this.flash * 0.9); }
     }
+    if (this.talkT > 0) this.talkT -= dt;
     this.bubble.userData.tick(dt);
   }
   // Personagem sem esqueleto: o corpo inteiro se mexe (pula, inclina, gira, amassa e estica) conforme o estado.
   staticPose() {
     const p = this.pivot, t = this.stateT, s = this.state, D = this.fbDur, h = this.height;
     const k = D === Infinity ? 0 : clamp(t / D, 0, 1), hk = Math.sin(k * Math.PI), now = performance.now() / 1000 + this.root.id;
-    let x = 0, y = 0, z = 0, rx = 0, ry = this.def.yaw || 0, rz = 0, sy = 1;
+    let x = 0, y = 0, z = 0, rx = 0, ry = this.yaw0 || 0, rz = 0, sy = 1;
     if (s === 'walk' || s === 'run' || s === 'strafeL' || s === 'strafeR' || s === 'walkBack') { const f = s === 'walk' ? 8 : 12, ph = Math.abs(Math.sin(now * f)); y = ph * 0.13 * h; rz = Math.sin(now * f) * 0.09; rx = 0.12; sy = 0.92 + ph * 0.12; }
     else if (['punch', 'slash', 'stab', 'cast', 'heavy', 'shoot', 'throw', 'blockAttack'].includes(s)) { z = hk * 0.3 * h; rx = 0.35 * hk; sy = 1 - 0.08 * hk; }
     else if (s === 'kick' || s === 'jumpAttack') { y = hk * 0.35 * h; z = hk * 0.25 * h; rx = -0.4 * hk; }
@@ -484,6 +500,16 @@ class Character3D {
     else if (s === 'victory' || s === 'taunt' || s === 'spawn' || s === 'interact' || s === 'use') { const b = Math.abs(Math.sin(t * 9)); y = b * 0.3 * h; sy = 0.88 + b * 0.2; rz = Math.sin(t * 6) * 0.15; }
     else if (s === 'powerUp' || s === 'channel') { ry += k * Math.PI * 4; y = hk * 0.3 * h; sy = 1 + hk * 0.15; }
     else { y = Math.abs(Math.sin(now * 2.2)) * 0.03 * h; sy = 1 + Math.sin(now * 2.2) * 0.025; rz = Math.sin(now * 1.1) * 0.03; }
+    const R = this.rigInst;
+    if (R) {
+      // Com esqueleto, braços, pernas e cabeça fazem o gesto; o corpo inteiro só acompanha de leve e não amassa.
+      const talk = this.talkT > 0 || this.talking;
+      AutoRig.pose(R, s, now, k, hk, 1 / 60 * (this.timeScale ?? 1), talk);
+      for (const m of this.jawMeshes) if (m.morphTargetInfluences) m.morphTargetInfluences[0] = this.talkLevel != null ? this.talkLevel : talk ? Math.max(0, Math.sin(now * 17) * 0.6 + Math.sin(now * 7.3) * 0.4) : 0;
+      sy = 1;
+      const dead = s === 'death' || s === 'deadPose', air = s.startsWith('jump') || s === 'spawnAir' || s === 'standUp' || s.startsWith('dodge') || s === 'spin' || s === 'powerUp' || s === 'channel';
+      if (!dead && !air) { y *= R.type === 'humano' ? 0.25 : 0.5; rz *= 0.25; rx *= 0.3; z *= 0.5; }
+    }
     p.position.set(x, y, z); p.rotation.set(rx, ry, rz); p.scale.set(1 + (1 - sy) * 0.5, sy, 1 + (1 - sy) * 0.5);
   }
   fallbackPose() {

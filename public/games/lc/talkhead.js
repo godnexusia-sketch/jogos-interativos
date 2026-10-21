@@ -112,7 +112,7 @@ const HEAD_FINISH = {
         for (const o of u.jaws || []) o.morphTargetInfluences[0] = m;
         if (u.mouthMesh) u.mouthMesh.scale.set(1.5 + m * 0.3, 0.04 + m * 0.75, 1);
         if (u.halo) u.halo.material.opacity = 0.35 + m * 0.5;
-        if (u.char) { u.char.update(1 / 60); if (this.busy && !u.char.busy && Math.random() < 0.02) u.char.play(pick(['interact', 'taunt', 'victory'])); }
+        if (u.char) { u.char.talking = this.busy || m > 0.05; u.char.talkLevel = m; u.char.update(1 / 60); if (this.busy && !u.char.busy && Math.random() < 0.02) u.char.play(pick(['interact', 'taunt', 'victory'])); }
       }
       base.draw.call(this);
       if (r && r.lookId !== this.lookKey()) r.lookId = this.lookKey();
