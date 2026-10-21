@@ -168,22 +168,48 @@ if (!isClean) (() => {
   // ---------- Seções ----------
   const RENDER = {};
   let libGenre = store.get('libGenre', 'all'), libSearch = '';
+  // Biblioteca: destaque do jogo no ar + cartões com a capa tirada do próprio jogo (assets/capas).
+  const WEBGL_OK = (() => { try { return Boolean(document.createElement('canvas').getContext('webgl2')); } catch { return false; } })();
+  const genreOf = (g) => GENRES.find((x) => x.id === g.genre);
+  const coverOf = (g) => `/assets/capas/${g.id}.webp`;
+  const badges = (g) => [g.three ? '<i class="bd b3d">3D</i>' : '', g.ai ? '<i class="bd bai">IA</i>' : '', g.voice ? '<i class="bd bvo">VOZ</i>' : ''].join('');
+  const gameCard = (g) => {
+    const off = g.three && !WEBGL_OK, cur = g === current;
+    return `<button class="gcard ${cur ? 'cur' : ''} ${off ? 'off' : ''}" data-id="${g.id}" style="--c1:${g.color || colorFor(g.id)}" ${off ? 'title="Este aparelho não tem WebGL 2: o jogo 3D não roda aqui"' : ''}>
+      <span class="gcover"><span class="gfb">${g.icon}</span><img src="${coverOf(g)}" alt="" loading="lazy" onload="this.classList.add('ok')" onerror="this.remove()"></span>
+      <span class="gstat">${cur ? '<i class="bd live">● NO AR</i>' : off ? '<i class="bd boff">INDISPONÍVEL</i>' : ''}${badges(g)}</span>
+      <span class="ginfo"><small>${genreOf(g)?.icon || ''} ${esc(genreOf(g)?.name || '')}</small><b>${esc(g.name)}</b><p>${esc(trim(g.desc || '', 96))}</p>
+        <span class="gplay">${cur ? '⚙️ Abrir' : off ? 'Sem 3D aqui' : '▶ Iniciar'}</span></span></button>`;
+  };
   RENDER.jogos = () => {
     const counts = Object.fromEntries(GENRES.map((x) => [x.id, x.id === 'all' ? GAMES.length : GAMES.filter((g) => g.genre === x.id).length]));
-    h(`<div class="vhead"><h2>Biblioteca de jogos</h2><input id="libSearch" placeholder="🔎 Buscar jogo" value="${esc(libSearch)}"></div>
+    const g0 = current;
+    h(`<div class="vhead"><h2>Biblioteca de jogos</h2><input id="libSearch" type="search" placeholder="🔎 Buscar jogo" value="${esc(libSearch)}"></div>
+      <section class="hero" style="--c1:${g0.color || colorFor(g0.id)}">
+        <img class="hero-bg" src="${coverOf(g0)}" alt="" onerror="this.remove()">
+        <div class="hero-cover"><span class="gfb">${g0.icon}</span><img src="${coverOf(g0)}" alt="" onload="this.classList.add('ok')" onerror="this.remove()"></div>
+        <div class="hero-txt"><span class="bd live">● NO AR AGORA</span>${badges(g0)}
+          <h3>${esc(g0.name)}</h3><small>${genreOf(g0)?.icon || ''} ${esc(genreOf(g0)?.name || '')}</small>
+          <p>${esc(trim(g0.desc || '', 180))}</p>
+          <div class="row"><button class="primary" id="heroOpen">⚙️ Configurar e testar</button><button id="heroReset">↺ Reiniciar</button></div></div>
+      </section>
       <div class="chips" id="genres">${GENRES.filter((x) => counts[x.id]).map((x) => `<button data-g="${x.id}" class="${x.id === libGenre ? 'on' : ''}">${x.icon} ${x.name} <small>${counts[x.id]}</small></button>`).join('')}</div>
-      <div class="cards" id="cards"></div>`);
+      <div class="gcards" id="cards"></div>`);
     const draw = () => {
       const s = norm(libSearch);
       const list = GAMES.filter((g) => (libGenre === 'all' || g.genre === libGenre) && (!s || norm(g.name + ' ' + (g.desc || '')).includes(s)));
-      q('#cards').innerHTML = list.map((g) => `<button class="card ${g === current ? 'cur' : ''}" data-id="${g.id}" style="--c1:${g.color || colorFor(g.id)}">
-        <span class="cic">${g.icon}</span><b>${esc(g.name)}</b><small>${esc(GENRES.find((x) => x.id === g.genre)?.name || '')}${g.three ? ' · 3D' : ''}${g.ai ? ' · IA' : ''}${g.voice ? ' · Voz' : ''}</small>
-        <p>${esc(trim(g.desc || '', 110))}</p>${g === current ? '<em>No ar</em>' : ''}</button>`).join('') || '<p class="small">Nenhum jogo encontrado.</p>';
+      q('#cards').innerHTML = list.map(gameCard).join('') || '<p class="small">Nenhum jogo encontrado.</p>';
     };
     draw();
+    q('#heroOpen').addEventListener('click', () => show('jogo'));
+    q('#heroReset').addEventListener('click', () => resetCurrent());
     q('#genres').addEventListener('click', (e) => { const b = e.target.closest('[data-g]'); if (!b) return; libGenre = b.dataset.g; store.set('libGenre', libGenre); qa('#genres button').forEach((x) => x.classList.toggle('on', x === b)); draw(); });
     q('#libSearch').addEventListener('input', (e) => { libSearch = e.target.value; draw(); });
-    q('#cards').addEventListener('click', (e) => { const b = e.target.closest('[data-id]'); if (!b) return; const g = GAMES.find((x) => x.id === b.dataset.id); if (g !== current) selectGame(g); show('jogo'); });
+    q('#cards').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-id]'); if (!b || b.classList.contains('off')) return;
+      const g = GAMES.find((x) => x.id === b.dataset.id);
+      if (g !== current) { selectGame(g); RENDER.jogos(); toastMsg(`▶ ${g.name} no ar`); } else show('jogo');
+    });
   };
 
   RENDER.jogo = () => {

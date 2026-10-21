@@ -161,9 +161,11 @@ function getImg(url) {
     img = new Image();
     img.referrerPolicy = 'no-referrer';
     img.decoding = 'async';
+    // Imagem de outro site passa pelo servidor: assim ela não "contamina" o canvas (pode virar textura 3D e ser exportada).
+    img.crossOrigin = 'anonymous';
     img.onerror = () => { img.failedAt = Date.now(); };
     img.retried = retried;
-    img.src = url;
+    img.src = /^https?:\/\//.test(url) && !url.startsWith(location.origin) ? picSrc(url) : url;
     imgCache.set(url, img);
     if (imgCache.size > 900) imgCache.delete(imgCache.keys().next().value);
   }
