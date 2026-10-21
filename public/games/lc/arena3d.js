@@ -17,7 +17,8 @@
   const heightOf = (fi) => 1.15 + clamp((fi.r - 22) / 38, 0, 1) * 0.75;
 
   Object.assign(g, {
-    enter() { Assets3D.preload([...HERO_KINDS, ...UNDEAD_KINDS.slice(0, 2)]); },
+    // Só as animações e os bots; cada personagem baixa quando aparece (são dezenas na lista)
+    enter() { Assets3D.preload(UNDEAD_KINDS.slice(0, 2)); },
     leave() { this.dispose3d(); },
     reset() {
       base.reset.call(this);

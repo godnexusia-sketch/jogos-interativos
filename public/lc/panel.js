@@ -476,6 +476,7 @@ if (!isClean) (() => {
         <div class="row"><button class="primary" id="chShow">📋 Mostrar a lista na tela agora</button></div>
         <div class="row wrap"><button id="chAll">Ativar todos</button><button id="chPack2">Só o pacote 2</button><button id="chPack">Só o pacote 1</button><button id="chKay">Só os clássicos</button></div>
         <p class="note">Vale para todos os jogos 3D com personagens: Lutadores, Arena de Batalha, Pista de Dança, Guerra das Torres, Guerra de Territórios, Colina dos Zumbis, MMA dos Países, Festa Pixel 3D e as escaladas. Quem já está na tela troca quando entrar de novo.</p></div>
+      ${group('Pacote 3', PACK3_KINDS, 'Panda e os Mechs têm animações próprias; os outros se movem por movimento simples.')}
       ${group('Pacote 2', PACK2_KINDS, 'Touro, Demônio, Dragão Evoluído, Mech e Caveira têm animações próprias; os outros se movem por movimento simples.')}
       ${group('Pacote 1', PACK_KINDS, 'Os de movimento simples não têm esqueleto: pulam, inclinam, giram e amassam/esticam.')}
       ${group('Clássicos (KayKit)', KAYKIT_HEROES)}`);

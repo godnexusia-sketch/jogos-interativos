@@ -32,7 +32,8 @@ defineGame(Object.assign({}, DuelBase, {
   bindings: [{ action: 'join', trigger: 'join' }, { action: 'join', trigger: 'comment' }, { action: 'grow_hp', trigger: 'gift', minCoins: 1 }, { action: 'heal_stage', trigger: 'like', likes: 10 }],
   sample() { return pick(['eu', 'luta', 'bora']); },
   weapon(e) { return e.max >= this.s.pistolHpThreshold ? 2 : e.max >= this.s.swordHpThreshold ? 1 : 0; },
-  enter() { Assets3D.preload([...HERO_KINDS, ...UNDEAD_KINDS.slice(0, 2)]); },
+  // Só as animações e os bots; cada personagem baixa quando aparece (são dezenas na lista)
+  enter() { Assets3D.preload(UNDEAD_KINDS.slice(0, 2)); },
   leave() { this.dispose3d(); },
   reset() {
     DuelBase.reset.call(this);

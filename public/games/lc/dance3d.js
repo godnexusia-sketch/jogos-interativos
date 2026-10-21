@@ -17,7 +17,7 @@
   const slot = (i) => { const rows = [5, 6, 7, 8]; let r = 0, k = i; while (r < rows.length - 1 && k >= rows[r]) { k -= rows[r]; r++; } const n = rows[r]; return new THREE.Vector3((k - (n - 1) / 2) * 1.2 + (r % 2 ? 0.3 : 0), 0, 2.6 - r * 1.9); };
 
   Object.assign(g, {
-    enter() { Assets3D.preload(HERO_KINDS); },
+    enter() { Assets3D.preload([]); },
     leave() {
       const r = this.r;
       if (!r) return;

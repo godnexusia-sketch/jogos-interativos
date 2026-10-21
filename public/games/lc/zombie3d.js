@@ -19,7 +19,7 @@
     return kindFor(zb.user, gm.s.zombieSet === 'all' ? HERO_KINDS : UNDEAD_KINDS);
   };
   Object.assign(g, {
-    enter() { Assets3D.preload(this.s.zombieSet === 'all' ? HERO_KINDS.slice(0, 6) : UNDEAD_KINDS); },
+    enter() { Assets3D.preload(this.s.zombieSet === 'all' ? [] : UNDEAD_KINDS.slice(0, 4)); },
     leave() { if (this.r?.zc) { for (const c of this.r.zc.values()) c.dispose(); this.r.zc.clear(); } },
     onSettings() { this.leave(); },
     onCharPick(user) { const key = user.id || user.nick; for (const [zb, c] of this.r?.zc || []) if (zb.k === key) { c.dispose(); this.r.zc.delete(zb); } },

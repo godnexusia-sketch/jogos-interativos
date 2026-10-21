@@ -28,3 +28,8 @@ Licença de cada um: a da página do modelo na Poly Pizza (CC0 ou CC-BY; os CC-B
 ## Cabeças do Apresentador IA
 - male_base — hedy magroun; HeadRef — Christian Venables; Skull — CreativeTechLab (licença da página de cada um).
 - "Zuck Head" (Brielle Garcia) não foi usada: é o rosto de uma pessoa real, e um apresentador de IA falando com esse rosto numa live seria falsificação de identidade.
+
+## Terceiro pacote de personagens (Poly Pizza)
+- Panda, Mech (duas versões: Mech Besouro e Mech Girafa) — Quaternius (CC0).
+- Main Monkey - VR — Victor Karlsson. Penguin, Parrot e monkey (Macaquinho) — Poly by Google. Toco Toucan — Anonymous. robo645 — thomas kempa.
+Licença de cada um: a da página do modelo na Poly Pizza (CC0 ou CC-BY; os CC-BY pedem crédito ao autor, como acima).

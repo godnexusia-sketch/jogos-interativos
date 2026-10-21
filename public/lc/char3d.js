@@ -58,10 +58,21 @@ const CHARACTERS = {
   robo_articulado: { name: 'Robô Articulado', file: 'robo_articulado', family: 'static', accent: '#64748b', props: [], weapon: [], special: [] },
   mech_andador: { name: 'Mech Andador', file: 'mech_andador', family: 'static', accent: '#78716c', props: [], weapon: [], special: [] },
   mech_aranha: { name: 'Mech Aranha', file: 'mech_aranha', family: 'static', accent: '#57534e', props: [], weapon: [], special: [] },
+  // Terceiro pacote do dono
+  panda: { name: 'Panda', file: 'panda', family: 'quat', accent: '#f8fafc', props: [], weapon: [], special: [] },
+  mech2: { name: 'Mech Besouro', file: 'mech2', family: 'quat', accent: '#a8a29e', props: [], weapon: [], special: [] },
+  mech3: { name: 'Mech Girafa', file: 'mech3', family: 'quat', accent: '#78716c', props: [], weapon: [], special: [] },
+  macaco: { name: 'Macaco', file: 'macaco', family: 'static', yaw: Math.PI / 2, accent: '#a16207', props: [], weapon: [], special: [] },
+  macaquinho: { name: 'Macaquinho', file: 'macaco2', family: 'static', accent: '#92400e', props: [], weapon: [], special: [] },
+  pinguim: { name: 'Pinguim', file: 'pinguim', family: 'static', accent: '#1e293b', props: [], weapon: [], special: [] },
+  papagaio: { name: 'Papagaio', file: 'papagaio', family: 'static', accent: '#16a34a', props: [], weapon: [], special: [] },
+  tucano: { name: 'Tucano', file: 'tucano', family: 'static', accent: '#f97316', props: [], weapon: [], special: [] },
+  robo645: { name: 'Robô 645', file: 'robo645', family: 'static', accent: '#94a3b8', props: [], weapon: [], special: [] },
 };
 const KAYKIT_HEROES = ['cavaleiro', 'barbaro', 'maga', 'ladino', 'encapuzado'];
 const PACK_KINDS = ['aventureiro', 'swat', 'astronauta', 'cactoro', 'sapo', 'observador', 'robo', 'super_robo', 'orangotango', 'soldado'];
 const PACK2_KINDS = ['touro', 'demonio', 'dragao_evoluido', 'mech', 'caveira', 'cachorro', 'zumbi', 'alien', 'esqueleto_alien', 'explorador', 'astronauta_retro', 'cenoura', 'banana', 'olho_invocador', 'olho_mago', 'lalobot', 'esqueletinho', 'fantasia_esqueleto', 'dragao', 'robo_articulado', 'mech_andador', 'mech_aranha'];
+const PACK3_KINDS = ['panda', 'mech2', 'mech3', 'macaco', 'macaquinho', 'pinguim', 'papagaio', 'tucano', 'robo645'];
 const ALL_KINDS = Object.keys(CHARACTERS).filter((k) => !CHARACTERS[k].undead);
 // Personagens ativos (escolhidos no painel em 🧍 Personagens). Os jogos usam esta lista; ela muda ao vivo.
 // Padrão: todos à disposição em todos os jogos.
@@ -134,13 +145,13 @@ const ANIM = {
 // Mesmos estados para os personagens Quaternius (nomes de clipe sem o prefixo "CharacterArmature|").
 const QUAT_ANIM = {
   idle: ['Idle', 'Idle_Neutral', 'Flying_Idle', 'Idle_2'], fightIdle: ['Idle_Sword', 'Idle', 'Idle_Neutral', 'Flying_Idle'], walk: ['Walk', 'Flying_Idle'], walkBack: ['Run_Back', 'Walk', 'Flying_Idle'], run: ['Run', 'Gallop', 'Fast_Flying'], strafeL: ['Run_Left', 'Run', 'Gallop', 'Fast_Flying'], strafeR: ['Run_Right', 'Run', 'Gallop', 'Fast_Flying'],
-  punch: ['Punch_Left', 'Punch_Right', 'Punch', 'Attack', 'Headbutt', 'Attack_Headbutt'], kick: ['Kick_Left', 'Kick_Right', 'Kick', 'Attack_Kick'], slash: ['Sword_Slash', 'Punch_Right', 'Attack', 'Headbutt', 'Attack_Headbutt'], stab: ['Punch_Right', 'Punch', 'Attack', 'Headbutt'], jumpAttack: ['Sword_Slash', 'Kick_Right', 'Attack_Kick', 'Headbutt'], spin: ['Roll', 'Jump', 'Gallop_Jump'], heavy: ['Sword_Slash', 'Kick_Left', 'Attack_Headbutt', 'Shoot_Big', 'Attack'],
+  punch: ['Punch_Left', 'Punch_Right', 'Punch', 'Attack', 'Headbutt', 'Attack_Headbutt'], kick: ['Kick_Left', 'Kick_Right', 'Kick', 'Attack_Kick'], slash: ['Sword_Slash', 'Sword', 'Punch_Right', 'Attack', 'Headbutt', 'Attack_Headbutt'], stab: ['Punch_Right', 'Punch', 'Attack', 'Headbutt'], jumpAttack: ['Sword_Slash', 'Kick_Right', 'Attack_Kick', 'Headbutt'], spin: ['Roll', 'Jump', 'Gallop_Jump'], heavy: ['Sword_Slash', 'Kick_Left', 'Attack_Headbutt', 'Shoot_Big', 'Attack'],
   block: ['Duck', 'HitRecieve_2', 'HitReact', 'No'], blocking: ['Duck', 'Idle'], blockHit: ['HitRecieve_2', 'HitRecieve', 'HitRecieve_1', 'HitReact', 'Idle_HitReact_Left'], blockAttack: ['Punch_Left', 'Punch', 'Attack'],
   dodge: ['Roll', 'Duck', 'Jump_NoHeight', 'No'], dodgeL: ['Roll', 'Duck', 'Idle_HitReact_Left', 'No'], dodgeR: ['Roll', 'Duck', 'Idle_HitReact_Right', 'No'], dodgeF: ['Roll', 'Jump', 'Gallop_Jump'],
   hit: ['HitRecieve', 'HitRecieve_2', 'HitRecieve_1', 'HitReact', 'Idle_HitReact_Left', 'Idle_HitReact_Right'], death: ['Death'], deadPose: ['Death'],
   victory: ['Wave', 'Yes', 'Dance', 'Hello'], taunt: ['Yes', 'Wave', 'No', 'Dance'], jump: ['Jump', 'Roll', 'Gallop_Jump', 'Jump_NoHeight'], jumpLong: ['Jump', 'Roll', 'Gallop_Jump'], spawn: ['Wave', 'Yes', 'Hello'], spawnAir: ['Jump_Land', 'Jump_Landing', 'Jump_toIdle', 'Jump', 'Wave', 'Yes'],
   cast: ['Gun_Shoot', 'Weapon', 'Shoot_Big', 'Shoot_Small', 'Punch_Right', 'Attack', 'Headbutt'], powerUp: ['Yes', 'Wave', 'Interact', 'Dance', 'Hello'], channel: ['Interact', 'Idle', 'Flying_Idle'], throw: ['Punch_Right', 'Punch', 'Weapon', 'Shoot_Small', 'Attack'], interact: ['Interact', 'Yes', 'Pickup', 'Eating'], use: ['Interact', 'Yes', 'Pickup'], pickup: ['Interact', 'Duck', 'Pickup', 'Eating'],
-  sit: ['Duck', 'Idle', 'Idle_Headlow', 'Eating'], standUp: ['Jump_Land', 'Jump_Landing', 'Jump_toIdle', 'Idle'], shoot: ['Gun_Shoot', 'Weapon', 'Shoot_Small', 'Shoot_Big', 'Punch', 'Attack'],
+  sit: ['Sitting_Idle', 'Duck', 'Idle', 'Idle_Headlow', 'Eating'], standUp: ['Jump_Land', 'Jump_Landing', 'Jump_toIdle', 'Idle'], shoot: ['Gun_Shoot', 'Weapon', 'Shoot_Small', 'Shoot_Big', 'Punch', 'Attack'],
 };
 // Duração (s) dos estados quando o personagem não tem esqueleto (movimento procedural).
 const PROC_DUR = { jump: 0.55, jumpLong: 0.75, punch: 0.45, kick: 0.5, slash: 0.5, stab: 0.45, jumpAttack: 0.7, spin: 0.7, heavy: 0.65, cast: 0.6, shoot: 0.4, throw: 0.5, hit: 0.4, blockHit: 0.35, block: 0.5, dodge: 0.5, dodgeL: 0.5, dodgeR: 0.5, dodgeF: 0.5, death: 0.9, victory: 1.3, taunt: 1.1, powerUp: 1, spawn: 0.8, spawnAir: 0.7, interact: 0.7, use: 0.7, pickup: 0.6, standUp: 0.6 };

@@ -10,7 +10,7 @@
   addSettings(g, [charSetting('houseKind', 'Personagem do lutador da casa')]);
   const base = { scene3d: g.scene3d, reset: g.reset };
   Object.assign(g, {
-    enter() { Assets3D.preload(HERO_KINDS.slice(0, 4)); },
+    enter() { Assets3D.preload([]); },
     leave() { if (this.r?.ch) { for (const c of this.r.ch) c?.dispose(); this.r.ch = [null, null]; } },
     reset() { base.reset.call(this); if (this.r?.ch) { for (const c of this.r.ch) c?.dispose(); this.r.ch = [null, null]; } },
     onCharPick(user) { const key = user.id || user.nick; if (this.f.some((e) => e && e.k === key)) this.rebuild = true; },
