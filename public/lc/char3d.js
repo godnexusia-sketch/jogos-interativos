@@ -228,7 +228,7 @@ class Character3D {
         // Material próprio de cada cópia: permite piscar no dano e pintar a capa do time.
         o.material = o.material.clone();
         o.material.emissive = new THREE.Color(0x000000);
-        if (this.tint && /Cape|Cloak/.test(o.name)) o.material.color.set(this.tint);
+        if (/Cape|Cloak/.test(o.name)) { (this.capeMats ||= []).push(o.material); if (this.tint) o.material.color.set(this.tint); }
         this.mats.push(o.material);
       });
       this.model = model;
@@ -308,6 +308,8 @@ class Character3D {
   // Reações visuais
   say(text, o) { this.bubble.userData.show(text, o); }
   hitFlash(color = 0xffffff, k = 1) { this.flash = k; this.flashColor = new THREE.Color(color); }
+  // Troca a cor da capa/roupa do time (ex.: "trocar roupa" na pista de dança)
+  setTint(c) { this.tint = c; for (const m of this.capeMats || []) m.color.set(c); }
   setHp(f) { this.plate?.userData.setHp(f); }
   setCrown(on) { this.plate?.userData.setCrown(on); }
   setTag(s) { this.plate?.userData.setTag(s); }
