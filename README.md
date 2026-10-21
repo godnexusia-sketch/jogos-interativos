@@ -35,6 +35,14 @@ o mesmo personagem, com a foto e o nome numa placa em cima. Já estão em 3D: **
 **Guerra de Territórios**, **Flappy Batalha**, **Guerra das Torres** e **Pista de Dança** (além dos 3D que já existiam).
 Modelos: KayKit de Kay Lousberg (CC0).
 
+## Personagens e escaladas
+
+- **🧍 Personagens** no painel: escolha quais personagens entram nos jogos (pacote novo: Aventureiro, Agente, Astronauta, Cactoro,
+  Sapo, Olhão, Robô, Super Robô, Orangotango, Soldado; e os clássicos), fixe um para todos ou deixe o espectador escolher no
+  chat com **!nome** (ex.: `!sapo`).
+- **Escaladas 3D:** Só Subindo, Torre de Obstáculos e Rumo ao Céu 3D. Depois da contagem o personagem pula sozinho um degrau
+  por vez; presentes fazem subir rápido, voar, cair, voltar ao checkpoint ou ao começo, congelar, turbo e escudo.
+
 ## Os jogos novos
 
 - **Quiz:** Quiz Relâmpago, Show do Milhão, Verdadeiro ou Falso, Matemática Rápida, Memória Maestro, O Povo Diz, Adivinhe o Número, Adivinhe a Bandeira, Adivinhe o Logo, Onde Fica? (foto da cidade + globo 3D)

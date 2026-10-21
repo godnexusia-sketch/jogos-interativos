@@ -51,8 +51,8 @@ applyRoster();
 const CHAR_PICKS = new Map();
 const charKeyOf = (u) => String(u?.id || u?.nick || '?');
 function charByName(txt) {
-  const n = norm(txt);
-  return Object.keys(CHARACTERS).find((k) => !CHARACTERS[k].undead && (norm(CHARACTERS[k].name) === n || norm(k) === n || norm(k.replace('_', ' ')) === n));
+  const flat = (x) => norm(x).replace(/[\s_-]+/g, ''), n = flat(txt);
+  return Object.keys(CHARACTERS).find((k) => !CHARACTERS[k].undead && (flat(CHARACTERS[k].name) === n || flat(k) === n));
 }
 function charPickFromChat(ev) {
   if (ev.type !== 'chat' || !charCfg().viewerPick) return null;

@@ -465,7 +465,7 @@ if (!isClean) (() => {
     }).join('')}</div></div>`;
     h(`<div class="vhead"><h2>🧍 Personagens 3D</h2><span class="tag">${HERO_KINDS.length} ativos</span></div>
       <div class="panel"><h3>Como escolher</h3>
-        <label class="f tog"><input type="checkbox" id="chPick" ${cfg.viewerPick ? 'checked' : ''}><b></b><span>Espectador escolhe o próprio personagem comentando <b>!nome</b> (ex.: <code>!sapo</code>, <code>!astronauta</code>)</span></label>
+        <label class="f tog"><input type="checkbox" id="chPick" ${cfg.viewerPick ? 'checked' : ''}><b></b><span>Espectador escolhe o próprio personagem comentando <strong>!nome</strong> (ex.: <code>!sapo</code>, <code>!astronauta</code>)</span></label>
         <label class="f"><span>Personagem fixo para todos (vazio = cada espectador ganha um dos ativos)</span><select id="chFixed"><option value="">— cada um o seu —</option>${kinds.map((k) => `<option value="${k}" ${cfg.fixed === k ? 'selected' : ''}>${esc(CHARACTERS[k].name)}</option>`).join('')}</select></label>
         <div class="row"><button id="chAll">Ativar todos</button><button id="chPack">Só o pacote novo</button><button id="chKay">Só os clássicos</button></div>
         <p class="note">Vale para os jogos 3D com personagens: Lutadores, Arena de Batalha, Pista de Dança, as escaladas e outros. Quem já está na tela troca quando entrar de novo.</p></div>
