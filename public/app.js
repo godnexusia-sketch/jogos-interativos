@@ -183,7 +183,7 @@ function dispatchV2(ev) {
   const pk = typeof charPickFromChat === 'function' && charPickFromChat(ev);
   if (pk) {
     const nick = trim(ev.user?.nick || '', 14);
-    if (current.hasChars || HAS_CHARS.includes(current.id)) { current.onCharPick?.(ev.user, pk); announcer.show(`${nick} escolheu ${CHARACTERS[pk].name}!`, '#9ef0ff', 2, 34); }
+    if (current.hasChars || HAS_CHARS.includes(current.id)) { if (current.onCharPick?.(ev.user, pk) === false) announcer.show(`${nick}: aqui só zumbis e caveiras!`, '#fca5a5', 2, 30); else announcer.show(`${nick} escolheu ${CHARACTERS[pk].name}!`, '#9ef0ff', 2, 34); }
     else announcer.show(`${nick}: mande 🎁 ${charCfg().changeGiftName} para virar ${CHARACTERS[pk].name}`, '#9ef0ff', 2.5, 28);
   }
   if (ev.type === 'chat' && current.onChat && canPlay(current, ev.user)) current.onChat(ev);

@@ -87,8 +87,9 @@ const charLive = {
   // Troca o personagem de quem mandou o presente
   change(user) {
     const key = charKeyOf(user), w = this.wish.get(key), cur = CHAR_PICKS.get(key);
-    let k = w && Date.now() - w.t < 5 * 60e3 && HERO_KINDS.includes(w.k) ? w.k : null;
-    if (!k) { const opts = HERO_KINDS.filter((x) => x !== cur && x !== mascot.kind); k = opts.length ? opts[Math.floor(Math.random() * opts.length)] : HERO_KINDS[0]; }
+    const pool = current?.charPool || HERO_KINDS; // o jogo pode limitar (ex.: Colina dos Zumbis só zumbis e caveiras)
+    let k = w && Date.now() - w.t < 5 * 60e3 && pool.includes(w.k) ? w.k : null;
+    if (!k) { const opts = pool.filter((x) => x !== cur && x !== mascot.kind); k = opts.length ? opts[Math.floor(Math.random() * opts.length)] : pool[0]; }
     CHAR_PICKS.set(key, k);
     const name = CHARACTERS[k]?.name || k;
     if (current.hasChars || HAS_CHARS.includes(current.id)) current.onCharPick?.(user, k);
@@ -105,7 +106,7 @@ const charLive = {
     const el = document.createElement('div');
     el.className = 'chgal';
     el.innerHTML = `<h2>ESCOLHA SEU PERSONAGEM</h2><p class="chgal-how">comente <b>!nome</b> · mande <b>🎁 ${escHtml(gift)}</b> para trocar</p>
-      <div class="chgal-grid">${HERO_KINDS.map((k) => `<div class="chgal-c" style="--c1:${CHARACTERS[k].accent}"><img src="/assets/chars/fotos/${k}.webp" alt="" onerror="this.style.visibility='hidden'"><b>${escHtml(CHARACTERS[k].name)}</b><small>!${escHtml(norm(CHARACTERS[k].name).replace(/\s+/g, ''))}</small></div>`).join('')}</div>`;
+      <div class="chgal-grid">${(current?.charPool || HERO_KINDS).map((k) => `<div class="chgal-c" style="--c1:${CHARACTERS[k].accent}"><img src="/assets/chars/fotos/${k}.webp" alt="" onerror="this.style.visibility='hidden'"><b>${escHtml(CHARACTERS[k].name)}</b><small>!${escHtml(norm(CHARACTERS[k].name).replace(/\s+/g, ''))}</small></div>`).join('')}</div>`;
     ovl.append(el);
     setTimeout(() => el.classList.add('out'), 13000);
     setTimeout(() => el.remove(), 13600);

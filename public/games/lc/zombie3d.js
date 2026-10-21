@@ -1,28 +1,31 @@
 'use strict';
 
 // ---------------- Colina dos Zumbis com personagens 3D ----------------
-// A regra continua em battle3d.js. Aqui cada zumbi vira um personagem 3D (Zumbi, Caveira, Esqueletinho,
-// Esqueleto Alien e os esqueletos clássicos, ou qualquer personagem escolhido), com a foto e o nome do
+// A regra continua em battle3d.js. Aqui cada zumbi vira um personagem 3D, sempre um zumbi ou caveira (Zumbi, Caveira,
+// Esqueletinho, Esqueleto Alien, Fantasia de Esqueleto e os esqueletos clássicos), com a foto e o nome do
 // espectador na placa, andando colina acima, piscando quando leva tiro e caindo quando é abatido.
 (() => {
   const g = GAMES.find((x) => x.id === 'zombie-hill');
   if (!g) return;
+  // Só zumbis e caveiras podem ser alvo (inclui a escolha do espectador e o personagem único).
+  const ZOMBIE_SKINS = [...UNDEAD_KINDS, 'fantasia_esqueleto'].filter((k) => CHARACTERS[k]);
   addSettings(g, [
-    { key: 'zombieSet', type: 'select', label: 'Quem são os zumbis', group: 'Personagens', default: 'monsters', options: [['monsters', 'Monstros (zumbi, caveira, esqueletos)'], ['all', 'Qualquer personagem ativo'], ['one', 'Um só (escolha abaixo)']] },
-    { ...charSetting('zombieKind', 'Personagem único dos zumbis'), showIf: { key: 'zombieSet', value: 'one' } },
+    { key: 'zombieSet', type: 'select', label: 'Quem são os zumbis', group: 'Personagens', default: 'monsters', options: [['monsters', 'Sorteado entre zumbis e caveiras'], ['one', 'Um só (escolha abaixo)']] },
+    { key: 'zombieKind', type: 'select', label: 'Zumbi único', group: 'Personagens', default: 'zumbi', options: ZOMBIE_SKINS.map((k) => [k, CHARACTERS[k].name]), showIf: { key: 'zombieSet', value: 'one' } },
   ]);
   const base = { reset: g.reset, damage: g.damage, draw: g.draw };
   const kindOf = (gm, zb) => {
     const own = CHAR_PICKS.get(charKeyOf(zb.user));
-    if (own) return own; // quem escolheu (!nome ou presente de troca) vira o próprio personagem
-    if (gm.s.zombieSet === 'one') return pickKind(gm.s.zombieKind);
-    return kindFor(zb.user, gm.s.zombieSet === 'all' ? HERO_KINDS : UNDEAD_KINDS);
+    if (ZOMBIE_SKINS.includes(own)) return own; // quem escolheu um zumbi/caveira (!nome ou presente de troca) vira ele
+    if (gm.s.zombieSet === 'one' && ZOMBIE_SKINS.includes(gm.s.zombieKind)) return gm.s.zombieKind;
+    return kindFor(zb.user, ZOMBIE_SKINS);
   };
   Object.assign(g, {
-    enter() { Assets3D.preload(this.s.zombieSet === 'all' ? [] : UNDEAD_KINDS.slice(0, 4)); },
+    charPool: ZOMBIE_SKINS,
+    enter() { Assets3D.preload(ZOMBIE_SKINS.slice(0, 4)); },
     leave() { if (this.r?.zc) { for (const c of this.r.zc.values()) c.dispose(); this.r.zc.clear(); } },
     onSettings() { this.leave(); },
-    onCharPick(user) { const key = user.id || user.nick; for (const [zb, c] of this.r?.zc || []) if (zb.k === key) { c.dispose(); this.r.zc.delete(zb); } },
+    onCharPick(user, kind) { if (!ZOMBIE_SKINS.includes(kind)) return false; const key = user.id || user.nick; for (const [zb, c] of this.r?.zc || []) if (zb.k === key) { c.dispose(); this.r.zc.delete(zb); } },
     reset() { base.reset.call(this); if (this.r?.zc) { for (const c of this.r.zc.values()) c.dispose(); this.r.zc.clear(); } },
     damage(zb, d) {
       const alive = zb.alive;
