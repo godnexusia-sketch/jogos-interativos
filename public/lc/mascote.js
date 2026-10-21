@@ -9,7 +9,7 @@
 //    de tempos em tempos e pelo botão do painel.
 // Jogos com personagens próprios marcam hasChars: true (o mascote não aparece neles).
 
-const HAS_CHARS = ['stick-fighters', 'battle-arena', 'dance-floor', 'only-climb', 'obby-tower', 'only-heaven', 'tower-war', 'territory-war', 'zombie-hill', 'mma-clash'];
+const HAS_CHARS = ['ai-host', 'stick-fighters', 'battle-arena', 'dance-floor', 'only-climb', 'obby-tower', 'only-heaven', 'tower-war', 'territory-war', 'zombie-hill', 'mma-clash'];
 Object.assign(CHAR_DEFAULTS, { mascotOn: true, mascotPos: 'right', mascotKind: '', changeGiftId: '7934', changeGiftName: 'Coração pra mim', galleryEvery: 10, galleryCmd: true });
 
 const mascot = {
