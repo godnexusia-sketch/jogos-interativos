@@ -263,10 +263,10 @@ defineGame({
     for (const d of this.dirt) { ctx.globalAlpha = d.a; ctx.fillStyle = d.c; ctx.beginPath(); for (let k = 0; k < 10; k++) { const a = d.rot + k / 10 * Math.PI * 2, r = d.r * (k % 2 ? 0.7 : 1.1); ctx.lineTo(d.x + Math.cos(a) * r, d.y + Math.sin(a) * r); } ctx.fill(); label(d.e, d.x, d.y, d.r * 0.8, '#fff', 'center', 400); ctx.globalAlpha = 1; }
     // Faxineiro 3D no andaime, segurando o rodo: anda com ele, esfrega, apanha da sujeira e comemora o andar limpo
     const w = this.s.controlMode === 'manual' ? pointer : this.wiper;
-    const fy = Math.min(w.y + 150, H - 75), px = this.px ?? w.x, mv = w.x - px; this.px = w.x;
+    const fy = Math.min(w.y + 195, H - 75), px = this.px ?? w.x, mv = w.x - px; this.px = w.x;
     ctx.fillStyle = '#334155'; ctx.fillRect(W / 2 - 4 - this.cols * 75, 0, 4, fy); ctx.fillRect(W / 2 + this.cols * 75, 0, 4, fy);
     ctx.fillStyle = '#a16207'; ctx.fillRect(W / 2 - this.cols * 75 - 10, fy, this.cols * 150 + 20, 14); ctx.fillStyle = '#facc15'; ctx.fillRect(W / 2 - this.cols * 75 - 10, fy - 34, this.cols * 150 + 20, 5);
-    const c = charLayer.get('cleaner', this.kind(), { height: 130 });
+    const c = charLayer.get('cleaner', this.kind(), { height: 175 });
     if (c) {
       const want = this.cele || this.hurt ? 0 : Math.abs(mv) > 1.2 ? (mv > 0 ? 1.2 : -1.2) : Math.PI - 0.5;
       this.face += (want - this.face) * 0.15;

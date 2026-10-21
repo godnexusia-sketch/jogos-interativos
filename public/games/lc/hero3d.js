@@ -140,7 +140,13 @@ defineGame({
     { key: 'autoStackRate', type: 'number', label: 'Precisão do automático (0–1)', min: 0, max: 1, step: 0.05, default: 0.8 },
     { key: 'winGoalHeight', type: 'number', label: 'Altura para vencer', min: 10, max: 1000, default: 100 },
     { key: 'winTarget', type: 'number', label: 'Vitórias para fechar a partida', min: 1, max: 20, default: 3 },
+    charSetting('character', 'Personagem da torre'),
   ],
+  hasChars: true,
+  kind() { return this.charOverride && CHARACTERS[this.charOverride] ? this.charOverride : pickKind(this.s.character || 'maga', 0, 'tower-stack'); },
+  onCharPick(user, k) { this.charOverride = k; },
+  enter() { Assets3D.preload([this.kind()]); },
+  leave() { Hero3D.leave(this); },
   actions: [...helperActions(STACK_HELP), ...helperActions(STACK_SAB), ...WIN_ACTIONS],
   bindings: [{ action: 'balloons', trigger: 'like', likes: 20 }, { action: 'rocket', trigger: 'gift', minCoins: 1 }, { action: 'dragon', trigger: 'gift', minCoins: 30 }, { action: 'superman', trigger: 'gift', minCoins: 299 }, { action: 'finger', trigger: 'comment', text: 'cai,derruba' }],
   reset() { this.stack = [{ x: 0, z: 0, w: 4, d: 4 }]; this.cur = null; this.dir = 0; this.best = this.best || 0; this.wins = this.wins || 0; this.feed = new Feed(4); this.fly = new Flyers(); this.pend = []; this.falling = []; this.batch = 0; this.cele = 0; this.newBlock(); },
@@ -168,17 +174,27 @@ defineGame({
     this.best = Math.max(this.best, this.stack.length - 1);
     if (this.stack.length - 1 >= this.s.winGoalHeight) this.win(); else this.newBlock();
   },
-  win() { this.wins++; this.cele = 4; sfx.win(); confetti(160); voice.say(`Torre de ${this.stack.length - 1} andares!`); if (this.wins >= this.s.winTarget) this.wins = 0; this.stack = [{ x: 0, z: 0, w: 4, d: 4 }]; this.newBlock(); },
-  gameOver() { sfx.boom(); this.overT = 2.5; voice.say(`Caiu! A torre teve ${this.stack.length - 1} andares.`); },
+  win() { this.wins++; this.cele = 4; sfx.win(); confetti(160); voice.say(`Torre de ${this.stack.length - 1} andares!`); Hero3D.play(this, 'victory', { then: 'taunt' }); if (this.wins >= this.s.winTarget) this.wins = 0; this.stack = [{ x: 0, z: 0, w: 4, d: 4 }]; this.newBlock(); },
+  gameOver() { sfx.boom(); this.overT = 2.5; Hero3D.play(this, 'hit'); this.r?.char?.hitFlash('#ff4d6d', 1); voice.say(`Caiu! A torre teve ${this.stack.length - 1} andares.`); },
+  // Mago(a) 3D num disco flutuante ao lado da torre: sobe junto com o topo e reage ao chat
+  hero(dt) {
+    const c = Hero3D.tick(this, dt, { height: 3.2, loadout: 'weapon' }), r = this.r; if (!c) return;
+    const y = Math.max(-0.5, this.stack.length - 1.5), p = c.root.position;
+    p.y += (y - p.y) * Math.min(1, dt * 4);
+    r.disc.position.set(p.x, p.y - 0.18, p.z); r.disc.rotation.y += dt;
+    const face = c.busy && (c.state === 'cast' || c.state === 'powerUp') ? -Math.PI / 4 : Math.PI / 4; // lança o feitiço olhando a torre
+    c.root.rotation.y += (face - c.root.rotation.y) * Math.min(1, dt * 8);
+  },
   update(dt) {
     this.feed.update(dt);
+    this.hero(dt);
     this.cele = Math.max(0, this.cele - dt);
     for (const f of this.falling) { f.t += dt; f.vy -= 25 * dt; f.y = (f.y ?? 0) + f.vy * dt; }
     this.falling = this.falling.filter((f) => f.t < 3);
     if (this.overT > 0) { this.overT -= dt; if (this.overT <= 0) { this.stack = [{ x: 0, z: 0, w: 4, d: 4 }]; this.newBlock(); } return; }
     Effects3D.tick(this, dt, (p) => {
-      if (p.good) this.batch += p.amt;
-      else { const n = Math.min(this.stack.length - 1, p.amt); for (let i = 0; i < n; i++) { const b = this.stack.pop(); this.falling.push({ ...b, y: this.stack.length, vy: rand(2, 6), t: 0, spin: rand(-3, 3) }); } this.newBlock(); sfx.boom(); }
+      if (p.good) { this.batch += p.amt; Hero3D.play(this, 'cast', { then: 'powerUp' }); Hero3D.say(this, `valeu ${nickOf(p.user)}!`); }
+      else { const n = Math.min(this.stack.length - 1, p.amt); for (let i = 0; i < n; i++) { const b = this.stack.pop(); this.falling.push({ ...b, y: this.stack.length, vy: rand(2, 6), t: 0, spin: rand(-3, 3) }); } this.newBlock(); sfx.boom(); Hero3D.play(this, 'hit'); this.r?.char?.hitFlash('#ff4d6d', 1); }
       this.feed.push(p.user, `${p.name}: ${p.amt > 0 ? '+' : ''}${p.amt} blocos`, p.good ? '#7cff6b' : '#ff6b8a');
     });
     const c = this.cur;
@@ -201,7 +217,9 @@ defineGame({
     const stars = new T.Points(new T.BufferGeometry().setAttribute('position', new T.Float32BufferAttribute(Array.from({ length: 2400 }, () => rand(-120, 120)), 3)), new T.PointsMaterial({ color: 0xffffff, size: 0.5, transparent: true, opacity: 0 }));
     scene.add(stars);
     const cam = new T.OrthographicCamera(-9, 9, 16, -16, 0.1, 400);
-    this.r = { scene, blocks, cur, fall, stars, cam, d: new T.Object3D(), col: new T.Color() };
+    const disc = new T.Mesh(new T.CylinderGeometry(1.5, 1.1, 0.35, 32), new T.MeshStandardMaterial({ color: 0xf5f3ff, emissive: 0xa78bfa, emissiveIntensity: 0.45, roughness: 0.4 })); scene.add(disc);
+    this.r = { scene, blocks, cur, fall, stars, cam, disc, d: new T.Object3D(), col: new T.Color() };
+    const c = Hero3D.make(this, { height: 3.2, loadout: 'weapon' }); c.root.position.set(5, Math.max(-0.5, this.stack.length - 1.5), -5); c.root.rotation.y = Math.PI / 4;
     return this.r;
   },
   draw() {
