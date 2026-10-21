@@ -12,6 +12,8 @@
     "node": ">=22"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "0.137.0",
+    "msedge-tts": "2.1.0",
     "three": "0.170.0",
     "tiktok-live-connector": "2.5.0",
     "ws": "8.22.0"

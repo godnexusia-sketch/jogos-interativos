@@ -259,7 +259,7 @@ const sfx = {
     o.type = type; o.frequency.setValueAtTime(freq, t);
     g.gain.setValueAtTime(vol, t);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(g).connect(ac.destination);
+    o.connect(g).connect((typeof mixer !== 'undefined' && mixer.init() && this.out) || ac.destination);
     o.start(t); o.stop(t + dur + 0.02);
   },
   key() { this.tone(1800, 0.05, 'square', 0.05); },

@@ -6,8 +6,9 @@
   <title>Jogos Interativos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700;800;900&family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800;1,900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700;800;900&family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800;1,900&family=Bangers&family=Fredoka:wght@500;700&display=swap">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="lc/panel.css">
 </head>
 <body>
   <header class="topbar controls">
@@ -17,71 +18,59 @@
       <button id="connectBtn" type="submit">Conectar</button>
     </form>
     <span id="status" class="status idle">Desconectado</span>
-    <span id="viewers"></span>
+    <div class="livestats" id="liveStats" title="Números desta sessão">
+      <span id="viewers">👀 0</span><span id="stLikes">❤️ 0</span><span id="stCoins">🪙 0</span><span id="stFollows">⭐ 0</span><span id="stShares">🔁 0</span>
+    </div>
+    <span id="peers" class="peers" title="Telas da live conectadas no mesmo @"></span>
+    <div class="topbtns">
+      <button id="muteBtn" title="Silenciar tudo">🔊</button>
+      <button id="panicBtn" class="danger" title="Para todos os sons, vozes, alertas e efeitos agora">🛑 Pânico</button>
+    </div>
   </header>
 
-  <nav id="tabs" class="tabs controls" aria-label="Jogos"></nav>
-
-  <main>
-    <section id="stage">
-      <canvas id="canvas" width="1080" height="1920"></canvas>
-      <script>
-        // Modo leve: desenha em 720×1280 (metade dos pixels). O jogo é o mesmo, só a resolução muda.
-        if (new URLSearchParams(location.search).get('leve') === '1') { const c = document.getElementById('canvas'); c.width = 720; c.height = 1280; }
-      </script>
-    </section>
-    <aside class="controls">
-     <div class="col">
-      <div class="panel">
-        <h3>Como jogar</h3>
-        <div id="help"></div>
-        <div class="row">
-          <button id="editGame" hidden>Editar</button>
-          <button id="resetGame">Reiniciar jogo</button>
+  <div class="shell">
+    <nav id="rail" class="rail controls" aria-label="Seções"></nav>
+    <main>
+      <section id="stage">
+        <div id="stageBox">
+          <canvas id="canvas" width="1080" height="1920"></canvas>
+          <div id="ovl"></div>
+          <div id="pausedTag" hidden>⏸ PAUSADO</div>
         </div>
-      </div>
-      <div class="panel" id="settingsPanel" hidden>
-        <h3>Configurar</h3>
-        <div id="settings"></div>
-      </div>
-     </div>
-     <div class="col">
-      <div class="panel">
-        <h3>Simulador (teste sem live)</h3>
-        <input id="simText" placeholder="comentário (vazio = exemplo do jogo)">
-        <div class="row">
-          <button id="simChat" title="Comentário">💬 Comentar</button>
-          <button id="simLike" title="Likes">❤️ Likes</button>
-          <button id="simJoin" title="Alguém entrou na live">👋 Entrar</button>
-          <button id="simAuto">▶ Auto</button>
+        <script>
+          // Modo leve: desenha em 720×1280 (metade dos pixels). O jogo é o mesmo, só a resolução muda.
+          if (new URLSearchParams(location.search).get('leve') === '1') { const c = document.getElementById('canvas'); c.width = 720; c.height = 1280; }
+        </script>
+        <div class="stagebar controls">
+          <b id="curName">—</b>
+          <button id="pauseBtn" title="Congela o jogo sem desconectar do TikTok">⏸ Pausar</button>
+          <button id="resetGame" title="Começa a rodada de novo">↻ Reiniciar</button>
+          <button id="libBtn" title="Trocar de jogo">🎮 Trocar</button>
         </div>
-        <div class="row">
-          <button id="simFollow" title="Alguém seguiu (vale ~5 moedas)">⭐ Seguir</button>
-          <button id="simShare" title="Alguém compartilhou (vale ~10 moedas)">🔁 Compartilhar</button>
-          <label class="small" style="display:flex;align-items:center;gap:6px">combo ×<input id="simCombo" type="number" min="1" max="99" value="1" style="width:56px"></label>
+      </section>
+      <section id="view" class="controls"></section>
+      <aside id="side" class="controls">
+        <div class="panel feed">
+          <div class="feedhead"><h3>Chat da live</h3>
+            <div class="chips" id="feedFilter"></div>
+          </div>
+          <ul id="feed"></ul>
+          <form id="sayForm" class="row"><input id="sayText" placeholder="Mensagem para falar na live (voz)"><button>🗣️</button></form>
         </div>
-        <div class="row gifts" id="simShop"></div>
-        <p class="small">Valores reais da loja do TikTok. O efeito é proporcional ao total de moedas (preço × combo): 1–9 · 10–99 · 100–999 · 1.000+, e cresce dentro de cada faixa.</p>
-      </div>
-      <div class="panel">
-        <h3>Tela da Live (LIVE Studio)</h3>
-        <button id="mirrorBtn">🖥️ Abrir Tela da Live</button>
-        <label class="small" style="display:flex;align-items:center;gap:6px"><input id="mirrorLight" type="checkbox" style="width:auto"> Modo leve (720p, para PC mais fraco)</label>
-        <p class="small">Abre uma janela só com o jogo. No LIVE Studio, adicione <b>Captura de janela</b> e escolha "Tela da Live". Não minimize nem cubra essa janela. Enquanto ela estiver aberta, o painel para de desenhar o jogo e tudo roda lá, mais leve.</p>
-        <p class="small"><b>Direto no LIVE Studio (melhor):</b> conecte o seu @ aqui, depois no LIVE Studio vá em <b>Adicionar fonte → Link</b>, cole o endereço abaixo e use 1080×1920. Trocar jogo, reiniciar e o simulador daqui chegam lá. Também serve no OBS (fonte de navegador).</p>
-        <code id="obsUrl"></code>
-      </div>
-     </div>
-     <div class="col">
-      <div class="panel feed">
-        <h3>Eventos da live</h3>
-        <ul id="feed"></ul>
-      </div>
-     </div>
-    </aside>
-  </main>
+        <div class="panel">
+          <h3>Top da sessão</h3>
+          <div id="topSide"></div>
+        </div>
+      </aside>
+    </main>
+  </div>
   <script src="core.js"></script>
   <script src="ui.js"></script>
+  <script src="data/gifts.js"></script>
+  <script src="lc/engine.js"></script>
+  <script src="lc/voice.js"></script>
+  <script src="lc/overlay.js"></script>
+  <script src="lc/dj.js"></script>
   <script src="three3d.js"></script>
   <script src="race3d.js"></script>
   <script src="games/votacao.js"></script>
@@ -98,6 +87,8 @@
   <script src="games/flappy.js"></script>
   <script src="games/ilha.js"></script>
   <script src="games/desfile.js"></script>
+  <!-- JOGOS NOVOS -->
   <script src="app.js"></script>
+  <script src="lc/panel.js"></script>
 </body>
 </html>

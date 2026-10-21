@@ -24,58 +24,23 @@ input:focus { border-color:rgba(34,227,238,.6); }
 .status.connected { background:#123d26; color:#8dffb6; } .status.connecting, .status.offline { background:#3d2c0c; color:#ffd88a; } .status.error, .status.ended, .status.disconnected { background:#3f1218; color:#ffb3bd; }
 #viewers { color:var(--muted); font-size:13px; }
 
-/* Abas: uma linha só, com rolagem lateral */
-.tabs { display:flex; gap:8px; overflow-x:auto; padding:10px 16px; border-bottom:1px solid var(--line); scrollbar-width:thin; }
-.tabs button { flex:none; display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:6px; transform:skewX(-10deg); font:italic 700 16px 'Barlow Condensed', sans-serif; letter-spacing:.3px; white-space:nowrap; }
-.tabs button.active { background:linear-gradient(180deg, #2ff0f8, #12b9c4); color:#041014; border-color:transparent; }
-
-main { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:18px; padding:18px; align-items:start; }
-#stage { display:flex; justify-content:center; align-items:flex-start; min-width:0; }
-canvas { display:block; background:#000; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.06); }
-aside { display:flex; flex-direction:column; gap:12px; min-width:0; }
+canvas { display:block; background:#000; }
 .panel { background:linear-gradient(180deg, var(--panel2), var(--panel)); border:1px solid var(--line); border-radius:var(--radius); padding:14px; display:flex; flex-direction:column; gap:10px; }
 .panel h3 { margin:0; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
-.row { display:flex; gap:8px; } .row button { flex:1; }
+.row { display:flex; gap:8px; align-items:center; } .row button { flex:1; }
 .gifts button { display:flex; flex-direction:column; align-items:center; font-size:20px; line-height:1.1; }
 .gifts small { font-size:10px; color:var(--muted); }
-#simAuto.on { background:linear-gradient(180deg, #2ff0f8, #12b9c4); color:#041014; }
-.feed ul { list-style:none; margin:0; padding:0; max-height:220px; overflow:auto; font-size:13px; }
-.feed li { padding:4px 0; border-bottom:1px solid var(--line); overflow-wrap:anywhere; }
 .small { margin:0; font-size:12px; color:var(--muted); }
 code { font-size:12px; overflow-wrap:anywhere; color:var(--accent2); }
-#help p { margin:0 0 6px; font-size:13px; }
-
-/* Computador: página travada, tela do jogo fixa bem à esquerda; à direita, colunas que rolam cada uma por conta própria */
-.col { display:flex; flex-direction:column; gap:12px; min-width:0; }
 @media (min-width: 901px) {
   html, body { overflow:hidden; overscroll-behavior:none; }
-  body:not(.clean) { display:flex; flex-direction:column; height:100vh; }
-  .topbar { flex:none; flex-wrap:nowrap; height:64px; position:relative; }
+  .topbar { flex:none; flex-wrap:nowrap; height:60px; position:relative; }
   .status { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; flex:0 1 auto; }
-  #viewers { white-space:nowrap; }
-  .tabs { flex:none; }
-  main { flex:1; min-height:0; grid-template-columns:auto minmax(0,1fr); justify-content:start; align-items:stretch; }
-  #stage { justify-content:flex-start; overflow:hidden; }
-  aside { height:100%; min-height:0; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; }
-}
-/* Tela larga: três colunas (Jogo · Testar/OBS · Eventos da live), tudo visível sem rolar a página */
-@media (min-width: 1240px) {
-  aside { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; overflow:hidden; }
-  .col { height:100%; min-height:0; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; padding-right:2px; }
-  .col:last-child .feed { flex:1; min-height:0; }
-  .col:last-child .feed ul { max-height:none; flex:1; }
-}
-
-@media (max-width: 900px) {
-  main { grid-template-columns:1fr; padding:12px 16px; }
-  #stage { justify-content:center; }
 }
 
 /* Modo OBS: só a tela do jogo, centralizada e sem esticar */
 body.clean { background:transparent; overflow:hidden; }
 body.clean .controls { display:none !important; }
-body.clean main { display:block; padding:0; }
-body.clean #stage { position:fixed; inset:0; align-items:center; }
 body.clean canvas { border-radius:0; box-shadow:none; background:transparent; }
 
 #settings { display:flex; flex-direction:column; gap:10px; }

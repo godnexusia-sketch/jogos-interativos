@@ -3,14 +3,21 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
+import os from 'node:os';
+import crypto from 'node:crypto';
 import { TikTokLiveConnection, WebcastEvent, ControlEvent } from 'tiktok-live-connector';
+import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
+import Anthropic from '@anthropic-ai/sdk';
 
 const PORT = Number(process.env.PORT) || 3000;
 const SIGN_API_KEY = process.env.SIGN_API_KEY || undefined;
 const PUBLIC_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), 'public');
 const USERNAME_RE = /^[a-zA-Z0-9_.]{2,24}$/;
 const THREE_PATH = fileURLToPath(new URL('./node_modules/three/build/three.module.min.js', import.meta.url));
-const IMG_HOSTS = ['tiktokcdn.com', 'tiktokcdn-us.com', 'tiktokcdn-eu.com', 'ibyteimg.com', 'muscdn.com', 'byteimg.com', 'rbxcdn.com'];
+const IMG_HOSTS = ['tiktokcdn.com', 'tiktokcdn-us.com', 'tiktokcdn-eu.com', 'ibyteimg.com', 'muscdn.com', 'byteimg.com', 'rbxcdn.com',
+  'flagcdn.com', 'upload.wikimedia.org', 'www.google.com', 'gstatic.com', 'mc-heads.net', 'crafatar.com'];
+const MEDIA_DIR = path.join(os.tmpdir(), 'jogos-media');
+const MEDIA_MAX = 60 * 1024 * 1024;
 const imgCache = new Map();
 
 const MIME = {
@@ -20,7 +27,101 @@ const MIME = {
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
   '.ico': 'image/x-icon',
+  '.json': 'application/json; charset=utf-8',
+  '.webp': 'image/webp',
+  '.jpg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.mp3': 'audio/mpeg',
+  '.woff2': 'font/woff2',
 };
+const MEDIA_EXT = { 'image/png': '.png', 'image/jpeg': '.jpg', 'image/gif': '.gif', 'image/webp': '.webp', 'audio/mpeg': '.mp3', 'audio/mp3': '.mp3',
+  'audio/ogg': '.ogg', 'audio/wav': '.wav', 'audio/x-wav': '.wav', 'video/mp4': '.mp4', 'video/webm': '.webm' };
+const MEDIA_TYPE = Object.fromEntries(Object.entries(MEDIA_EXT).map(([t, e]) => [e, t]));
+
+// ---------- Voz (TTS neural da Microsoft Edge, grátis) ----------
+// Gera MP3 no servidor: o áudio sai pela própria página, então o OBS e o LIVE Studio capturam junto com o jogo.
+const ttsCache = new Map(); // chave -> Buffer
+let ttsVoices = null;
+async function tts(text, voice, rate = 0, pitch = 0) {
+  const key = `${voice}|${rate}|${pitch}|${text}`;
+  if (ttsCache.has(key)) return ttsCache.get(key);
+  const engine = new MsEdgeTTS();
+  await engine.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+  const opts = {};
+  if (rate) opts.rate = `${rate > 0 ? '+' : ''}${rate}%`;
+  if (pitch) opts.pitch = `${pitch > 0 ? '+' : ''}${pitch}Hz`;
+  const buf = await new Promise((resolve, reject) => {
+    const { audioStream } = engine.toStream(text, opts);
+    const chunks = [];
+    const timer = setTimeout(() => reject(new Error('timeout')), 15000);
+    audioStream.on('data', (c) => chunks.push(c));
+    audioStream.on('error', (e) => { clearTimeout(timer); reject(e); });
+    audioStream.on('close', () => { clearTimeout(timer); resolve(Buffer.concat(chunks)); });
+  });
+  try { engine.close(); } catch {}
+  if (!buf.length) throw new Error('vazio');
+  if (ttsCache.size > 300) ttsCache.delete(ttsCache.keys().next().value);
+  ttsCache.set(key, buf);
+  return buf;
+}
+// Plano B: voz do Google Tradutor (até 200 letras por pedaço).
+async function ttsGoogle(text, lang = 'pt-BR') {
+  const parts = [];
+  let rest = text;
+  while (rest.length) {
+    let cut = rest.length <= 190 ? rest.length : Math.max(rest.lastIndexOf(' ', 190), 60);
+    parts.push(rest.slice(0, cut)); rest = rest.slice(cut).trim();
+  }
+  const bufs = [];
+  for (const p of parts) {
+    const r = await fetch(`https://translate.google.com/translate_tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodeURIComponent(p)}`, { headers: { 'user-agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(8000) });
+    if (!r.ok) throw new Error('google ' + r.status);
+    bufs.push(Buffer.from(await r.arrayBuffer()));
+  }
+  return Buffer.concat(bufs);
+}
+
+// ---------- IA (respostas do apresentador, roast, futuro, pistas) ----------
+// Com ANTHROPIC_API_KEY usa o Claude; sem chave, usa o serviço grátis da Pollinations; se falhar, o jogo usa frases prontas.
+const anthropic = process.env.ANTHROPIC_API_KEY ? new Anthropic() : null;
+const AI_MODEL = process.env.AI_MODEL || 'claude-opus-5-5';
+let aiBudget = 30;
+setInterval(() => (aiBudget = 30), 60000);
+async function aiReply(system, prompt, maxTokens = 300) {
+  if (anthropic) {
+    const r = await anthropic.beta.messages.create({
+      model: AI_MODEL,
+      max_tokens: Math.max(maxTokens, 1024),
+      output_config: { effort: 'low' },
+      betas: ['server-side-fallback-2026-07-01'],
+      fallbacks: 'default',
+      system,
+      messages: [{ role: 'user', content: prompt }],
+    });
+    if (r.stop_reason === 'refusal') return '';
+    return r.content.filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
+  }
+  const r = await fetch('https://text.pollinations.ai/openai', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ model: 'openai', messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], max_tokens: maxTokens }),
+    signal: AbortSignal.timeout(20000),
+  });
+  if (!r.ok) throw new Error('ia ' + r.status);
+  const j = await r.json();
+  return String(j?.choices?.[0]?.message?.content || '').trim();
+}
+
+function readBody(req, max) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    let size = 0;
+    req.on('data', (c) => { size += c.length; if (size > max) { reject(new Error('grande')); req.destroy(); } else chunks.push(c); });
+    req.on('end', () => resolve(Buffer.concat(chunks)));
+    req.on('error', reject);
+  });
+}
+const sendJson = (res, code, body) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)); };
 
 // Busca o avatar Roblox de um nick pela API pública da Roblox, com cache e limite de pedidos.
 const robloxCache = new Map(); // nick minúsculo -> { name, img } ou null
@@ -111,6 +212,76 @@ const server = http.createServer(async (req, res) => {
       return send(err.message === 'busy' ? 429 : 502, { error: err.message });
     }
   }
+  if (url.pathname === '/api/tts') {
+    const text = String(url.searchParams.get('t') || '').slice(0, 600).trim();
+    const voice = /^[a-z]{2}-[A-Z]{2}-[A-Za-z]+Neural$/.test(url.searchParams.get('v') || '') ? url.searchParams.get('v') : 'pt-BR-FranciscaNeural';
+    const rate = clamp(Math.round(Number(url.searchParams.get('r')) || 0), -60, 100);
+    const pitch = clamp(Math.round(Number(url.searchParams.get('p')) || 0), -80, 80);
+    if (!text) { res.writeHead(400); return res.end(); }
+    let buf;
+    try { buf = await tts(text, voice, rate, pitch); }
+    catch (err) {
+      console.error('tts edge falhou:', err?.message);
+      try { buf = await ttsGoogle(text, voice.slice(0, 5)); } catch { res.writeHead(502); return res.end(); }
+    }
+    res.writeHead(200, { 'content-type': 'audio/mpeg', 'cache-control': 'public, max-age=86400', 'access-control-allow-origin': '*' });
+    return res.end(buf);
+  }
+  if (url.pathname === '/api/voices') {
+    try {
+      if (!ttsVoices) ttsVoices = (await new MsEdgeTTS().getVoices()).filter((v) => /^(pt|es|en)-/.test(v.Locale)).map((v) => ({ id: v.ShortName, name: v.FriendlyName, gender: v.Gender, locale: v.Locale }));
+      return sendJson(res, 200, ttsVoices);
+    } catch { return sendJson(res, 200, []); }
+  }
+  if (url.pathname === '/api/ai' && req.method === 'POST') {
+    let body;
+    try { body = JSON.parse(await readBody(req, 64 * 1024)); } catch { return sendJson(res, 400, { error: 'json' }); }
+    if (aiBudget <= 0) return sendJson(res, 429, { error: 'limite' });
+    aiBudget--;
+    try {
+      const text = await aiReply(String(body.system || '').slice(0, 6000), String(body.prompt || '').slice(0, 4000), clamp(Number(body.max) || 200, 20, 800));
+      return sendJson(res, 200, { text, provider: anthropic ? 'claude' : 'gratis' });
+    } catch (err) {
+      console.error('ia falhou:', err?.message);
+      return sendJson(res, 502, { error: err?.message || 'falha' });
+    }
+  }
+  if (url.pathname === '/api/ai-status') return sendJson(res, 200, { provider: anthropic ? 'claude' : 'gratis', model: anthropic ? AI_MODEL : 'pollinations' });
+  if (url.pathname === '/api/media' && req.method === 'POST') {
+    // Arquivos do painel (sons, músicas, vídeos, imagens). O disco do Render é temporário:
+    // o painel guarda o original e reenvia quando o servidor perde o arquivo.
+    const type = String(req.headers['content-type'] || '').split(';')[0];
+    const ext = MEDIA_EXT[type];
+    if (!ext) return sendJson(res, 415, { error: 'tipo não aceito' });
+    let body;
+    try { body = await readBody(req, MEDIA_MAX); } catch { return sendJson(res, 413, { error: 'arquivo grande demais' }); }
+    const id = crypto.createHash('sha256').update(body).digest('hex').slice(0, 32) + ext;
+    await fs.mkdir(MEDIA_DIR, { recursive: true });
+    await fs.writeFile(path.join(MEDIA_DIR, id), body);
+    return sendJson(res, 200, { id, url: '/api/media/' + id });
+  }
+  if (url.pathname.startsWith('/api/media/')) {
+    const id = url.pathname.slice(11);
+    if (!/^[0-9a-f]{32}\.[a-z0-9]{3,4}$/.test(id)) { res.writeHead(400); return res.end(); }
+    const file = path.join(MEDIA_DIR, id);
+    let stat;
+    try { stat = await fs.stat(file); } catch { res.writeHead(404); return res.end(); }
+    const type = MEDIA_TYPE[path.extname(id)] || 'application/octet-stream';
+    const headers = { 'content-type': type, 'accept-ranges': 'bytes', 'cache-control': 'public, max-age=31536000, immutable', 'access-control-allow-origin': '*' };
+    if (req.method === 'HEAD') { res.writeHead(200, { ...headers, 'content-length': stat.size }); return res.end(); }
+    // Vídeo e áudio pedem pedaços (Range) para poder pular e tocar em loop.
+    const m = /bytes=(\d*)-(\d*)/.exec(req.headers.range || '');
+    const fh = await fs.open(file);
+    if (m) {
+      const start = m[1] ? Number(m[1]) : 0, end = m[2] ? Math.min(Number(m[2]), stat.size - 1) : stat.size - 1;
+      res.writeHead(206, { ...headers, 'content-range': `bytes ${start}-${end}/${stat.size}`, 'content-length': end - start + 1 });
+      fh.createReadStream({ start, end }).pipe(res).on('close', () => fh.close());
+    } else {
+      res.writeHead(200, { ...headers, 'content-length': stat.size });
+      fh.createReadStream().pipe(res).on('close', () => fh.close());
+    }
+    return;
+  }
   const rel = url.pathname === '/' ? 'index.html' : url.pathname.slice(1);
   const file = path.normalize(path.join(PUBLIC_DIR, rel));
   if (!file.startsWith(PUBLIC_DIR)) {
@@ -128,6 +299,8 @@ const server = http.createServer(async (req, res) => {
 });
 
 // Junta as mensagens das tentativas internas (HTML, API e Euler) para o log e o diagnóstico.
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
 function detailErrors(err, depth = 0) {
   if (!err || depth > 3) return [];
   const inner = err.config?.requestErrs || err.requestErrs || err.errors || (err.exception ? [err.exception] : []);
@@ -139,11 +312,17 @@ function detailErrors(err, depth = 0) {
 // Uma conexão com o TikTok por @, compartilhada por todos os navegadores que pedirem o mesmo @.
 const rooms = new Map(); // username -> { conn, clients: Set<ws>, ready: Promise }
 
-function userInfo(u) {
+// Dados do espectador. fol/mod/sub/fan dizem se segue, é moderador, assinante ou do fã-clube (para "quem pode jogar").
+function userInfo(u, d) {
+  const idt = d?.userIdentity || {};
   return {
     id: u?.uniqueId || '',
     nick: u?.nickname || u?.uniqueId || 'anônimo',
     pic: u?.profilePicture?.url?.[0] || '',
+    fol: Boolean(idt.isFollowerOfAnchor || idt.isMutualFollowingWithAnchor || u?.followInfo?.followStatus > 0),
+    mod: Boolean(idt.isModeratorOfAnchor),
+    sub: Boolean(idt.isSubscriberOfAnchor),
+    fan: Boolean(u?.fansClub?.data?.level || u?.fansClub?.level),
   };
 }
 
@@ -156,66 +335,96 @@ function closeRoom(username) {
   const room = rooms.get(username);
   if (!room) return;
   rooms.delete(username);
-  room.conn.disconnect().catch(() => {});
+  clearTimeout(room.retry);
+  room.closed = true;
+  room.conn?.disconnect().catch(() => {});
 }
 
+// A sala do @ existe enquanto houver alguém conectado, com ou sem live no ar: painel e tela já conversam
+// (configurações, troca de jogo, simulador) antes de você entrar ao vivo. A conexão com o TikTok tenta de novo sozinha.
 function openRoom(username) {
+  const room = { conn: null, clients: new Set(), state: null, configs: {}, retry: null, closed: false };
+  rooms.set(username, room);
+  connectTikTok(username, room);
+  return room;
+}
+
+function connectTikTok(username, room) {
+  if (room.closed) return;
   const conn = new TikTokLiveConnection(username, {
     processInitialData: false,
     // A lista completa de presentes (gift/list) exige plano pago no Euler Stream; o evento de presente já traz nome e valor.
     enableExtendedGiftInfo: false,
     signApiKey: SIGN_API_KEY,
   });
-  const room = { conn, clients: new Set(), state: null, configs: {} };
-  rooms.set(username, room);
+  room.conn = conn;
+  const again = (ms) => { clearTimeout(room.retry); room.retry = setTimeout(() => { if (!room.closed && room.conn === conn) connectTikTok(username, room); }, ms); };
 
-  conn.on(WebcastEvent.CHAT, (d) => broadcast(room, { type: 'chat', user: userInfo(d.user), text: d.comment || '' }));
-  conn.on(WebcastEvent.LIKE, (d) => broadcast(room, { type: 'like', user: userInfo(d.user), count: d.likeCount || 1 }));
+  conn.on(WebcastEvent.CHAT, (d) => broadcast(room, { type: 'chat', user: userInfo(d.user, d), text: d.comment || '' }));
+  conn.on(WebcastEvent.LIKE, (d) => broadcast(room, { type: 'like', user: userInfo(d.user, d), count: d.likeCount || 1, total: d.totalLikeCount || 0 }));
   conn.on(WebcastEvent.GIFT, (d) => {
     // Presentes em sequência (giftType 1) só contam quando a sequência termina.
     if (d.giftDetails?.giftType === 1 && !d.repeatEnd) return;
     broadcast(room, {
       type: 'gift',
-      user: userInfo(d.user),
+      user: userInfo(d.user, d),
+      giftId: String(d.giftId || d.giftDetails?.id || ''),
+      img: d.giftDetails?.giftImage?.url?.[0] || '',
       name: d.giftDetails?.giftName || d.extendedGiftInfo?.name || 'Presente',
       count: d.repeatCount || 1,
       diamonds: d.giftDetails?.diamondCount || d.extendedGiftInfo?.diamond_count || 1,
     });
   });
   // Seguir e compartilhar chegam separados (o conector já filtra o SOCIAL por tipo).
-  conn.on(WebcastEvent.FOLLOW, (d) => broadcast(room, { type: 'social', user: userInfo(d.user), action: 'follow' }));
-  conn.on(WebcastEvent.SHARE, (d) => broadcast(room, { type: 'social', user: userInfo(d.user), action: 'share' }));
-  conn.on(WebcastEvent.MEMBER, (d) => broadcast(room, { type: 'join', user: userInfo(d.user) }));
+  conn.on(WebcastEvent.FOLLOW, (d) => broadcast(room, { type: 'social', user: userInfo(d.user, d), action: 'follow' }));
+  conn.on(WebcastEvent.SHARE, (d) => broadcast(room, { type: 'social', user: userInfo(d.user, d), action: 'share' }));
+  conn.on(WebcastEvent.MEMBER, (d) => broadcast(room, { type: 'join', user: userInfo(d.user, d) }));
   conn.on(WebcastEvent.ROOM_USER, (d) => broadcast(room, { type: 'viewers', count: d.viewerCount || 0 }));
   conn.on(WebcastEvent.STREAM_END, () => {
-    broadcast(room, { type: 'status', state: 'ended', message: 'A live terminou.' });
-    closeRoom(username);
+    if (room.conn !== conn) return;
+    room.state = { state: 'offline', message: `A live de @${username} terminou. Quando você voltar ao vivo, eu reconecto sozinho.` };
+    broadcast(room, { type: 'status', ...room.state });
+    conn.disconnect().catch(() => {});
+    again(30000);
   });
   conn.on(ControlEvent.DISCONNECTED, () => {
-    if (rooms.get(username) !== room) return;
-    broadcast(room, { type: 'status', state: 'disconnected', message: 'Conexão com o TikTok caiu.' });
-    rooms.delete(username);
+    if (room.conn !== conn || room.closed || room.state?.state !== 'connected') return;
+    room.state = { state: 'connecting', message: 'Conexão com o TikTok caiu. Reconectando…' };
+    broadcast(room, { type: 'status', ...room.state });
+    again(5000);
   });
   conn.on(ControlEvent.ERROR, ({ info }) => console.error(`[${username}] erro:`, info));
 
-  room.ready = conn.connect().then(
+  room.state = { state: 'connecting', message: `Conectando a @${username}…` };
+  conn.connect().then(
     (state) => {
+      if (room.conn !== conn) return;
       room.state = { state: 'connected', message: `Conectado à live de @${username}`, roomId: state.roomId };
       broadcast(room, { type: 'status', ...room.state });
       console.log(`[${username}] conectado, sala ${state.roomId}`);
     },
     (err) => {
+      if (room.conn !== conn) return;
       const details = detailErrors(err).join(' | ');
       const offline = err?.name === 'UserOfflineError' || /offline|not live|isn't online|user_not_found|SIGI_STATE/i.test(`${err?.message} ${details}`);
       const message = offline
-        ? `Nenhuma live aberta em @${username} agora. Entre ao vivo no TikTok primeiro — vou tentando de novo sozinho.`
-        : `Não foi possível conectar: ${err?.message || err}`;
+        ? `Nenhuma live aberta em @${username} agora. Painel e tela já estão ligados; quando você entrar ao vivo, eu conecto sozinho.`
+        : `Não foi possível conectar: ${err?.message || err}. Tentando de novo…`;
       console.error(`[${username}] falha ao conectar:`, err?.message || err, details);
-      broadcast(room, { type: 'status', state: offline ? 'offline' : 'error', message });
-      rooms.delete(username);
+      room.state = { state: 'offline', message };
+      broadcast(room, { type: 'status', ...room.state });
+      again(offline ? 30000 : 20000);
     }
   );
-  return room;
+}
+
+// Quem está conectado no mesmo @: painéis e telas da live. O "líder" (primeiro painel, ou a primeira tela)
+// é quem chama a IA e decide sorteios; os outros recebem o resultado. O painel se cala quando há tela.
+function sendPeers(room) {
+  const list = [...room.clients];
+  const panels = list.filter((c) => c.role !== 'screen'), screens = list.filter((c) => c.role === 'screen');
+  const leader = panels[0] || screens[0];
+  for (const c of list) if (c.readyState === c.OPEN) c.send(JSON.stringify({ type: 'peers', panels: panels.length, screens: screens.length, leader: c === leader }));
 }
 
 function leave(ws) {
@@ -224,6 +433,7 @@ function leave(ws) {
   if (room) {
     room.clients.delete(ws);
     if (room.clients.size === 0) closeRoom(ws.username);
+    else sendPeers(room);
   }
   ws.username = null;
 }
@@ -243,15 +453,17 @@ wss.on('connection', (ws) => {
       }
       leave(ws);
       ws.username = username;
+      ws.role = msg.role === 'screen' ? 'screen' : 'panel';
       const room = rooms.get(username) || openRoom(username);
       room.clients.add(ws);
+      sendPeers(room);
       for (const [key, data] of Object.entries(room.configs)) ws.send(JSON.stringify({ type: 'config', key, data }));
-      if (room.game) ws.send(JSON.stringify({ type: 'control', action: 'game', id: room.game, join: true }));
-      ws.send(JSON.stringify(room.state ? { type: 'status', ...room.state } : { type: 'status', state: 'connecting', message: `Conectando a @${username}…` }));
+      if (room.game) ws.send(JSON.stringify({ type: 'control', action: 'game', id: room.game, seed: room.seed, join: true }));
+      ws.send(JSON.stringify({ type: 'status', ...room.state }));
     } else if (msg.type === 'config') {
       // Configuração de um jogo (fotos, nomes) repassada às outras telas do mesmo @, como a fonte do OBS.
       const room = ws.username && rooms.get(ws.username);
-      if (!room || typeof msg.key !== 'string' || !/^[a-z]{1,20}$/.test(msg.key)) return;
+      if (!room || typeof msg.key !== 'string' || !/^[a-z0-9:_-]{1,48}$/.test(msg.key)) return;
       room.configs[msg.key] = msg.data;
       const data = JSON.stringify({ type: 'config', key: msg.key, data: msg.data });
       for (const other of room.clients) if (other !== ws && other.readyState === other.OPEN) other.send(data);
@@ -259,9 +471,11 @@ wss.on('connection', (ws) => {
       // Comandos do painel (trocar jogo, reiniciar, simulador) para as telas do mesmo @, como a fonte "Link" do LIVE Studio.
       // A tela da live só manda 'current' (trocou de jogo sozinha, ex.: fim da votação) para o painel acompanhar.
       const room = ws.username && rooms.get(ws.username);
-      if (!room || !['game', 'reset', 'sim', 'press', 'current'].includes(msg.action)) return;
-      if (msg.action === 'game' || msg.action === 'current') { if (typeof msg.id !== 'string' || !/^[a-z]{1,20}$/.test(msg.id)) return; room.game = msg.id; }
-      const data = JSON.stringify({ type: 'control', action: msg.action, id: msg.id, ev: msg.action === 'sim' ? msg.ev : undefined });
+      // 'bus' leva comandos do painel novo (pausar, ação de teste, DJ, alerta, shoutout, música…) num pacote livre.
+      if (!room || !['game', 'reset', 'sim', 'press', 'current', 'bus'].includes(msg.action)) return;
+      if (msg.action === 'game' || msg.action === 'current') { if (typeof msg.id !== 'string' || !/^[a-z0-9-]{1,30}$/.test(msg.id)) return; room.game = msg.id; }
+      if (Number.isInteger(msg.seed)) room.seed = msg.seed;
+      const data = JSON.stringify({ type: 'control', action: msg.action, id: msg.id, seed: Number.isInteger(msg.seed) ? msg.seed : undefined, ev: msg.action === 'sim' ? msg.ev : undefined, bus: msg.action === 'bus' ? msg.bus : undefined });
       for (const other of room.clients) if (other !== ws && other.readyState === other.OPEN) other.send(data);
     } else if (msg.type === 'disconnect') {
       leave(ws);
