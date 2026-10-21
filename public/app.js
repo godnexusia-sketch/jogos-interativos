@@ -152,6 +152,7 @@ function onBus(b, fromScreen = false) {
   else if (b.t === 'panic') { overlay.panic(); window.onPanic?.(); }
   else if (b.t === 'stats') stats.reset();
   else if (b.t === 'host') current.onHostCmd?.(b);
+  else if (b.t === 'ptr') { pointer.x = b.x; pointer.y = b.y; pointer.down = true; current.onPointer?.(pointer); pointer.down = false; }
 }
 
 // O som sai só onde a live é capturada: com uma tela da live aberta, o painel fica mudo (a não ser que você peça).
@@ -222,7 +223,13 @@ canvas.addEventListener('pointerdown', (e) => {
   press(p);
 });
 const pointer = { down: false, x: 0, y: 0 };
-canvas.addEventListener('pointermove', (e) => { const r = canvas.getBoundingClientRect(); pointer.x = (e.clientX - r.left) / r.width * W; pointer.y = (e.clientY - r.top) / r.height * H; current.onPointer?.(pointer); });
+canvas.addEventListener('pointermove', (e) => {
+  const r = canvas.getBoundingClientRect();
+  pointer.x = (e.clientX - r.left) / r.width * W; pointer.y = (e.clientY - r.top) / r.height * H;
+  current.onPointer?.(pointer);
+  // Jogos em que você joga com o mouse (limpar vidro, cortar fruta): a tela da live repete o movimento
+  if (!isClean && current.syncPointer && pointer.down) busSend({ t: 'ptr', x: Math.round(pointer.x), y: Math.round(pointer.y) });
+});
 window.addEventListener('pointerup', () => { pointer.down = false; });
 document.addEventListener('keydown', (e) => {
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
