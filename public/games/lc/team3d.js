@@ -65,7 +65,7 @@ defineGame({
     const box = new T.BoxGeometry(6, 1, 6);
     const towers = [0, 1].map((s) => {
       const m = new T.InstancedMesh(box, new T.MeshStandardMaterial({ roughness: 0.4, metalness: 0.1 }), 400);
-      m.castShadow = true; m.receiveShadow = true; m.frustumCulled = false; m.position.x = s ? 7.5 : -7.5; scene.add(m);
+      m.castShadow = true; m.receiveShadow = true; m.frustumCulled = false; m.position.x = s ? 5.2 : -5.2; scene.add(m);
       return m;
     });
     const flyG = new T.InstancedMesh(box, new T.MeshStandardMaterial({ color: 0xffffff }), 60); flyG.frustumCulled = false; scene.add(flyG);
@@ -79,7 +79,8 @@ defineGame({
     const target = this.s.targetHeight, maxShown = 200;
     if (r) {
       // A altura alvo sempre ocupa ~60 unidades na cena; cada torre tem até 300 blocos.
-      const unit = 60 / target, top = Math.max(60, Math.max(this.vis[0], this.vis[1]) * unit);
+      // A câmera acompanha a torre mais alta (perto quando baixas, afasta conforme crescem até a meta).
+      const unit = 60 / target, top = Math.max(16, Math.max(this.vis[0], this.vis[1]) * unit + 12);
       [0, 1].forEach((s) => {
         const m = r.towers[s], worldH = this.vis[s] * unit, n = Math.min(300, Math.ceil(this.vis[s])), bh = n ? worldH / n : 1;
         const base = new T.Color(s ? this.s.rightColor : this.s.leftColor);
@@ -90,14 +91,14 @@ defineGame({
         }
         m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true;
       });
-      this.flying.forEach((f, i) => { r.dummy.position.set((f.s ? 7.5 : -7.5) + f.x, f.y * unit, f.z); r.dummy.rotation.set(f.t * 3, f.t * 2, 0); r.dummy.scale.setScalar(1); r.dummy.updateMatrix(); r.flyG.setMatrixAt(i, r.dummy.matrix); });
+      this.flying.forEach((f, i) => { r.dummy.position.set((f.s ? 5.2 : -5.2) + f.x, f.y * unit, f.z); r.dummy.rotation.set(f.t * 3, f.t * 2, 0); r.dummy.scale.setScalar(1); r.dummy.updateMatrix(); r.flyG.setMatrixAt(i, r.dummy.matrix); });
       for (let i = this.flying.length; i < 60; i++) { r.dummy.position.set(0, -50, 0); r.dummy.updateMatrix(); r.flyG.setMatrixAt(i, r.dummy.matrix); }
       r.flyG.instanceMatrix.needsUpdate = true;
       // Linha da meta
       r.goal = r.goal || (() => { const g = new T.Mesh(new T.BoxGeometry(30, 0.25, 0.25), new T.MeshBasicMaterial({ color: 0xffd23f })); r.scene.add(g); return g; })();
       r.goal.position.set(0, 60, 1.5);
-      const camY = top * 0.5 + 2, dist = top * 1.25 + 16;
-      r.cam.position.set(Math.sin(performance.now() / 6000) * 6, camY, dist); r.cam.lookAt(0, camY, 0);
+      const camY = top * 0.55 + 1, dist = top * 1.05 + 30;
+      r.cam.position.set(Math.sin(performance.now() / 6000) * 2, camY, dist); r.cam.lookAt(0, camY, 0);
       G3.render(r.scene, r.cam);
     } else stageBg('purple');
     teamScoreboard(this, this.wins[0], this.wins[1], 26, `META: ${target} BLOCOS`);
