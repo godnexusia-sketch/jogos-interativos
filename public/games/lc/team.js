@@ -558,7 +558,7 @@ defineGame({
     const s = this.side(a), o = 1 - s;
     if (id === 'grow_mine') { const n = a.gift ? Math.max(1, Math.round(a.qty)) : 0.5; this.add(s, n); if (a.gift) this.feed.push(a.user, `+${n} ${s ? this.s.rightLabel : this.s.leftLabel}`, s ? this.s.rightColor : this.s.leftColor); }
     else if (id === 'wreck') { this.b[o].dead = 1.5; this.b[o].score = Math.max(0, this.b[o].score - Math.round(a.qty)); this.feed.push(a.user, '💥 derrubou!', '#ff6b8a'); sfx.boom(); }
-    else if (id === 'steal') { const n = Math.min(this.b[o].score, Math.round(a.qty * 2)); this.b[o].score -= n; this.add(s, n); this.feed.push(a.user, `🦹 roubou ${n}`, '#c084fc'); }
+    else if (id === 'steal') { const n = Math.min(Math.floor(this.b[o].score), Math.round(a.qty * 2)); this.b[o].score -= n; this.add(s, n); this.feed.push(a.user, `🦹 roubou ${n}`, '#c084fc'); }
     else if (id === 'reset_other') { this.b[o].score = 0; this.feed.push(a.user, '0️⃣ zerou o outro!', '#ff6b8a'); }
   },
   add(s, n) { this.b[s].score += n; if (this.b[s].score >= this.s.targetScore) { this.b[s].wins++; this.win = { s, t: 4 }; sfx.win(); confetti(120); voice.say(`${s ? this.s.rightLabel : this.s.leftLabel} venceu a rodada!`); } },
