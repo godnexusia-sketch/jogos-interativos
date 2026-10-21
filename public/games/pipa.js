@@ -227,7 +227,7 @@ registerGame({
     const bows = [];
     for (let i = 1; i < 10; i += 2) { const b = new T.Mesh(new T.PlaneGeometry(0.5, 0.18), new T.MeshBasicMaterial({ color: i % 4 === 1 ? k.color : '#ffffff', side: T.DoubleSide })); b.position.y = bot - i * 0.45; g.add(b); bows.push(b); }
     // Foto e @ de quem é a pipa
-    const face = new T.Sprite(new T.SpriteMaterial({ map: G3.faceTex(k.user.pic, k.user.nick, true), depthTest: false, sizeAttenuation: false }));
+    const face = new T.Sprite(new T.SpriteMaterial({ map: G3.faceTex(k.user, k.user.nick, true), depthTest: false, sizeAttenuation: false }));
     face.scale.set(0.036, 0.036, 1); face.renderOrder = 20; g.add(face);
     const tag = G3.label(`@${trim(k.user.nick, 12)}`, { scale: 0.12, border: k.color });
     tag.center.set(0.5, 3.4); g.add(tag);

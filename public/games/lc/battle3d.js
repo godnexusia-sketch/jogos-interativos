@@ -119,7 +119,7 @@ defineGame({
     if (!m) { m = makeBlocky3D('zumbi' + r.zMeshes.length, ''); m.root.traverse((o) => { if (o.isMesh && !Array.isArray(o.material)) o.material = o.material.clone(); }); m.tag = nameTag(''); m.tag.position.y = 3.2; m.root.add(m.tag); r.scene.add(m.root); r.zMeshes.push(m); }
     m.used = true; m.root.visible = true;
     m.torso.material.color.set('#4d7c0f'); m.head.material.forEach?.((mm, i) => { if (i !== 4) mm.color.set('#84cc16'); });
-    const ft = G3.faceTex(zb.user.pic, zb.user.nick); m.head.material[4].map = ft; m.head.material[4].needsUpdate = true;
+    const ft = G3.faceTex(zb.user, zb.user.nick); m.head.material[4].map = ft; m.head.material[4].needsUpdate = true;
     m.tag.userData.draw(trim(zb.user.nick, 14));
     return m;
   },
@@ -265,7 +265,7 @@ defineGame({
     }
     m.used = true; m.g.visible = true;
     m.mat.color.copy(tk.color);
-    m.face.material.map = G3.faceTex(tk.user.pic, tk.user.nick, true); m.face.material.needsUpdate = true;
+    m.face.material.map = G3.faceTex(tk.user, tk.user.nick, true); m.face.material.needsUpdate = true;
     return m;
   },
   draw() {
@@ -485,7 +485,7 @@ defineGame({
       const e = this.f[i];
       if (!e) continue;
       if (r.fighters[i]) r.scene.remove(r.fighters[i].root);
-      const fh = makeHuman({ color: i ? '#dc2626' : '#2563eb', gloves: true, photo: e.user.pic, seed: e.user.nick, shorts: '#111827' });
+      const fh = makeHuman({ color: i ? '#dc2626' : '#2563eb', gloves: true, photo: e.user, seed: e.user.nick, shorts: '#111827' });
       fh.root.rotation.y = i ? -Math.PI / 2 : Math.PI / 2;
       r.scene.add(fh.root); r.fighters[i] = fh;
       const flagT = G3.tex(128, 80, (g) => { const img = getImg(flagUrl(e.code, 160)); if (img) g.drawImage(img, 0, 0, 128, 80); else { g.fillStyle = '#fff'; g.fillRect(0, 0, 128, 80); } });

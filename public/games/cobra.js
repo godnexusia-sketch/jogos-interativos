@@ -183,7 +183,7 @@ registerGame({
     const head = new T.Mesh(new T.SphereGeometry(SEG_R * 1.35, 20, 16), new T.MeshStandardMaterial({ color: s.color, roughness: 0.3 }));
     head.position.y = SEG_R; g.add(head);
     for (const side of [-1, 1]) { const e = new T.Mesh(new T.SphereGeometry(0.22, 10, 8), new T.MeshBasicMaterial({ color: 0xffffff })); e.position.set(0.45, SEG_R + 0.45, side * 0.4); g.add(e); const p = new T.Mesh(new T.SphereGeometry(0.11, 8, 6), new T.MeshBasicMaterial({ color: 0x000000 })); p.position.set(0.6, SEG_R + 0.5, side * 0.42); g.add(p); }
-    const face = new T.Sprite(new T.SpriteMaterial({ map: G3.faceTex(s.user.pic, s.user.nick, true), depthTest: false, sizeAttenuation: false }));
+    const face = new T.Sprite(new T.SpriteMaterial({ map: G3.faceTex(s.user, s.user.nick, true), depthTest: false, sizeAttenuation: false }));
     face.center.set(0.5, 0); face.scale.set(0.05, 0.05, 1); face.position.y = 1.6; face.renderOrder = 20; g.add(face);
     const tag = G3.label(`@${trim(s.user.nick, 12)}`, { scale: 0.11, border: s.color });
     tag.center.set(0.5, -3.6); tag.position.y = 1.6; g.add(tag);

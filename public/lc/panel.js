@@ -551,7 +551,7 @@ if (!isClean) (() => {
     const txt = ev.type === 'chat' ? esc(ev.text) : ev.type === 'like' ? `curtiu ×${ev.count}` : ev.type === 'gift' ? `mandou <b>${esc(ev.name)}</b> ×${ev.count} · ${fmtNum(coins(ev))} 🪙` : ev.type === 'social' ? (ev.action === 'share' ? 'compartilhou a live' : 'começou a seguir') : 'entrou na live';
     const li = document.createElement('li');
     li.className = 'fe fe-' + ev.type;
-    li.innerHTML = `<img src="${esc(picUrl(ev.user))}" alt=""><div><b>${esc(who)}</b> ${txt}</div><span class="fa"><button data-sh="${k}" title="Shoutout">📣</button>${ev.type === 'chat' && current.answersChat ? `<button data-ans="${k}" title="Responder agora">🎙️</button>` : ''}</span>`;
+    li.innerHTML = `${avatarHtml(ev.user)}<div><b>${esc(who)}</b> ${txt}</div><span class="fa"><button data-sh="${k}" title="Shoutout">📣</button>${ev.type === 'chat' && current.answersChat ? `<button data-ans="${k}" title="Responder agora">🎙️</button>` : ''}</span>`;
     const feed = $('feed');
     const atTop = feed.scrollTop < 20;
     feed.prepend(li);
@@ -575,7 +575,7 @@ if (!isClean) (() => {
     $('stFollows').textContent = '⭐ ' + fmtK(stats.followers);
     $('stShares').textContent = '🔁 ' + fmtK(stats.shares);
     const top = stats.top(stats.byCoins, 5);
-    const html = top.length ? top.map((r, i) => `<div class="tops"><em>${i + 1}</em><img src="${esc(picUrl(r.user))}" alt=""><span>${esc(trim(r.user?.nick || '', 18))}</span><b>${fmtK(r.value)} 🪙</b></div>`).join('') : '<p class="small">Nenhum presente ainda.</p>';
+    const html = top.length ? top.map((r, i) => `<div class="tops"><em>${i + 1}</em>${avatarHtml(r.user)}<span>${esc(trim(r.user?.nick || '', 18))}</span><b>${fmtK(r.value)} 🪙</b></div>`).join('') : '<p class="small">Nenhum presente ainda.</p>';
     if ($('topSide').dataset.h !== html) { $('topSide').dataset.h = html; $('topSide').innerHTML = html; }
   }, 700);
   window.onViewers = (n) => { $('viewers').textContent = '👀 ' + fmtK(n); };

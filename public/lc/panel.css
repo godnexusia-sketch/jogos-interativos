@@ -134,7 +134,7 @@ label.tog.mini { display:inline-flex; position:relative; }
 .feedhead .chips button { padding:3px 7px; font-size:12px; }
 #feed { list-style:none; margin:0; padding:0; overflow:auto; flex:1; min-height:120px; max-height:none; font-size:13px; }
 #feed li.fe { display:flex; gap:8px; align-items:flex-start; padding:6px 0; border-bottom:1px solid var(--line); }
-#feed li img { width:26px; height:26px; border-radius:50%; object-fit:cover; flex:none; background:#222; }
+#feed li .av { width:28px; height:28px; font-size:13px; }
 #feed li div { flex:1; overflow-wrap:anywhere; }
 #feed li .fa { display:none; gap:2px; }
 #feed li:hover .fa { display:flex; }
@@ -142,7 +142,7 @@ label.tog.mini { display:inline-flex; position:relative; }
 #feed li.fe-gift div { color:#ffd88a; } #feed li.fe-social div { color:#9ef0ff; } #feed li.fe-like div, #feed li.fe-join div { color:var(--muted); }
 .tops { display:flex; align-items:center; gap:8px; font-size:13px; padding:3px 0; }
 .tops em { font-style:normal; color:var(--gold); width:14px; font-weight:800; }
-.tops img { width:24px; height:24px; border-radius:50%; object-fit:cover; }
+.tops .av { width:26px; height:26px; font-size:12px; }
 .tops span { flex:1; }
 
 @media (min-width: 901px) {
@@ -172,7 +172,7 @@ body.clean #pausedTag { display:none; }
 .alert.pos-top { top:118px; } .alert.pos-middle { top:470px; } .alert.pos-bottom { top:900px; }
 .al-media { max-width:300px; max-height:260px; border-radius:14px; }
 .al-box { display:flex; align-items:center; gap:14px; padding:14px 22px 14px 14px; border-radius:999px; background:rgba(8,10,20,.9); border:3px solid var(--c); box-shadow:0 0 30px color-mix(in srgb, var(--c) 60%, transparent), 0 12px 30px rgba(0,0,0,.5); }
-.al-pic { width:70px; height:70px; border-radius:50%; object-fit:cover; border:3px solid var(--c); }
+.al-pic { width:70px; height:70px; font-size:30px; box-shadow:0 0 0 3px var(--c), 0 6px 18px rgba(0,0,0,.4); animation:avPop .5s cubic-bezier(.3,1.6,.5,1) both; }
 .al-gift { width:70px; height:70px; object-fit:contain; }
 .al-txt { display:flex; flex-direction:column; min-width:0; }
 .al-txt b { font-size:30px; font-weight:900; line-height:1.1; text-shadow:0 2px 8px rgba(0,0,0,.6); }
@@ -188,7 +188,7 @@ body.clean #pausedTag { display:none; }
 
 .shout { position:absolute; left:40px; right:40px; margin:0 auto; width:max-content; top:560px; display:flex; align-items:center; gap:16px; padding:16px 26px 16px 16px; border-radius:22px; background:linear-gradient(135deg, #ff2d55, #7c3aed); box-shadow:0 20px 50px rgba(0,0,0,.5); animation:alIn .5s cubic-bezier(.2,1.4,.4,1) both; max-width:640px; }
 .shout.out { animation:alOut .4s ease-in both; }
-.shout img { width:96px; height:96px; border-radius:50%; object-fit:cover; border:4px solid #fff; }
+.shout .av { width:96px; height:96px; font-size:42px; box-shadow:0 0 0 4px #fff, 0 8px 24px rgba(0,0,0,.45); animation:avPop .55s cubic-bezier(.3,1.6,.5,1) both; }
 .shout-ic { font-size:64px; }
 .shout small { display:block; font:italic 900 18px 'Barlow Condensed', sans-serif; letter-spacing:.12em; opacity:.85; }
 .shout b { font-size:30px; font-weight:900; line-height:1.15; }
@@ -202,7 +202,7 @@ body.clean #pausedTag { display:none; }
 .widget .bar i { display:block; height:100%; border-radius:99px; background:linear-gradient(90deg, #ff2d55, #ffc93c); transition:width .4s; }
 .wl { display:flex; align-items:center; gap:8px; padding:3px 0; }
 .wl em { font-style:normal; color:#ffc93c; font-weight:900; width:16px; }
-.wl img { width:32px; height:32px; border-radius:50%; object-fit:cover; background:#333; }
+.wl .av { width:32px; height:32px; font-size:14px; }
 .wl span { flex:1; font-weight:700; }
 .wl b { color:#ffc93c; }
 .w-empty { color:rgba(255,255,255,.6); font-size:14px; }
@@ -223,3 +223,11 @@ body.clean #pausedTag { display:none; }
 /* Vídeo e texto livres dos jogos (Clip Machine, apresentador) */
 .gvideo { position:absolute; inset:0; width:720px; height:1280px; object-fit:cover; background:#000; }
 .gvideo.contain { object-fit:contain; }
+
+/* Avatar do espectador: inicial por baixo, foto por cima quando carregar */
+.av { position:relative; display:inline-grid; place-items:center; flex:none; border-radius:50%; overflow:hidden; background:linear-gradient(160deg, var(--av, #6d5dfc), color-mix(in srgb, var(--av, #6d5dfc) 45%, #000)); color:#fff; font-weight:800; line-height:1; }
+.av i { font-style:normal; text-shadow:0 1px 2px rgba(0,0,0,.4); }
+.av img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .25s; }
+.av img.ok { opacity:1; }
+@keyframes avPop { from { transform:scale(.4) rotate(-12deg); opacity:0; } to { transform:none; opacity:1; } }
+@media (prefers-reduced-motion: reduce) { .al-pic, .shout .av { animation:none; } }

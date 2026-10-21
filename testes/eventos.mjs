@@ -1,0 +1,31 @@
+// Confere a leitura dos eventos com mensagens no formato protobuf real do TikTok (o mesmo que o conector entrega).
+import { WebcastChatMessage, WebcastGiftMessage, WebcastLikeMessage, User, ImageModel, Gift, UserIdentity } from 'tiktok-live-proto/v3';
+import { userInfo, giftInfo } from '../lib/eventos.js';
+const user = { id: '7034567890123', displayId: 'maria_gamer', nickname: 'Maria 🎮', avatarThumb: { urlList: ['https://p16-sign-va.tiktokcdn.com/a~c5_100x100.heic?x=1', 'https://p16-sign-va.tiktokcdn.com/a~c5_100x100.webp?x=1', 'https://p16-sign-va.tiktokcdn.com/a~c5_100x100.jpeg?x=1'] } };
+// O encoder exige mensagens completas: parte dos valores padrão (decode de um buffer vazio).
+const full = (T, o) => ({ ...T.decode(new Uint8Array(0)), ...o });
+const img = (urls) => full(ImageModel, { urlList: urls });
+const mkUser = (o) => full(User, { ...o, avatarThumb: o.avatarThumb ? img(o.avatarThumb.urlList) : undefined });
+const fix = (o) => ({ ...o, user: o.user && mkUser(o.user), userIdentity: o.userIdentity && full(UserIdentity, o.userIdentity), gift: o.gift && full(Gift, { ...o.gift, image: o.gift.image ? img(o.gift.image.urlList) : undefined }) });
+const rt = (T, o) => T.decode(T.encode(full(T, fix(o))).finish());
+const chat = rt(WebcastChatMessage, { user, content: 'oi live', userIdentity: { isFollowerOfAnchor: true } });
+const u = userInfo(chat.user, chat);
+const ok = (c, m) => { console.log(c ? 'ok  ' : 'FALHOU', m); if (!c) process.exitCode = 1; };
+ok(chat.content === 'oi live', 'texto do comentário em content');
+ok(u.id === '7034567890123', 'id estável numérico: ' + u.id);
+ok(u.handle === 'maria_gamer', '@ da pessoa: ' + u.handle);
+ok(u.nick === 'Maria 🎮', 'apelido');
+ok(u.pic.endsWith('.webp?x=1'), 'foto (sem HEIC primeiro): ' + u.pic);
+ok(u.pics.length === 3 && u.pics[2].includes('.heic'), 'lista de fotos com HEIC por último');
+ok(u.fol === true, 'segue o criador');
+const noPic = userInfo(rt(WebcastChatMessage, { user: { id: '1', nickname: 'Sem Foto' } }).user, {});
+ok(noPic.pic === '' && noPic.pics.length === 0, 'sem foto: vazio (o navegador mostra a inicial)');
+const like = rt(WebcastLikeMessage, { user, count: 15, total: '3400' });
+ok(Number(like.count) === 15 && Number(like.total) === 3400, 'likes count/total');
+const streak = rt(WebcastGiftMessage, { user, giftId: '5655', repeatCount: 3, repeatEnd: 0, gift: { id: '5655', name: 'Rose', type: 1, diamondCount: 1, image: { urlList: ['https://p16-webcast.tiktokcdn.com/rose.png'] } } });
+ok(giftInfo(streak) === null, 'presente em sequência espera terminar');
+const end = rt(WebcastGiftMessage, { user, giftId: '5655', repeatCount: 3, repeatEnd: 1, gift: { id: '5655', name: 'Rose', type: 1, diamondCount: 1, image: { urlList: ['https://p16-webcast.tiktokcdn.com/rose.png'] } } });
+const g = giftInfo(end);
+ok(g && g.name === 'Rose' && g.count === 3 && g.diamonds === 1 && g.giftId === '5655' && g.img.endsWith('rose.png'), 'presente: ' + JSON.stringify(g));
+const big = giftInfo(rt(WebcastGiftMessage, { user, giftId: '6064', repeatCount: 1, gift: { id: '6064', name: 'Galaxy', type: 2, diamondCount: 1000 } }));
+ok(big && big.diamonds === 1000, 'presente único (não-sequência)');

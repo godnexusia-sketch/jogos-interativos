@@ -127,7 +127,7 @@ function makeRace3D(opt) {
       faceTex.needsUpdate = true;
     };
     drawFace(null);
-    if (k.user.pic) { const img = new Image(); img.crossOrigin = 'anonymous'; img.onload = () => drawFace(img); img.src = proxImg(k.user.pic); }
+    loadUserImg(k.user, drawFace);
     k.drawTag = (rank) => {
       const c = tag.getContext('2d');
       c.clearRect(0, 0, 512, 96);

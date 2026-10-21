@@ -436,7 +436,7 @@ defineGame({
   // Boneco de blocos com a skin do Minecraft (cabeça e corpo pela imagem do mc-heads) ou com a foto no rosto.
   makeMesh(d) {
     const T = THREE;
-    const b = makeBlocky3D(d.k, d.skin ? '' : d.user.pic);
+    const b = makeBlocky3D(d.k, d.skin ? '' : d.user);
     if (d.skin) {
       const tex = G3.imageTex(`https://mc-heads.net/avatar/${d.skin}/128`);
       b.head.material[4] = new T.MeshStandardMaterial({ map: tex });

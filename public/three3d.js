@@ -6,7 +6,7 @@ let THREE = null;
 const three3dReady = Promise.all([import('/vendor/three.module.min.js'), document.fonts.ready])
   .then(([m]) => { THREE = m; })
   .catch((err) => console.error('3D indisponível', err));
-const proxImg = (url) => (!url || url.startsWith('data:') ? url : `/api/img?u=${encodeURIComponent(url)}`);
+const proxImg = (url) => picSrc(url);
 
 const G3 = {
   renderer: null,
@@ -74,12 +74,17 @@ const G3 = {
     const fallback = new Image();
     fallback.onload = () => paint(fallback);
     fallback.src = fakeFace(String(seed));
-    if (url) {
+    // url pode ser uma URL, uma lista ou o próprio usuário (com pic/pics): tenta uma por uma.
+    const list = Array.isArray(url) ? url.map(picSrc) : typeof url === 'object' && url ? picList(url) : url ? [picSrc(url)] : [];
+    const tryNext = (i) => {
+      if (i >= list.length) return;
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => paint(img);
-      img.src = proxImg(url);
-    }
+      img.onerror = () => tryNext(i + 1);
+      img.src = list[i];
+    };
+    tryNext(0);
     return t;
   },
   // Etiqueta de nome que sempre fica do mesmo tamanho na tela.

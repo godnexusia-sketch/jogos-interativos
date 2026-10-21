@@ -143,7 +143,7 @@ registerGame({
       g.add(body); d.body = body;
     } else {
       // Sem nick: boneco 3D de blocos no estilo Roblox, com a foto da pessoa no rosto
-      d.blocky = makeBlocky3D(d.user.nick, d.user.pic);
+      d.blocky = makeBlocky3D(d.user.nick, d.user);
       d.blocky.root.scale.setScalar(1.05);
       g.add(d.blocky.root);
       d.tex = G3.imageTex(null, blockyAvatar(d.user.nick).url);
@@ -169,7 +169,7 @@ registerGame({
       t.needsUpdate = true;
     };
     const f = new Image(); f.onload = () => paint(f); f.src = fakeFace(d.user.nick);
-    if (d.user.pic) { const img = new Image(); img.crossOrigin = 'anonymous'; img.onload = () => paint(img); img.src = proxImg(d.user.pic); }
+    loadUserImg(d.user, paint);
     const icon = new T.Sprite(new T.SpriteMaterial({ map: t, depthTest: false, sizeAttenuation: false }));
     icon.center.set(0.5, -0.55); icon.scale.set(0.075, 0.075, 1); icon.position.set(0, 3.3, 0); icon.renderOrder = 21;
     d.obj.add(icon); d.icon = icon;

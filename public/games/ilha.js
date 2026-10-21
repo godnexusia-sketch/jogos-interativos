@@ -173,7 +173,7 @@ registerGame({
   buildPlayer(p) {
     const T = THREE;
     const g = new T.Group();
-    p.rig = makeBlocky3D(p.user.nick, p.user.pic);
+    p.rig = makeBlocky3D(p.user.nick, p.user);
     p.rig.root.scale.setScalar(0.85);
     g.add(p.rig.root);
     const shield = new T.Mesh(new T.SphereGeometry(1.1, 16, 12), new T.MeshBasicMaterial({ color: 0x67e8f9, transparent: true, opacity: 0.22, depthWrite: false }));

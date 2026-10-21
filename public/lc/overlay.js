@@ -161,7 +161,7 @@ function mediaTag(src, cls = '') {
   if (!src) return '';
   return /\.(mp4|webm)(\?|$)/i.test(src) ? `<video class="${cls}" src="${escHtml(src)}" autoplay muted playsinline loop></video>` : `<img class="${cls}" src="${escHtml(src)}" alt="">`;
 }
-const picUrl = (u) => (u?.pic ? (u.pic.startsWith('data:') ? u.pic : `/api/img?u=${encodeURIComponent(u.pic)}`) : '');
+const picUrl = (u) => picList(u)[0] || '';
 
 // ---------- Alertas ----------
 const alerts = {
@@ -221,12 +221,11 @@ const alerts = {
     el.className = `alert pos-${conf.pos || 'top'} size-${conf.size || 'medium'} style-${conf.style || 'bubble'}`;
     el.style.setProperty('--c', conf.color || '#ff2d55');
     el.style.fontFamily = `${liveCfg.alerts.font || 'Barlow'}, Barlow, sans-serif`;
-    const pic = ev?.user ? picUrl(ev.user) : '';
     const gimg = ev?.img ? proxImgUrl(ev.img) : '';
     el.innerHTML = `${conf.media ? mediaTag(conf.media, 'al-media') : ''}
-      <div class="al-box">${pic ? `<img class="al-pic" src="${escHtml(pic)}" alt="">` : ''}
+      <div class="al-box">${ev?.user ? avatarHtml(ev.user, 'al-pic') : ''}
         <div class="al-txt"><b>${escHtml(fmtTpl(conf.text, data))}</b>${conf.sub ? `<span>${escHtml(fmtTpl(conf.sub, data))}</span>` : ''}</div>
-        ${gimg ? `<img class="al-gift" src="${escHtml(gimg)}" alt="">` : ''}</div>`;
+        ${gimg ? `<img class="al-gift" src="${escHtml(gimg)}" alt="" onerror="this.remove()">` : ''}</div>`;
     ovl.append(el);
     playSound(conf.sound, 'fx');
     if (conf.read) voice.say(fmtTpl(conf.text, data));
@@ -243,7 +242,7 @@ function shoutout(user, msg) {
   const text = msg || (user ? fmtTpl(st.shoutoutMsg, { username: user.nick, user: user.nick }) : st.shoutoutNoUser);
   const el = document.createElement('div');
   el.className = 'shout';
-  el.innerHTML = `${user ? `<img src="${escHtml(picUrl(user))}" alt="">` : '<span class="shout-ic">📣</span>'}<div><small>SHOUTOUT</small><b>${escHtml(text)}</b></div>`;
+  el.innerHTML = `${user ? avatarHtml(user, 'shout-pic') : '<span class="shout-ic">📣</span>'}<div><small>SHOUTOUT</small><b>${escHtml(text)}</b></div>`;
   ovl.append(el);
   playSound('fanfare', 'fx', 0.6);
   if (st.readShoutouts) voice.say(text, { prio: 'high' });
@@ -410,7 +409,7 @@ const widgets = {
     return `<div class="wg-head"><span>${icon} ${escHtml(w.title || '')}</span><b>${fmtK(cur)} / ${fmtK(w.target)}</b></div><div class="bar"><i style="width:${pct * 100}%"></i></div>`;
   },
   listHtml(w, rows, unit) {
-    return `<div class="wg-head"><span>${escHtml(w.title || '')}</span></div>${rows.length ? rows.map((r, i) => `<div class="wl"><em>${i + 1}</em><img src="${escHtml(picUrl(r.user))}" alt=""><span>${escHtml(trim(r.user?.nick || '?', 16))}</span><b>${fmtK(r.value)}${unit}</b></div>`).join('') : '<div class="w-empty">Ninguém ainda</div>'}`;
+    return `<div class="wg-head"><span>${escHtml(w.title || '')}</span></div>${rows.length ? rows.map((r, i) => `<div class="wl"><em>${i + 1}</em>${avatarHtml(r.user)}<span>${escHtml(trim(r.user?.nick || '?', 16))}</span><b>${fmtK(r.value)}${unit}</b></div>`).join('') : '<div class="w-empty">Ninguém ainda</div>'}`;
   },
   tickT: 0,
   tick(dt) {
@@ -433,8 +432,8 @@ const widgets = {
       else if (w.type === 'topLikers') html = this.listHtml(w, stats.top(stats.byLikes, w.n || 3), ' ❤️');
       else if (w.type === 'scoreBoard') html = this.listHtml(w, scores.top(current?.id, w.n || 5).map((r) => ({ user: r, value: r.pts })), ' pts');
       else if (w.type === 'timer') { const s = this.timers[w.id] ?? 0; html = `<div class="wg-head"><span>⏱️ ${escHtml(w.title || '')}</span></div><div class="tm ${s < 60 ? 'warn' : ''}">${Math.floor(s / 3600) ? Math.floor(s / 3600) + ':' : ''}${String(Math.floor((s % 3600) / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}</div>${w.secsPerCoin ? `<small>+${w.secsPerCoin}s por moeda</small>` : ''}`; }
-      else if (w.type === 'lastFollower') html = `<div class="wg-head"><span>🙋 ${escHtml(w.title || '')}</span></div>${stats.lastFollower ? `<div class="wl"><img src="${escHtml(picUrl(stats.lastFollower))}" alt=""><span>${escHtml(trim(stats.lastFollower.nick, 18))}</span></div>` : '<div class="w-empty">Aguardando…</div>'}`;
-      else if (w.type === 'giftJar') { const items = stats.jar.slice(-40); html = `<div class="wg-head"><span>🫙 ${escHtml(w.title || '')}</span><b>${fmtK(stats.coins)} 🪙</b></div><div class="jar">${items.map((g) => (g.img ? `<img src="${escHtml(proxImgUrl(g.img))}" alt="">` : '<i>🎁</i>')).join('')}</div>`; }
+      else if (w.type === 'lastFollower') html = `<div class="wg-head"><span>🙋 ${escHtml(w.title || '')}</span></div>${stats.lastFollower ? `<div class="wl">${avatarHtml(stats.lastFollower)}<span>${escHtml(trim(stats.lastFollower.nick, 18))}</span></div>` : '<div class="w-empty">Aguardando…</div>'}`;
+      else if (w.type === 'giftJar') { const items = stats.jar.slice(-40); html = `<div class="wg-head"><span>🫙 ${escHtml(w.title || '')}</span><b>${fmtK(stats.coins)} 🪙</b></div><div class="jar">${items.map((g) => (g.img ? `<img src="${escHtml(proxImgUrl(g.img))}" alt="" onerror="this.replaceWith('🎁')">` : '<i>🎁</i>')).join('')}</div>`; }
       if (html !== null && el.dataset.html !== html) { el.dataset.html = html; el.innerHTML = html; }
     }
   },

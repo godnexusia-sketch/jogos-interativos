@@ -140,34 +140,67 @@ function colorFor(str) {
 }
 
 // ---------- Avatares ----------
+// Fotos do TikTok passam pelo /api/img do servidor: mesma origem (a foto pode virar textura 3D),
+// cache no servidor e sem bloqueio de referer. Cada pessoa pode ter mais de uma URL (pics); se a
+// primeira falhar ou expirar, tenta a próxima. Sem nenhuma, fica a inicial numa cor fixa da pessoa.
 const imgCache = new Map();
+const PIC_RETRY_MS = 45000;
+function picSrc(url) {
+  if (!url) return '';
+  return /^(data:|blob:|\/)/.test(url) ? url : `/api/img?u=${encodeURIComponent(url)}`;
+}
+function picList(user) {
+  return [...new Set([user?.pic, ...(Array.isArray(user?.pics) ? user.pics : [])].filter((x) => typeof x === 'string' && x))].map(picSrc);
+}
 function getImg(url) {
   if (!url) return null;
   let img = imgCache.get(url);
+  if (img?.failedAt && Date.now() - img.failedAt > PIC_RETRY_MS && !img.retried) { imgCache.delete(url); img = null; }
   if (!img) {
+    const retried = imgCache.has(url);
     img = new Image();
     img.referrerPolicy = 'no-referrer';
+    img.decoding = 'async';
+    img.onerror = () => { img.failedAt = Date.now(); };
+    img.retried = retried;
     img.src = url;
     imgCache.set(url, img);
+    if (imgCache.size > 900) imgCache.delete(imgCache.keys().next().value);
   }
   return img.complete && img.naturalWidth ? img : null;
 }
+// Primeira foto da pessoa que já carregou (ou null enquanto carrega / se não tiver).
+function userImg(user) {
+  for (const src of picList(user)) { const img = getImg(src); if (img) return img; }
+  return null;
+}
+// Carrega a primeira foto que funcionar (com CORS liberado, para virar textura) e chama cb(img).
+function loadUserImg(user, cb) {
+  const list = picList(user);
+  const go = (i) => { if (i >= list.length) return; const img = new Image(); img.crossOrigin = 'anonymous'; img.onload = () => cb(img); img.onerror = () => go(i + 1); img.src = list[i]; };
+  go(0);
+}
+function initialOf(user) { return [...String(user?.nick || user?.handle || '?').replace(/^[^\p{L}\p{N}]+/u, '') || '?'][0].toUpperCase(); }
 
 // Foto do perfil do TikTok num círculo; sem foto, a inicial do nome numa cor fixa por pessoa.
 function avatar(user, x, y, r, border = '#fff') {
-  const img = getImg(user?.pic);
+  const img = userImg(user);
   ctx.save();
   ctx.beginPath();
   ctx.arc(x, y, r, 0, Math.PI * 2);
   ctx.closePath();
   if (img) {
     ctx.clip();
-    ctx.drawImage(img, x - r, y - r, r * 2, r * 2);
+    const s = Math.min(img.naturalWidth, img.naturalHeight);
+    ctx.drawImage(img, (img.naturalWidth - s) / 2, (img.naturalHeight - s) / 2, s, s, x - r, y - r, r * 2, r * 2);
   } else {
-    ctx.fillStyle = colorFor(user?.nick || '?');
-    ctx.fill();
+    const c = colorFor(user?.id || user?.nick || '?');
+    const g = ctx.createLinearGradient(x, y - r, x, y + r);
+    g.addColorStop(0, c); g.addColorStop(1, 'rgba(0,0,0,.55)');
+    ctx.fillStyle = c; ctx.fill();
+    ctx.fillStyle = g; ctx.fill();
     ctx.clip();
-    text((user?.nick || '?')[0].toUpperCase(), x, y + r * 0.05, r * 1.1, '#fff');
+    text(initialOf(user), x, y + r * 0.05, r * 1.05, '#fff');
   }
   ctx.restore();
   ctx.beginPath();
@@ -175,6 +208,19 @@ function avatar(user, x, y, r, border = '#fff') {
   ctx.lineWidth = Math.max(2, r / 8);
   ctx.strokeStyle = border;
   ctx.stroke();
+}
+
+// Mesma ideia em HTML (painel, alertas, widgets): a inicial fica por baixo e a foto por cima;
+// se a foto falhar, passa para a próxima URL e, sem nenhuma, some (fica a inicial, nunca imagem quebrada).
+function avatarHtml(user, cls = '') {
+  const e = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const list = picList(user);
+  const img = list.length ? `<img src="${e(list[0])}" data-alt="${e(list.slice(1).join('|'))}" alt="" loading="lazy" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="avatarImgError(this)">` : '';
+  return `<span class="av ${cls}" style="--av:${colorFor(user?.id || user?.nick || '?')}" title="${e(user?.nick || '')}"><i>${e(initialOf(user))}</i>${img}</span>`;
+}
+function avatarImgError(img) {
+  const rest = (img.dataset.alt || '').split('|').filter(Boolean);
+  if (rest.length) { img.dataset.alt = rest.slice(1).join('|'); img.src = rest[0]; } else img.remove();
 }
 
 function leaderboard(map, title, x, y, n = 3, size = 28) {

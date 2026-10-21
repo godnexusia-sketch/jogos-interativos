@@ -8,6 +8,7 @@ import crypto from 'node:crypto';
 import { TikTokLiveConnection, WebcastEvent, ControlEvent } from 'tiktok-live-connector';
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 import Anthropic from '@anthropic-ai/sdk';
+import { userInfo, giftInfo } from './lib/eventos.js';
 
 const PORT = Number(process.env.PORT) || 3000;
 const SIGN_API_KEY = process.env.SIGN_API_KEY || undefined;
@@ -19,6 +20,15 @@ const IMG_HOSTS = ['tiktokcdn.com', 'tiktokcdn-us.com', 'tiktokcdn-eu.com', 'iby
 const MEDIA_DIR = path.join(os.tmpdir(), 'jogos-media');
 const MEDIA_MAX = 60 * 1024 * 1024;
 const imgCache = new Map();
+const imgFail = new Map();
+function sniffImage(b) {
+  if (b[0] === 0xff && b[1] === 0xd8) return 'image/jpeg';
+  if (b[0] === 0x89 && b[1] === 0x50) return 'image/png';
+  if (b.slice(0, 4).toString() === 'RIFF' && b.slice(8, 12).toString() === 'WEBP') return 'image/webp';
+  if (b.slice(0, 3).toString() === 'GIF') return 'image/gif';
+  if (b.slice(4, 12).toString().startsWith('ftypavif')) return 'image/avif';
+  return '';
+}
 const wikiCache = new Map();
 const UA = 'JogosInterativos/1.0 (jogos para lives; contato pelo GitHub godnexusia-sketch)';
 
@@ -190,18 +200,24 @@ const server = http.createServer(async (req, res) => {
     if (target.protocol !== 'https:' || !IMG_HOSTS.some((h) => target.hostname === h || target.hostname.endsWith('.' + h))) { res.writeHead(403); return res.end(); }
     const cached = imgCache.get(target.href);
     const send = (img) => { res.writeHead(200, { 'content-type': img.type, 'access-control-allow-origin': '*', 'cache-control': 'public, max-age=3600' }); res.end(img.body); };
+    const fail = (code) => { imgFail.set(target.href, Date.now()); if (imgFail.size > 2000) imgFail.delete(imgFail.keys().next().value); res.writeHead(code, { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }); res.end(); };
     if (cached) return send(cached);
+    // URL que falhou há pouco (foto expirada, removida): responde logo, sem bater no TikTok de novo.
+    if (Date.now() - (imgFail.get(target.href) || 0) < 120000) { res.writeHead(404, { 'access-control-allow-origin': '*' }); return res.end(); }
     try {
-      const r = await fetch(target, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(8000) });
-      const type = r.headers.get('content-type') || '';
-      if (!r.ok || !type.startsWith('image/')) { res.writeHead(502); return res.end(); }
+      const r = await fetch(target, { headers: { 'user-agent': UA, accept: 'image/avif,image/webp,image/png,image/jpeg,image/*;q=0.8' }, signal: AbortSignal.timeout(8000) });
+      let type = (r.headers.get('content-type') || '').split(';')[0];
+      if (!r.ok) return fail(r.status === 403 || r.status === 404 ? 404 : 502);
       const body = Buffer.from(await r.arrayBuffer());
+      // Alguns CDNs mandam image sem content-type certo: reconhece pelos primeiros bytes.
+      if (!type.startsWith('image/')) type = sniffImage(body);
+      if (!type) return fail(502);
       if (body.length > 6_000_000) { res.writeHead(413); return res.end(); }
       if (imgCache.size > 500) imgCache.delete(imgCache.keys().next().value);
       const img = { type, body };
       imgCache.set(target.href, img);
       return send(img);
-    } catch { res.writeHead(502); return res.end(); }
+    } catch { return fail(502); }
   }
   if (url.pathname === '/api/roblox') {
     const nick = url.searchParams.get('u') || '';
@@ -341,19 +357,6 @@ function detailErrors(err, depth = 0) {
 const rooms = new Map(); // username -> { conn, clients: Set<ws>, ready: Promise }
 
 // Dados do espectador. fol/mod/sub/fan dizem se segue, é moderador, assinante ou do fã-clube (para "quem pode jogar").
-function userInfo(u, d) {
-  const idt = d?.userIdentity || {};
-  return {
-    id: u?.uniqueId || '',
-    nick: u?.nickname || u?.uniqueId || 'anônimo',
-    pic: u?.profilePicture?.url?.[0] || '',
-    fol: Boolean(idt.isFollowerOfAnchor || idt.isMutualFollowingWithAnchor || u?.followInfo?.followStatus > 0),
-    mod: Boolean(idt.isModeratorOfAnchor),
-    sub: Boolean(idt.isSubscriberOfAnchor),
-    fan: Boolean(u?.fansClub?.data?.level || u?.fansClub?.level),
-  };
-}
-
 function broadcast(room, msg) {
   const data = JSON.stringify(msg);
   for (const ws of room.clients) if (ws.readyState === ws.OPEN) ws.send(data);
@@ -388,26 +391,17 @@ function connectTikTok(username, room) {
   room.conn = conn;
   const again = (ms) => { clearTimeout(room.retry); room.retry = setTimeout(() => { if (!room.closed && room.conn === conn) connectTikTok(username, room); }, ms); };
 
-  conn.on(WebcastEvent.CHAT, (d) => broadcast(room, { type: 'chat', user: userInfo(d.user, d), text: d.comment || '' }));
-  conn.on(WebcastEvent.LIKE, (d) => broadcast(room, { type: 'like', user: userInfo(d.user, d), count: d.likeCount || 1, total: d.totalLikeCount || 0 }));
+  conn.on(WebcastEvent.CHAT, (d) => broadcast(room, { type: 'chat', user: userInfo(d.user, d), text: d.content ?? d.comment ?? '' }));
+  conn.on(WebcastEvent.LIKE, (d) => broadcast(room, { type: 'like', user: userInfo(d.user, d), count: Number(d.count ?? d.likeCount) || 1, total: Number(d.total ?? d.totalLikeCount) || 0 }));
   conn.on(WebcastEvent.GIFT, (d) => {
-    // Presentes em sequência (giftType 1) só contam quando a sequência termina.
-    if (d.giftDetails?.giftType === 1 && !d.repeatEnd) return;
-    broadcast(room, {
-      type: 'gift',
-      user: userInfo(d.user, d),
-      giftId: String(d.giftId || d.giftDetails?.id || ''),
-      img: d.giftDetails?.giftImage?.url?.[0] || '',
-      name: d.giftDetails?.giftName || d.extendedGiftInfo?.name || 'Presente',
-      count: d.repeatCount || 1,
-      diamonds: d.giftDetails?.diamondCount || d.extendedGiftInfo?.diamond_count || 1,
-    });
+    const gift = giftInfo(d);
+    if (gift) broadcast(room, { type: 'gift', user: userInfo(d.user, d), ...gift });
   });
   // Seguir e compartilhar chegam separados (o conector já filtra o SOCIAL por tipo).
   conn.on(WebcastEvent.FOLLOW, (d) => broadcast(room, { type: 'social', user: userInfo(d.user, d), action: 'follow' }));
   conn.on(WebcastEvent.SHARE, (d) => broadcast(room, { type: 'social', user: userInfo(d.user, d), action: 'share' }));
   conn.on(WebcastEvent.MEMBER, (d) => broadcast(room, { type: 'join', user: userInfo(d.user, d) }));
-  conn.on(WebcastEvent.ROOM_USER, (d) => broadcast(room, { type: 'viewers', count: d.viewerCount || 0 }));
+  conn.on(WebcastEvent.ROOM_USER, (d) => broadcast(room, { type: 'viewers', count: Number(d.total ?? d.viewerCount) || 0 }));
   conn.on(WebcastEvent.STREAM_END, () => {
     if (room.conn !== conn) return;
     room.state = { state: 'offline', message: `A live de @${username} terminou. Quando você voltar ao vivo, eu reconecto sozinho.` };

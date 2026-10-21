@@ -150,7 +150,7 @@ registerGame({
       const s = new T.Sprite(new T.SpriteMaterial({ map: G3.imageTex(m.rbx.img), transparent: true }));
       s.center.set(0.5, 0.02); s.scale.set(3.2, 3.2, 1); g.add(s); m.sprite = s;
     } else {
-      m.blocky = makeBlocky3D(m.user.nick, m.user.pic); g.add(m.blocky.root);
+      m.blocky = makeBlocky3D(m.user.nick, m.user); g.add(m.blocky.root);
     }
     const tag = G3.label(`@${trim(m.rbx?.name || m.user.nick, 14)}`, { scale: 0.12, border: m.tier ? '#ffc93c' : 'rgba(255,255,255,.3)' });
     tag.center.set(0.5, 0); tag.position.set(0, 3.2, 0); g.add(tag);
