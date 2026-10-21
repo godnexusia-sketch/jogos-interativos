@@ -23,7 +23,7 @@ const EFFECT_DEFAULTS = {
 const STREAM_DEFAULTS = {
   voice: 'francisca', readComments: false, readFormat: '{user} disse: {comment}', readMax: 120, readGap: 4,
   readShoutouts: true, shoutoutMsg: 'Salve @{username}! Obrigado por estar aqui!', shoutoutNoUser: 'Valeu por assistir, galera!',
-  profanity: true, muteWords: [], audioOnPanel: false, countSim: true,
+  profanity: true, muteWords: [], audioOnPanel: false, countSim: true, readAll: true,
 };
 
 const liveCfg = {
@@ -461,7 +461,7 @@ const overlay = {
     fx.onEvent(ev);
     widgets.onEvent(ev);
     djPad?.onEvent?.(ev);
-    if (ev.type === 'chat') commentReader.onChat(ev);
+    commentReader.onEvent(ev); // locutor: fala cada interação
     if (ev.type === 'gift' && ev.giftId && ev.img && learnedGifts[ev.giftId] !== ev.img) { learnedGifts[ev.giftId] = ev.img; store.set('giftImgs', learnedGifts); }
   },
   update(dt) { fx.update(dt); widgets.tick(dt); },

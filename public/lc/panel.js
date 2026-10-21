@@ -525,9 +525,11 @@ if (!isClean) (() => {
         <div class="mixer">${[['master', 'Geral'], ['game', 'Sons do jogo'], ['voice', 'Voz'], ['music', 'Música'], ['fx', 'Alertas e efeitos'], ['dj', 'DJ Pad']].map(([k, n]) => `<label class="f"><span>${n}</span><input type="range" data-mix="${k}" min="0" max="1" step="0.05" value="${mixer.vol[k]}"></label>`).join('')}</div>
         <label class="f tog"><input type="checkbox" id="vHere" ${st.audioOnPanel ? 'checked' : ''}><b></b><span>Tocar o som também neste painel (com a tela da live aberta o painel fica mudo, para não dar eco)</span></label>
         <p class="small" id="aiStatus">IA: verificando…</p></div>
-      <div class="panel"><h3>Leitor de comentários</h3>
-        <label class="f tog"><input type="checkbox" data-s="readComments" ${st.readComments ? 'checked' : ''}><b></b><span>Ler os comentários em voz alta</span></label>
-        <label class="f"><span>Formato ({user} e {comment})</span><input data-s="readFormat" value="${esc(st.readFormat)}"></label>
+      <div class="panel" id="readP"><h3>🎙️ Locutor da live</h3>
+        <label class="f tog"><input type="checkbox" data-s="readAll" ${st.readAll !== false ? 'checked' : ''}><b></b><span>Falar cada interação com a voz escolhida ("José mandou uma rosa", "Maria comentou…")</span></label>
+        ${[['gift', '🎁 Presentes'], ['chat', '💬 Comentários'], ['follow', '⭐ Seguir'], ['share', '🔁 Compartilhar'], ['join', '👋 Entrar na live'], ['like', '❤️ Curtidas (junta as da pessoa)']].map(([k, n]) => `<div class="grid2"><label class="f tog"><input type="checkbox" data-rt="${k}" ${(st.readTypes || {})[k] !== false ? 'checked' : ''}><b></b><span>${n}</span></label><label class="f"><input data-rf="${k}" value="${esc((st.readFormats || {})[k] || READ_FORMATS[k])}"></label></div>`).join('')}
+        <p class="small">Use {user} para o nome, {gift} para o presente, {comment} para o comentário e {count} para a quantidade. Presentes, seguir e compartilhar têm prioridade; quando chega muita coisa ao mesmo tempo, comentários e entradas são pulados para a voz não atrasar.</p>
+        <label class="f tog"><input type="checkbox" data-s="readComments" ${st.readComments ? 'checked' : ''}><b></b><span>Com o locutor desligado, ler só os comentários</span></label>
         <div class="grid2"><label class="f"><span>Máximo de letras</span><input type="number" data-s="readMax" min="10" max="300" value="${st.readMax}"></label>
         <label class="f"><span>Uma leitura por pessoa a cada (s)</span><input type="number" data-s="readGap" min="0" max="60" value="${st.readGap}"></label></div></div>
       <div class="panel"><h3>Shoutouts</h3>
@@ -545,6 +547,8 @@ if (!isClean) (() => {
     qa('[data-mix]').forEach((r) => r.addEventListener('input', () => setMix(r.dataset.mix, Number(r.value))));
     q('#vHere').addEventListener('change', (e) => { st.audioOnPanel = e.target.checked; save(); updateAudioHere(); });
     qa('[data-s]').forEach((inp) => inp.addEventListener('change', () => { st[inp.dataset.s] = inp.type === 'checkbox' ? inp.checked : inp.type === 'number' ? Number(inp.value) : inp.value; save(); }));
+    qa('[data-rt]').forEach((inp) => inp.addEventListener('change', () => { st.readTypes = { ...(st.readTypes || {}), [inp.dataset.rt]: inp.checked }; save(); }));
+    qa('[data-rf]').forEach((inp) => inp.addEventListener('change', () => { st.readFormats = { ...(st.readFormats || {}), [inp.dataset.rf]: inp.value.trim() || READ_FORMATS[inp.dataset.rf] }; save(); }));
     q('#vMute').addEventListener('change', (e) => { st.muteWords = e.target.value.split(',').map((x) => x.trim()).filter(Boolean); save(); });
     q('#shoutAll').addEventListener('click', () => busDo({ t: 'shout', user: null }));
     fetch('/api/ai-status').then((r) => r.json()).then((j) => { q('#aiStatus') && (q('#aiStatus').innerHTML = j.provider === 'claude' ? `IA: <b>Claude</b> (${esc(j.model)}) ligado pela chave ANTHROPIC_API_KEY do Render.` : 'IA: serviço <b>grátis</b> (sem chave). Para respostas melhores, coloque a chave ANTHROPIC_API_KEY no Render.'); }).catch(() => {});

@@ -18,7 +18,22 @@ const USERNAME_RE = /^[a-zA-Z0-9_.]{2,24}$/;
 const THREE_PATH = fileURLToPath(new URL('./node_modules/three/build/three.module.min.js', import.meta.url));
 const THREE_JSM = fileURLToPath(new URL('./node_modules/three/examples/jsm', import.meta.url));
 const IMG_HOSTS = ['tiktokcdn.com', 'tiktokcdn-us.com', 'tiktokcdn-eu.com', 'ibyteimg.com', 'muscdn.com', 'byteimg.com', 'rbxcdn.com',
+  'ibytedtos.com', 'ttwstatic.com', 'tiktokv.com', 'tiktokv.us', 'tiktok.com', 'byteoversea.com', 'bytecdn.cn', 'tiktokcdn-eu.com', 'tiktokw.us',
   'flagcdn.com', 'wikimedia.org', 'www.google.com', 'gstatic.com', 'mc-heads.net', 'crafatar.com'];
+// Diagnóstico das fotos (/api/img-stats): quantas deram certo, as últimas falhas e sites recusados.
+const imgStats = { ok: 0, fail: 0, last: [], denied: {}, semFoto: 0 };
+// Pessoa do evento; conta (e mostra no log as primeiras) as que chegam sem foto nenhuma
+function userOf(u, d) {
+  const x = userInfo(u, d);
+  if (!x.pic) { imgStats.semFoto++; if (imgStats.semFoto <= 3) console.warn('evento sem foto, campos do usuário:', Object.keys(u || {}).join(',').slice(0, 300)); }
+  return x;
+}
+function imgLog(target, why) {
+  imgStats.fail++;
+  imgStats.last.unshift({ host: target.hostname, why: String(why), t: new Date().toISOString() });
+  imgStats.last.length = Math.min(imgStats.last.length, 20);
+  if (imgStats.fail <= 5 || imgStats.fail % 50 === 0) console.warn(`foto falhou (${why}) em ${target.hostname} — total ${imgStats.fail}`);
+}
 const MEDIA_DIR = path.join(os.tmpdir(), 'jogos-media');
 const MEDIA_MAX = 60 * 1024 * 1024;
 const imgCache = new Map();
@@ -74,9 +89,20 @@ const MEDIA_TYPE = Object.fromEntries(Object.entries(MEDIA_EXT).map(([t, e]) => 
 // Gera MP3 no servidor: o áudio sai pela própria página, então o OBS e o LIVE Studio capturam junto com o jogo.
 const ttsCache = new Map(); // chave -> Buffer
 let ttsVoices = null;
+// A voz da Microsoft limita pedidos: no máximo 2 ao mesmo tempo, e depois de um 429 fica 45s só no plano B.
+let ttsBusy = 0, ttsPauseUntil = 0;
+const ttsWait = [];
 async function tts(text, voice, rate = 0, pitch = 0) {
   const key = `${voice}|${rate}|${pitch}|${text}`;
   if (ttsCache.has(key)) return ttsCache.get(key);
+  if (Date.now() < ttsPauseUntil) throw new Error('pausa 429');
+  if (ttsBusy >= 2) await new Promise((r) => ttsWait.push(r));
+  ttsBusy++;
+  try { return await ttsEdge(text, voice, rate, pitch, key); }
+  catch (err) { if (/429/.test(err?.message)) ttsPauseUntil = Date.now() + 45000; throw err; }
+  finally { ttsBusy--; ttsWait.shift()?.(); }
+}
+async function ttsEdge(text, voice, rate, pitch, key) {
   const engine = new MsEdgeTTS();
   await engine.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
   const opts = {};
@@ -219,7 +245,7 @@ const server = http.createServer(async (req, res) => {
     // Repassa fotos de perfil (TikTok/Roblox) com CORS liberado, para poderem virar textura no 3D.
     let target;
     try { target = new URL(url.searchParams.get('u') || ''); } catch { res.writeHead(400); return res.end(); }
-    if (target.protocol !== 'https:' || !IMG_HOSTS.some((h) => target.hostname === h || target.hostname.endsWith('.' + h))) { res.writeHead(403); return res.end(); }
+    if (target.protocol !== 'https:' || !IMG_HOSTS.some((h) => target.hostname === h || target.hostname.endsWith('.' + h))) { imgStats.denied[target.hostname] = (imgStats.denied[target.hostname] || 0) + 1; if (imgStats.denied[target.hostname] <= 3) console.warn('foto de site não liberado:', target.hostname); res.writeHead(403); return res.end(); }
     const cached = imgCache.get(target.href);
     const send = (img) => { res.writeHead(200, { 'content-type': img.type, 'access-control-allow-origin': '*', 'cache-control': 'public, max-age=3600' }); res.end(img.body); };
     const fail = (code) => { imgFail.set(target.href, Date.now()); if (imgFail.size > 2000) imgFail.delete(imgFail.keys().next().value); res.writeHead(code, { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }); res.end(); };
@@ -227,9 +253,12 @@ const server = http.createServer(async (req, res) => {
     // URL que falhou há pouco (foto expirada, removida): responde logo, sem bater no TikTok de novo.
     if (Date.now() - (imgFail.get(target.href) || 0) < 120000) { res.writeHead(404, { 'access-control-allow-origin': '*' }); return res.end(); }
     try {
-      const r = await fetch(target, { headers: { 'user-agent': UA, accept: 'image/avif,image/webp,image/png,image/jpeg,image/*;q=0.8' }, signal: AbortSignal.timeout(8000) });
+      const get = (extra = {}) => fetch(target, { headers: { 'user-agent': UA, accept: 'image/avif,image/webp,image/png,image/jpeg,image/*;q=0.8', ...extra }, signal: AbortSignal.timeout(8000) });
+      let r = await get();
+      // Alguns CDNs do TikTok só entregam a foto com o site do TikTok como origem
+      if (r.status === 403 || r.status === 401) r = await get({ referer: 'https://www.tiktok.com/', origin: 'https://www.tiktok.com' });
       let type = (r.headers.get('content-type') || '').split(';')[0];
-      if (!r.ok) return fail(r.status === 403 || r.status === 404 ? 404 : 502);
+      if (!r.ok) { imgLog(target, r.status); return fail(r.status === 403 || r.status === 404 ? 404 : 502); }
       const body = Buffer.from(await r.arrayBuffer());
       // Alguns CDNs mandam image sem content-type certo: reconhece pelos primeiros bytes.
       if (!type.startsWith('image/')) type = sniffImage(body);
@@ -237,10 +266,12 @@ const server = http.createServer(async (req, res) => {
       if (body.length > 6_000_000) { res.writeHead(413); return res.end(); }
       if (imgCache.size > 500) imgCache.delete(imgCache.keys().next().value);
       const img = { type, body };
+      imgStats.ok++;
       imgCache.set(target.href, img);
       return send(img);
-    } catch { return fail(502); }
+    } catch (err) { imgLog(target, err?.name || 'erro'); return fail(502); }
   }
+  if (url.pathname === '/api/img-stats') return sendJson(res, 200, { ok: imgStats.ok, falhas: imgStats.fail, ultimas: imgStats.last, recusadas: imgStats.denied, eventosSemFoto: imgStats.semFoto });
   if (url.pathname === '/api/roblox') {
     const nick = url.searchParams.get('u') || '';
     const send = (code, body) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)); };
@@ -261,7 +292,7 @@ const server = http.createServer(async (req, res) => {
     let buf;
     try { buf = await tts(text, voice, rate, pitch); }
     catch (err) {
-      console.error('tts edge falhou:', err?.message);
+      if (err?.message !== 'pausa 429') console.error('tts edge falhou:', err?.message);
       try { buf = await ttsGoogle(text, voice.slice(0, 5)); } catch { res.writeHead(502); return res.end(); }
     }
     res.writeHead(200, { 'content-type': 'audio/mpeg', 'cache-control': 'public, max-age=86400', 'access-control-allow-origin': '*' });
@@ -411,16 +442,16 @@ function connectTikTok(username, room) {
   room.conn = conn;
   const again = (ms) => { clearTimeout(room.retry); room.retry = setTimeout(() => { if (!room.closed && room.conn === conn) connectTikTok(username, room); }, ms); };
 
-  conn.on(WebcastEvent.CHAT, (d) => broadcast(room, { type: 'chat', user: userInfo(d.user, d), text: d.content ?? d.comment ?? '' }));
-  conn.on(WebcastEvent.LIKE, (d) => broadcast(room, { type: 'like', user: userInfo(d.user, d), count: Number(d.count ?? d.likeCount) || 1, total: Number(d.total ?? d.totalLikeCount) || 0 }));
+  conn.on(WebcastEvent.CHAT, (d) => broadcast(room, { type: 'chat', user: userOf(d.user, d), text: d.content ?? d.comment ?? '' }));
+  conn.on(WebcastEvent.LIKE, (d) => broadcast(room, { type: 'like', user: userOf(d.user, d), count: Number(d.count ?? d.likeCount) || 1, total: Number(d.total ?? d.totalLikeCount) || 0 }));
   conn.on(WebcastEvent.GIFT, (d) => {
     const gift = giftInfo(d);
-    if (gift) broadcast(room, { type: 'gift', user: userInfo(d.user, d), ...gift });
+    if (gift) broadcast(room, { type: 'gift', user: userOf(d.user, d), ...gift });
   });
   // Seguir e compartilhar chegam separados (o conector já filtra o SOCIAL por tipo).
-  conn.on(WebcastEvent.FOLLOW, (d) => broadcast(room, { type: 'social', user: userInfo(d.user, d), action: 'follow' }));
-  conn.on(WebcastEvent.SHARE, (d) => broadcast(room, { type: 'social', user: userInfo(d.user, d), action: 'share' }));
-  conn.on(WebcastEvent.MEMBER, (d) => broadcast(room, { type: 'join', user: userInfo(d.user, d) }));
+  conn.on(WebcastEvent.FOLLOW, (d) => broadcast(room, { type: 'social', user: userOf(d.user, d), action: 'follow' }));
+  conn.on(WebcastEvent.SHARE, (d) => broadcast(room, { type: 'social', user: userOf(d.user, d), action: 'share' }));
+  conn.on(WebcastEvent.MEMBER, (d) => broadcast(room, { type: 'join', user: userOf(d.user, d) }));
   conn.on(WebcastEvent.ROOM_USER, (d) => broadcast(room, { type: 'viewers', count: Number(d.total ?? d.viewerCount) || 0 }));
   conn.on(WebcastEvent.STREAM_END, () => {
     if (room.conn !== conn) return;

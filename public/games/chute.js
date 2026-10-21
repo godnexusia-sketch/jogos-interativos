@@ -3,6 +3,9 @@
 // Bola no Ursinho: um personagem (pode ser a sua foto) segura um ursinho de pelúcia. Presentes lançam bolas nele.
 // O ursinho tem barra de vida; quando zera, a rodada acaba e recomeça sozinha.
 
+const KICK_KIND = 'swat'; // chutador 3D padrão
+const KICK_H = 1.5, KICK_POS = [-0.8, 0, 3.0]; // tamanho e lugar do chutador (na frente, à esquerda)
+
 // Seletor do personagem 3D em cada item da tela Configurar (usado aqui e no Combate).
 // def(i) dá o padrão do item; a escolha fica em cfg.items[i].kind e é salva junto com o resto.
 function charKindSelects(el, cfg, label, def) {
@@ -27,6 +30,7 @@ registerGame(withConfig({
   name: 'Bola no Ursinho',
   icon: '⚽',
   help: '<p>Comente <b>chuta</b> para lançar uma bola (1 a cada 4s); algumas erram.</p><p>1–9 🪙 1 a 3 bolas · 10–99 🪙 3 a 10 bolas · 100–999 🪙 3 a 4 bolas de fogo gigantes (5×) · 1.000+ 🪙 chuva de 30 a 60 bolas de ouro. ❤️ A cada 30 likes da live sai uma bola · ⭐ seguir 1 bola · 🔁 compartilhar 3.</p>' + TIER_HELP + '<p>Quando a vida do ursinho zera, a rodada acaba. Ponha a foto do personagem em <b>Configurar</b>.</p>',
+  hasChars: true,
   cd: new Cooldown(4000),
   kickers: new Map(),
   round: 1,
@@ -43,13 +47,25 @@ registerGame(withConfig({
     this.lastGift = null;
   },
   renderSettings(el, save) {
-    renderItemsSettings(el, structuredClone(this.config), {
+    const cfg = structuredClone(this.config);
+    renderItemsSettings(el, cfg, {
       min: 1, max: 1, itemLabel: 'Nome do personagem',
       extras: [{ key: 'life', label: 'Vida do ursinho', min: 10, max: 100000 }],
-    }, (cfg) => { this.applyConfig(cfg); save(this.config); });
+    }, (c) => { this.applyConfig(c); save(this.config); });
+    charKindSelects(el, cfg, 'Chutador 3D', () => KICK_KIND);
   },
   // Foto nova do personagem: remonta a cena 3D.
-  applyConfig(cfg) { if (!cfg?.items?.length) return; this.config = cfg; store.set('cfg:chute', cfg); this.r = null; this.reset(); },
+  applyConfig(cfg) { if (!cfg?.items?.length) return; this.config = cfg; store.set('cfg:chute', cfg); this.kickOvr = null; this.r?.kicker.dispose(); this.r = null; this.reset(); },
+  // Chutador 3D: escolhido no Configurar, trocado por quem usa !nome, ou o padrão
+  kickKind() { const k = this.kickOvr || this.config.items[0]?.kind; return CHARACTERS[k] ? k : KICK_KIND; },
+  buildKicker() {
+    const r = this.r;
+    r.kicker?.dispose();
+    const c = new Character3D({ kind: this.kickKind(), height: KICK_H, plate: false, base: 'idle' });
+    c.root.position.set(...KICK_POS); c.faceTo(0.55, 0.65); // de frente para o ursinho
+    r.scene.add(c.root); r.kicker = c;
+  },
+  onCharPick(user, k) { this.kickOvr = k; if (this.r) this.buildKicker(); },
   sample: () => pick(['chuta', 'chuta!', 'gol']),
   kick(user, kind, delay = 0) { this.pending.push({ user, kind, at: delay }); },
   onEvent(ev) {
@@ -80,7 +96,7 @@ registerGame(withConfig({
     if (this.lastGift && (this.lastGift.t -= dt) <= 0) this.lastGift = null;
     for (const b of this.booms) b.t -= dt;
     this.booms = this.booms.filter((b) => b.t > 0);
-    if (this.phase === 'over') { this.endT -= dt; if (this.endT <= 0) { this.round++; this.reset(); } return; }
+    if (this.phase === 'over') { this.endT -= dt; if (this.endT <= 0) { this.round++; this.reset(); this.r?.kicker.play('idle'); } return; }
     for (const p of this.pending) p.at -= dt;
     for (const p of this.pending.filter((p) => p.at <= 0)) this.launch(p);
     this.pending = this.pending.filter((p) => p.at > 0);
@@ -91,6 +107,8 @@ registerGame(withConfig({
       const hp = this.r ? this.project(this.bearWorld()) : { x: W / 2, y: H / 2 };
       if (b.miss) { floatText('errou!', hp.x + (b.tx > 0.55 ? 120 : -120), hp.y - 60, '#fff', 26); continue; }
       const dmg = b.kind === 'fire' ? 5 : b.kind === 'gold' ? 2 : 1;
+      const kc = this.r?.kicker;
+      if (kc && !kc.busy) kc.play('victory', { speed: 1.3 }); // acertou: comemora
       this.life = Math.max(0, this.life - dmg);
       this.hits++;
       addScore(this.kickers, b.user.nick, dmg);
@@ -172,6 +190,7 @@ registerGame(withConfig({
     const ballTex = G3.tex(128, 64, (g) => { g.fillStyle = '#f8fafc'; g.fillRect(0, 0, 128, 64); g.fillStyle = '#111'; for (let i = 0; i < 6; i++) { g.beginPath(); g.arc(12 + i * 22, i % 2 ? 18 : 46, 8, 0, 7); g.fill(); } });
     const mats = { normal: new T.MeshStandardMaterial({ map: ballTex, roughness: 0.4 }), gift: new T.MeshStandardMaterial({ map: ballTex, roughness: 0.4 }), fire: new T.MeshStandardMaterial({ color: 0xff6a00, emissive: 0xff3300, emissiveIntensity: 1.2 }), gold: new T.MeshStandardMaterial({ color: 0xffd23f, metalness: 1, roughness: 0.2, emissive: 0x553300 }) };
     this.r = { scene, camera, rig, bear, bh, eyes, mats, ballGeo: new T.SphereGeometry(0.18, 18, 14), balls: new Map() };
+    this.buildKicker();
   },
   bearWorld() { return this.r ? this.r.bear.position.clone() : null; },
   project(v) { const p = v.clone().project(this.r.camera); return { x: (p.x + 1) / 2 * W, y: (1 - p.y) / 2 * H }; },
@@ -180,7 +199,10 @@ registerGame(withConfig({
     const miss = kind === 'normal' && Math.random() < 0.35;
     // Coordenadas no mundo 3D: sai de perto da câmera e vai até o ursinho
     const tx = 0.55 + rand(-0.25, 0.25) + (miss ? pick([-1.6, 1.6]) : 0), ty = 1.8 + rand(-0.25, 0.3) + (miss ? 0.8 : 0), tz = 0.65;
-    this.balls.push({ user, kind, miss, sx: rand(-2.5, 2.5), sy: 0.4, sz: 7, tx, ty, tz, t: 0, dur: kind === 'gold' ? 0.55 : kind === 'fire' ? 1.0 : 0.8, spin: rand(-8, 8) });
+    // Com o chutador 3D, a bola sai do pé dele (e ele chuta); sem a cena, de perto da câmera
+    const kc = this.r?.kicker, kp = kc?.root.position;
+    if (kc) kc.play('kick', { speed: 1.7 });
+    this.balls.push({ user, kind, miss, sx: kp ? kp.x + 0.25 : rand(-2.5, 2.5), sy: kp ? 0.25 : 0.4, sz: kp ? kp.z - 0.35 : 7, tx, ty, tz, t: 0, dur: kind === 'gold' ? 0.55 : kind === 'fire' ? 1.0 : 0.8, spin: rand(-8, 8) });
     sfx.tone(160, 0.08, 'sine', 0.15);
   },
   draw() {
@@ -192,7 +214,10 @@ registerGame(withConfig({
       three3dReady.then(() => this.init3d());
       return;
     }
-    const T = THREE, t = performance.now() / 1000, r = this.r;
+    const T = THREE, now = performance.now(), t = now / 1000, r = this.r;
+    if (this.phase === 'over' && !r.kicker.busy) r.kicker.play('victory'); // ursinho nocauteado: comemora sem parar
+    r.kicker.update(clamp((now - (this.lastT || now)) / 1000, 0, 0.1) || 1 / 60);
+    this.lastT = now;
     // Personagem provocando: mão na cabeça e o outro braço segurando o ursinho
     const wave = Math.sin(t * 3) * 0.15;
     poseHuman(r.rig, { sL: [-1.25, 0, -0.35], eL: [-0.45], sR: [-2.6 + wave, 0, 0.5], eR: [-1.7], torso: [0, -0.15, 0], head: [0.05, 0.25, Math.sin(t * 2) * 0.06], hL: [0.05, 0, 0.06], hR: [-0.05, 0, -0.06], kL: [0.05], kR: [0.05], y: Math.sin(t * 2) * 0.02 });

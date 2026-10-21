@@ -12,7 +12,7 @@ const MOVES = {
 };
 const FIGHT_X = 1.15;
 const FACE_TURN = 0.8; // vira os lutadores três quartos para a câmera, para o rosto aparecer
-const FIGHT_H = 2.5; // altura dos lutadores 3D
+const FIGHT_H = 3.1; // altura dos lutadores 3D
 const FIGHT_KINDS = ['barbaro', 'cavaleiro']; // personagens padrão de cada lado
 // Golpe do jogo → animação do personagem 3D
 const FIGHT_ANIM = { jab: 'punch', cross: 'punch', kick: 'kick', fireball: 'cast', upper: 'jumpAttack' };
@@ -274,7 +274,7 @@ registerGame(withConfig({
     if (a.kind) {
       const k = clamp(a.t / a.dur, 0, 1);
       const hitk = Math.sin(Math.min(1, k / 0.55) * Math.PI / 2) * (k < 0.55 ? 1 : 1 - (k - 0.55) / 0.45);
-      lunge = a.kind === 'fireball' ? 0 : hitk * (a.kind === 'upper' ? 0.9 : a.kind === 'jab' ? 0.3 : 0.5);
+      lunge = a.kind === 'fireball' ? 0 : hitk * (a.kind === 'jab' ? 0.25 : 0.45);
     }
     // Vencedor comemora sem parar
     if (a.winT && !c.busy) c.play('victory');

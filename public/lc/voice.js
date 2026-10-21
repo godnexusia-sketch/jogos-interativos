@@ -136,18 +136,47 @@ const voice = {
   stopAll() { this.queue.forEach((x) => x.onEnd?.()); this.queue = []; this.skip(); },
 };
 
-// Leitor de comentários e shoutouts (Voz e chat no painel).
+// Locutor da live: fala cada interação com a voz configurada ("José mandou uma rosa", "Maria comentou: …").
+// Presentes, seguir e compartilhar têm prioridade; comentários, entradas e likes ficam de fora quando a fila enche.
+const READ_DEFAULTS = { chat: true, gift: true, follow: true, share: true, join: true, like: true };
+const READ_FORMATS = { chat: '{user} comentou: {comment}', gift: '{user} mandou {gift}', follow: '{user} começou a seguir', share: '{user} compartilhou a live', join: '{user} entrou na live', like: '{user} mandou {count} curtidas' };
 const commentReader = {
-  last: new Map(),
-  onChat(ev) {
-    const st = liveCfg.stream;
-    if (!st.readComments || !ev.text) return;
-    if (current?.speaksChat) return; // o jogo atual já responde o chat por voz (apresentador IA)
-    const k = uid(ev), now = performance.now();
-    if (now - (this.last.get(k) || 0) < (st.readGap || 4) * 1000) return;
-    this.last.set(k, now);
-    if (voice.queue.length > 6) return;
-    const msg = String(st.readFormat || '{user} disse: {comment}').replace('{user}', ev.user?.nick || '').replace('{comment}', String(ev.text).slice(0, st.readMax || 120));
-    voice.say(msg);
+  last: new Map(), likes: new Map(),
+  on() { const st = liveCfg.stream; return st.readAll !== false; },
+  types() { return { ...READ_DEFAULTS, ...(liveCfg.stream.readTypes || {}) }; },
+  fmt(type) { return (liveCfg.stream.readFormats || {})[type] || (type === 'chat' && liveCfg.stream.readFormat !== '{user} disse: {comment}' ? liveCfg.stream.readFormat : null) || READ_FORMATS[type]; },
+  nick(u) { return String(u?.nick || u?.handle || 'alguém').replace(/[_.]+/g, ' ').slice(0, 30); },
+  onEvent(ev) {
+    const st = liveCfg.stream, type = ev.type === 'social' ? (ev.action === 'share' ? 'share' : 'follow') : ev.type;
+    // Sem o locutor ligado, continua valendo o leitor de comentários antigo
+    if (!this.on()) { if (type === 'chat' && st.readComments) this.say('chat', ev, 4); return; }
+    if (!this.types()[type]) return;
+    if (type === 'chat' && current?.speaksChat) return; // o apresentador IA já responde o chat por voz
+    if (type === 'like') {
+      // Junta os likes da pessoa e fala no máximo um aviso a cada 20s por pessoa
+      const k = uid(ev), r = this.likes.get(k) || { n: 0, t: -1e9 };
+      r.n += ev.count || 1; this.likes.set(k, r);
+      if (performance.now() - r.t < 20000 || r.n < 10) return;
+      r.t = performance.now(); const n = r.n; r.n = 0;
+      return this.say('like', { ...ev, count: n }, 0, 2);
+    }
+    const gap = type === 'chat' ? st.readGap ?? 4 : type === 'join' ? 30 : 0;
+    this.say(type, ev, gap, type === 'gift' || type === 'follow' || type === 'share' ? 8 : type === 'chat' ? 5 : 2);
   },
+  // gap: segundos mínimos entre falas da mesma pessoa; room: até quantos itens na fila ainda aceita
+  say(type, ev, gap, room = 6) {
+    const k = type + uid(ev), now = performance.now();
+    if (gap && now - (this.last.get(k) || -1e9) < gap * 1000) return;
+    if (voice.queue.length > room) return;
+    this.last.set(k, now);
+    if (this.last.size > 3000) this.last.delete(this.last.keys().next().value);
+    const st = liveCfg.stream, cnt = ev.count || 1;
+    // Nome do presente em português (catálogo pelo id), com "um"/"uma" na frente
+    const gname = (ev.giftId && giftInfo(ev.giftId)?.name) || ev.name || 'presente';
+    const plural = (n) => (/[aeiouáéó]$/i.test(n) && !/\s/.test(n) ? n + 's' : n);
+    const gift = type === 'gift' ? (cnt > 1 ? `${cnt} ${plural(gname)}` : `${/^(rosa|rosquinha|casquinha|coroa|bola|baleia|estrela|flor|pizza|cerveja|m[aã]o|fatia|mina|arma|caneca|coxinha)/i.test(gname) ? 'uma' : 'um'} ${gname}`) : '';
+    const msg = this.fmt(type).replace('{user}', this.nick(ev.user)).replace('{comment}', String(ev.text || '').slice(0, st.readMax || 120)).replace('{gift}', gift).replace('{count}', fmtNum(cnt));
+    voice.say(msg, { prio: type === 'gift' && coins(ev) >= 100 ? 'high' : 'normal' });
+  },
+  onChat(ev) { this.onEvent(ev); },
 };
