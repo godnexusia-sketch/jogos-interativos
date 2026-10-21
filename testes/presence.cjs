@@ -6,7 +6,7 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright');
   const errs = []; p.on('pageerror', e => errs.push(e.message));
   await p.goto('http://localhost:3123/?game=pipa');
   await p.evaluate(() => three3dReady); await p.waitForTimeout(2000);
-  for (let i = 0; i < 5; i++) await p.click('#simJoin');
+  await p.evaluate(() => { for (let i = 0; i < 5; i++) sim({ type: 'join', user: fakeUser() }); });
   const r1 = await p.evaluate(() => { const g = GAMES.find(x => x.id === 'pipa'); return { kites: g.kites.length, cfg: g.config }; });
   console.log('after 5 joins', JSON.stringify(r1));
   const box = await (await p.$('canvas')).boundingBox();
@@ -18,7 +18,8 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright');
   const r3 = await p.evaluate(() => { const g = GAMES.find(x => x.id === 'pipa'); g.onViewers(99); g.config.idleMin = 0.01; for (let i = 0; i < 200; i++) g.update(0.05); return g.kites.filter(k => !k.falling && !k.dead).length + '/' + g.kites.length; });
   console.log('after idle alive/total', r3);
   await p.screenshot({ path: S + '/pres_2.png', clip: box });
-  // settings panel
+  // settings panel (fica na seção Jogo atual)
+  await p.click('#rail [data-view="jogo"]'); await p.waitForTimeout(400);
   const html = await p.evaluate(() => { const el = document.querySelector('#settings') || document.body; return el.innerText.slice(0, 2000); });
   console.log(/Derrubar/.test(html) ? 'settings ok' : 'settings MISSING');
   // vote fallback
