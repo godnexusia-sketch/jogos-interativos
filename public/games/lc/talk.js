@@ -387,9 +387,11 @@ defineGame({
 });
 
 // ---------------- Festa Pixel 3D (Dance Party) ----------------
+// Passos dos personagens 3D (mesma ideia da Pista de Dança 3D em dance3d.js), um conjunto por estilo de dança
+const DP_MOVES = [['victory', 'taunt', 'jump', 'strafeL', 'strafeR', 'victory'], ['taunt', 'powerUp', 'jump', 'dodgeL', 'dodgeR', 'interact'], ['strafeL', 'strafeR', 'victory', 'jump', 'spin', 'taunt']];
 defineGame({
   id: 'dance-party', name: 'Festa Pixel 3D', genre: 'party', icon: '🧱', color: '#8b5cf6', three: true,
-  desc: 'Os espectadores entram numa pista de bonecos de blocos e dançam juntos. Quem quiser usa a skin de Minecraft pelo nick. Presentes compram aura, flutuar, solo no holofote e modo VIP gigante.',
+  desc: 'Os espectadores entram numa pista como personagens 3D e dançam juntos. Quem quiser usa a skin de Minecraft pelo nick. Presentes compram aura, flutuar, solo no holofote e modo VIP gigante.',
   help: '<p>Comente para entrar dançando. Para usar a sua <b>skin de Minecraft</b>, comente <b>!skin seunick</b>.</p><p>🎁 Presentes: <b>aura</b> brilhante, <b>flutuar</b>, <b>holofote</b> (solo na frente) e <b>VIP</b> gigante.</p>',
   settings: [
     { key: 'map', type: 'select', label: 'Cenário', options: [['club', 'Balada'], ['beach', 'Praia'], ['space', 'Espaço']], default: 'club' },
@@ -404,7 +406,13 @@ defineGame({
   ],
   actions: [{ id: 'join', label: 'Entrar', icon: '🕺' }, { id: 'aura', label: 'Aura', icon: '✨' }, { id: 'float', label: 'Flutuar', icon: '🎈' }, { id: 'spotlight', label: 'Holofote', icon: '🔦' }, { id: 'vip', label: 'VIP gigante', icon: '👑' }],
   bindings: [{ action: 'join', trigger: 'comment' }, { action: 'join', trigger: 'join' }, { action: 'aura', trigger: 'gift', minCoins: 1 }, { action: 'float', trigger: 'gift', minCoins: 10 }, { action: 'spotlight', trigger: 'gift', minCoins: 99 }, { action: 'vip', trigger: 'gift', minCoins: 299 }],
-  reset() { this.d = []; this.spot = null; this.botT = 0; if (this.r) { for (const x of this.r.pool) this.r.scene.remove(x.b.root); this.r.pool = []; } },
+  hasChars: true,
+  enter() { Assets3D.preload([]); },
+  reset() { this.d = []; this.spot = null; this.botT = 0; if (this.r) { for (const x of this.r.pool) this.dropMesh(x); this.r.pool = []; } },
+  // Remove o boneco da cena (o personagem 3D libera os recursos)
+  dropMesh(m) { if (!m) return; m.c?.dispose(); this.r?.scene.remove(m.root); if (this.r) this.r.pool = this.r.pool.filter((x) => x !== m); },
+  // Quem troca de personagem ganha o novo na próxima tela
+  onCharPick(user) { const d = this.d.find((x) => x.k === (user.id || user.nick)); if (d?.mesh?.c) { this.dropMesh(d.mesh); d.mesh = null; } },
   sample() { return pick(['bora', 'dança', '!skin Notch', 'uhuu']); },
   dancer(user) {
     const k = user.id || user.nick;
@@ -415,10 +423,10 @@ defineGame({
     this.d.push(d);
     return d;
   },
-  removeD(d) { this.d.splice(this.d.indexOf(d), 1); if (d.mesh) { this.r?.scene.remove(d.mesh.b.root); this.r.pool = this.r.pool.filter((x) => x !== d.mesh); } },
+  removeD(d) { this.d.splice(this.d.indexOf(d), 1); this.dropMesh(d.mesh); d.mesh = null; },
   onChat(ev) {
     const m = String(ev.text).match(/^!skin\s+([A-Za-z0-9_]{3,16})/i);
-    if (m && this.s.allowMinecraftSkins) { const d = this.dancer(ev.user); if (d) { d.skin = m[1]; if (d.mesh) { this.r.scene.remove(d.mesh.b.root); this.r.pool = this.r.pool.filter((x) => x !== d.mesh); d.mesh = null; } } }
+    if (m && this.s.allowMinecraftSkins) { const d = this.dancer(ev.user); if (d) { d.skin = m[1]; this.dropMesh(d.mesh); d.mesh = null; } }
   },
   onAction(id, a) {
     const d = this.dancer(a.user);
@@ -427,26 +435,36 @@ defineGame({
     else if (id === 'float') d.float = this.s.floatSeconds;
     else if (id === 'spotlight') { this.spot = { d, t: this.s.spotlightSeconds }; voice.say(`Solo de ${a.user.nick}!`); }
     else if (id === 'vip') { d.vip = this.s.vipSeconds; sfx.win(); }
+    // Reação do personagem 3D a cada efeito
+    const c = d.mesh?.c;
+    if (c) c.play(...{ aura: ['powerUp'], float: ['jump', { then: 'victory' }], spotlight: ['victory', { then: 'taunt' }], vip: ['powerUp', { then: 'victory' }] }[id] || ['victory']);
   },
   update(dt) {
     if (this.s.autoSpawn && this.d.length < 6) { this.botT -= dt; if (this.botT <= 0) { this.botT = 2; this.dancer(botUser('dp')); } }
     for (const d of this.d) { d.aura = Math.max(0, d.aura - dt); d.float = Math.max(0, d.float - dt); d.vip = Math.max(0, d.vip - dt); }
     if (this.spot && (this.spot.t -= dt) <= 0) this.spot = null;
   },
-  // Boneco de blocos com a skin do Minecraft (cabeça e corpo pela imagem do mc-heads) ou com a foto no rosto.
+  // Personagem 3D com a foto e o nome na placa. Quem usa skin de Minecraft (!skin nick) fica com o boneco de blocos
+  // com a skin (cabeça e corpo pela imagem do mc-heads).
   makeMesh(d) {
-    const T = THREE;
-    const b = makeBlocky3D(d.k, d.skin ? '' : d.user);
+    const T = THREE, root = new T.Group();
+    let b = null, c = null;
     if (d.skin) {
+      b = makeBlocky3D(d.k, '');
       const tex = G3.imageTex(`https://mc-heads.net/avatar/${d.skin}/128`);
       b.head.material[4] = new T.MeshStandardMaterial({ map: tex });
       const body = G3.imageTex(`https://mc-heads.net/body/${d.skin}/256`);
       b.torso.material = new T.MeshStandardMaterial({ map: body, transparent: true });
+      const tag = G3.label(trim(d.user.nick, 14), { scale: 0.12 }); tag.position.y = 3.1; b.root.add(tag);
+      root.add(b.root);
+    } else {
+      c = new Character3D({ kind: kindFor(d.user), user: d.user, plate: true, height: 2.6, base: 'idle' });
+      c.danceI = d.style; c.moveN = 0; c.play('spawnAir');
+      root.add(c.root);
     }
-    const tag = G3.label(trim(d.user.nick, 14), { scale: 0.12 }); tag.position.y = 3.1; b.root.add(tag);
-    const aura = new T.Mesh(new T.SphereGeometry(1.6, 16, 12), new T.MeshBasicMaterial({ color: new T.Color().setHSL(hashStr(d.k) % 360 / 360, 0.9, 0.6), transparent: true, opacity: 0.25 })); aura.position.y = 1.5; b.root.add(aura);
-    this.r.scene.add(b.root);
-    const m = { b, tag, aura };
+    const aura = new T.Mesh(new T.SphereGeometry(1.6, 16, 12), new T.MeshBasicMaterial({ color: new T.Color().setHSL(hashStr(d.k) % 360 / 360, 0.9, 0.6), transparent: true, opacity: 0.25, depthWrite: false })); aura.position.y = 1.5; root.add(aura);
+    this.r.scene.add(root);
+    const m = { root, b, c, aura };
     this.r.pool.push(m);
     return m;
   },
@@ -465,6 +483,11 @@ defineGame({
   draw() {
     const r = this.scene3d(), t = performance.now() / 1000;
     if (r) {
+      const dt = clamp(t - (r.lastT || t), 0, 0.1); r.lastT = t;
+      // Coreografia (como na Pista de Dança 3D): a cada 2 batidas cada dançarino troca de passo
+      const b2 = Math.floor(t * 120 / 60 / 2), newStep = b2 !== r.lastBeat;
+      r.lastBeat = b2;
+      let step = 0;
       if (r.mapKey !== this.s.map) { r.mapKey = this.s.map; r.scene.background = this.s.map === 'beach' ? G3.skyTex('#38bdf8', '#7dd3fc', '#fde68a') : this.s.map === 'space' ? G3.skyTex('#000000', '#1e1b4b', '#020617') : G3.skyTex('#09090b', '#3b0764', '#0f0420'); }
       const n = this.d.length, perRow = 6;
       this.d.forEach((d, i) => {
@@ -473,14 +496,17 @@ defineGame({
         let x = (col - (inRow - 1) / 2) * 2.4, z = -row * 2.6;
         const solo = this.spot && this.spot.d === d;
         if (solo) { x = 0; z = 4; }
-        const b = d.mesh.b;
-        danceBlocky(b, t + d.ph, d.style);
-        b.root.position.set(x, (d.float > 0 ? 1.5 + Math.sin(t * 2) * 0.4 : 0) + b.root.position.y, z);
-        b.root.scale.setScalar(d.vip > 0 ? 1.8 : solo ? 1.3 : 1);
-        b.root.rotation.y = Math.sin(t * 0.8 + i) * 0.4;
+        const { b, c, root } = d.mesh;
+        if (b) danceBlocky(b, t + d.ph, d.style);
+        if (c) {
+          if (newStep && !c.busy) { const seq = DP_MOVES[(c.danceI || 0) % DP_MOVES.length]; c.play(seq[(c.moveN++ + step++) % seq.length]); }
+          c.update(dt);
+        }
+        root.position.set(x, d.float > 0 ? 1.5 + Math.sin(t * 2) * 0.4 : 0, z);
+        root.scale.setScalar(d.vip > 0 ? 1.8 : solo ? 1.3 : 1);
+        root.rotation.y = Math.sin(t * 0.8 + i) * 0.4;
         d.mesh.aura.visible = d.aura > 0 || d.vip > 0;
         d.mesh.aura.scale.setScalar(1 + Math.sin(t * 6) * 0.1);
-        b.root.visible = !this.spot || solo || true;
       });
       r.lights.forEach((l, i) => { l.position.x = Math.sin(t * 1.3 + i * 1.6) * 8; l.intensity = 40 + Math.sin(t * 8 + i) * 30; });
       const rows = Math.ceil(n / perRow);

@@ -1,8 +1,9 @@
 'use strict';
 
-// Sobreviva à Ilha 3D: battle royale com bonecos de blocos estilo Roblox e a foto de cada um no rosto.
+// Sobreviva à Ilha 3D: battle royale com personagens 3D animados (foto e nome do espectador na placa).
 // A água sobe, a ilha encolhe e o último de pé leva a coroa.
 const ISLE_R = 22;
+const ISLE_MAX3D = 40; // acima disso os jogadores extras usam o boneco de blocos (desempenho)
 
 registerGame({
   id: 'ilha',
@@ -10,8 +11,13 @@ registerGame({
   icon: '🏝️',
   help: '<p>Comente <b>entrar</b> para pular na ilha (até 100). Com 2 jogadores a contagem começa. A ilha encolhe: quem cair na água sai.</p><p>1–9 🪙 Entra na ilha e dá uma corrida (5+ 🪙 ganha escudo) · 10–99 🪙 1 a 3 escudos contra queda · 100–999 🪙 Água congelada por 11 a 15s + 2 escudos · 1.000+ 🪙 TSUNAMI: quanto mais moedas, mais da ilha ele varre, e você ganha uma plataforma. ❤️ Likes puxam você pro centro · ⭐ seguir dá escudo · 🔁 compartilhar dá escudo e corrida.</p>' + TIER_HELP + '',
   wins: new Map(),
+  hasChars: true,
+  enter() { Assets3D.preload([]); },
+  // Quem troca de personagem ganha o boneco novo na hora
+  onCharPick(user, k) { const p = this.player(user.id || user.nick); if (p?.c && this.r) { this.dropObj(p); this.buildPlayer(p); } },
+  dropObj(p) { p.c?.dispose(); p.c = null; if (p.obj) this.r?.scene.remove(p.obj); p.obj = null; p.tag = null; },
   reset() {
-    for (const p of this.players || []) this.r?.scene.remove(p.obj);
+    for (const p of this.players || []) this.dropObj(p);
     this.players = [];
     this.phase = 'lobby';
     this.timer = 0;
@@ -71,8 +77,9 @@ registerGame({
   },
   drown(p, why = 'caiu na água') {
     if (p.dead || p.platform > 0) return;
-    if (p.shield > 0) { p.shield--; p.x *= 0.3; p.z *= 0.3; return; }
+    if (p.shield > 0) { p.shield--; p.x *= 0.3; p.z *= 0.3; p.c?.play('block'); return; }
     p.dead = true;
+    p.c?.play('death', { hold: true });
     p.sink = 0.001;
     this.out++;
     this.addLog(p.user, why, '#38bdf8');
@@ -173,9 +180,15 @@ registerGame({
   buildPlayer(p) {
     const T = THREE;
     const g = new T.Group();
-    p.rig = makeBlocky3D(p.user.nick, p.user);
-    p.rig.root.scale.setScalar(0.85);
-    g.add(p.rig.root);
+    // Personagem 3D (até ISLE_MAX3D); os demais ficam com o boneco de blocos
+    if (this.players.filter((o) => o.c).length < ISLE_MAX3D) {
+      p.c = new Character3D({ kind: kindFor(p.user), user: p.user, plate: true, height: 2.2, base: 'idle' });
+      g.add(p.c.root);
+    } else {
+      p.rig = makeBlocky3D(p.user.nick, p.user);
+      p.rig.root.scale.setScalar(0.85);
+      g.add(p.rig.root);
+    }
     const shield = new T.Mesh(new T.SphereGeometry(1.1, 16, 12), new T.MeshBasicMaterial({ color: 0x67e8f9, transparent: true, opacity: 0.22, depthWrite: false }));
     shield.position.y = 1.3; g.add(shield); p.shieldMesh = shield;
     const plat = new T.Mesh(new T.CylinderGeometry(1.2, 1.2, 0.3, 20), new T.MeshStandardMaterial({ color: 0xf97316 }));
@@ -193,6 +206,7 @@ registerGame({
       return;
     }
     const T = THREE, t = performance.now() / 1000, r = this.r;
+    const dt = clamp(t - (r.lastT || t), 0, 0.1); r.lastT = t;
     // Ondas
     const pos = r.sea.geometry.attributes.position;
     for (let i = 0; i < pos.count; i++) pos.setZ(i, Math.sin(pos.getX(i) * 0.15 + t * 1.4) * 0.25 + Math.cos(pos.getY(i) * 0.12 + t) * 0.25 + (this.wave > 0 ? this.wave * 1.5 : 0));
@@ -207,13 +221,20 @@ registerGame({
       p.obj.position.set(p.x, p.dead ? 0.8 - p.sink * 2 : 0.8, p.z);
       p.obj.visible = !(p.dead && p.sink >= 1);
       p.obj.rotation.y = p.face || 0;
-      if (p.dead) { p.rig.aL.rotation.set(-2.8, 0, 0); p.rig.aR.rotation.set(-2.8, 0, 0); }
+      if (p.c) {
+        // Animação: corre no dash, anda quando se move, comemora se venceu, afunda caindo
+        const c = p.c;
+        if (p.dead) { if (c.state !== 'death') c.play('death', { hold: true }); }
+        else if (this.phase === 'end' && p === this.winner) { if (!c.busy) c.play('victory', { speed: 1 }); }
+        else if (!c.busy) { const want = p.moving ? (p.dash ? 'run' : 'walk') : 'idle'; if (c.state !== want) c.play(want); }
+        c.update(dt);
+      } else if (p.dead) { p.rig.aL.rotation.set(-2.8, 0, 0); p.rig.aR.rotation.set(-2.8, 0, 0); }
       else if (this.phase === 'end' && p === this.winner) danceBlocky(p.rig, t, 1);
       else if (p.moving) walkBlocky(p.rig, t + p.phase, p.dash ? 2 : 1);
       else danceBlocky(p.rig, t + p.phase, 0);
       p.shieldMesh.visible = p.shield > 0;
       p.platMesh.visible = p.platform > 0;
-      if (fewLeft && !p.dead && !p.tag) { p.tag = G3.label(`@${trim(p.user.nick, 12)}`, { scale: 0.11 }); p.tag.center.set(0.5, 0); p.tag.position.y = 2.7; p.obj.add(p.tag); }
+      if (fewLeft && !p.dead && !p.tag && !p.c) { p.tag = G3.label(`@${trim(p.user.nick, 12)}`, { scale: 0.11 }); p.tag.center.set(0.5, 0); p.tag.position.y = 2.7; p.obj.add(p.tag); }
     }
     const dist = 12 + this.R * 1.45;
     const want = new T.Vector3(Math.sin(t * 0.07) * dist * 0.35, dist * 0.78, Math.cos(t * 0.07) * dist * 1.0);

@@ -4,6 +4,8 @@
 // com o rosto configurado. O público torce comentando o nome ou o número; presentes viram efeitos.
 const TORCIDA_COLORS = ['#2563eb', '#dc2626', '#16a34a', '#f59e0b'];
 const LANE_W = 1.22;
+const RUN_H = 2.5; // altura dos corredores 3D na cena
+const RUN_KINDS = ['cavaleiro', 'barbaro', 'maga', 'ladino', 'encapuzado', 'aventureiro', 'swat', 'sapo', 'cactoro', 'mech', 'panda', 'astronauta'];
 
 registerGame(withConfig({
   id: 'torcida',
@@ -11,6 +13,7 @@ registerGame(withConfig({
   name: 'Corrida de Torcidas',
   icon: '🏃',
   help: '<p>Comente o <b>nome</b> ou o <b>número</b> (1, 2…) do corredor para torcer por ele. Cada comentário depois disso dá um empurrão.</p><p>1–9 🪙 Impulso (3 a 6s) · 10–99 🪙 Casca de banana no rival da frente + impulso · 100–999 🪙 Superarrancada (5 a 7s) · 1.000+ 🪙 Derruba todos os rivais + escudo. Quanto mais moedas, mais tempo dura. ⭐ Seguir +4 m · 🔁 compartilhar +7 m.</p>' + TIER_HELP + '<p>❤️ Likes enchem a <b>meta coletiva</b>: quando completa, quem está em último ganha uma arrancada.</p><p>Fotos e nomes em <b>Configurar</b>.</p>',
+  hasChars: true,
   cd: new Cooldown(1500),
   wins: new Map(),
   heat: 1,
@@ -31,7 +34,7 @@ registerGame(withConfig({
   applyConfig(cfg) {
     if (!cfg?.items?.length) return;
     this.config = cfg; store.set('cfg:torcida', cfg);
-    this.fan = new Map();
+    this.fan = new Map(); this.kindOvr = {};
     this.reset();
   },
   renderSettings(el, save) {
@@ -208,25 +211,30 @@ registerGame(withConfig({
     this.rebuildRunners();
   },
   laneZ(l) { return (l - 4.5) * LANE_W; },
+  // Corredores 3D animados: cada raia ganha um personagem diferente (o torcedor pode trocar com !nome).
   rebuildRunners() {
     if (!this.r) return;
-    for (const r of this.r.rigs || []) this.r.scene.remove(r.root);
+    for (const rig of this.r.rigs || []) { rig.c.dispose(); rig.bubble.geometry.dispose(); rig.trail.geometry.dispose(); }
     this.r.rigs = this.runners.map((r) => {
-      const rig = makeHuman({ color: r.color, shorts: shade(r.color, -70), photo: r.photo, seed: r.name + r.i, shoes: '#f97316' });
-      // Número no peito
-      const bib = G3.tex(128, 96, (g) => { g.fillStyle = '#fff'; g.fillRect(0, 0, 128, 96); g.fillStyle = '#111'; g.font = 'italic 900 70px "Barlow Condensed", Impact'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(String(r.i + 1), 64, 52); });
-      const b = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.32), new THREE.MeshBasicMaterial({ map: bib }));
-      b.position.set(0, 0.42, 0.29); rig.torso.add(b);
+      const kind = this.kindOvr?.[r.i] || RUN_KINDS[(r.i + (this.heat - 1) * this.runners.length) % RUN_KINDS.length];
+      const c = new Character3D({ kind, height: RUN_H, plate: false, base: 'idle', tint: r.color });
+      c.setTint(r.color);
       const tag = G3.label(trim(r.name, 12).toUpperCase(), { border: r.color, scale: 0.13 });
-      tag.center.set(0.5, 0); tag.position.set(0, 3.15, 0); rig.root.add(tag);
-      rig.tag = tag;
+      tag.center.set(0.5, 0); tag.position.set(0, RUN_H + 0.35, 0); c.root.add(tag);
       const bubble = new THREE.Mesh(new THREE.SphereGeometry(1.5, 24, 18), new THREE.MeshBasicMaterial({ color: 0x7dd3fc, transparent: true, opacity: 0.22, depthWrite: false }));
-      bubble.position.y = 1.5; bubble.visible = false; rig.root.add(bubble); rig.bubble = bubble;
+      bubble.position.y = 1.4; bubble.visible = false; c.root.add(bubble);
+      // Rastro do impulso (atrás do corredor, que corre para +X com o rosto em +Z do modelo)
       const trail = new THREE.Mesh(new THREE.PlaneGeometry(3, 1.6), new THREE.MeshBasicMaterial({ color: new THREE.Color(r.color), transparent: true, opacity: 0.25, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }));
-      trail.position.set(0, 1.4, -1.8); trail.rotation.y = Math.PI / 2; trail.visible = false; rig.root.add(trail); rig.trail = trail;
-      this.r.scene.add(rig.root);
-      return rig;
+      trail.position.set(0, 1.3, -1.8); trail.rotation.y = Math.PI / 2; trail.visible = false; c.root.add(trail);
+      this.r.scene.add(c.root);
+      return { c, root: c.root, tag, bubble, trail, boost: 0, slip: 0 };
     });
+  },
+  onCharPick(user, k) {
+    const i = this.fan?.get(uid({ user }));
+    if (i == null || !this.runners[i]) return;
+    (this.kindOvr ||= {})[i] = k;
+    this.rebuildRunners();
   },
   draw() {
     if (!this.r) {
@@ -237,7 +245,8 @@ registerGame(withConfig({
       three3dReady.then(() => this.init3d());
       return;
     }
-    const T = THREE, t = performance.now() / 1000;
+    const now = performance.now(), dt = clamp((now - (this.lastT || now)) / 1000, 0, 0.1) || 1 / 60;
+    this.lastT = now;
     const L = this.config.length;
     // A prova ocupa 200 unidades de pista na cena, qualquer que seja a distância configurada.
     const k = 200 / L;
@@ -247,18 +256,22 @@ registerGame(withConfig({
       const rig = this.r.rigs[i];
       rig.root.position.set(r.pos * k, 0, this.laneZ(r.lane));
       rig.root.rotation.set(0, Math.PI / 2, 0);
-      if (this.phase === 'marks') {
-        // Agachado no bloco: "às suas marcas" e "prepara"
-        const set = this.timer < 1.2;
-        poseHuman(rig, { torso: [set ? 1.0 : 1.2, 0, 0], head: [-0.6, 0, 0], y: set ? -0.35 : -0.55, sL: [-1.4, 0, 0.1], eL: [0], sR: [-1.4, 0, -0.1], eR: [0], hL: [-1.6, 0, 0], kL: [1.9], hR: [-0.7, 0, 0], kR: [1.4] });
-      } else if (this.phase === 'finish') {
-        const won = r === this.winner;
-        poseHuman(rig, won ? { sL: [-2.9, 0, 0.4], sR: [-2.9, 0, -0.4], eL: [-0.2], eR: [-0.2], y: Math.abs(Math.sin(t * 5)) * 0.2 } : { torso: [0.5, 0, 0], sL: [-0.3, 0, 0.3], sR: [-0.3, 0, -0.3], eL: [-0.5], eR: [-0.5], hL: [-0.2], kL: [0.3], hR: [-0.2], kR: [0.3], y: -0.1 });
+      const c = rig.c;
+      if (this.phase === 'marks') { if (c.state !== 'idle' && !c.busy) c.play('idle'); c.timeScale = 1; }
+      else if (this.phase === 'finish') {
+        // Vencedor comemora sem parar; os outros param e respiram
+        if (r === this.winner) { if (!c.busy) c.play('victory'); } else if (c.state === 'run') c.play('idle');
+        c.timeScale = 1;
       } else {
-        poseHuman(rig, runPose(t + i * 0.37, clamp(r.v / 3.4, 0.2, 1.6) * 0.9));
+        if (r.slip > 0 && !rig.slip) c.play(r.slip > 1.2 ? 'death' : 'hit', { hold: r.slip > 1.2 }); // escorregou na banana / derrubado
+        else if (!r.slip && rig.slip) c.play('run', { fade: 0.15 });
+        else if (!r.slip && r.boost > rig.boost + 0.5) c.play(r.mult >= 2.6 ? 'powerUp' : 'jump', { speed: 1.4, then: 'run' });
+        else if (!r.slip && c.state !== 'run' && !c.busy) c.play('run');
+        // Passada acompanha a velocidade do corredor
+        c.timeScale = c.state === 'run' ? clamp(r.v / 3.4, 0.6, 1.9) : 1;
       }
-      rig.root.rotation.z = r.fall ? -r.fall * 1.3 : 0;
-      if (r.fall) rig.root.position.y = 0.1;
+      rig.slip = r.slip; rig.boost = r.boost;
+      c.update(dt);
       rig.bubble.visible = r.shield > 0;
       rig.trail.visible = r.boost > 0;
       if (rig.trail.visible) { rig.trail.scale.x = 1 + Math.random() * 0.4; rig.trail.material.opacity = 0.18 + Math.random() * 0.12; }

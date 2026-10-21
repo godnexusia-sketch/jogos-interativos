@@ -13,6 +13,25 @@ const Effects3D = {
   tick(g, dt, apply) { g.fly?.update(dt, () => { const p = g.pend.shift(); if (p) apply(p); }); },
 };
 function helperOf(lists, id) { for (const [list, good] of lists) { const d = list.find((x) => x[0] === id); if (d) return [d, good]; } return [null]; }
+// Personagem 3D principal (Character3D) dos jogos abaixo: cria, troca quando o personagem muda e desmonta a cena.
+const Hero3D = {
+  make(g, o = {}) { const c = new Character3D({ kind: g.kind(), height: 1.6, plate: false, base: 'idle', ...o }); g.r.scene.add(c.root); g.r.char = c; g.r.charKind = g.kind(); return c; },
+  // Chamado a cada quadro: troca o boneco se o personagem mudou (painel ou chat) e anima
+  tick(g, dt, o, onNew) {
+    const r = g.r; if (!r?.char) return null;
+    if (r.charKind !== g.kind()) { const old = r.char, p = old.root.position.clone(), ry = old.root.rotation.y; old.dispose(); const c = Hero3D.make(g, o); c.root.position.copy(p); c.root.rotation.y = ry; onNew?.(c); }
+    r.char.update(dt); return r.char;
+  },
+  play(g, st, o) { g.r?.char?.play(st, o); },
+  say(g, txt) { g.r?.char?.say(txt, { secs: 2 }); },
+  leave(g) {
+    const r = g.r; if (!r) return;
+    r.char?.dispose();
+    r.scene.traverse((m) => { if (m.isMesh || m.isInstancedMesh || m.isPoints) { m.geometry?.dispose(); (Array.isArray(m.material) ? m.material : [m.material]).forEach((x) => { x?.map?.dispose?.(); x?.dispose?.(); }); } });
+    g.r = null;
+  },
+};
+const nickOf = (u) => String(u?.nick || u?.uniqueId || u?.name || '').slice(0, 14);
 
 // ---------------- Corrida Lunar (Lunar Dash) ----------------
 const LUNAR_HELP = [['mech_escort', 'Robô escolta', '🤖', 4], ['rover_turbo', 'Jipe lunar', '🚙', 12], ['rocket_boost', 'Foguete', '🚀', 30], ['spaceship_rush', 'Nave espacial', '🛸', 70]];
@@ -26,7 +45,13 @@ defineGame({
     { key: 'metersPerRound', type: 'number', label: 'Metros até a chegada', min: 100, max: 10000, default: 1000 },
     { key: 'runSpeed', type: 'number', label: 'Metros por segundo sozinho', min: 0, max: 30, default: 6 },
     { key: 'totalWins', type: 'number', label: 'Vitórias para fechar a partida', min: 1, max: 20, default: 3 },
+    charSetting('character', 'Personagem do corredor'),
   ],
+  hasChars: true,
+  kind() { return this.charOverride && CHARACTERS[this.charOverride] ? this.charOverride : pickKind(this.s.character || 'astronauta', 0, 'lunar-dash'); },
+  onCharPick(user, k) { this.charOverride = k; },
+  enter() { Assets3D.preload([this.kind()]); },
+  leave() { Hero3D.leave(this); },
   actions: [...helperActions(LUNAR_HELP), ...helperActions(LUNAR_SAB)],
   bindings: [{ action: 'mech_escort', trigger: 'like', likes: 15 }, { action: 'planet_pull', trigger: 'comment', text: 'puxa,planeta' }, { action: 'enemy_charge', trigger: 'comment', text: 'alien' }, { action: 'meteor_strike', trigger: 'comment', text: 'meteoro' }, { action: 'rover_turbo', trigger: 'gift', minCoins: 1 }, { action: 'rocket_boost', trigger: 'gift', minCoins: 30 }, { action: 'spaceship_rush', trigger: 'gift', minCoins: 299 }, { action: 'gravity_well', trigger: 'gift', minCoins: 99, on: false }],
   reset() { this.m = 0; this.vel = 0; this.wins = this.wins || 0; this.feed = new Feed(4); this.fly = new Flyers(); this.pend = []; this.cele = 0; this.lift = 0; this.vehicle = null; },
@@ -35,18 +60,21 @@ defineGame({
   onPress() { if (this.s.controlMode === 'manual') this.vel += 4; },
   update(dt) {
     this.feed.update(dt);
+    // Corredor 3D: corre em loop, para e comemora na chegada
+    const c = Hero3D.tick(this, dt, { height: 1.8, base: this.cele ? 'idle' : 'run' });
+    if (c) { if (!this.cele && c.base !== 'run') c.play('run'); if (c.state === 'run' && c.cur) c.cur.timeScale = clamp(0.8 + Math.abs(this.vel) * 0.12, 0.8, 1.8); }
     this.cele = Math.max(0, this.cele - dt); this.lift = Math.max(0, this.lift - dt);
     if (this.vehicle && (this.vehicle.t -= dt) <= 0) this.vehicle = null;
     Effects3D.tick(this, dt, (p) => {
-      if (p.good) { this.vel += p.amt; this.vehicle = { id: p.id, t: 2.5 }; sfx.pop(); }
-      else { this.vel -= p.amt; if (p.id === 'ufo_lift') this.lift = 2.5; sfx.boom(); }
+      if (p.good) { this.vel += p.amt; this.vehicle = { id: p.id, t: 2.5 }; sfx.pop(); Hero3D.play(this, p.id === 'rocket_boost' || p.id === 'spaceship_rush' ? 'jump' : 'powerUp', { speed: 1.2 }); Hero3D.say(this, `valeu ${nickOf(p.user)}!`); }
+      else { this.vel -= p.amt; if (p.id === 'ufo_lift') this.lift = 2.5; sfx.boom(); Hero3D.play(this, 'hit'); this.r?.char?.hitFlash('#ff4d6d', 1); }
       this.feed.push(p.user, `${p.name} ${p.good ? '+' : '−'}${Math.round(Math.abs(p.amt) * 3)}m`, p.good ? '#7cff6b' : '#ff6b8a');
     });
     if (this.cele) return;
     const base = this.s.controlMode === 'auto' ? this.s.runSpeed : 0;
     this.m = clamp(this.m + (base + this.vel * 3) * dt, 0, this.s.metersPerRound);
     this.vel *= 1 - dt * 0.9;
-    if (this.m >= this.s.metersPerRound) { this.wins++; this.cele = 4; this.m = 0; this.vel = 0; sfx.win(); confetti(140); voice.say(this.wins >= this.s.totalWins ? 'Campeão da corrida lunar!' : 'Chegou! Pouso perfeito.'); if (this.wins >= this.s.totalWins) this.wins = 0; }
+    if (this.m >= this.s.metersPerRound) { this.wins++; this.cele = 4; this.m = 0; this.vel = 0; sfx.win(); Hero3D.play(this, 'idle'); Hero3D.play(this, 'victory', { then: 'taunt' }); confetti(140); voice.say(this.wins >= this.s.totalWins ? 'Campeão da corrida lunar!' : 'Chegou! Pouso perfeito.'); if (this.wins >= this.s.totalWins) this.wins = 0; }
   },
   scene3d() {
     if (this.r || !G3.ready) return this.r;
@@ -62,10 +90,6 @@ defineGame({
     scene.add(stars);
     const earth = new T.Mesh(new T.SphereGeometry(14, 48, 32), new T.MeshStandardMaterial({ map: G3.tex(256, 128, (g) => { g.fillStyle = '#1d4ed8'; g.fillRect(0, 0, 256, 128); g.fillStyle = '#16a34a'; for (let i = 0; i < 14; i++) { g.beginPath(); g.ellipse(rand(0, 256), rand(20, 108), rand(10, 30), rand(6, 18), rand(0, 3), 0, 7); g.fill(); } g.fillStyle = 'rgba(255,255,255,.6)'; for (let i = 0; i < 20; i++) g.fillRect(rand(0, 256), rand(0, 128), rand(10, 40), 3); }), emissive: 0x0a1a40, emissiveIntensity: 0.4 }));
     earth.position.set(-40, 45, -150); scene.add(earth);
-    const runner = makeHuman({ color: '#f8fafc', shorts: '#cbd5e1', skin: '#e5e7eb', shoes: '#475569', hair: '#e5e7eb' });
-    const visor = new T.Mesh(new T.SphereGeometry(0.56, 24, 16, 0, Math.PI * 2, 0, Math.PI * 0.6), new T.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.9, roughness: 0.1, transparent: true, opacity: 0.55 }));
-    runner.head.add(visor);
-    runner.root.rotation.y = Math.PI; scene.add(runner.root);
     const flag = new T.Group();
     const pole = new T.Mesh(new T.CylinderGeometry(0.06, 0.06, 4), new T.MeshStandardMaterial({ color: 0xdddddd })); pole.position.y = 2; flag.add(pole);
     const cloth = new T.Mesh(new T.PlaneGeometry(2, 1.2), new T.MeshStandardMaterial({ color: 0xff2d55, side: T.DoubleSide })); cloth.position.set(1, 3.3, 0); flag.add(cloth);
@@ -75,16 +99,16 @@ defineGame({
     const dome = new T.Mesh(new T.SphereGeometry(0.7, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), new T.MeshStandardMaterial({ color: 0x22e3ee, transparent: true, opacity: 0.6 })); dome.position.y = 0.3; ufo.add(dome);
     scene.add(ufo);
     const cam = new T.PerspectiveCamera(50, W / H, 0.1, 400);
-    this.r = { scene, cam, runner, ground, flag, ufo };
+    this.r = { scene, cam, ground, flag, ufo };
+    Hero3D.make(this, { height: 1.8, base: 'run' }).root.rotation.y = Math.PI; // corre para -z (de costas para a câmera)
     return this.r;
   },
   draw() {
     const r = this.scene3d(), t = performance.now() / 1000;
     if (r) {
       const z = -this.m * 0.12;
-      const sp = 1 + Math.min(3, Math.abs(this.vel) * 0.3);
-      poseHuman(r.runner, this.cele ? { sL: [-2.6], sR: [-2.6], y: Math.abs(Math.sin(t * 8)) * 0.3 } : runPose(t, sp * 0.6));
-      r.runner.root.position.set(0, this.lift ? Math.sin(Math.min(1, (2.5 - this.lift)) * Math.PI) * 4 : 0, z);
+      r.char.root.position.set(0, this.lift ? Math.sin(Math.min(1, (2.5 - this.lift)) * Math.PI) * 4 : 0, z);
+      r.char.root.rotation.y = this.cele ? 0 : Math.PI; // na chegada vira para a câmera
       r.ufo.position.set(0, this.lift ? 7 : 30, z);
       r.ground.position.z = Math.floor(z / 10) * 10 - 150;
       const fz = -this.s.metersPerRound * 0.12;
@@ -225,13 +249,19 @@ defineGame({
     { key: 'defenseSeconds', type: 'number', label: 'Segundos de pé para vencer', min: 1, max: 60, default: 8 },
     { key: 'winGoal', type: 'number', label: 'Vitórias para fechar a partida', min: 1, max: 20, default: 3 },
     { key: 'blockStyle', type: 'select', label: 'Blocos', options: [['grass', 'Grama e terra'], ['stone', 'Pedra'], ['candy', 'Doces']], default: 'grass' },
+    charSetting('character', 'Personagem construtor'),
   ],
+  hasChars: true,
+  kind() { return this.charOverride && CHARACTERS[this.charOverride] ? this.charOverride : pickKind(this.s.character || 'aventureiro', 0, 'voxel-craft'); },
+  onCharPick(user, k) { this.charOverride = k; },
+  enter() { Assets3D.preload([this.kind()]); },
+  leave() { Hero3D.leave(this); },
   actions: [...helperActions(VOX_HELP), ...helperActions(VOX_SAB), ...WIN_ACTIONS],
   bindings: [{ action: 'build', trigger: 'like', likes: 10 }, { action: 'chicken', trigger: 'gift', minCoins: 1 }, { action: 'phoenix_architect', trigger: 'gift', minCoins: 30 }, { action: 'sky_whale', trigger: 'gift', minCoins: 299 }, { action: 'zap', trigger: 'follow' }],
   reset() { this.C = 12; this.R = 9; this.grid = new Array(this.C * this.R).fill(0); this.wins = this.wins || 0; this.feed = new Feed(4); this.fly = new Flyers(); this.pend = []; this.hold = 0; this.cele = 0; this.autoAcc = 0; this.debris = []; },
   sample() { return pick(['constroi', 'bloco']); },
   count() { return this.grid.reduce((a, b) => a + b, 0); },
-  place(n) { for (let k = 0; k < n; k++) { const i = this.grid.findIndex((v, j) => !v && (j < this.C || this.grid[j - this.C])); if (i < 0) return; this.grid[i] = 1; } },
+  place(n) { for (let k = 0; k < n; k++) { const i = this.grid.findIndex((v, j) => !v && (j < this.C || this.grid[j - this.C])); if (i < 0) return; this.grid[i] = 1; this.goX = (i % this.C) - this.C / 2 + 0.5; this.toBuild = true; } },
   breakN(n) { for (let k = 0; k < n; k++) { const filled = this.grid.map((v, i) => (v ? i : -1)).filter((i) => i >= 0); if (!filled.length) return; const i = filled[filled.length - 1 - Math.floor(Math.random() * Math.min(filled.length, 30))]; this.grid[i] = 0; this.debris.push({ i, t: 0, vx: rand(-4, 4), vy: rand(2, 8), vz: rand(-2, 4) }); } for (let j = this.C; j < this.grid.length; j++) if (this.grid[j] && !this.grid[j - this.C]) { this.grid[j] = 0; this.debris.push({ i: j, t: 0, vx: rand(-2, 2), vy: 0, vz: rand(0, 2) }); } },
   onAction(id, a) {
     if (id === 'award_win') return this.win();
@@ -239,16 +269,28 @@ defineGame({
     const [d, good] = helperOf([[VOX_HELP, true], [VOX_SAB, false]], id);
     if (d) Effects3D.queue(this, d, a, good, Math.round(d[3] * (a.gift ? Math.max(1, a.power / 3) : 1)));
   },
-  win() { this.wins++; this.cele = 4; sfx.win(); confetti(160); voice.say('Muralha completa!'); if (this.wins >= this.s.winGoal) this.wins = 0; this.grid.fill(0); },
+  win() { this.wins++; this.cele = 4; sfx.win(); confetti(160); voice.say('Muralha completa!'); this.toBuild = false; Hero3D.play(this, 'idle'); Hero3D.play(this, 'victory', { then: 'taunt' }); if (this.wins >= this.s.winGoal) this.wins = 0; this.grid.fill(0); },
   update(dt) {
     this.feed.update(dt); this.cele = Math.max(0, this.cele - dt);
     for (const d of this.debris) d.t += dt;
     this.debris = this.debris.filter((d) => d.t < 2);
-    Effects3D.tick(this, dt, (p) => { if (p.good) { this.place(p.amt); sfx.pop(); } else { this.breakN(p.amt); sfx.boom(); } this.feed.push(p.user, `${p.name}: ${p.amt > 0 ? '+' : ''}${p.amt} blocos`, p.good ? '#7cff6b' : '#ff6b8a'); });
+    this.builder(dt);
+    Effects3D.tick(this, dt, (p) => { if (p.good) { this.place(p.amt); sfx.pop(); Hero3D.say(this, `valeu ${nickOf(p.user)}!`); } else { this.breakN(p.amt); sfx.boom(); Hero3D.play(this, 'hit'); this.r?.char?.hitFlash('#ff4d6d', 1); this.toBuild = false; } this.feed.push(p.user, `${p.name}: ${p.amt > 0 ? '+' : ''}${p.amt} blocos`, p.good ? '#7cff6b' : '#ff6b8a'); });
     if (this.cele) return;
     this.autoAcc += this.s.autoBuild * dt;
     if (this.autoAcc >= 1) { this.place(Math.floor(this.autoAcc)); this.autoAcc %= 1; }
     if (this.count() === this.grid.length) { this.hold += dt; if (this.hold >= this.s.defenseSeconds) { this.hold = 0; this.win(); } } else this.hold = 0;
+  },
+  // Construtor 3D: anda até a coluna do último bloco, vira para a muralha e martela/usa/encaixa
+  builder(dt) {
+    const c = Hero3D.tick(this, dt, { height: 2.2 }); if (!c) return;
+    const p = c.root.position, dx = (this.goX ?? -4) - p.x, cele = this.cele > 0;
+    if (cele) { c.root.rotation.y = 0; return; } // comemora de frente para a câmera
+    if (c.busy) return;
+    if (Math.abs(dx) > 0.15) { p.x += Math.sign(dx) * Math.min(Math.abs(dx), 3.2 * dt); c.root.rotation.y = Math.sign(dx) * Math.PI / 2; if (c.base !== 'walk') c.play('walk'); return; }
+    c.root.rotation.y = Math.PI; // de frente para a muralha
+    if (this.toBuild) { this.toBuild = false; c.play('idle'); c.play(pick(['interact', 'use', 'punch']), { speed: 1.3 }); return; }
+    if (c.base !== 'idle') c.play('idle');
   },
   scene3d() {
     if (this.r || !G3.ready) return this.r;
@@ -262,9 +304,9 @@ defineGame({
     const blocks = new T.InstancedMesh(new T.BoxGeometry(1, 1, 1), mats, this.C * this.R); blocks.frustumCulled = false; blocks.castShadow = true; scene.add(blocks);
     const ground = new T.Mesh(new T.BoxGeometry(40, 1, 20), new T.MeshStandardMaterial({ map: tex('#4ade80', '#22c55e') })); ground.position.y = -1; ground.receiveShadow = true; scene.add(ground);
     const debris = new T.InstancedMesh(new T.BoxGeometry(0.9, 0.9, 0.9), mats, 60); debris.frustumCulled = false; scene.add(debris);
-    const steve = makeBlocky3D('construtor', ''); steve.root.position.set(-8, -0.5, 2); steve.root.scale.setScalar(0.8); scene.add(steve.root);
     const cam = new T.PerspectiveCamera(45, W / H, 0.1, 200); cam.position.set(0, 7, 36); cam.lookAt(0, 4, 0);
-    this.r = { scene, blocks, debris, cam, steve, d: new T.Object3D() };
+    this.r = { scene, blocks, debris, cam, d: new T.Object3D() };
+    Hero3D.make(this, { height: 2.2 }).root.position.set(-4, -0.5, 1.6);
     return this.r;
   },
   draw() {
@@ -275,7 +317,6 @@ defineGame({
       this.debris.slice(0, 60).forEach((d, k) => { const x = (d.i % this.C) - this.C / 2 + 0.5 + d.vx * d.t, y = Math.floor(d.i / this.C) + d.vy * d.t - 9 * d.t * d.t; r.d.position.set(x, y, d.vz * d.t); r.d.rotation.set(d.t * 4, d.t * 3, 0); r.d.updateMatrix(); r.debris.setMatrixAt(k, r.d.matrix); });
       for (let k = Math.min(60, this.debris.length); k < 60; k++) { r.d.position.set(0, -999, 0); r.d.updateMatrix(); r.debris.setMatrixAt(k, r.d.matrix); }
       r.debris.instanceMatrix.needsUpdate = true;
-      walkBlocky(r.steve, t, 1); r.steve.root.position.x = -8 + Math.sin(t * 0.4) * 2; r.steve.aR.rotation.x = -1.5 + Math.sin(t * 10) * 0.6;
       r.cam.position.x = Math.sin(t * 0.2) * 5; r.cam.lookAt(0, 4.5, 0);
       G3.render(r.scene, r.cam);
     } else stageBg('green');

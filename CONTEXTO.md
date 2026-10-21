@@ -47,6 +47,13 @@ alertas, efeitos, widgets, DJ Pad, música, voz neural e apresentador com IA. Se
 - **Lista na tela:** `charLive.showGallery()` — comentando `!personagens`, a cada `galleryEvery` minutos e pelo botão do painel (bus `charGallery`).
 - **Apresentador IA (`talkhead.js`):** padrão = cabeças falantes `cabeca_busto`, `cabeca_mascara` (esconde o "headOccluder"), `cabeca_caveira`; morph de queixo criado no carregamento + boca que abre com `mixer.level()`; acabamentos (mármore, ouro, cromado, pele, holograma, neon) com RoomEnvironment para reflexos; opção `c:<personagem>` para qualquer personagem da lista.
 
+## "Como jogar" na tela e personagem em todos os jogos (21/10/2026, madrugada)
+- **Lista "Como jogar" (`lc/legenda.js`):** em todo jogo, no canto, cada interação com ícone e o que faz: presente (imagem real do presente quando já foi aprendida, senão emoji pelo nome em `GIFT_EMOJI`, com o valor em moedas), comentário com as palavras do gatilho, likes, seguir, compartilhar, entrar. Sai dos gatilhos (`g.binds`), então muda sozinha quando o dono edita. Cor: verde ajuda, vermelho atrapalha, amarelo aparece (`actionTone`: `act.tone` ou mapa `TONES` por jogo). Clássicos usam `RULES_CLASSIC`. Posição por jogo em `LEGEND_POS` (`split` = ajuda à esquerda, atrapalha à direita; quiz e palavras aparecem 15s a cada 45s). Config global `live:legend` (painel ⚙️ do jogo: ligar, onde, quando, linhas, tamanho, aviso).
+- **Aviso de ação (`actFeed`):** cada gatilho disparado mostra foto · ícone ×quantidade → efeito (junta repetições), à direita acima do mascote. Chamado em `runTriggers` (engine.js).
+- **Jogos de subir:** grupo "Quantidades": quanto sobe/desce cada ação (`amt_<id>`), multiplicador geral (`mult`), degraus por moeda (`valueRate`), degraus visíveis (`ahead`), distância (`gap`); os nomes das ações ("Sobe 7") seguem a configuração (`climbActions`). Rumo ao Céu: caminho em espiral e Ladino por padrão (o Astronauta não tem clipe de pulo e rolava; `QUAT_ANIM.jump` agora cai para corrida, não rolamento).
+- **Personagens em jogos 2D (`lc/charlayer.js`):** camada transparente com câmera reta em pixels da tela: `charLayer.get(chave, tipo, {height})`, `place(c, x, y, giro)`, `draw()`. Limpa ao trocar de jogo.
+- **Personagem principal por jogo:** 1000 Degraus (Bárbaro, pula degrau por degrau) e os jogos de bonecos de bloco ganharam Character3D com padrão próprio, `hasChars: true` e `onCharPick`.
+
 ## Arquitetura
 ### Servidor (`server.js`, Node 22, `http` + `ws`)
 - Uma conexão com o TikTok por @ (`tiktok-live-connector@2.5.0`, `enableExtendedGiftInfo: false`). A **sala do @ existe enquanto houver alguém conectado, mesmo com a live fora do ar**; a conexão com o TikTok tenta de novo sozinha (30 s offline, 5 s queda).

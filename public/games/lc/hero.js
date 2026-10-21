@@ -200,10 +200,14 @@ defineGame({
     { key: 'goalFloors', type: 'number', label: 'Meta de andares', min: 1, max: 200, default: 30 },
     { key: 'goalReward', type: 'text', label: 'Prêmio da meta (texto)', default: 'Rodada de presentes!' },
     { key: 'demoMode', type: 'toggle', label: 'Sujeira automática quando a live está parada', default: true },
+    charSetting('character', 'Personagem que limpa os vidros'),
   ],
+  hasChars: true,
+  kind() { return this.charOverride && CHARACTERS[this.charOverride] ? this.charOverride : pickKind(this.s.character || 'aventureiro', 0, 'window-wipe'); },
+  onCharPick(user, k) { this.charOverride = k; },
   actions: [...WW_MESS.map(([id, label, icon]) => ({ id, label, icon })), { id: 'bomb', label: 'Bomba', icon: '💣' }, { id: 'freeze', label: 'Congelar o rodo', icon: '🧊' }, { id: 'tornado', label: 'Tornado', icon: '🌪️' }, { id: 'bird', label: 'Pássaro', icon: '🐦' }, { id: 'give_life', label: 'Dar vida', icon: '❤️' }, { id: 'take_life', label: 'Tirar vida', icon: '💔' }],
   bindings: [...WW_MESS.map(([id], i) => ({ action: id, trigger: 'gift', minCoins: [1, 1, 5, 5, 10, 10, 30, 30, 99, 99][i] })).filter((b, i) => i % 2 === 0), { action: 'throw_egg', trigger: 'like', likes: 30 }, { action: 'bird', trigger: 'gift', minCoins: 199 }, { action: 'tornado', trigger: 'gift', minCoins: 299 }, { action: 'bomb', trigger: 'gift', minCoins: 499 }, { action: 'give_life', trigger: 'follow' }],
-  reset() { this.cols = 4; this.rows = 6; this.dirt = []; this.floor = 0; this.lives = this.s.lives; this.frozen = 0; this.wiper = { x: W / 2, y: 600, tx: W / 2, ty: 600 }; this.fly = new Flyers(); this.feed = new Feed(4); this.pend = []; this.over = 0; this.demoT = 3; this.hpT = 0; },
+  reset() { this.cols = 4; this.rows = 6; this.dirt = []; this.floor = 0; this.lives = this.s.lives; this.frozen = 0; this.wiper = { x: W / 2, y: 600, tx: W / 2, ty: 600 }; this.fly = new Flyers(); this.feed = new Feed(4); this.pend = []; this.over = 0; this.demoT = 3; this.hpT = 0; this.hurt = 0; this.cele = 0; this.face = Math.PI; this.wiping = 0; },
   sample() { return pick(['ovo', 'sujou', 'limpa']); },
   pane(i) { const pw = 150, ph = 140, ox = W / 2 - this.cols * pw / 2; return { x: ox + (i % this.cols) * pw, y: 240 + Math.floor(i / this.cols) * ph, w: pw, h: ph }; },
   splat(color, emoji, n = 1, big = 1) { for (let k = 0; k < n; k++) { const p = this.pane(randInt(0, this.cols * this.rows - 1)); this.dirt.push({ x: p.x + rand(20, p.w - 20), y: p.y + rand(20, p.h - 20), r: rand(26, 44) * big, c: color, e: emoji, a: 1, rot: rand(0, 7) }); } if (this.dirt.length > 160) this.dirt.splice(0, this.dirt.length - 160); },
@@ -217,14 +221,15 @@ defineGame({
     this.pend.push({ id, m, user: a.user, n: clamp(Math.round(a.qty), 1, 8) });
   },
   onPointer(p) { if (this.s.controlMode === 'manual' && pointer.down && !this.frozen) this.wipeAt(p.x, p.y); },
-  wipeAt(x, y) { for (const d of this.dirt) if (Math.hypot(d.x - x, d.y - y) < d.r + 40) d.a -= 0.12; this.dirt = this.dirt.filter((d) => d.a > 0); },
+  wipeAt(x, y) { this.wiping = 0.3; for (const d of this.dirt) if (Math.hypot(d.x - x, d.y - y) < d.r + 40) d.a -= 0.12; this.dirt = this.dirt.filter((d) => d.a > 0); },
   update(dt) {
     this.feed.update(dt);
     if (this.over) { this.over -= dt; if (this.over <= 0) this.reset(); return; }
-    this.frozen = Math.max(0, this.frozen - dt);
+    this.frozen = Math.max(0, this.frozen - dt); this.hurt = Math.max(0, this.hurt - dt); this.cele = Math.max(0, this.cele - dt); this.wiping = Math.max(0, this.wiping - dt);
     this.fly.update(dt, () => {
       const p = this.pend.shift();
       if (!p) return;
+      if (p.id !== 'freeze') this.hurt = 0.7;
       if (p.m) { this.splat(p.m[3], p.m[2], p.n); sfx.tone(160, 0.12, 'sawtooth', 0.08); this.feed.push(p.user, `${p.m[2]} ${p.m[1]}`, '#ff6b8a'); }
       else if (p.id === 'bomb') { this.splat('#1f2937', '💥', 14, 1.4); sfx.boom(); this.feed.push(p.user, '💣 BOMBA!', '#ff6b8a'); }
       else if (p.id === 'freeze') { this.frozen = 6; this.feed.push(p.user, '🧊 congelou o rodo', '#38bdf8'); }
@@ -236,14 +241,14 @@ defineGame({
       const w = this.wiper, target = this.dirt[0];
       if (target) { w.tx = target.x; w.ty = target.y; }
       w.x += (w.tx - w.x) * Math.min(1, dt * 3 * this.s.autoWipeRate); w.y += (w.ty - w.y) * Math.min(1, dt * 3 * this.s.autoWipeRate);
-      if (target && Math.hypot(w.x - target.x, w.y - target.y) < 50) { target.a -= dt * this.s.autoWipeRate * 1.5; this.dirt = this.dirt.filter((d) => d.a > 0); }
+      if (target && Math.hypot(w.x - target.x, w.y - target.y) < 50) { this.wiping = 0.3; target.a -= dt * this.s.autoWipeRate * 1.5; this.dirt = this.dirt.filter((d) => d.a > 0); }
     }
     // Vidro sujo tira vida; vidro limpo sobe um andar
     const dirty = this.dirt.length;
     this.hpT += dt * Math.max(0, dirty - 12) / 30;
     if (this.hpT >= 1) { this.hpT = 0; this.lives--; sfx.tone(120, 0.3, 'square', 0.1); }
     if (this.lives <= 0) { this.over = 6; voice.say(`Fim de jogo! Chegamos ao andar ${this.floor}.`); sfx.boom(); }
-    if (dirty === 0) { this.climbT = (this.climbT || 0) + dt; if (this.climbT > 1.5) { this.climbT = 0; this.floor++; sfx.pop(); if (this.floor === this.s.goalFloors) { confetti(160); sfx.win(); voice.say(`Meta batida! ${this.s.goalReward}`); } } } else this.climbT = 0;
+    if (dirty === 0) { this.climbT = (this.climbT || 0) + dt; if (this.climbT > 1.5) { this.climbT = 0; this.floor++; this.cele = 2; sfx.pop(); if (this.floor === this.s.goalFloors) { confetti(160); sfx.win(); voice.say(`Meta batida! ${this.s.goalReward}`); } } } else this.climbT = 0;
   },
   draw() {
     const t = performance.now() / 1000;
@@ -256,8 +261,24 @@ defineGame({
       ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.beginPath(); ctx.moveTo(p.x + 20, p.y + p.h - 10); ctx.lineTo(p.x + 50, p.y + 10); ctx.lineTo(p.x + 64, p.y + 10); ctx.lineTo(p.x + 34, p.y + p.h - 10); ctx.fill();
     }
     for (const d of this.dirt) { ctx.globalAlpha = d.a; ctx.fillStyle = d.c; ctx.beginPath(); for (let k = 0; k < 10; k++) { const a = d.rot + k / 10 * Math.PI * 2, r = d.r * (k % 2 ? 0.7 : 1.1); ctx.lineTo(d.x + Math.cos(a) * r, d.y + Math.sin(a) * r); } ctx.fill(); label(d.e, d.x, d.y, d.r * 0.8, '#fff', 'center', 400); ctx.globalAlpha = 1; }
-    // Rodo
+    // Faxineiro 3D no andaime, segurando o rodo: anda com ele, esfrega, apanha da sujeira e comemora o andar limpo
     const w = this.s.controlMode === 'manual' ? pointer : this.wiper;
+    const fy = Math.min(w.y + 150, H - 75), px = this.px ?? w.x, mv = w.x - px; this.px = w.x;
+    ctx.fillStyle = '#334155'; ctx.fillRect(W / 2 - 4 - this.cols * 75, 0, 4, fy); ctx.fillRect(W / 2 + this.cols * 75, 0, 4, fy);
+    ctx.fillStyle = '#a16207'; ctx.fillRect(W / 2 - this.cols * 75 - 10, fy, this.cols * 150 + 20, 14); ctx.fillStyle = '#facc15'; ctx.fillRect(W / 2 - this.cols * 75 - 10, fy - 34, this.cols * 150 + 20, 5);
+    const c = charLayer.get('cleaner', this.kind(), { height: 130 });
+    if (c) {
+      const want = this.cele || this.hurt ? 0 : Math.abs(mv) > 1.2 ? (mv > 0 ? 1.2 : -1.2) : Math.PI - 0.5;
+      this.face += (want - this.face) * 0.15;
+      charLayer.place(c, w.x + (this.hurt ? rand(-5, 5) : 0), fy, this.face);
+      if (this.hurt > 0.6 && c.state !== 'hit') { c.play('hit', { speed: 1.3 }); c.hitFlash(0xff0000, 1); }
+      else if (this.cele > 1.9 && c.state !== 'victory') c.play('victory');
+      else if (!c.busy) { const st = Math.abs(mv) > 1.2 ? 'walk' : this.wiping ? 'interact' : 'idle'; if (c.state !== st || st === 'interact') c.play(st, st === 'interact' ? { speed: 1.4 } : {}); }
+      charLayer.draw();
+    } else {
+      ctx.fillStyle = '#2563eb'; ctx.fillRect(w.x - 16, fy - 60, 32, 44); ctx.fillStyle = '#f1c27d'; ctx.beginPath(); ctx.arc(w.x, fy - 78, 18, 0, 7); ctx.fill();
+    }
+    // Rodo
     ctx.save(); ctx.translate(w.x, w.y); ctx.rotate(Math.sin(t * 6) * 0.2);
     ctx.fillStyle = this.frozen ? '#7dd3fc' : '#f59e0b'; ctx.fillRect(-50, -10, 100, 20); ctx.fillStyle = '#111'; ctx.fillRect(-52, 6, 104, 8); ctx.fillStyle = '#a16207'; ctx.fillRect(-5, 10, 10, 70);
     ctx.restore();
@@ -282,10 +303,14 @@ defineGame({
     { key: 'lives', type: 'number', label: 'Vidas', min: 1, max: 10, default: 3 },
     { key: 'winGoal', type: 'number', label: 'Vitórias para fechar a partida', min: 1, max: 20, default: 3 },
     { key: 'bgScene', type: 'select', label: 'Cenário', options: [['wood', 'Madeira'], ['dojo', 'Dojô'], ['night', 'Noite']], default: 'wood' },
+    charSetting('character', 'Personagem que corta as frutas'),
   ],
+  hasChars: true,
+  kind() { return this.charOverride && CHARACTERS[this.charOverride] ? this.charOverride : pickKind(this.s.character || 'encapuzado', 0, 'fruit-slice'); },
+  onCharPick(user, k) { this.charOverride = k; },
   actions: [{ id: 'fruit', label: 'Jogar frutas', icon: '🍉' }, { id: 'bomb', label: 'Jogar bombas', icon: '💣' }, ...WIN_ACTIONS],
   bindings: [{ action: 'fruit', trigger: 'like', likes: 10 }, { action: 'fruit', trigger: 'gift', minCoins: 1 }, { action: 'bomb', trigger: 'follow' }, { action: 'bomb', trigger: 'gift', minCoins: 99 }],
-  reset() { this.items = []; this.score = 0; this.lives = this.s.lives; this.wins = this.wins || 0; this.spawnT = 1; this.trail = []; this.halves = []; this.over = 0; this.feed = new Feed(3); this.blade = { x: W / 2, y: 700 }; },
+  reset() { this.items = []; this.score = 0; this.lives = this.s.lives; this.wins = this.wins || 0; this.spawnT = 1; this.trail = []; this.halves = []; this.over = 0; this.feed = new Feed(3); this.blade = { x: W / 2, y: 700 }; this.ninja = { x: W / 2, tx: W / 2, slash: 0, boom: 0 }; },
   sample() { return pick(['fruta', 'corta']); },
   throw(kind, user) { this.items.push({ kind, e: kind === 'bomb' ? '💣' : pick(FRUITS), x: rand(100, W - 100), y: H + 40, vx: rand(-120, 120), vy: rand(-1250, -1000), r: kind === 'bomb' ? 34 : 40, rot: 0, vr: rand(-4, 4), user }); },
   onAction(id, a) {
@@ -301,15 +326,16 @@ defineGame({
     for (const it of this.items) {
       if (it.cut || Math.hypot(it.x - x, it.y - y) > it.r + 10) continue;
       it.cut = true;
-      if (it.kind === 'bomb') { this.lives--; sfx.boom(); burst(it.x, it.y, ['#111', '#ff8a3d', '#fde047'], 50, 500); if (this.lives <= 0) { this.over = 5; voice.say('Explodiu! Fim da rodada.'); } }
-      else { this.score += 10; sfx.pop(); this.halves.push({ ...it, vx: it.vx - 80, side: -1, t: 0 }, { ...it, vx: it.vx + 80, side: 1, t: 0 }); burst(it.x, it.y, ['#fde047', '#ef4444', '#22c55e'], 16, 260); if (this.score >= this.s.targetScore) this.winRound(); }
+      if (it.kind === 'bomb') { this.ninja.boom = 0.7; this.lives--; sfx.boom(); burst(it.x, it.y, ['#111', '#ff8a3d', '#fde047'], 50, 500); if (this.lives <= 0) { this.over = 5; voice.say('Explodiu! Fim da rodada.'); } }
+      else { this.ninja.tx = clamp(it.x, 90, W - 90); this.ninja.slash++; this.score += 10; sfx.pop(); this.halves.push({ ...it, vx: it.vx - 80, side: -1, t: 0 }, { ...it, vx: it.vx + 80, side: 1, t: 0 }); burst(it.x, it.y, ['#fde047', '#ef4444', '#22c55e'], 16, 260); if (this.score >= this.s.targetScore) this.winRound(); }
     }
     this.items = this.items.filter((it) => !it.cut);
   },
   winRound() { this.wins++; sfx.win(); confetti(140); voice.say(this.wins >= this.s.winGoal ? 'Campeão das frutas!' : 'Rodada vencida!'); if (this.wins >= this.s.winGoal) this.wins = 0; this.score = 0; this.lives = this.s.lives; this.cele = 3; },
   update(dt) {
     this.feed.update(dt);
-    this.cele = Math.max(0, (this.cele || 0) - dt);
+    this.cele = Math.max(0, (this.cele || 0) - dt); this.ninja.boom = Math.max(0, this.ninja.boom - dt);
+    this.ninja.x += (this.ninja.tx - this.ninja.x) * Math.min(1, dt * 6);
     if (this.over) { this.over -= dt; if (this.over <= 0) { this.score = 0; this.lives = this.s.lives; this.items = []; } return; }
     this.spawnT -= dt;
     if (this.spawnT <= 0) { this.spawnT = rand(0.7, 1.5); this.throw(Math.random() < 0.12 ? 'bomb' : 'fruit'); }
@@ -336,6 +362,18 @@ defineGame({
     }
     for (const hf of this.halves) { ctx.save(); ctx.beginPath(); ctx.rect(hf.side < 0 ? hf.x - 60 : hf.x, hf.y - 60, 60, 120); ctx.clip(); label(hf.e, hf.x + hf.side * hf.t * 20, hf.y, 76, '#fff', 'center', 400); ctx.restore(); }
     for (const it of this.items) { ctx.save(); ctx.translate(it.x, it.y); ctx.rotate(it.rot); label(it.e, 0, 0, it.r * 1.9, '#fff', 'center', 400); ctx.restore(); if (it.user) avatar(it.user, it.x + 30, it.y - 30, 12, '#fff'); }
+    // Ninja 3D no pé da tela: corre até o corte e dá o golpe de espada, apanha da bomba e comemora a rodada
+    const nj = this.ninja, c = charLayer.get('ninja', this.kind(), { height: 170 }), dx = nj.tx - nj.x;
+    if (c) {
+      charLayer.place(c, nj.x + (nj.boom ? rand(-6, 6) : 0), H - 72, nj.boom || this.cele ? 0 : Math.abs(dx) > 8 ? Math.sign(dx) * 1.1 : (nj.tx - W / 2) * 0.002);
+      if (nj.boom > 0.6 && c.state !== 'hit') { c.play('hit', { speed: 1.3 }); c.hitFlash(0xff0000, 1); }
+      else if (this.cele > 2.9 && c.state !== 'victory') c.play('victory', { then: 'taunt' });
+      else if (nj.slash !== nj.seen && (!c.busy || c.state === 'slash' && c.stateT > 0.25)) { nj.seen = nj.slash; c.play('slash', { speed: 1.8 }); }
+      else if (!c.busy) { const st = Math.abs(dx) > 25 ? 'run' : 'fightIdle'; if (c.state !== st) c.play(st); }
+      charLayer.draw();
+    } else {
+      ctx.fillStyle = '#111827'; ctx.fillRect(nj.x - 18, H - 142, 36, 70); ctx.beginPath(); ctx.arc(nj.x, H - 160, 20, 0, 7); ctx.fill();
+    }
     if (this.trail.length > 1) { ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = 8; ctx.lineCap = 'round'; ctx.beginPath(); this.trail.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); ctx.stroke(); }
     title('CORTA FRUTAS', W / 2, 54, 46);
     pill(`${this.score} / ${this.s.targetScore} pontos · ${'❤️'.repeat(Math.max(0, this.lives))} · 🏆 ${this.wins}/${this.s.winGoal}`, W / 2, 104, { size: 20, bg: 'rgba(0,0,0,.6)' });

@@ -1,7 +1,7 @@
 'use strict';
 
 // Passarela 3D: quem comenta entra na fila e desfila. Com nick do Roblox, desfila com o avatar real;
-// sem nick, com um boneco de blocos estilo Roblox e a foto no rosto. Presente fura a fila e muda o desfile.
+// sem nick, com um personagem 3D animado (foto e nome na placa). Presente fura a fila e muda o desfile.
 const WALK_SECS = 9;
 const RUNWAY_BACK = -26, RUNWAY_FRONT = 4;
 
@@ -11,8 +11,13 @@ registerGame({
   icon: '💃',
   help: '<p>Comente qualquer coisa para entrar na <b>fila do desfile</b>. Se comentar o seu <b>nick do Roblox</b>, desfila com o seu avatar.</p><p>Durante o seu desfile, comentários e ❤️ likes viram aplausos.</p><p>1–9 🪙 Fura a fila (até 2× maior) · 10–99 🪙 Desfile dançando (até 3×) · 100–999 🪙 Salão piscando (até 7×) · 1.000+ 🪙 O GIGANTE (11× a 14×). Quem mandou mais moedas passa na frente na fila e desfila maior. ❤️ Likes viram aplausos · ⭐ seguir e 🔁 compartilhar furam a fila.</p>' + TIER_HELP + '',
   claps: new Map(),
+  hasChars: true,
+  enter() { Assets3D.preload([]); },
+  // Quem troca de personagem: descarta o boneco e o draw monta o novo
+  onCharPick(user, k) { const id = user.id || user.nick; for (const m of [...(this.walking || []), ...(this.seats || [])]) if (m.id === id && m.c) this.dropModel(m); },
+  dropModel(m) { m.c?.dispose(); m.c = null; if (m.obj) this.r?.scene.remove(m.obj); m.obj = null; },
   reset() {
-    for (const m of [...(this.walking || []), ...(this.seats || [])]) this.r?.scene.remove(m.obj);
+    for (const m of [...(this.walking || []), ...(this.seats || [])]) this.dropModel(m);
     this.queue = [];
     this.walking = [];
     this.seats = [];
@@ -96,7 +101,8 @@ registerGame({
   },
   seat(m) {
     this.seats.push(m);
-    if (this.seats.length > 12) { const old = this.seats.shift(); this.r?.scene.remove(old.obj); }
+    if (this.seats.length > 12) this.dropModel(this.seats.shift());
+    m.c?.play('sit');
     this.seats.forEach((s, i) => { s.seatPos = { x: (i % 2 ? 1 : -1) * (4.6 + Math.floor(i / 6) * 1.6), z: RUNWAY_BACK + 6 + (Math.floor(i / 2) % 3) * 6 }; });
   },
   // Caminho na passarela: entra pelo arco, vem até a frente, pausa para pose e volta.
@@ -149,11 +155,13 @@ registerGame({
     if (m.rbx?.img) {
       const s = new T.Sprite(new T.SpriteMaterial({ map: G3.imageTex(m.rbx.img), transparent: true }));
       s.center.set(0.5, 0.02); s.scale.set(3.2, 3.2, 1); g.add(s); m.sprite = s;
+      const tag = G3.label(`@${trim(m.rbx.name || m.user.nick, 14)}`, { scale: 0.12, border: m.tier ? '#ffc93c' : 'rgba(255,255,255,.3)' });
+      tag.center.set(0.5, 0); tag.position.set(0, 3.2, 0); g.add(tag);
     } else {
-      m.blocky = makeBlocky3D(m.user.nick, m.user); g.add(m.blocky.root);
+      // Personagem 3D com a foto e o nome na placa
+      m.c = new Character3D({ kind: kindFor(m.user), user: m.user, plate: true, height: 2.6, base: this.seats.includes(m) ? 'sit' : 'walk' });
+      g.add(m.c.root);
     }
-    const tag = G3.label(`@${trim(m.rbx?.name || m.user.nick, 14)}`, { scale: 0.12, border: m.tier ? '#ffc93c' : 'rgba(255,255,255,.3)' });
-    tag.center.set(0.5, 0); tag.position.set(0, 3.2, 0); g.add(tag);
     m.obj = g;
     this.r.scene.add(g);
   },
@@ -181,6 +189,7 @@ registerGame({
       return;
     }
     const T = THREE, t = performance.now() / 1000, r = this.r;
+    const dt = clamp(t - (r.lastT || t), 0, 0.1); r.lastT = t;
     this.drawScreen(t);
     for (const m of this.walking) {
       if (!m.obj) this.buildModel(m);
@@ -193,15 +202,23 @@ registerGame({
         m.sprite.position.y = Math.abs(Math.sin(t * (dance ? 8 : 6))) * (dance ? 0.25 : 0.12);
         m.sprite.material.rotation = Math.sin(t * (dance ? 6 : 4)) * (dance ? 0.18 : 0.06);
         m.sprite.scale.x = 3.2 * (p.dir < 0 ? -1 : 1);
-      } else {
-        if (p.pose) danceBlocky(m.blocky, t, 1); else if (dance) danceBlocky(m.blocky, t, 0); else walkBlocky(m.blocky, t, 1);
-        m.blocky.root.rotation.y = p.dir > 0 ? 0 : Math.PI;
+      } else if (m.c) {
+        // Pose no fim da passarela; quem mandou presente desfila dançando (passos entre os passos)
+        const c = m.c;
+        if (p.pose) { c.root.rotation.y = 0; if (!m.posed) { m.posed = true; c.play('victory', { then: dance ? 'powerUp' : 'taunt' }); } else if (!c.busy && c.state !== 'idle') c.play('idle'); }
+        else {
+          c.root.rotation.y = p.dir > 0 ? 0 : Math.PI;
+          if (dance && !c.busy && (m.stepT = (m.stepT || 0) - dt) <= 0) { m.stepT = 1.4; c.play(pick(['spin', 'taunt', 'jump', 'victory'])); }
+          else if (!c.busy && c.state !== 'walk') c.play('walk');
+        }
+        c.update(dt);
       }
     }
     for (const s of this.seats) {
       if (!s.obj) this.buildModel(s);
       s.obj.scale.setScalar(0.7);
       s.obj.position.set(s.seatPos.x, 0.5 + (Math.abs(s.seatPos.x) > 5 ? 0.3 : 0), s.seatPos.z);
+      if (s.c) { s.c.root.rotation.y = s.seatPos.x > 0 ? -Math.PI / 2 : Math.PI / 2; if (s.c.state !== 'sit' && !s.c.busy) s.c.play('sit'); s.c.update(dt); }
       if (s.blocky) { s.blocky.lL.rotation.x = -1.5; s.blocky.lR.rotation.x = -1.5; s.blocky.aL.rotation.x = Math.sin(t * 8 + s.seatPos.z) * 0.5 - 0.5; s.blocky.aR.rotation.x = -Math.sin(t * 8 + s.seatPos.z) * 0.5 - 0.5; s.blocky.root.rotation.y = s.seatPos.x > 0 ? -Math.PI / 2 : Math.PI / 2; }
     }
     // Flashes dos fotógrafos na pose e luzes de festa
