@@ -36,7 +36,11 @@ defineGame({
     { key: 'stairCount', type: 'select', label: 'Degraus', options: [['250', '250'], ['500', '500'], ['1000', '1.000'], ['2000', '2.000']], default: '1000' },
     { key: 'autoSpeed', type: 'number', label: 'Degraus por segundo no automático', min: 0, max: 5, step: 0.1, default: 0.8 },
     { key: 'winGoal', type: 'number', label: 'Vitórias para fechar a partida', min: 1, max: 20, default: 3 },
+    charSetting('character', 'Personagem que sobe a escada'),
   ],
+  hasChars: true,
+  kind() { return this.charOverride && CHARACTERS[this.charOverride] ? this.charOverride : pickKind(this.s.character || 'barbaro', 0, '1000-stairs'); },
+  onCharPick(user, k) { this.charOverride = k; },
   actions: [...helperActions(STAIRS_HELP), ...helperActions(STAIRS_SAB), ...WIN_ACTIONS],
   bindings: [{ action: 'grandpa', trigger: 'like', likes: 20 }, { action: 'banana_peel', trigger: 'follow' }, ...STAIRS_HELP.slice(1).map(([id], i) => ({ action: id, trigger: 'gift', minCoins: [1, 10, 30, 99, 299, 999][i] })), ...STAIRS_SAB.slice(1).map(([id], i) => ({ action: id, trigger: 'comment', text: ['gato', 'vovo', 'pe', 'onibus', 'tiro', 'feiticeiro'][i], on: false }))],
   reset() { this.pos = 0; this.vis = 0; this.wins = 0; this.fly = new Flyers(); this.feed = new Feed(4); this.hurt = 0; this.cele = 0; this.champT = 0; },
@@ -86,16 +90,20 @@ defineGame({
       ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(x - stepW / 2, y + stepH - 8, stepW, 8);
       if (i % 50 === 0) label(String(i), x, y + 16, 14, '#fff', 'center', 900);
     }
-    const i0 = Math.floor(base), hx = W / 2 + (((i0 % 16) < 8 ? (i0 % 8) : 7 - (i0 % 8)) - 3.5) * stepW;
-    // Herói
-    ctx.save(); ctx.translate(hx + (this.hurt ? rand(-6, 6) : 0), 760 - 50);
-    ctx.fillStyle = '#2563eb'; ctx.fillRect(-16, -20, 32, 40);
-    ctx.strokeStyle = '#1e3a8a'; ctx.lineWidth = 9; ctx.lineCap = 'round';
-    const w = Math.sin(t * 10) * 10;
-    ctx.beginPath(); ctx.moveTo(-8, 18); ctx.lineTo(-8 + w, 46); ctx.moveTo(8, 18); ctx.lineTo(8 - w, 46); ctx.stroke();
-    ctx.fillStyle = '#f1c27d'; ctx.beginPath(); ctx.arc(0, -36, 18, 0, 7); ctx.fill();
-    ctx.fillStyle = '#111'; ctx.fillRect(4, -40, 4, 4); ctx.fillRect(-8, -40, 4, 4);
-    ctx.restore();
+    // Herói: personagem 3D que pula degrau por degrau, apanha nas sabotagens e comemora no topo
+    const stairX = (i) => W / 2 + (((i % 16) < 8 ? (i % 8) : 7 - (i % 8)) - 3.5) * stepW;
+    const i0 = Math.floor(base), fr = base - i0, hx = stairX(i0) + (stairX(i0 + 1) - stairX(i0)) * fr;
+    const c = charLayer.get('climber', this.kind(), { height: 120 });
+    if (c) {
+      const right = (i0 % 16) < 8, hop = Math.sin(fr * Math.PI) * 18;
+      charLayer.place(c, hx + (this.hurt ? rand(-6, 6) : 0), 760 + fr * -stepH - hop, right ? 1.2 : -1.2);
+      if (this.lastStep !== i0) { if (this.lastStep !== undefined && !c.busy) c.play(i0 > this.lastStep ? 'jump' : 'hit', { speed: 1.6 }); this.lastStep = i0; }
+      if (this.hurt > 0.5 && c.state !== 'hit') c.play('hit', { speed: 1.3 });
+      if (this.cele > 2.9 && c.state !== 'victory') c.play('victory', { then: 'taunt' });
+      charLayer.draw();
+    } else {
+      ctx.fillStyle = '#2563eb'; ctx.fillRect(hx - 16, 690, 32, 40); ctx.fillStyle = '#f1c27d'; ctx.beginPath(); ctx.arc(hx, 674, 18, 0, 7); ctx.fill();
+    }
     this.fly.draw();
     title('1000 DEGRAUS', W / 2, 54, 46);
     panel(W / 2 - 170, 86, 340, 60, { r: 16 });

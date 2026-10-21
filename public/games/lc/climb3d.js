@@ -33,9 +33,18 @@ const CLIMB_BINDS = [
   { action: 'down_checkpoint', trigger: 'gift', giftId: '7168', giftName: 'Arma de dinheiro' }, { action: 'down_start', trigger: 'gift', giftId: '5587', giftName: 'Gold Mine' },
 ];
 
+// Nome da ação com a quantidade configurada ("Sobe 7", "Cai 80")
+const climbAmt = (s, a) => Math.max(1, Math.round(Number(s?.['amt_' + a.id]) || a.n));
+function climbActions(s) {
+  return CLIMB_ACTIONS.map(({ id, label, icon, dir, n }) => {
+    if (typeof n !== 'number' || !n) return { id, label: id === 'up_value' ? `Sobe ${s?.valueRate || 1} por moeda` : label, icon, tone: dir < 0 || id === 'freeze' ? 'hurt' : 'help' };
+    const k = climbAmt(s, { id, n }) * (Number(s?.mult) || 1), big = n >= 50;
+    return { id, label: `${dir > 0 ? (big ? 'Voa' : 'Sobe') : big ? 'Cai' : 'Desce'} ${k}`, icon, tone: dir > 0 ? 'help' : 'hurt' };
+  });
+}
 function defineClimb(v) {
   const charOptions = [['', 'Do painel (🧍 Personagens)'], ...Object.keys(CHARACTERS).filter((k) => !CHARACTERS[k].undead).map((k) => [k, CHARACTERS[k].name])];
-  return defineGame({
+  const g = defineGame({
     id: v.id, name: v.name, genre: 'arcade', icon: v.icon, color: v.color, three: true,
     desc: v.desc,
     help: `<p>Depois da contagem, o personagem <b>pula sozinho um degrau por vez</b>. Chegou em <b>${v.target}</b>, vence a rodada e começa de novo.</p><p>❤️ Likes, seguir e compartilhar <b>sobem</b>. 🎁 Cada presente tem um efeito (veja nas placas da tela): uns fazem <b>subir muito rápido</b> ou <b>voar</b>, outros fazem <b>cair</b>${v.cpStops ? ' (a queda para no último checkpoint 🚩)' : ''}. Também tem <b>turbo</b>, <b>congelar</b> e <b>escudo</b>.</p>`,
@@ -46,6 +55,12 @@ function defineClimb(v) {
       { key: 'checkpointEvery', type: 'number', label: 'Checkpoint a cada quantos degraus (0 = sem)', min: 0, max: 1000, default: v.cpEvery },
       { key: 'cpStops', type: 'toggle', label: 'A queda para no último checkpoint', default: Boolean(v.cpStops) },
       { key: 'winHold', type: 'number', label: 'Segundos comemorando a vitória', min: 2, max: 20, default: 6 },
+      // Quantidades: quanto cada presente sobe ou derruba, multiplicador geral e quantos degraus aparecem
+      { key: 'mult', type: 'select', label: 'Multiplicar tudo que sobe e desce', options: [[1, '×1 (normal)'], [2, '×2 (dobro)'], [3, '×3 (triplo)'], [5, '×5'], [10, '×10']], default: 1, group: 'Quantidades' },
+      { key: 'valueRate', type: 'number', label: '"Sobe pelo valor": degraus por moeda', min: 1, max: 50, default: 1, group: 'Quantidades' },
+      ...CLIMB_ACTIONS.filter((a) => typeof a.n === 'number' && a.n).map((a) => ({ key: 'amt_' + a.id, type: 'number', label: `${a.icon} "${a.label}": quantos degraus`, min: 1, max: 5000, default: a.n, group: 'Quantidades' })),
+      { key: 'ahead', type: 'number', label: 'Quantos degraus/objetos aparecem à frente', min: 6, max: 80, default: v.ahead || 30, group: 'Quantidades' },
+      { key: 'gap', type: 'slider', label: 'Distância entre os degraus', min: 0.6, max: 1.8, step: 0.1, default: 1, group: 'Quantidades' },
       { key: 'character', type: 'select', label: 'Personagem', options: charOptions, default: v.char || '', group: 'Visual' },
       { key: 'turboSeconds', type: 'number', label: 'Segundos de turbo', min: 3, max: 60, default: 12, group: 'Poderes' },
       { key: 'freezeSeconds', type: 'number', label: 'Segundos congelado', min: 3, max: 60, default: 8, group: 'Poderes' },
@@ -54,15 +69,15 @@ function defineClimb(v) {
       { key: 'fxLevel', type: 'slider', label: 'Intensidade dos efeitos', min: 0.2, max: 1, step: 0.1, default: 1, group: 'Visual' },
       ...BOARD_SETTINGS(3),
     ],
-    actions: CLIMB_ACTIONS.map(({ id, label, icon }) => ({ id, label, icon })),
+    actions: climbActions(null),
     bindings: CLIMB_BINDS,
     sample() { return pick(['vai', 'sobe', 'bora', 'pula']); },
     enter() { Assets3D.preload([this.kind()]); },
     leave() { this.dispose3d(); },
-    kind() { if (this.charOverride && CHARACTERS[this.charOverride]) return this.charOverride; const k = this.s.character; return k && CHARACTERS[k] ? k : pickKind('', 0, v.id); },
+    kind() { if (this.charOverride && CHARACTERS[this.charOverride]) return this.charOverride; let k = this.s.character; if (v.id === 'only-heaven' && k === 'astronauta') k = v.char; /* o Astronauta não tem pulo: troca pelo padrão novo */ return k && CHARACTERS[k] ? k : pickKind('', 0, v.id); },
     // Presente de troca: o escalador vira o personagem escolhido (ou um sorteado)
     onCharPick(user, k) { this.charOverride = k; },
-    onSettings() { this.charOverride = null; },
+    onSettings() { this.charOverride = null; this.actions = climbActions(this.s); this.dispose3d(); },
     reset() {
       this.step = 0; this.best = 0; this.cp = 0; this.wins = this.wins || 0;
       this.ph = 'countdown'; this.t = this.s.startDelay; this.hopT = 0;
@@ -79,10 +94,11 @@ function defineClimb(v) {
       if (id === 'turbo') { this.turboT = this.s.turboSeconds; this.say(a.user, 'TURBO! ⚡', 1); this.fx('turbo'); return; }
       if (id === 'shield') { this.shieldT = this.s.shieldSeconds; this.say(a.user, 'escudo! 🛡️', 1); this.fx('shield'); return; }
       let n = act.n;
-      if (n === 0) n = Math.min(300, Math.max(1, Math.round(a.coins)));
+      const M = Number(this.s.mult) || 1;
+      if (n === 0) n = Math.min(3000, Math.max(1, Math.round(a.coins * (this.s.valueRate || 1) * M)));
       else if (n === 'cp') n = Math.max(0, this.target() - this.floorFor(true));
       else if (n === 'start') n = this.target();
-      else n *= mult;
+      else n = climbAmt(this.s, act) * M * mult;
       if (act.dir < 0) {
         if (this.shieldT > 0) { this.say(a.user, 'não me derruba! 🛡️', 1); this.fx('blocked'); return; }
         const k = uid(a); this.saboteurs.set(k, { user: a.user, value: (this.saboteurs.get(k)?.value || 0) + (typeof act.n === 'number' ? n : 1) });
@@ -179,7 +195,7 @@ function defineClimb(v) {
       r.scene.traverse((o) => { if (o.isMesh || o.isInstancedMesh) { o.geometry?.dispose(); (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => { m?.map?.dispose?.(); m?.dispose?.(); }); } });
       this.r = null;
     },
-    pos(i) { return v.pos(Math.max(0, i), this); },
+    pos(i) { const p = v.pos(Math.max(0, i), this), k = Number(this.s.gap) || 1; return k === 1 ? p : p.multiplyScalar(k); },
     placeChar(snapCam) {
       const r = this.r, p = this.pos(this.step);
       r.char.root.position.copy(p);
@@ -188,7 +204,7 @@ function defineClimb(v) {
     },
     // Degraus perto do personagem (cria os que entram na janela e tira os que saem)
     syncPlats() {
-      const r = this.r, cur = this.move ? Math.round(this.move.last) : this.step, lo = Math.max(0, cur - 18), hi = Math.min(this.s.target, cur + 36);
+      const r = this.r, cur = this.move ? Math.round(this.move.last) : this.step, lo = Math.max(0, cur - 12), hi = Math.min(this.s.target, cur + (this.s.ahead || 30));
       for (const [i, m] of r.plats) if (i < lo || i > hi) { r.scene.remove(m); r.plats.delete(i); }
       for (let i = lo; i <= hi; i++) if (!r.plats.has(i)) { const m = v.plat(i, this); m.position.copy(this.pos(i)); r.scene.add(m); r.plats.set(i, m); }
     },
@@ -274,8 +290,6 @@ function defineClimb(v) {
       // Poderes ativos
       const pw = [this.turboT > 0 && `⚡ TURBO ${Math.ceil(this.turboT)}s`, this.freezeT > 0 && `🧊 CONGELADO ${Math.ceil(this.freezeT)}s`, this.shieldT > 0 && `🛡️ ESCUDO ${Math.ceil(this.shieldT)}s`].filter(Boolean);
       pw.forEach((txt, k) => pill(txt, W / 2, 202 + k * 38, { size: 16, bg: 'rgba(8,10,24,.8)', border: '#7dd3fc' }));
-      // Placas laterais: o que cada presente faz (pegando dos gatilhos)
-      this.drawGiftRail();
       // Contagem e vitória
       if (this.ph === 'countdown') {
         const n = Math.ceil(this.t), k = 1 - (this.t % 1);
@@ -297,26 +311,9 @@ function defineClimb(v) {
       }
       this.feed.draw(20, 840);
     },
-    drawGiftRail() {
-      const binds = this.binds.filter((b) => b.on !== false && b.trigger === 'gift' && (b.giftId || b.giftName));
-      const ups = binds.filter((b) => (CLIMB_ACTIONS.find((a) => a.id === b.action)?.dir || 0) > 0 || ['turbo', 'shield'].includes(b.action)).slice(0, 8);
-      const downs = binds.filter((b) => (CLIMB_ACTIONS.find((a) => a.id === b.action)?.dir || 0) < 0 || b.action === 'freeze').slice(0, 8);
-      const chip = (b, x, y, side) => {
-        const act = CLIMB_ACTIONS.find((a) => a.id === b.action), up = side === 'L';
-        const img = learnedGifts[b.giftId] ? getImg(proxImgUrl(learnedGifts[b.giftId])) : null;
-        const gc = GIFT_CATALOG.find((g) => g.id === String(b.giftId)) || {};
-        ctx.fillStyle = 'rgba(8,10,24,.62)'; ctx.beginPath(); ctx.roundRect(x, y, 92, 58, 14); ctx.fill();
-        ctx.strokeStyle = up ? 'rgba(74,222,128,.6)' : 'rgba(248,113,113,.6)'; ctx.lineWidth = 2; ctx.stroke();
-        if (img) ctx.drawImage(img, x + 6, y + 6, 30, 30);
-        else { ctx.fillStyle = up ? '#14532d' : '#7f1d1d'; ctx.beginPath(); ctx.arc(x + 21, y + 21, 15, 0, 7); ctx.fill(); label(String(gc.coins ?? '🎁'), x + 21, y + 22, gc.coins >= 100 ? 11 : 14, '#fde047', 'center', 900); }
-        const amt = typeof act?.n === 'number' && act.n ? `${act.dir > 0 ? '+' : '-'}${act.n}` : act?.id === 'down_checkpoint' ? '🚩' : act?.id === 'down_start' ? '☠️' : act?.icon || '';
-        label(amt, x + 64, y + 22, 18, up ? '#4ade80' : '#f87171', 'center', 900);
-        label(trim(b.giftName || gc.name || '', 11), x + 46, y + 48, 11, '#fff', 'center', 800);
-      };
-      ups.forEach((b, k) => chip(b, 10, 300 + k * 64, 'L'));
-      downs.forEach((b, k) => chip(b, W - 102, 300 + k * 64, 'R'));
-    },
   });
+  g.actions = climbActions(g.s);
+  return g;
 }
 
 // ---------------- 1) Só Subindo: ilhas flutuantes em espiral ao redor de uma torre gigante ----------------
@@ -391,15 +388,16 @@ defineClimb({
 // ---------------- 3) Rumo ao Céu 3D: pilha de objetos da cidade até o espaço, com portal no topo ----------------
 const HEAVEN_TYPES = ['crate', 'barrel', 'car', 'beam', 'pipe', 'sofa', 'sign', 'cloud'];
 defineClimb({
-  id: 'only-heaven', char: 'astronauta', name: 'Rumo ao Céu 3D', icon: '☁️', color: '#38bdf8', title: 'RUMO AO CÉU', titleColor: '#e0f2fe', target: 300, cpEvery: 0, hop: 1.0, charH: 1.5, arc: 1.3,
+  id: 'only-heaven', char: 'ladino', name: 'Rumo ao Céu 3D', icon: '☁️', color: '#38bdf8', title: 'RUMO AO CÉU', titleColor: '#e0f2fe', target: 300, cpEvery: 0, hop: 1.0, charH: 1.5, arc: 1.2, ahead: 16,
   desc: 'Subida vertical por uma pilha de objetos (caixas, barris, carros, vigas, nuvens) saindo da cidade, passando pelas nuvens e chegando ao espaço, até o Portal do Céu. Presentes fazem voar ou despencar.',
   winText: 'CHEGOU AO CÉU!',
   unit(step) { return `${(step * 3.2).toFixed(0)} m`; },
   sky: ['#9fd3ff', '#cfe8ff', '#ffb27d', '#5b3c88', '#0b0b2a', '#000005'],
   pos(i) {
     if (i === 0) return new THREE.Vector3(0, 0, 0);
-    const a = climbHash(i, 1) * Math.PI * 2, rr = 1.2 + climbHash(i, 2) * 1.6;
-    return new THREE.Vector3(Math.cos(a) * rr, i * 1.05, Math.sin(a) * rr * 0.7);
+    // Espiral solta: cada objeto um pouco ao lado do anterior, para o pulo aparecer bem (sem empilhar um em cima do outro)
+    const a = i * 0.95 + climbHash(i, 1) * 0.5, rr = 2.1 + climbHash(i, 2) * 1.1;
+    return new THREE.Vector3(Math.cos(a) * rr, i * 0.8, Math.sin(a) * rr * 0.75);
   },
   build(scene, g) {
     const T = THREE;
@@ -413,10 +411,10 @@ defineClimb({
       b.position.set(x, h / 2 - 0.6, z); scene.add(b); made++;
     }
     // Mar de nuvens no meio do caminho e estrelas lá em cima
-    const cloudY = g.s.target * 1.05 * 0.35;
+    const cloudY = g.s.target * 0.8 * 0.35;
     for (let k = 0; k < 60; k++) { const s = new T.Mesh(new T.SphereGeometry(rand(3, 7), 12, 10), new T.MeshStandardMaterial({ color: 0xffffff, roughness: 1, transparent: true, opacity: 0.85 })); const a = rand(0, 7), rr = rand(8, 60); s.position.set(Math.cos(a) * rr, cloudY + rand(-3, 3), Math.sin(a) * rr); s.scale.y = 0.45; scene.add(s); }
     const starG = new T.BufferGeometry(), pts = [];
-    for (let k = 0; k < 1500; k++) { const a = rand(0, 7), e = rand(-0.2, 1.2), rr = 150; pts.push(Math.cos(a) * rr, g.s.target * 1.05 * 0.7 + Math.sin(e) * rr, Math.sin(a) * rr); }
+    for (let k = 0; k < 1500; k++) { const a = rand(0, 7), e = rand(-0.2, 1.2), rr = 150; pts.push(Math.cos(a) * rr, g.s.target * 0.8 * 0.7 + Math.sin(e) * rr, Math.sin(a) * rr); }
     starG.setAttribute('position', new T.Float32BufferAttribute(pts, 3));
     scene.add(new T.Points(starG, new T.PointsMaterial({ color: 0xffffff, size: 0.6, sizeAttenuation: true })));
     // Portal do Céu no topo
@@ -444,5 +442,5 @@ defineClimb({
     return grp;
   },
   tick(g) { if (g.r.portal) { g.r.portal.rotation.y = performance.now() / 2000; } },
-  cam(p) { return [new THREE.Vector3(p.x * 0.3 + 3, p.y + 2.8, p.z + 11.5), new THREE.Vector3(p.x, p.y + 2.2, p.z)]; },
+  cam(p) { return [new THREE.Vector3(p.x * 0.4 + 4, p.y + 4.2, p.z + 13.5), new THREE.Vector3(p.x * 0.8, p.y + 1.8, p.z)]; },
 });

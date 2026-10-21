@@ -198,6 +198,7 @@ for (const g of GAMES) { try { g.init?.(); g.reset(); } catch (err) { console.er
 function selectGame(game, remote = false) {
   const prev = current;
   current = game;
+  charLayer.clear();
   if (prev !== game) prev?.leave?.();
   if (!isClean) store.set('lastGame', game.id);
   if (!remote && !isClean) RNG.seed = (Math.random() * 1e9) | 0;
@@ -319,6 +320,7 @@ function loop(now) {
     announcer.draw();
     if (!current.v2) giftMeter.draw(current.meterY ?? 200);
     else drawGuide(current);
+    drawLegend(current); actFeed.update(dt); actFeed.draw();
     overlay.draw();
     if (now - lastSimAt < 8000) pill('🧪 MODO TESTE · eventos do simulador', W / 2, H - 96, { size: 15, bg: 'rgba(250,204,21,.92)', color: '#1a1300' });
     drawErrors = 0;

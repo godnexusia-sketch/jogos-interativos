@@ -217,12 +217,27 @@ if (!isClean) (() => {
     h(`<div class="vhead"><h2>${g.icon} ${esc(g.name)}</h2><span class="tag">${esc(GENRES.find((x) => x.id === g.genre)?.name || '')}</span></div>
       <div class="panel"><div id="help" class="help">${g.help || ''}</div>${g.v2 ? '' : '<p class="small">Clássico: as regras de presentes e comentários estão no próprio jogo.</p>'}
         <div class="row"><button id="hEdit" ${g.edit ? '' : 'hidden'}>Editar</button></div></div>
+      <div class="panel" id="legendP"><div class="ph"><h3>📋 "Como jogar" na tela</h3><label class="tog mini"><input type="checkbox" data-l="on" ${liveCfg.legend.on ? 'checked' : ''}><b></b></label></div>
+        <p class="small">A lista com tudo que cada presente, comentário, like, seguir e compartilhar faz aparece na tela da live, com o ícone e o valor. <b style="color:#16a34a">Verde</b> ajuda, <b style="color:#dc2626">vermelho</b> atrapalha, <b style="color:#ca8a04">amarelo</b> faz aparecer. Mudou um gatilho aqui embaixo? A lista muda sozinha na hora.</p>
+        <div class="grid2">
+          <label class="f"><span>Onde</span><select data-l="side">${[['auto', 'Automático (cada jogo no melhor lugar)'], ['left', 'Lado esquerdo'], ['right', 'Lado direito'], ['split', 'Ajuda à esquerda, atrapalha à direita']].map(([a, b]) => `<option value="${a}" ${a === liveCfg.legend.side ? 'selected' : ''}>${b}</option>`).join('')}</select></label>
+          <label class="f"><span>Quando mostrar</span><select data-l="when">${[['auto', 'Automático (quiz e palavras: de tempos em tempos)'], ['always', 'Sempre'], ['cycle', '15s a cada 45s']].map(([a, b]) => `<option value="${a}" ${a === (liveCfg.legend.when || 'auto') ? 'selected' : ''}>${b}</option>`).join('')}</select></label>
+          <label class="f"><span>Linhas por vez</span><input type="number" data-l="rows" min="3" max="16" value="${liveCfg.legend.rows}"></label>
+          <label class="f"><span>Tamanho</span><select data-l="size">${[[0.8, 'Pequeno'], [1, 'Médio'], [1.2, 'Grande']].map(([a, b]) => `<option value="${a}" ${Number(a) === Number(liveCfg.legend.size) ? 'selected' : ''}>${b}</option>`).join('')}</select></label>
+          <label class="f"><span>Segundos de cada aviso</span><input type="number" data-l="feedSecs" min="2" max="15" value="${liveCfg.legend.feedSecs}"></label>
+        </div>
+        <label class="f tog"><input type="checkbox" data-l="feed" ${liveCfg.legend.feed ? 'checked' : ''}><b></b><span>Aviso de cada ação na tela (foto · 🌹 ×1 → efeito)</span></label></div>
       ${g.v2 ? `<div class="panel"><h3>Testar ações</h3><div class="row wrap" id="testActs"></div>
         <label class="small inl">valor do teste 🪙 <input id="testCoins" type="number" min="1" value="${store.get('testCoins', 10)}" style="width:90px"></label></div>
       <div class="panel"><h3>⚡ Gatilhos de ação</h3><div id="binds"></div></div>
       <div class="panel"><h3>Configurações do jogo <small>(mudam ao vivo)</small></h3><div id="sets"></div></div>`
       : `<div class="panel" id="oldSetsP"><h3>Configurar</h3><div id="settings"></div></div>`}`);
     q('#hEdit').addEventListener('click', () => g.edit?.());
+    qa('[data-l]', q('#legendP')).forEach((inp) => inp.addEventListener('change', () => {
+      const L = { ...liveCfg.legend }, k = inp.dataset.l;
+      L[k] = inp.type === 'checkbox' ? inp.checked : inp.type === 'number' || k === 'size' ? Number(inp.value) : inp.value;
+      liveCfg.save('legend', L);
+    }));
     if (g.v2) {
       q('#testActs').innerHTML = g.actions.map((a) => `<button data-a="${a.id}">${a.icon || '▶'} ${esc(a.label)}</button>`).join('');
       q('#testActs').addEventListener('click', (e) => { const b = e.target.closest('[data-a]'); if (b) busDo({ t: 'action', game: g.id, id: b.dataset.a, coins: Number(q('#testCoins').value) || 1, user: fakeUser() }); });

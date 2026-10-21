@@ -196,6 +196,7 @@ function runTriggers(g, ev) {
     if (!act) return;
     const times = clamp(Math.round(b.count || 1), 1, 50);
     for (let i = 0; i < times; i++) g.onAction?.(b.action, { ...args, bind: b, params: b.params || {} });
+    if (typeof actFeed !== 'undefined') actFeed.push(g, b, args, times); // aviso na tela: ícone ×quantidade → efeito
   };
   const binds = g.binds.filter((b) => b.on !== false && b.trigger === trig);
   if (ev.type !== 'gift' && !canPlay(g, ev.user)) return;
