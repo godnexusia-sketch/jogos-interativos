@@ -5,3 +5,7 @@
 - `countries.json`: [world-countries](https://github.com/mledoze/countries) (ODbL).
 - Bandeiras: [flagcdn.com](https://flagcdn.com). Fotos das cidades: Wikipédia/Wikimedia Commons.
 - Perguntas, frases e listas em português: escritas para este projeto.
+
+
+## Personagens 3D
+- KayKit: Adventurers Character Pack 1.0 e Skeletons Character Pack 1.0, de Kay Lousberg (www.kaylousberg.com), licença CC0. Arquivos em `public/assets/chars/` (otimizados: malhas separadas das animações).

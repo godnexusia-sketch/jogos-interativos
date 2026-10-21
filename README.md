@@ -27,6 +27,14 @@ Na barra de cima: conectar o @, números da sessão, telas conectadas, silenciar
 Embaixo do jogo: pausar, reiniciar e trocar. À direita (tela larga): o chat da live com 📣 shoutout e 🎙️ "responder agora"
 para o apresentador IA, e o top da sessão.
 
+## Personagens 3D
+
+Os jogos de luta e festa usam personagens 3D de verdade (modelos GLB com esqueleto e 56 animações: andar, correr, soco,
+chute, espada, defesa, esquiva, dano, queda, comemoração…), carregados só quando o jogo abre. Cada espectador ganha sempre
+o mesmo personagem, com a foto e o nome numa placa em cima. Já estão em 3D: **Lutadores 3D**, **Arena de Batalha**,
+**Guerra de Territórios**, **Flappy Batalha**, **Guerra das Torres** e **Pista de Dança** (além dos 3D que já existiam).
+Modelos: KayKit de Kay Lousberg (CC0).
+
 ## Os jogos novos
 
 - **Quiz:** Quiz Relâmpago, Show do Milhão, Verdadeiro ou Falso, Matemática Rápida, Memória Maestro, O Povo Diz, Adivinhe o Número, Adivinhe a Bandeira, Adivinhe o Logo, Onde Fica? (foto da cidade + globo 3D)

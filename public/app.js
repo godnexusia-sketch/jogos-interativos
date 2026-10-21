@@ -162,7 +162,9 @@ function updateAudioHere() {
 }
 
 // ---------- Eventos ----------
+let lastSimAt = -1e9, drawErrors = 0;
 function handleEvent(ev) {
+  if (ev.sim) lastSimAt = performance.now();
   window.onFeed?.(ev);
   // Com a Tela da Live aberta, quem roda o jogo é ela: o painel só repassa o evento.
   if (mirrorOn()) { overlayOnly(ev); return toMirror({ t: 'ev', ev }); }
@@ -243,7 +245,8 @@ const FAKE = ['ana', 'bruno', 'carla', 'davi', 'enzo', 'fernanda', 'gabi', 'heit
 function fakeUser() { const n = pick(FAKE); return { id: 'sim_' + n, nick: n, pic: fakeFace(n), fol: Math.random() < 0.6 }; }
 const GIFTS = { 1: ['Rosa', 1], 2: ['Rosquinha', 30], 3: ['Mãos em coração', 100], 4: ['Bons Presságios', 1500] };
 const GIFT_SHOP = [['🌹', 'Rosa', 1, '5655'], ['⚽', 'Bola de futebol', 5], ['❤️', 'Coração', 10], ['🍩', 'Rosquinha', 30, '5879'], ['🤠', 'Chapéu e Bigode', 99], ['🫶', 'Mãos em coração', 100], ['🍬', 'Festa dos Doces', 3999], ['🌟', 'Estrelas do TikTok', 39999]];
-function sim(ev) { handleEvent(ev); sendControl({ action: 'sim', ev }); }
+// Eventos do simulador levam a marca sim: a tela mostra "MODO TESTE" enquanto chegam (nunca se confundem com a live real).
+function sim(ev) { ev.sim = true; handleEvent(ev); sendControl({ action: 'sim', ev }); }
 function simChat(str, user = fakeUser()) { sim({ type: 'chat', user, text: str }); }
 function simGift(tier, user = fakeUser(), count = 1) {
   const [name, diamonds, giftId] = typeof tier === 'object' ? tier : GIFTS[tier];
@@ -308,7 +311,16 @@ function loop(now) {
     if (!current.v2) giftMeter.draw(current.meterY ?? 200);
     else drawGuide(current);
     overlay.draw();
-  } catch (err) { console.error(err); }
+    if (now - lastSimAt < 8000) pill('🧪 MODO TESTE · eventos do simulador', W / 2, H - 96, { size: 15, bg: 'rgba(250,204,21,.92)', color: '#1a1300' });
+    drawErrors = 0;
+  } catch (err) {
+    // Um jogo com erro não derruba o painel: mostra um aviso no lugar e continua tentando.
+    if (drawErrors++ < 3) console.error(err);
+    ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
+    ctx.fillStyle = '#0b0f1e'; ctx.fillRect(0, 0, W, H);
+    title('ESTE JOGO TEVE UM PROBLEMA', W / 2, H / 2 - 30, 40, '#ff6b8a');
+    label('O painel continua funcionando: troque de jogo ou reinicie.', W / 2, H / 2 + 24, 20, '#fff', 'center', 700);
+  }
   requestAnimationFrame(loop);
 }
 function drawPaused() {

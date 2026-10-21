@@ -1,7 +1,7 @@
 # Jogos Interativos para TikTok LIVE: onde estamos
 
 Este arquivo existe para quem continuar o projeto num chat novo. Leia tudo antes de mexer.
-Última atualização: 21/10/2026.
+Última atualização: 21/10/2026 (plataforma 3D: personagens GLB, fotos corrigidas, biblioteca com capas).
 
 ## Em uma frase
 Painel no estilo do **Livecade** (https://app.livecade.io) com 68 jogos (54 novos + 14 clássicos), gatilhos de ação,
@@ -22,6 +22,14 @@ alertas, efeitos, widgets, DJ Pad, música, voz neural e apresentador com IA. Se
 - Exigente com visual: design caprichado, 3D quando der, cara de jogo de PC/PS5, **sempre 9:16**, nada esticado.
 - Pediu "todas as funções, categorias e jogos do Livecade" e que os jogos de voz respondam as pessoas sozinhos.
 - Regras de inspiração: não copiar código nem arte de ninguém (Kyrat, Livecade), não recriar personagens de terceiros (por isso o apresentador IA tem personagens originais e o "Tung Tung" virou "Pancada no Boneco"), não usar marcas da Nintendo. Nomes de jogadores ("Messi x Ronaldo") são só texto editável.
+
+## O que mudou na versão 3D (21/10/2026)
+- **Fotos de perfil (corrigido):** o `tiktok-live-connector` 2.x entrega o protobuf cru do TikTok. O servidor lia campos da versão 1 (`uniqueId`, `profilePicture.url`, `comment`, `giftDetails`, `likeCount`), então a foto vinha vazia, o id ficava vazio e o texto, os likes e os presentes vinham errados. Agora `lib/eventos.js` lê `user.id` (id estável), `displayId` (@), `nickname`, `avatarThumb/Medium/Large.urlList` (várias URLs; HEIC por último), `content`, `count/total`, `gift.name/diamondCount/image`. Teste: `node testes/eventos.mjs` (mensagens protobuf reais).
+- **Avatar no navegador:** `core.js` tem `picList/userImg/avatar/avatarHtml/loadUserImg`. Toda foto passa por `/api/img` (cache, sem bloqueio de referer, sem canvas contaminado), tenta a próxima URL se uma falhar, tenta de novo depois de 45 s e, sem foto, mostra a inicial numa cor fixa da pessoa (nunca imagem quebrada). O `/api/img` guarda as falhas por 2 min e reconhece imagem pelos bytes. Teste: `node testes/fotos.cjs`.
+- **Personagens 3D reais:** `public/lc/char3d.js` — `Assets3D` (carrega GLB sob demanda com `GLTFLoader` + `SkeletonUtils`, servidos em `/vendor/jsm/`), `CHARACTERS` (9 personagens), `Character3D` (animador com estados: idle, fightIdle, walk, run, punch, kick, slash, stab, jumpAttack, spin, block, blockHit, dodge, hit, death, victory, taunt, jump, spawn, cast, powerUp…, transição suave, dano no quadro do golpe via `onImpact`, placa com foto e nome, balão de fala, tinta do time, piscar no dano, reserva procedural se o GLB falhar), `FX3D` (partículas com reserva fixa, anéis, números de dano; respeita movimento reduzido), `CamDirector` (tremida, foco, câmera lenta), `buildArena` (palco, torcida animada pelo "hype" da live, holofotes) e `hudFighter`.
+- **Modelos:** `public/assets/chars/` — KayKit Adventurers e Skeletons de Kay Lousberg (CC0, licenças na pasta). Cada personagem só com a malha (~0,3 MB) e `animacoes.glb` (56 animações, 2 MB, ~0,7 MB comprimido). O servidor manda tudo com gzip. Os modelos não têm rosto com expressões (blendshapes): as expressões vêm do corpo (animações), dos balões e dos efeitos.
+- **Jogos migrados:** Lutadores 3D (`games/lc/fighters3d.js`, id `stick-fighters`, refeito), Arena de Batalha (`arena3d.js`), Guerra de Territórios (`territory3d.js`), Flappy Batalha (`flappy3d.js`, pássaros 3D procedurais com rosto), Guerra das Torres (`tower3d.js`, construtores, castelo, canhão), Pista de Dança (`dance3d.js`) e a Votação (capas). Os arquivos `*3d.js` mantêm a regra original e trocam a apresentação; sem WebGL, o desenho 2D antigo continua.
+- **Biblioteca e identidade visual:** `lc/panel.js` + `lc/panel.css` — destaque do jogo no ar, cartões com capa, selos (NO AR, 3D, IA, VOZ, INDISPONÍVEL sem WebGL 2), botão Iniciar, responsivo. Capas em `public/assets/capas/<id>.webp`, geradas do próprio jogo rodando: `node testes/capas.cjs [ids]`.
 
 ## Arquitetura
 ### Servidor (`server.js`, Node 22, `http` + `ws`)
@@ -62,11 +70,13 @@ alertas, efeitos, widgets, DJ Pad, música, voz neural e apresentador com IA. Se
 
 ## Testes (`testes/`)
 - Usam o Chromium em `/opt/node-tools/node_modules/playwright` e o servidor em `PORT=3123 node server.js`.
+- `eventos.mjs` (leitura dos eventos do TikTok com protobuf real), `fotos.cjs` (foto, reserva e inicial), `capas.cjs` (gera as capas).
 - `smoke.cjs`: abre os 68 jogos, simula comentários, likes, entradas, seguir, compartilhar, presentes e todas as ações. Última rodada: 68/68 sem erro.
 - `painel.cjs`: clica em todas as seções e confere que a tela da live (outra página `?clean=1` no mesmo @) recebe troca de jogo, configuração, gatilho, pausa e alerta, e que o painel fica mudo. Passou.
 - `coins.cjs`, `presence.cjs` (Céu de Pipas), `mirror.cjs` (janela Tela da Live), `fixed.cjs` (a tela do jogo não se mexe), `link.cjs` (precisa da conta ao vivo), `ff.cjs`.
 
 ## Ideias para depois
+- Modelos com rosto expressivo (blendshapes) se aparecer um pacote livre adequado; os jogos de festa 2D restantes (quiz, palavras) ainda usam o visual 2D.
 - Arrastar e redimensionar o HUD de cada jogo na prévia (hoje dá para mover os widgets).
 - Personagens 3D mais detalhados no Apresentador IA; vozes com IA mais expressivas.
 - Mais perguntas nos bancos (hoje: 196 quiz, 80 V/F, 94 prefere, 37 o povo diz, 37 temas de associação, 25 de contexto).
