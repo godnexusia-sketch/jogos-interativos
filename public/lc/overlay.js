@@ -33,6 +33,7 @@ const liveCfg = {
   stream: { ...STREAM_DEFAULTS, ...store.get('live:stream', {}) },
   dj: store.get('live:dj', null),
   music: store.get('live:music', null),
+  chars: store.get('live:chars', null),
   save(key, data, share = true) {
     this[key] = data;
     store.set('live:' + key, data);
@@ -45,6 +46,7 @@ const liveCfg = {
     if (key === 'stream' && this.stream.mix) { Object.assign(mixer.vol, this.stream.mix); mixer.apply(); }
     if (key === 'stream') { scores.countSim = this.stream.countSim !== false; if (typeof updateAudioHere === 'function') updateAudioHere(); }
     if (key === 'dj') djPad?.loaded?.();
+    if (key === 'chars' && typeof applyRoster === 'function') applyRoster();
   },
 };
 function deepMerge(base, over) {

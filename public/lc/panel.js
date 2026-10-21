@@ -7,7 +7,7 @@ if (!isClean) (() => {
   const view = $('view');
   const esc = escHtml;
   const VIEWS = [
-    ['jogos', '🎮', 'Jogos'], ['jogo', '⚙️', 'Jogo atual'], ['testar', '🧪', 'Testar'], ['efeitos', '✨', 'Efeitos'],
+    ['jogos', '🎮', 'Jogos'], ['jogo', '⚙️', 'Jogo atual'], ['personagens', '🧍', 'Personagens'], ['testar', '🧪', 'Testar'], ['efeitos', '✨', 'Efeitos'],
     ['alertas', '🔔', 'Alertas'], ['widgets', '🧩', 'Widgets'], ['dj', '🎛️', 'DJ Pad'], ['musica', '🎵', 'Música'],
     ['voz', '🗣️', 'Voz e chat'], ['placar', '🏆', 'Placar'], ['historico', '📊', 'Histórico'], ['tela', '🖥️', 'Tela da live'],
   ];
@@ -452,6 +452,37 @@ if (!isClean) (() => {
   };
   // Volume vale para todas as telas: vai junto da configuração de voz.
   function setMix(k, v) { mixer.set(k, v); liveCfg.save('stream', { ...liveCfg.stream, mix: { ...mixer.vol } }); }
+
+  // Personagens 3D: quais entram nos jogos, um fixo para todos, e se o espectador pode escolher pelo chat (!nome).
+  RENDER.personagens = () => {
+    const cfg = charCfg();
+    const kinds = Object.keys(CHARACTERS).filter((k) => !CHARACTERS[k].undead);
+    const group = (title, list, note) => `<div class="panel"><h3>${title}</h3>${note ? `<p class="note">${note}</p>` : ''}<div class="chgrid">${list.map((k) => {
+      const d = CHARACTERS[k], on = cfg.enabled.includes(k);
+      return `<label class="chcard ${on ? 'on' : ''}" style="--c1:${d.accent}"><input type="checkbox" data-ch="${k}" ${on ? 'checked' : ''}>
+        <span class="chimg"><img src="/assets/chars/fotos/${k}.webp" alt="" onerror="this.remove()"><i>${esc(d.name[0])}</i></span>
+        <b>${esc(d.name)}</b><small>${d.family === 'static' ? 'movimento simples' : 'animações completas'} · <code>!${esc(norm(d.name).replace(/\s+/g, ''))}</code></small></label>`;
+    }).join('')}</div></div>`;
+    h(`<div class="vhead"><h2>🧍 Personagens 3D</h2><span class="tag">${HERO_KINDS.length} ativos</span></div>
+      <div class="panel"><h3>Como escolher</h3>
+        <label class="f tog"><input type="checkbox" id="chPick" ${cfg.viewerPick ? 'checked' : ''}><b></b><span>Espectador escolhe o próprio personagem comentando <b>!nome</b> (ex.: <code>!sapo</code>, <code>!astronauta</code>)</span></label>
+        <label class="f"><span>Personagem fixo para todos (vazio = cada espectador ganha um dos ativos)</span><select id="chFixed"><option value="">— cada um o seu —</option>${kinds.map((k) => `<option value="${k}" ${cfg.fixed === k ? 'selected' : ''}>${esc(CHARACTERS[k].name)}</option>`).join('')}</select></label>
+        <div class="row"><button id="chAll">Ativar todos</button><button id="chPack">Só o pacote novo</button><button id="chKay">Só os clássicos</button></div>
+        <p class="note">Vale para os jogos 3D com personagens: Lutadores, Arena de Batalha, Pista de Dança, as escaladas e outros. Quem já está na tela troca quando entrar de novo.</p></div>
+      ${group('Pacote novo', PACK_KINDS, 'Os de movimento simples não têm esqueleto: pulam, inclinam, giram e amassam/esticam.')}
+      ${group('Clássicos (KayKit)', KAYKIT_HEROES)}`);
+    const save = (patch) => { liveCfg.save('chars', { ...charCfg(), ...patch }); RENDER.personagens(); };
+    qa('[data-ch]').forEach((cb) => cb.addEventListener('change', () => {
+      const en = new Set(charCfg().enabled); cb.checked ? en.add(cb.dataset.ch) : en.delete(cb.dataset.ch);
+      if (!en.size) { toastMsg('Deixe pelo menos um personagem ativo'); cb.checked = true; return; }
+      save({ enabled: [...en] });
+    }));
+    q('#chPick').addEventListener('change', (e) => save({ viewerPick: e.target.checked }));
+    q('#chFixed').addEventListener('change', (e) => save({ fixed: e.target.value }));
+    q('#chAll').addEventListener('click', () => save({ enabled: kinds }));
+    q('#chPack').addEventListener('click', () => save({ enabled: [...PACK_KINDS] }));
+    q('#chKay').addEventListener('click', () => save({ enabled: [...KAYKIT_HEROES] }));
+  };
 
   RENDER.voz = () => {
     const st = liveCfg.stream;

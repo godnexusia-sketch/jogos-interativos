@@ -23,11 +23,49 @@ const CHARACTERS = {
   esq_guerreiro: { name: 'Esqueleto Guerreiro', file: 'esq_guerreiro', accent: '#fbbf24', props: [], weapon: [], special: [], undead: true },
   esq_mago: { name: 'Esqueleto Mago', file: 'esq_mago', accent: '#c084fc', props: [], weapon: [], special: [], undead: true },
   esq_ladino: { name: 'Esqueleto Ladino', file: 'esq_ladino', accent: '#94a3b8', props: [], weapon: [], special: [], undead: true },
+  // Pacote enviado pelo dono (Poly Pizza). family 'quat': animações próprias no arquivo (Quaternius);
+  // family 'static': modelo sem esqueleto, animado por movimento procedural (pulo, inclinação, giro, amassar e esticar).
+  aventureiro: { name: 'Aventureiro', file: 'aventureiro', family: 'quat', accent: '#4ade80', props: [], weapon: [], special: [] },
+  swat: { name: 'Agente', file: 'swat', family: 'quat', accent: '#60a5fa', props: [], weapon: [], special: [] },
+  astronauta: { name: 'Astronauta', file: 'astronauta', family: 'quat', accent: '#e2e8f0', props: [], weapon: [], special: [] },
+  cactoro: { name: 'Cactoro', file: 'cactoro', family: 'quat', accent: '#22c55e', props: [], weapon: [], special: [] },
+  sapo: { name: 'Sapo', file: 'sapo', family: 'quat', accent: '#84cc16', props: [], weapon: [], special: [] },
+  observador: { name: 'Olhão', file: 'observador', family: 'static', yaw: -Math.PI / 2, accent: '#f472b6', props: [], weapon: [], special: [] },
+  robo: { name: 'Robô', file: 'robo', family: 'static', yaw: -Math.PI / 2, accent: '#38bdf8', props: [], weapon: [], special: [] },
+  super_robo: { name: 'Super Robô', file: 'super_robo', family: 'static', accent: '#f97316', props: [], weapon: [], special: [] },
+  orangotango: { name: 'Orangotango', file: 'orangotango', family: 'static', yaw: Math.PI, accent: '#ea580c', props: [], weapon: [], special: [] },
+  soldado: { name: 'Soldado', file: 'soldado', family: 'static', accent: '#a3a3a3', props: [], weapon: [], special: [] },
 };
-const HERO_KINDS = ['cavaleiro', 'barbaro', 'maga', 'ladino', 'encapuzado'];
+const KAYKIT_HEROES = ['cavaleiro', 'barbaro', 'maga', 'ladino', 'encapuzado'];
+const PACK_KINDS = ['aventureiro', 'swat', 'astronauta', 'cactoro', 'sapo', 'observador', 'robo', 'super_robo', 'orangotango', 'soldado'];
+// Personagens ativos (escolhidos no painel em 🧍 Personagens). Os jogos usam esta lista; ela muda ao vivo.
+const HERO_KINDS = [...PACK_KINDS];
+const CHAR_DEFAULTS = { enabled: [...PACK_KINDS], viewerPick: true, fixed: '' };
+function charCfg() { return { ...CHAR_DEFAULTS, ...(typeof liveCfg !== 'undefined' && liveCfg.chars || {}) }; }
+function applyRoster() {
+  const c = charCfg(), on = c.enabled.filter((k) => CHARACTERS[k] && !CHARACTERS[k].undead);
+  HERO_KINDS.splice(0, HERO_KINDS.length, ...(c.fixed && CHARACTERS[c.fixed] ? [c.fixed] : on.length ? on : PACK_KINDS));
+}
+applyRoster();
+// Espectador escolhe o próprio personagem pelo chat: "!sapo", "!robô", "personagem astronauta".
+const CHAR_PICKS = new Map();
+const charKeyOf = (u) => String(u?.id || u?.nick || '?');
+function charByName(txt) {
+  const n = norm(txt);
+  return Object.keys(CHARACTERS).find((k) => !CHARACTERS[k].undead && (norm(CHARACTERS[k].name) === n || norm(k) === n || norm(k.replace('_', ' ')) === n));
+}
+function charPickFromChat(ev) {
+  if (ev.type !== 'chat' || !charCfg().viewerPick) return null;
+  const m = String(ev.text || '').trim().match(/^(?:!|personagem\s+|boneco\s+|skin\s+)(.{2,24})$/i);
+  const k = m && charByName(m[1]);
+  if (!k || !HERO_KINDS.includes(k)) return null;
+  CHAR_PICKS.set(charKeyOf(ev.user), k);
+  return k;
+}
 const UNDEAD_KINDS = ['esqueleto', 'esq_guerreiro', 'esq_mago', 'esq_ladino'];
 // Mesmo espectador, mesmo personagem (em todas as telas e jogos).
 function kindFor(user, list = HERO_KINDS) {
+  if (list === HERO_KINDS) { const pk = CHAR_PICKS.get(charKeyOf(user)); if (pk && HERO_KINDS.includes(pk)) return pk; }
   let h = 0; for (const c of String(user?.id || user?.nick || '?')) h = (h * 31 + c.charCodeAt(0)) >>> 0;
   return list[h % list.length];
 }
@@ -44,6 +82,20 @@ const ANIM = {
   cast: ['Spellcast_Shoot'], powerUp: ['Spellcast_Raise'], channel: ['Spellcast_Long'], throw: ['Throw'], interact: ['Interact'], use: ['Use_Item'], pickup: ['PickUp'],
   sit: ['Sit_Floor_Idle'], standUp: ['Lie_StandUp'], shoot: ['1H_Ranged_Shoot'],
 };
+// Mesmos estados para os personagens Quaternius (nomes de clipe sem o prefixo "CharacterArmature|").
+const QUAT_ANIM = {
+  idle: ['Idle', 'Idle_Neutral'], fightIdle: ['Idle_Sword', 'Idle', 'Idle_Neutral'], walk: ['Walk'], walkBack: ['Run_Back', 'Walk'], run: ['Run'], strafeL: ['Run_Left', 'Run'], strafeR: ['Run_Right', 'Run'],
+  punch: ['Punch_Left', 'Punch_Right', 'Punch'], kick: ['Kick_Left', 'Kick_Right', 'Punch'], slash: ['Sword_Slash', 'Punch_Right', 'Punch'], stab: ['Punch_Right', 'Punch'], jumpAttack: ['Sword_Slash', 'Kick_Right', 'Jump', 'Punch'], spin: ['Roll', 'Jump'], heavy: ['Sword_Slash', 'Kick_Left', 'Punch'],
+  block: ['Duck', 'HitRecieve_2', 'HitReact'], blocking: ['Duck', 'Idle'], blockHit: ['HitRecieve_2', 'HitRecieve', 'HitReact'], blockAttack: ['Punch_Left', 'Punch'],
+  dodge: ['Roll', 'Duck'], dodgeL: ['Roll', 'Duck'], dodgeR: ['Roll', 'Duck'], dodgeF: ['Roll', 'Jump'],
+  hit: ['HitRecieve', 'HitRecieve_2', 'HitReact'], death: ['Death'], deadPose: ['Death'],
+  victory: ['Wave', 'Yes'], taunt: ['Yes', 'Wave', 'No'], jump: ['Jump', 'Roll'], jumpLong: ['Jump', 'Roll'], spawn: ['Wave', 'Yes'], spawnAir: ['Jump_Land', 'Jump', 'Wave'],
+  cast: ['Gun_Shoot', 'Weapon', 'Punch_Right', 'Punch'], powerUp: ['Yes', 'Wave', 'Interact'], channel: ['Interact', 'Idle'], throw: ['Punch_Right', 'Punch', 'Weapon'], interact: ['Interact', 'Yes'], use: ['Interact', 'Yes'], pickup: ['Interact', 'Duck'],
+  sit: ['Duck', 'Idle'], standUp: ['Jump_Land', 'Idle'], shoot: ['Gun_Shoot', 'Weapon', 'Punch'],
+};
+// Duração (s) dos estados quando o personagem não tem esqueleto (movimento procedural).
+const PROC_DUR = { jump: 0.55, jumpLong: 0.75, punch: 0.45, kick: 0.5, slash: 0.5, stab: 0.45, jumpAttack: 0.7, spin: 0.7, heavy: 0.65, cast: 0.6, shoot: 0.4, throw: 0.5, hit: 0.4, blockHit: 0.35, block: 0.5, dodge: 0.5, dodgeL: 0.5, dodgeR: 0.5, dodgeF: 0.5, death: 0.9, victory: 1.3, taunt: 1.1, powerUp: 1, spawn: 0.8, spawnAir: 0.7, interact: 0.7, use: 0.7, pickup: 0.6, standUp: 0.6 };
+
 // Estados que repetem (os outros tocam uma vez e voltam para o estado base).
 const LOOPS = new Set(['idle', 'fightIdle', 'walk', 'walkBack', 'run', 'strafeL', 'strafeR', 'blocking', 'sit', 'channel']);
 // Momento do golpe (fração do clipe) para o dano sair junto com a animação.
@@ -205,6 +257,11 @@ class Character3D {
     const sh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: Tex3D.shadow(), transparent: true, depthWrite: false }));
     sh.rotation.x = -Math.PI / 2; sh.position.y = 0.02; sh.scale.setScalar(height * 0.75); sh.renderOrder = 1;
     this.root.add(sh); this.shadow = sh;
+    // Anel do time no chão (os personagens sem capa também ficam identificados pela cor)
+    if (tint) {
+      const ring = new THREE.Mesh(new THREE.RingGeometry(height * 0.3, height * 0.38, 32), new THREE.MeshBasicMaterial({ color: tint, transparent: true, opacity: 0.85, depthWrite: false, toneMapped: false }));
+      ring.rotation.x = -Math.PI / 2; ring.position.y = 0.03; ring.renderOrder = 2; this.root.add(ring); this.ring = ring;
+    }
     // Enquanto carrega: silhueta pulsando (estado de carregamento visível).
     this.placeholder = new THREE.Mesh(new THREE.CapsuleGeometry(height * 0.22, height * 0.5, 4, 10), new THREE.MeshStandardMaterial({ color: tint || this.def.accent, transparent: true, opacity: 0.35, roughness: 0.4 }));
     this.placeholder.position.y = height * 0.5; this.body.add(this.placeholder);
@@ -215,12 +272,22 @@ class Character3D {
   }
   async load() {
     try {
-      const [{ clone }, gltf, clips] = await Promise.all([Assets3D.modules(), Assets3D.load(this.def.file), Assets3D.anims()]);
+      const fam = this.def.family || 'kaykit';
+      const [{ clone }, gltf, shared] = await Promise.all([Assets3D.modules(), Assets3D.load(this.def.file), fam === 'kaykit' ? Assets3D.anims() : null]);
       if (this.disposed) return;
       const model = clone(gltf.scene);
-      // Escala pela altura real do modelo (calculada uma vez por tipo).
-      if (!gltf.userData.h) { const b = new THREE.Box3().setFromObject(gltf.scene); gltf.userData.h = b.max.y - b.min.y || 2.4; }
-      model.scale.setScalar(this.height / gltf.userData.h);
+      // Escala pela altura real do modelo e pés no chão (calculado uma vez por tipo).
+      if (!gltf.userData.h) { const b = new THREE.Box3().setFromObject(gltf.scene); gltf.userData.h = b.max.y - b.min.y || 2.4; gltf.userData.minY = b.min.y; }
+      const sc = this.height / gltf.userData.h;
+      model.scale.multiplyScalar(sc);
+      model.position.y -= (gltf.userData.minY || 0) * sc;
+      let clips = shared;
+      if (fam === 'quat') {
+        if (!gltf.userData.clips) { gltf.userData.clips = new Map(); for (const c of gltf.animations) gltf.userData.clips.set(c.name.split('|').pop(), c); }
+        clips = gltf.userData.clips;
+      }
+      this.animMap = fam === 'quat' ? QUAT_ANIM : ANIM;
+      this.staticMode = fam === 'static';
       this.mats = [];
       model.traverse((o) => {
         if (!o.isMesh) return;
@@ -234,11 +301,15 @@ class Character3D {
       this.model = model;
       this.setLoadout(this.loadoutName);
       this.body.remove(this.placeholder); this.placeholder.geometry.dispose(); this.placeholder.material.dispose(); this.placeholder = null;
-      this.body.add(model);
-      this.mixer = new THREE.AnimationMixer(model);
-      this.clips = clips;
-      this.actions = new Map();
-      this.mixer.addEventListener('finished', (e) => this.onFinished(e.action));
+      // Pivô: recebe o giro de frente do modelo e o movimento procedural dos personagens sem esqueleto.
+      this.pivot = new THREE.Group(); this.pivot.add(model); this.pivot.rotation.y = this.def.yaw || 0;
+      this.body.add(this.pivot);
+      if (!this.staticMode) {
+        this.mixer = new THREE.AnimationMixer(model);
+        this.clips = clips;
+        this.actions = new Map();
+        this.mixer.addEventListener('finished', (e) => this.onFinished(e.action));
+      }
       this.ready = true;
       this.play(this.base);
       for (const p of this.pending.splice(0)) this.play(p[0], p[1]);
@@ -267,7 +338,7 @@ class Character3D {
     this.model.traverse((o) => { if (this.def.props.includes(o.name)) o.visible = show.has(o.name); });
   }
   clipFor(state) {
-    const names = ANIM[state] || [state];
+    const names = (this.animMap || ANIM)[state] || [state];
     const ok = names.filter((n) => this.clips?.has(n));
     return ok.length ? this.clips.get(ok[Math.floor(Math.random() * ok.length)]) : null;
   }
@@ -283,7 +354,7 @@ class Character3D {
     this.impactDone = !this.onImpact;
     this.then = opts.then || null;
     this.hold = Boolean(opts.hold);
-    if (this.rig) { this.fbDur = opts.dur || (LOOPS.has(state) ? Infinity : 0.6); return; }
+    if (this.rig || this.staticMode) { this.fbDur = (opts.dur || (LOOPS.has(state) ? Infinity : PROC_DUR[state] || 0.6)) / (this.staticMode ? opts.speed || 1 : 1); return; }
     const clip = this.clipFor(state);
     if (!clip) { if (this.onImpact) { this.onImpact(); this.impactDone = true; } return; }
     let a = this.actions.get(clip.name);
@@ -304,12 +375,13 @@ class Character3D {
     const next = this.then; this.then = null;
     if (next) this.play(next); else this.play(this.base);
   }
-  get busy() { return this.state && !LOOPS.has(this.state) && !this.hold && (this.rig ? this.stateT < this.fbDur : this.cur?.isRunning()); }
+  get proc() { return Boolean(this.rig || this.staticMode); }
+  get busy() { return this.state && !LOOPS.has(this.state) && !this.hold && (this.proc ? this.stateT < this.fbDur : this.cur?.isRunning()); }
   // Reações visuais
   say(text, o) { this.bubble.userData.show(text, o); }
   hitFlash(color = 0xffffff, k = 1) { this.flash = k; this.flashColor = new THREE.Color(color); }
   // Troca a cor da capa/roupa do time (ex.: "trocar roupa" na pista de dança)
-  setTint(c) { this.tint = c; for (const m of this.capeMats || []) m.color.set(c); }
+  setTint(c) { this.tint = c; for (const m of this.capeMats || []) m.color.set(c); this.ring?.material.color.set(c); }
   setHp(f) { this.plate?.userData.setHp(f); }
   setCrown(on) { this.plate?.userData.setCrown(on); }
   setTag(s) { this.plate?.userData.setTag(s); }
@@ -320,18 +392,39 @@ class Character3D {
     this.stateT = (this.stateT || 0) + d;
     if (this.mixer) this.mixer.update(d);
     else if (this.rig) this.fallbackPose();
+    else if (this.staticMode) this.staticPose();
     // Golpe no tempo certo da animação
     if (!this.impactDone && this.state) {
-      const dur = this.rig ? this.fbDur : this.curDur || 0.6;
+      const dur = this.proc ? this.fbDur : this.curDur || 0.6;
       if (this.stateT >= dur * this.impactAt) { this.impactDone = true; const f = this.onImpact; this.onImpact = null; f?.(); }
     }
-    if (this.rig && !LOOPS.has(this.state) && !this.hold && this.stateT >= this.fbDur) { const next = this.then; this.then = null; this.play(next || this.base); }
+    if (this.proc && !LOOPS.has(this.state) && !this.hold && this.stateT >= this.fbDur) { const next = this.then; this.then = null; this.play(next || this.base); }
     if (this.placeholder) { const k = 0.25 + 0.15 * Math.sin(performance.now() / 180); this.placeholder.material.opacity = k; }
     if (this.flash > 0) {
       this.flash = Math.max(0, this.flash - dt * 5);
       for (const m of this.mats || []) { m.emissive.copy(this.flashColor).multiplyScalar(this.flash * 0.9); }
     }
     this.bubble.userData.tick(dt);
+  }
+  // Personagem sem esqueleto: o corpo inteiro se mexe (pula, inclina, gira, amassa e estica) conforme o estado.
+  staticPose() {
+    const p = this.pivot, t = this.stateT, s = this.state, D = this.fbDur, h = this.height;
+    const k = D === Infinity ? 0 : clamp(t / D, 0, 1), hk = Math.sin(k * Math.PI), now = performance.now() / 1000 + this.root.id;
+    let x = 0, y = 0, z = 0, rx = 0, ry = this.def.yaw || 0, rz = 0, sy = 1;
+    if (s === 'walk' || s === 'run' || s === 'strafeL' || s === 'strafeR' || s === 'walkBack') { const f = s === 'walk' ? 8 : 12, ph = Math.abs(Math.sin(now * f)); y = ph * 0.13 * h; rz = Math.sin(now * f) * 0.09; rx = 0.12; sy = 0.92 + ph * 0.12; }
+    else if (['punch', 'slash', 'stab', 'cast', 'heavy', 'shoot', 'throw', 'blockAttack'].includes(s)) { z = hk * 0.3 * h; rx = 0.35 * hk; sy = 1 - 0.08 * hk; }
+    else if (s === 'kick' || s === 'jumpAttack') { y = hk * 0.35 * h; z = hk * 0.25 * h; rx = -0.4 * hk; }
+    else if (s === 'spin') { ry += k * Math.PI * 2; y = hk * 0.2 * h; }
+    else if (s === 'hit' || s === 'blockHit') { rx = -0.4 * hk; z = -0.15 * h * hk; sy = 1 - 0.18 * hk; }
+    else if (s === 'block' || s === 'blocking' || s === 'sit' || s === 'pickup') sy = 0.82;
+    else if (s === 'dodge' || s === 'dodgeF') { z = (s === 'dodge' ? -1 : 1) * 0.35 * h * hk; rx = (s === 'dodge' ? -0.5 : 0.5) * hk; y = hk * 0.15 * h; }
+    else if (s === 'dodgeL' || s === 'dodgeR') { x = (s === 'dodgeL' ? 1 : -1) * 0.4 * h * hk; rz = (s === 'dodgeL' ? -0.6 : 0.6) * hk; }
+    else if (s === 'death' || s === 'deadPose') { rx = -Math.min(Math.PI / 2, (s === 'deadPose' ? 9 : t) * 4); y = -0.05 * h; }
+    else if (s === 'jump' || s === 'jumpLong' || s === 'spawnAir' || s === 'standUp') { y = hk * (s === 'jumpLong' ? 0.6 : 0.45) * h; sy = k < 0.15 || k > 0.85 ? 0.82 : 1.08; rx = -0.15 * hk; }
+    else if (s === 'victory' || s === 'taunt' || s === 'spawn' || s === 'interact' || s === 'use') { const b = Math.abs(Math.sin(t * 9)); y = b * 0.3 * h; sy = 0.88 + b * 0.2; rz = Math.sin(t * 6) * 0.15; }
+    else if (s === 'powerUp' || s === 'channel') { ry += k * Math.PI * 4; y = hk * 0.3 * h; sy = 1 + hk * 0.15; }
+    else { y = Math.abs(Math.sin(now * 2.2)) * 0.03 * h; sy = 1 + Math.sin(now * 2.2) * 0.025; rz = Math.sin(now * 1.1) * 0.03; }
+    p.position.set(x, y, z); p.rotation.set(rx, ry, rz); p.scale.set(1 + (1 - sy) * 0.5, sy, 1 + (1 - sy) * 0.5);
   }
   fallbackPose() {
     const t = this.stateT, s = this.state, k = Math.min(1, t / Math.max(0.1, this.fbDur === Infinity ? 1 : this.fbDur)), hk = Math.sin(k * Math.PI);
@@ -359,6 +452,7 @@ class Character3D {
       if (o.isMesh || o.isSprite) { const m = o.material; if (m) { if (o.isSprite) m.map?.dispose(); m.dispose(); } }
     });
     this.shadow.geometry.dispose();
+    this.ring?.geometry.dispose();
   }
 }
 

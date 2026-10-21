@@ -110,7 +110,7 @@ function pushConfigs() {
     if (g.v2) { shareConfig('set:' + g.id, g.s); shareConfig('bind:' + g.id, g.binds); }
     else if (g.configKey && store.get('cfg:' + g.configKey, null)) shareConfig(g.configKey, g.getConfig());
   }
-  for (const k of ['alerts', 'effects', 'widgets', 'stream', 'dj', 'music']) if (liveCfg[k]) shareConfig('live:' + k, liveCfg[k]);
+  for (const k of ['alerts', 'effects', 'widgets', 'stream', 'dj', 'music', 'chars']) if (liveCfg[k]) shareConfig('live:' + k, liveCfg[k]);
 }
 function applyConfigMsg(key, data) {
   if (applyRemoteConfig(key, data)) return;
@@ -178,6 +178,8 @@ function handleEvent(ev) {
 function overlayOnly(ev) { stats.onEvent(ev); }
 function dispatchV2(ev) {
   if (paused) return;
+  const pk = typeof charPickFromChat === 'function' && charPickFromChat(ev);
+  if (pk) { current.onCharPick?.(ev.user, pk); announcer.show(`${trim(ev.user?.nick || '', 14)} escolheu ${CHARACTERS[pk].name}!`, '#9ef0ff', 2, 34); }
   if (ev.type === 'chat' && current.onChat && canPlay(current, ev.user)) current.onChat(ev);
   current.onEvent?.(ev);
   runTriggers(current, ev);
@@ -340,7 +342,7 @@ function syncMirror() {
     if (g.v2) { bc.postMessage({ t: 'config', key: 'set:' + g.id, data: g.s }); bc.postMessage({ t: 'config', key: 'bind:' + g.id, data: g.binds }); }
     else if (g.configKey && g.getConfig) bc.postMessage({ t: 'config', key: g.configKey, data: g.getConfig() });
   }
-  for (const k of ['alerts', 'effects', 'widgets', 'stream', 'dj', 'music']) if (liveCfg[k]) bc.postMessage({ t: 'config', key: 'live:' + k, data: liveCfg[k] });
+  for (const k of ['alerts', 'effects', 'widgets', 'stream', 'dj', 'music', 'chars']) if (liveCfg[k]) bc.postMessage({ t: 'config', key: 'live:' + k, data: liveCfg[k] });
   bc.postMessage({ t: 'game', id: current.id, seed: RNG.seed, reset: true });
   if (viewerCount) bc.postMessage({ t: 'viewers', n: viewerCount });
   if (paused) bc.postMessage({ t: 'bus', bus: { t: 'pause', on: true } });

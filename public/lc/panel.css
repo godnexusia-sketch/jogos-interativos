@@ -299,3 +299,16 @@ button.primary:hover { box-shadow:0 8px 26px rgba(34,227,238,.45); }
 /* Na coluna com rolagem, as seções não podem encolher (o destaque sumia) */
 #view > * { flex-shrink:0; }
 .hero { min-height:200px; }
+
+/* Personagens */
+.chgrid { display:grid; grid-template-columns:repeat(auto-fill, minmax(132px, 1fr)); gap:10px; }
+.chcard { position:relative; display:flex; flex-direction:column; gap:3px; padding:8px; border-radius:16px; background:rgba(255,255,255,.03); border:1px solid var(--line); cursor:pointer; transition:transform .2s var(--ease), border-color .2s, opacity .2s; opacity:.55; }
+.chcard.on { opacity:1; border-color:color-mix(in srgb, var(--c1) 70%, transparent); box-shadow:0 0 0 1px color-mix(in srgb, var(--c1) 40%, transparent); }
+.chcard:hover { transform:translateY(-3px); }
+.chcard input { position:absolute; top:10px; right:10px; z-index:2; accent-color:#22e3ee; width:18px; height:18px; }
+.chimg { position:relative; display:grid; place-items:center; aspect-ratio:1; border-radius:12px; overflow:hidden; background:radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--c1) 45%, #1b2040), #0c0f22); }
+.chimg img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }
+.chimg i { font:italic 900 34px 'Barlow Condensed', sans-serif; color:rgba(255,255,255,.35); }
+.chcard b { font:italic 800 17px 'Barlow Condensed', sans-serif; }
+.chcard small { color:var(--muted); font-size:11px; }
+.chcard code { color:#9ef0ff; }
