@@ -151,7 +151,8 @@ const commentReader = {
     // Sem o locutor ligado, continua valendo o leitor de comentários antigo
     if (!this.on()) { if (type === 'chat' && st.readComments) this.say('chat', ev, 4); return; }
     if (!this.types()[type]) return;
-    if (type === 'chat' && current?.speaksChat) return; // o apresentador IA já responde o chat por voz
+    if (type === 'chat' && current?.speaksChat) return; // o apresentador IA e a professora já falam
+    if (type === 'chat' && norm(ev.text).replace(/ /g, '').length <= 2) return; // respostas de jogo ("a", "1", "kk") não são lidas
     if (type === 'like') {
       // Junta os likes da pessoa e fala no máximo um aviso a cada 20s por pessoa
       const k = uid(ev), r = this.likes.get(k) || { n: 0, t: -1e9 };

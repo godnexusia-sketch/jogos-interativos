@@ -307,7 +307,7 @@ const ai = {
   leader: true,
   waiting: new Map(), // chave -> resolve
   got: new Map(),
-  async ask(key, system, prompt, fallback = '', max = 160) {
+  async ask(key, system, prompt, fallback = '', max = 160, { raw = false } = {}) {
     if (this.got.has(key)) return this.got.get(key);
     if (!this.leader) {
       return new Promise((resolve) => {
@@ -320,7 +320,7 @@ const ai = {
       const r = await fetch('/api/ai', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ system, prompt, max }) });
       if (r.ok) text = (await r.json()).text || '';
     } catch {}
-    text = cleanAi(text) || fallback;
+    text = (raw ? String(text || '').replace(/[*#`]/g, '').trim().slice(0, 6000) : cleanAi(text)) || fallback; // raw: texto longo com linhas (aula)
     this.got.set(key, text);
     if (this.got.size > 300) this.got.delete(this.got.keys().next().value);
     if (typeof busSend === 'function') busSend({ t: 'ai', key, text });

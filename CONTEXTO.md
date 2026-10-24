@@ -56,6 +56,10 @@ alertas, efeitos, widgets, DJ Pad, música, voz neural e apresentador com IA. Se
 - **Fotos de perfil:** `picUrls` pega qualquer link https dentro dos campos de foto do usuário (variações de nome); `/api/img` aceita mais domínios do TikTok (ibytedtos, ttwstatic, tiktokv…) e repete com referer do TikTok em 403. Diagnóstico em `/api/img-stats` (fotos ok, falhas por domínio, sites recusados, eventos sem foto) e avisos no log do Render.
 - **Personagem principal por jogo:** Torcida (corredores), Combate (Bárbaro × Cavaleiro), Chute (chutador Swat), Ilha, Desfile, Festa Pixel, Corrida Lunar (Astronauta), Muralha (Aventureiro), Torre Empilhada (Maga), Limpa Vidros (faxineiro no andaime), Corta Frutas (Encapuzado). 1000 Degraus (Bárbaro, pula degrau por degrau) e os jogos de bonecos de bloco ganharam Character3D com padrão próprio, `hasChars: true` e `onCharPick`.
 
+## Matemática e Aula ao Vivo (24/10/2026)
+- **`games/lc/math2.js`:** `defineMathGame` faz dois jogos: **Desafio da Álgebra** (`math-algebra`: equação do 1º e 2º grau, logaritmos, sistemas — `ALG_GEN`) e **Geometria Show** (`math-geometry`: retângulo, triângulo, Pitágoras, círculo, trapézio, ângulos, cubo, paralelepípedo, cilindro, cone, esfera, pirâmide, poliedros — `GEO_GEN`, figura desenhada em `drawFig`, π = 3). Pergunta com 4 alternativas (letra sozinha ou número), uma tentativa por pessoa, resolução passo a passo na revelação (lida em voz). Configurações: nível, conteúdos ligados (`t_<tópico>`), tempos. Presentes: dica / pular; likes: +10s.
+- **`games/lc/aula.js` (Aula ao Vivo, `live-class`):** reconhece pedidos no chat (`AULA_RE`: "quero aprender…", "aula de…", "o que é…", "!aula…"), lista de pedidos com contagem. A IA monta a aula (`ai.ask(..., { raw: true })`: TITULO/PONTO/EXEMPLO/PERGUNTA/A-D/RESPOSTA) e a professora 3D (`charLayer`, padrão Maga) explica ponto por ponto com voz, exemplo e pergunta; depois repete. A primeira aula pode ser grátis (`firstFree`); trocar de conteúdo = ação `change_topic` (padrão presente de 10+ moedas): vale o pedido de quem mandou, senão o mais pedido. Sem IA, aulas prontas em `AULA_PRONTAS`. `speaksChat` (o locutor não lê o chat nesse jogo); o locutor também não lê comentários de 1–2 letras em nenhum jogo.
+
 ## Arquitetura
 ### Servidor (`server.js`, Node 22, `http` + `ws`)
 - Uma conexão com o TikTok por @ (`tiktok-live-connector@2.5.0`, `enableExtendedGiftInfo: false`). A **sala do @ existe enquanto houver alguém conectado, mesmo com a live fora do ar**; a conexão com o TikTok tenta de novo sozinha (30 s offline, 5 s queda).
@@ -75,7 +79,7 @@ alertas, efeitos, widgets, DJ Pad, música, voz neural e apresentador com IA. Se
 - `lc/kit.js`: visual dos jogos novos (palco, cartão de pergunta, alternativas, confete, vencedor, `Feed`, `narrate`).
 - Dados em `public/data/` (quiz, verdadeiro/falso, prefere, o povo diz, associação, contexto, frases, marcas, países, dicionário, desenhos, mapa-múndi). Créditos em `data/CREDITOS.md`.
 
-## Os 68 jogos
+## Os 74 jogos
 - **Clássicos (14, `games/*.js`, `registerGame`, recebem eventos crus no `onEvent`):** votacao (agora com lista configurável de até 16 jogos), simnao, urna, chute, torcida, corrida, kart, cobra, combate, pipa, avatares, flappy, ilha, desfile.
 - **Novos (54, `games/lc/*.js`, `defineGame` com ações e gatilhos):**
   - `quiz.js`: trivia-time, million-quiz, true-or-false · `quiz2.js`: would-you-rather, quick-math, memory-maestro, crowd-says, guess-the-number
