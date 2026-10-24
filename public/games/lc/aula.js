@@ -169,7 +169,7 @@ defineGame({
     else if (this.st === 'quiz' && this.t > this.s.quizSeconds) {
       this.st = 'answer'; this.t = 0;
       const i = 'ABCD'.indexOf(L.a);
-      narrate(this, `A resposta certa é a letra ${L.a}: ${L.o[i]}. ${this.right[0] ? `Parabéns, ${this.right[0].user.nick}!` : ''}`);
+      narrate(this, `A resposta certa é a letra ${L.a}: ${L.o[i]}. ${congratsLine(this.right)}`);
       const c = charLayer.chars.get('teacher'); c?.play(this.right.length ? 'victory' : 'taunt');
     } else if (this.st === 'answer' && this.t > 8) { this.st = 'loop'; this.t = 0; }
     else if (this.st === 'loop' && this.t > this.s.loopPause) { this.st = 'point'; this.i = 0; this.t = 0; this.speakPoint(true); }

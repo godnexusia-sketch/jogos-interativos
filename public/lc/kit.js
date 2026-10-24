@@ -131,3 +131,12 @@ class Feed {
 }
 // Fala o texto pela voz da live, se o jogo deixar.
 function narrate(g, str, opts = {}) { if (g.s.narrate !== false && g === current) voice.say(str, { cat: g.voiceCat || 'game', ...opts }); }
+// "Parabéns a Ana, Bia e Caio!" — todos que acertaram, pelo nome (com muita gente, fala os 15 primeiros e quantos mais)
+function congratsLine(list) {
+  const names = list.map((r) => commentReader.nick(r.user || r)).filter(Boolean);
+  if (!names.length) return 'Ninguém acertou dessa vez.';
+  const shown = names.slice(0, 15), more = names.length - shown.length;
+  const joined = shown.length === 1 ? shown[0] : `${shown.slice(0, -1).join(', ')} e ${shown[shown.length - 1]}`;
+  return `Parabéns a ${joined}${more > 0 ? `, e mais ${more} ${more === 1 ? 'pessoa' : 'pessoas'}` : ''}!`;
+}
+

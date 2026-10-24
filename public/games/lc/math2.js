@@ -132,7 +132,7 @@ function drawFig(f, cx, cy, s = 1) {
 function defineMathGame(v) {
   const topicSets = v.topics.map(([key, label, def]) => ({ key: 't_' + key, type: 'toggle', label, default: def !== false, group: 'Conteúdos' }));
   return defineGame({
-    id: v.id, name: v.name, genre: 'trivia', icon: v.icon, color: v.color, voice: true,
+    id: v.id, name: v.name, genre: 'trivia', icon: v.icon, color: v.color, voice: true, legendPos: { side: 'left', y: 930, cycle: true }, legendPos: { side: 'left', y: 930, cycle: true },
     desc: v.desc,
     help: `<p>${v.help}</p><p>Responda com a <b>letra</b> (A, B, C, D) ou com o <b>número</b>. Cada pessoa tem <b>uma tentativa</b> por pergunta; quem acerta primeiro ganha mais pontos. Depois aparece a <b>resolução passo a passo</b>.</p><p>🎁 Presentes dão <b>dica</b> ou <b>pulam</b> a pergunta; ❤️ likes dão <b>+10 segundos</b>.</p>`,
     settings: [
@@ -159,23 +159,34 @@ function defineMathGame(v) {
       for (const w of q.wrong || []) if (opts.size < 4 && Number.isFinite(w) && Math.abs(w - q.ans) > 1e-9) opts.add(+(+w).toFixed(2));
       for (let d = 1; opts.size < 4; d++) for (const x of [q.ans + d, q.ans - d, q.ans + d * 2]) if (opts.size < 4) opts.add(x);
       q.opts = this.rng.shuffle([...opts]); q.letter = 'ABCD'[q.opts.indexOf(q.ans)];
-      this.cur = q; this.right = []; this.tried = new Set(); this.hintOn = false; this.round++;
+      this.cur = q; this.right = []; this.tried = new Set(); this.hintOn = false; this.round++; this.votes = [0, 0, 0, 0]; this.voters = [[], [], [], []]; this.voteFlash = null;
       this.ph.go('q', this.s.qSeconds);
       narrate(this, `${q.topic}. ${speakMath(q.q.replace('\n', '. '))}`);
     },
+    // Lê a resposta do comentário: a letra ("b", "B)", "letra b") ou o número da alternativa ("36", "-10", "36 cm", "2,5")
+    pickOption(text) {
+      const q = this.cur, raw = String(text || '').trim().toLowerCase().replace(/^(é|e|eh|resposta|letra)\s*[:=]?\s*/, '').replace(/^(letra)\s*/, '');
+      const lm = raw.match(/^\(?([abcd])\)?[\s.!)]*$/);
+      if (lm && this.s.showOptions) return 'abcd'.indexOf(lm[1]);
+      const nm = raw.replace(/\s+/g, ' ').match(/^(-?\s?\d+(?:[.,]\d+)?)\s*(cm²|cm2|cm³|cm3|cm|m²|m|°|graus|grau|unidades)?[\s!.]*$/);
+      if (!nm) return -1;
+      const n = Number(nm[1].replace(/\s/g, '').replace(',', '.'));
+      if (this.s.showOptions) return q.opts.findIndex((o) => Math.abs(o - n) < 1e-6);
+      return Math.abs(n - q.ans) < 1e-6 ? q.opts.indexOf(q.ans) : 4; // sem alternativas: qualquer número conta (4 = errado)
+    },
     onChat(ev) {
       if (this.ph.name !== 'q') return;
-      const q = this.cur, k = uid(ev), t = norm(ev.text).replace(',', '.');
-      const lt = t.replace(/^letra /, '').replace(/ /g, ''), letter = this.s.showOptions && /^[abcd]$/.test(lt) ? lt : null; // só a letra sozinha ("a resposta é…" não conta)
-      const n = /^-?\d+(\.\d+)?$/.test(t) ? Number(t) : null;
-      if (!letter && n === null) return;
-      if (this.tried.has(k)) return;
+      const q = this.cur, k = uid(ev), i = this.pickOption(ev.text);
+      if (i < 0 || this.tried.has(k)) return; // uma resposta por pessoa (a primeira vale)
       this.tried.add(k);
-      if ((letter && letter.toUpperCase() === q.letter) || (n !== null && Math.abs(n - q.ans) < 1e-6)) {
+      // Marca na tela: foto da pessoa na alternativa e barra de quantos marcaram cada uma
+      if (i < 4) { this.votes[i]++; this.voters[i].unshift(ev.user); if (this.voters[i].length > 6) this.voters[i].pop(); }
+      this.voteFlash = { i, user: ev.user, t: 1.6 };
+      if (i === q.opts.indexOf(q.ans)) {
         const pos = this.right.length, pts = Math.max(10, 100 - pos * 10) * (Number(this.s.level) || 2);
         this.right.push({ user: ev.user, pts }); this.points.add(ev.user, pts);
-        if (pos === 0) { sfx.confirm(); burst(W / 2, 520, ['#2dd4bf', '#fff'], 30, 360); }
-      }
+        if (pos === 0) sfx.confirm();
+      } else sfx.pop?.();
     },
     onAction(id, a) {
       if (this.ph.name !== 'q') return;
@@ -185,11 +196,12 @@ function defineMathGame(v) {
     },
     update(dt) {
       this.feed.update(dt);
+      if (this.voteFlash && (this.voteFlash.t -= dt) <= 0) this.voteFlash = null;
       if (!this.ph.update(dt)) return;
       if (this.ph.name === 'q') {
         this.ph.go('reveal', this.s.revealSeconds);
         const q = this.cur;
-        narrate(this, `Resposta: letra ${q.letter}, ${fmtN(q.ans)}. ${q.steps.map(speakMath).join('. ')}. ${this.right[0] ? `${this.right[0].user.nick} acertou primeiro!` : ''}`);
+        narrate(this, `Resposta: letra ${q.letter}, ${fmtN(q.ans)}. ${q.steps.map(speakMath).join('. ')}. ${congratsLine(this.right)}`);
       } else if (this.ph.name === 'reveal') {
         if (matchOver(this, this.round, this.points.best)) { this.champ = this.points.top(1)[0]; if (this.champ) { scores.add(this.id, this.champ.user, 0, 1); confetti(140); sfx.win(); } this.ph.go('final', 9); }
         else this.ph.go('break', this.s.breakSeconds);
@@ -210,16 +222,27 @@ function defineMathGame(v) {
       mathLines(q.q, W - 120, 36).forEach((l, i) => label(l, W / 2, top + figH + 44 + i * 46, 36, '#fff', 'center', 900));
       let y = top + figH + 60 + 46 * mathLines(q.q, W - 120, 36).length;
       if (this.hintOn && !reveal) { pill(`💡 ${q.hint}`, W / 2, y, { size: 18, bg: 'rgba(250,204,21,.18)', color: '#fde68a', border: '#facc15' }); y += 42; }
-      // Alternativas
+      // Alternativas com a barra de votos (porcentagem e quantos) e as fotos de quem marcou
       if (this.s.showOptions) {
+        const tot = this.votes.reduce((a, b) => a + b, 0), bh2 = 92;
         q.opts.forEach((o, i) => {
-          const x = 40 + (i % 2) * ((W - 80) / 2 + 0), yy = y + Math.floor(i / 2) * 76, w = (W - 100) / 2, ok = reveal && o === q.ans;
-          ctx.fillStyle = ok ? 'rgba(34,197,94,.35)' : reveal ? 'rgba(0,0,0,.35)' : 'rgba(8,10,24,.7)'; ctx.beginPath(); ctx.roundRect(x + (i % 2) * 20, yy, w, 64, 18); ctx.fill();
-          ctx.strokeStyle = ok ? '#22c55e' : 'rgba(255,255,255,.18)'; ctx.lineWidth = ok ? 4 : 2; ctx.stroke();
-          label('ABCD'[i], x + (i % 2) * 20 + 34, yy + 33, 30, ok ? '#86efac' : v.accent, 'center', 900, F_TITLE);
-          label(fmtN(o), x + (i % 2) * 20 + w / 2 + 20, yy + 33, 32, '#fff', 'center', 900);
+          const w = (W - 100) / 2, x = 40 + (i % 2) * (w + 20), yy = y + Math.floor(i / 2) * (bh2 + 12), ok = reveal && o === q.ans, pct = tot ? this.votes[i] / tot : 0;
+          const flash = this.voteFlash?.i === i ? this.voteFlash.t / 1.6 : 0;
+          ctx.fillStyle = ok ? 'rgba(34,197,94,.30)' : reveal ? 'rgba(0,0,0,.35)' : 'rgba(8,10,24,.72)'; ctx.beginPath(); ctx.roundRect(x, yy, w, bh2, 18); ctx.fill();
+          // Barra de progresso dos votos
+          ctx.save(); ctx.beginPath(); ctx.roundRect(x, yy, w, bh2, 18); ctx.clip();
+          ctx.fillStyle = ok ? 'rgba(34,197,94,.45)' : `rgba(${v.accent === '#5eead4' ? '45,212,191' : '167,139,250'},${0.22 + flash * 0.25})`; ctx.fillRect(x, yy + bh2 - 26, w * pct, 26);
+          ctx.restore();
+          ctx.strokeStyle = ok ? '#22c55e' : flash ? '#fff' : 'rgba(255,255,255,.18)'; ctx.lineWidth = ok ? 4 : flash ? 3 : 2; ctx.beginPath(); ctx.roundRect(x, yy, w, bh2, 18); ctx.stroke();
+          label('ABCD'[i], x + 30, yy + 30, 30, ok ? '#86efac' : v.accent, 'center', 900, F_TITLE);
+          label(fmtN(o), x + w / 2 + 14, yy + 30, 32, '#fff', 'center', 900);
+          label(`${Math.round(pct * 100)}% · ${this.votes[i]}`, x + w - 12, yy + bh2 - 13, 14, '#fff', 'right', 900);
+          this.voters[i].slice(0, 5).forEach((u, j) => avatar(u, x + 22 + j * 24, yy + bh2 - 13, 11, ok ? '#86efac' : 'rgba(255,255,255,.8)'));
         });
-        y += 160;
+        y += 2 * (bh2 + 12) + 6;
+        if (!reveal) { label(`${tot} ${tot === 1 ? 'pessoa respondeu' : 'pessoas responderam'}`, W / 2, y + 4, 18, 'rgba(255,255,255,.8)', 'center', 800); y += 24; }
+        // Aviso de quem acabou de marcar
+        if (this.voteFlash && !reveal) { pill(`✔ ${trim(this.voteFlash.user.nick || '', 14)} marcou ${'ABCD'[this.voteFlash.i] || '?'}`, W / 2, y + 12, { size: 16, bg: 'rgba(0,0,0,.6)', color: v.accent }); y += 34; }
       }
       if (reveal) {
         // Resolução passo a passo
@@ -228,10 +251,10 @@ function defineMathGame(v) {
         label(`✔ RESPOSTA: ${q.letter ? q.letter + ') ' : ''}${fmtN(q.ans)}`, W / 2, y + 28, 24, '#86efac', 'center', 900);
         steps.forEach((s, i) => label(trim(s, 44), W / 2, y + 68 + i * 40, 24, '#fff', 'center', 800));
         y += h + 14;
-      } else { title(this.right.length ? `${this.right.length} ACERTARAM` : 'COMENTE A LETRA OU O NÚMERO', W / 2, y + 20, 26, this.right.length ? '#7cff6b' : '#fff'); y += 44; }
+      } else { title('COMENTE A LETRA OU O NÚMERO', W / 2, y + 20, 26, '#fff'); y += 44; }
       // Quem acertou
-      this.right.slice(0, 5).forEach((r, i) => avatar(r.user, W / 2 - 2 * 58 + i * 58, y + 28, 24, i === 0 ? '#ffc93c' : '#7cff6b'));
-      if (this.s.showLeaderboard && y < 960) hudBoard(this.points.top(this.s.leaderboardSize), 120, Math.max(y + 70, 900), W - 240, { title: 'RANKING', n: 3, unit: ' pts', rowH: 34 });
+      if (reveal) this.right.slice(0, 5).forEach((r, i) => avatar(r.user, W / 2 - 2 * 58 + i * 58, y + 28, 24, i === 0 ? '#ffc93c' : '#7cff6b'));
+      if (this.s.showLeaderboard) hudBoard(this.points.top(this.s.leaderboardSize), 330, Math.max(y + 60, 930), 210, { title: 'RANKING', n: 3, unit: '', rowH: 32 }); // ranking no meio; lista à esquerda; mascote à direita
       this.feed.draw(20, 160);
     },
   });
