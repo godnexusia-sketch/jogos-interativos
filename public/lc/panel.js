@@ -731,6 +731,12 @@ if (!isClean) (() => {
   };
 
   // ---------- Usuários (só o admin) ----------
+  function pendBadge(n) {
+    const b = document.querySelector('#rail [data-view="usuarios"]'); if (!b) return;
+    let i = b.querySelector('.rbadge'); if (!n) return i?.remove();
+    if (!i) { i = document.createElement('i'); i.className = 'rbadge'; b.appendChild(i); }
+    i.textContent = n; b.title = `Usuários — ${n} pedido${n > 1 ? 's' : ''} de cadastro`;
+  }
   RENDER.usuarios = async () => {
     h('<div class="vhead"><h2>👥 Usuários</h2></div><div class="panel"><p class="small">Carregando…</p></div>');
     let data; try { data = await (await fetch('/api/users')).json(); } catch { data = { users: [] }; }
@@ -738,8 +744,15 @@ if (!isClean) (() => {
     const FUNCS = [['jogo', '⚙️ Configurar o jogo (gatilhos e opções)'], ['personagens', '🧍 Personagens'], ['testar', '🧪 Simulador'], ['efeitos', '✨ Efeitos'], ['alertas', '🔔 Alertas'], ['widgets', '🧩 Widgets'], ['dj', '🎛️ DJ Pad'], ['musica', '🎵 Música (YouTube)'], ['voz', '🗣️ Voz e chat'], ['placar', '🏆 Placar'], ['historico', '📊 Histórico']];
     const funcPick = (sel) => `<div class="ugames ufuncs">${FUNCS.map(([id, n]) => `<label><input type="checkbox" data-perm value="${id}" ${sel.includes(id) ? 'checked' : ''}> ${n}</label>`).join('')}</div>`;
     const gamePick = (sel) => `<div class="ugames">${all.map(([id, n]) => `<label><input type="checkbox" data-game value="${id}" ${sel.includes(id) ? 'checked' : ''}> ${esc(n)}</label>`).join('')}</div>`;
+    const pend = data.users.filter((u) => u.status === 'pendente'); data.users = data.users.filter((u) => u.status !== 'pendente');
+    pendBadge(pend.length);
     h(`<div class="vhead"><h2>👥 Usuários</h2><span class="tag">${data.users.length} contas</span></div>
       ${data.banco ? '' : '<div class="panel warn"><b>⚠️ Banco de dados não ligado:</b> as contas somem quando o servidor reinicia.</div>'}
+      ${pend.length ? `<div class="panel pend"><h3>📝 Pedidos de cadastro (${pend.length})</h3><p class="small">Marque os jogos e as funções que a pessoa vai poder usar e clique em Aprovar. Ela entra com o e-mail e a senha que escolheu.</p>
+        <div class="ulist">${pend.map((u) => `<div class="urow" data-u="${u.id}">
+          <div><b>${esc(u.info?.nome || u.username)}</b> <i class="bd bnew">NOVO</i><br><small>${esc(u.username)}${u.info?.tiktok ? ` · TikTok @${esc(u.info.tiktok)}` : ''} · pediu em ${new Date(u.created_at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</small>${u.info?.recado ? `<p class="small">💬 “${esc(u.info.recado)}”</p>` : ''}</div>
+          <div class="row"><button data-act="games" class="primary">✅ Aprovar…</button><button data-act="del" class="danger">✖ Recusar</button></div>
+          <div class="uedit" hidden><p class="small">Jogos: <button type="button" data-act="all">marcar todos</button> <button type="button" data-act="none">desmarcar</button></p>${gamePick([])}<p class="small">Funções:</p>${funcPick(['musica'])}<div class="row"><button class="primary" data-act="approve">Aprovar acesso</button></div></div></div>`).join('')}</div></div>` : ''}
       <div class="panel"><h3>➕ Novo usuário</h3>
         <div class="grid2"><label class="f"><span>Usuário ou e-mail</span><input id="nuName" placeholder="ex.: maria ou maria@gmail.com"></label>
           <label class="f"><span>Senha</span><div class="sl"><input id="nuPass"><button id="nuGen" type="button">🎲</button></div></label></div>
@@ -770,6 +783,9 @@ if (!isClean) (() => {
       const id = Number(row.dataset.u), act = b.dataset.act;
       try {
         if (act === 'games') row.querySelector('.uedit').hidden = !row.querySelector('.uedit').hidden;
+        else if (act === 'all' || act === 'none') row.querySelectorAll('.uedit input[data-game]').forEach((i) => (i.checked = act === 'all'));
+        else if (act === 'approve') { const games = [...row.querySelectorAll('.uedit input[data-game]:checked')].map((i) => i.value), perms = [...row.querySelectorAll('.uedit input[data-perm]:checked')].map((i) => i.value); if (!games.length) return toastMsg('Marque pelo menos um jogo.'); await api(`/api/users/${id}`, 'PUT', { games, perms, aprovar: true }); toastMsg('✅ Cadastro aprovado — a pessoa já pode entrar'); RENDER.usuarios(); }
+        else if (act === 'del' && b.textContent.includes('Recusar')) { if (confirm('Recusar este pedido? Ele será apagado.')) { await api(`/api/users/${id}`, 'DELETE'); RENDER.usuarios(); } }
         else if (act === 'saveGames') { const games = [...row.querySelectorAll('.uedit input[data-game]:checked')].map((i) => i.value), perms = [...row.querySelectorAll('.uedit input[data-perm]:checked')].map((i) => i.value); if (!games.length) return toastMsg('Marque pelo menos um jogo.'); await api(`/api/users/${id}`, 'PUT', { games, perms }); toastMsg('✅ Salvo — vale quando ele recarregar a página'); RENDER.usuarios(); }
         else if (act === 'pass') { const p = prompt('Nova senha (6 ou mais caracteres):', gen()); if (p) { await api(`/api/users/${id}`, 'PUT', { password: p }); toastMsg(`✅ Nova senha: ${p}`); } }
         else if (act === 'toggle') { await api(`/api/users/${id}`, 'PUT', { disabled: b.textContent.includes('Desativar') }); RENDER.usuarios(); }
@@ -880,6 +896,8 @@ if (!isClean) (() => {
   const meBtn = document.createElement('button'); meBtn.id = 'meBtn'; meBtn.title = 'Sair'; meBtn.textContent = `👤 ${trim(ME.username, 22)}${IS_ADMIN ? ' (admin)' : ''} · Sair`;
   meBtn.addEventListener('click', () => { if (confirm('Sair desta conta?')) logout(); });
   document.querySelector('.topbtns')?.prepend(meBtn);
+  // Admin: avisa na barra quando há pedidos de cadastro esperando aprovação
+  if (IS_ADMIN) { const chk = () => fetch('/api/users').then((r) => r.json()).then((d) => pendBadge((d.users || []).filter((u) => u.status === 'pendente').length)).catch(() => {}); chk(); setInterval(chk, 60000); }
   // Primeiro acesso: abre a aba para conectar a IA
   show(!ME.ai?.feito ? 'ia' : curView);
 })();

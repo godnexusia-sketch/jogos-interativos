@@ -364,3 +364,7 @@ button.primary:hover { box-shadow:0 8px 26px rgba(34,227,238,.45); }
 .urow .uedit { grid-column: 1 / -1; }
 .panel.warn { border-color: rgba(250,204,21,.5); background: rgba(250,204,21,.08); }
 #meBtn { white-space: nowrap; }
+.rail button { position:relative; }
+.rbadge { position:absolute; top:2px; right:6px; min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:#ff2d55; color:#fff; font:800 11px/18px system-ui; font-style:normal; }
+.panel.pend { border-color:rgba(34,227,238,.45); }
+.bd.bnew { background:#22e3ee; color:#04121a; }

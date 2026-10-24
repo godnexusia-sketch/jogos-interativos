@@ -66,6 +66,16 @@ alertas, efeitos, widgets, DJ Pad, música, voz neural e apresentador com IA. Se
 - **Agradecimento a quem segue:** em todos os jogos, voz com o nome (`stream.thankFollow`, `thankFormat`), uma vez a cada 10 min por pessoa.
 - **Aula ao Vivo:** lista numerada de assuntos (pedidos mais votados + `suggest` do dono); comentar o número vota. Trocar = presente + digitar o nome ou o número (`paid`, vale 3 min); se a pessoa já tinha escolhido nos últimos 3 min, troca na hora. Fora da explicação a professora dá boas-vindas, responde comentários com a IA (uma frase) e chama o chat para escolher o assunto (`chatter`).
 
+## Página de entrada, login, cadastro e IA do usuário (24/10/2026)
+- `/` sem login mostra `public/inicio.html`: vitrine com os 74 jogos (foto, como funciona, o que o público faz, configurações, tipo). Botões **Entrar** e **Criar cadastro** no canto superior esquerdo. `?login` abre o Entrar; `#jogo-<id>` abre um jogo.
+- O catálogo vem de `public/data/catalogo.json`. **Gere de novo quando mudar jogos:** `PORT=3123 node server.js &` e `node testes/catalogo.cjs`.
+- Contas em `lib/contas.js` (Postgres do Supabase via `DATABASE_URL`, esquema `DB_SCHEMA=app`; sem banco usa arquivo temporário). Senhas com scrypt, cookie `sess` de 30 dias.
+- Admin: `godnexus.ia@gmail.com` (`ADMIN_EMAIL`). O primeiro acesso cria a senha com o código `ADMIN_SETUP_CODE`. "Entrar com o Google" aparece quando `GOOGLE_CLIENT_ID` está no Render.
+- "Criar cadastro" cria a conta como `pendente`. O admin vê os pedidos na aba 👥 Usuários (com um número vermelho na barra), marca os jogos e as funções e aprova, ou recusa.
+- Usuário comum vê só os jogos liberados e as funções (`perms`) que o admin marcou; Jogos, Tela da live e Conectar IA ele sempre vê. O localStorage é separado por conta. A tela da live (`?clean=1`) abre sem login.
+- Aba 🤖 Conectar IA (abre sozinha no primeiro acesso): Sistema (padrão), Puter (grátis, sem chave, no navegador), Ollama (no PC), ou chave própria (Claude, ChatGPT, Gemini, OpenRouter — a chave fica no servidor).
+- Ainda não feito: as configurações de jogo do admin não vão para os usuários (cada um começa com o padrão).
+
 ## Arquitetura
 ### Servidor (`server.js`, Node 22, `http` + `ws`)
 - Uma conexão com o TikTok por @ (`tiktok-live-connector@2.5.0`, `enableExtendedGiftInfo: false`). A **sala do @ existe enquanto houver alguém conectado, mesmo com a live fora do ar**; a conexão com o TikTok tenta de novo sozinha (30 s offline, 5 s queda).

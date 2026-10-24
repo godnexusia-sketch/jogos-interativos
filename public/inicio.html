@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jogos Interativos · jogos para a sua live do TikTok</title>
+  <meta name="description" content="Mais de 70 jogos interativos para a live do TikTok: o público joga com presentes, comentários e likes. Personagens 3D, voz, IA e tudo configurável.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;700;800;900&family=Bungee&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #060914; --bg2: #0c1124; --card: #11172e; --line: rgba(255,255,255,.09); --txt: #eef2ff; --mut: #9aa3c7; --acc: #ff2d55; --acc2: #22e3ee; --gold: #ffc93c; --ok: #4ade80; --bad: #f87171; --show: #fde047; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--txt); font: 16px/1.5 Barlow, system-ui, sans-serif; overflow-x: hidden; }
+    a { color: inherit; }
+    button { font: inherit; cursor: pointer; }
+    /* Topo: logo e botões no canto superior esquerdo */
+    header { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: rgba(6,9,20,.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    .logo { font-family: Bungee, sans-serif; font-size: 20px; letter-spacing: .5px; white-space: nowrap; text-decoration: none; }
+    .logo span { color: var(--acc2); }
+    .btn { border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 800; color: #fff; background: rgba(255,255,255,.08); border: 1px solid var(--line); white-space: nowrap; }
+    .btn.pri { background: linear-gradient(90deg, var(--acc), #ff6b3d); border: 0; box-shadow: 0 8px 24px rgba(255,45,85,.35); }
+    .btn.big { padding: 14px 26px; font-size: 18px; }
+    nav.links { margin-left: auto; display: flex; gap: 18px; font-weight: 700; color: var(--mut); }
+    nav.links a { text-decoration: none; } nav.links a:hover { color: var(--txt); }
+    @media (max-width: 640px) { header { gap: 8px; padding: 10px 12px; flex-wrap: nowrap; } .logo { font-size: 15px; } .logo span { display: none; } header .btn { padding: 9px 13px; font-size: 14px; } nav.links { display: none; } }
+    /* Destaque */
+    .hero { position: relative; padding: 70px 20px 60px; overflow: hidden; }
+    .hero-bg { position: absolute; inset: -40px; display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; opacity: .22; transform: rotate(-8deg) scale(1.15); filter: saturate(1.2); pointer-events: none; }
+    .hero-bg img { width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; }
+    .hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(800px 420px at 30% 40%, rgba(6,9,20,.35), var(--bg) 75%); pointer-events: none; }
+    .hero-in { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+    .tag { display: inline-block; padding: 6px 12px; border-radius: 999px; background: rgba(34,227,238,.12); color: var(--acc2); font-weight: 800; font-size: 14px; border: 1px solid rgba(34,227,238,.35); }
+    h1 { font-family: Bungee, sans-serif; font-size: clamp(34px, 6vw, 64px); line-height: 1.05; margin: 16px 0 14px; }
+    h1 em { font-style: normal; background: linear-gradient(90deg, var(--acc), var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p { font-size: clamp(17px, 2vw, 21px); color: #c9d0f0; max-width: 680px; margin: 0 0 26px; }
+    .hero .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+    .stats { display: flex; gap: 28px; margin-top: 34px; flex-wrap: wrap; }
+    .stats b { display: block; font-family: Bungee, sans-serif; font-size: 30px; color: var(--gold); }
+    .stats span { color: var(--mut); font-weight: 700; }
+    section { max-width: 1180px; margin: 0 auto; padding: 50px 20px; }
+    h2 { font-family: Bungee, sans-serif; font-size: clamp(24px, 3.4vw, 34px); margin: 0 0 8px; }
+    .sub { color: var(--mut); margin: 0 0 26px; }
+    /* Como funciona */
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .step { background: linear-gradient(180deg, #141b36, var(--card)); border: 1px solid var(--line); border-radius: 18px; padding: 20px; }
+    .step i { font-style: normal; font-size: 30px; }
+    .step b { display: block; font-size: 19px; margin: 8px 0 4px; }
+    .step p { margin: 0; color: var(--mut); }
+    .feats { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .feat { display: flex; gap: 12px; align-items: flex-start; padding: 16px; border-radius: 16px; background: rgba(255,255,255,.03); border: 1px solid var(--line); }
+    .feat i { font-style: normal; font-size: 26px; }
+    .feat b { display: block; } .feat small { color: var(--mut); font-size: 14px; }
+    /* Catálogo */
+    .tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.04); color: var(--txt); font-weight: 700; font-size: 14px; }
+    .chip.on { background: var(--acc2); color: #001218; border-color: transparent; }
+    .search { margin-left: auto; padding: 10px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg2); color: var(--txt); min-width: 220px; font: inherit; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+    .game { position: relative; text-align: left; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: var(--card); padding: 0; color: var(--txt); transition: transform .15s, box-shadow .15s; }
+    .game:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.45), 0 0 0 2px var(--c, var(--acc2)); }
+    .cover { position: relative; aspect-ratio: 9/12; background: radial-gradient(circle at 50% 30%, var(--c, #334), #0b0f20); display: grid; place-items: center; font-size: 60px; overflow: hidden; }
+    .cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .badges { position: absolute; top: 8px; left: 8px; display: flex; gap: 4px; flex-wrap: wrap; z-index: 1; }
+    .bd { font-size: 11px; font-weight: 900; padding: 3px 7px; border-radius: 6px; background: rgba(0,0,0,.7); }
+    .bd.d3 { color: var(--acc2); } .bd.ai { color: #c4b5fd; } .bd.vo { color: var(--gold); } .bd.ch { color: var(--ok); }
+    .gin { padding: 12px 14px 14px; }
+    .gin small { color: var(--mut); font-weight: 700; }
+    .gin b { display: block; font-size: 18px; line-height: 1.2; margin: 2px 0 6px; }
+    .gin p { margin: 0; color: #b9c1e4; font-size: 14px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .more { display: inline-block; margin-top: 10px; color: var(--acc2); font-weight: 800; font-size: 14px; }
+    footer { border-top: 1px solid var(--line); padding: 30px 20px; text-align: center; color: var(--mut); }
+    /* Janelas */
+    dialog { border: 0; padding: 0; background: transparent; color: var(--txt); max-width: min(920px, calc(100vw - 24px)); width: 100%; }
+    dialog::backdrop { background: rgba(2,4,12,.78); backdrop-filter: blur(4px); }
+    .box { position: relative; background: linear-gradient(180deg, #151c38, var(--card)); border: 1px solid var(--line); border-radius: 22px; padding: 24px; max-height: calc(100vh - 40px); overflow: auto; }
+    .x { position: absolute; top: 12px; right: 12px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: rgba(0,0,0,.4); color: #fff; font-size: 18px; z-index: 2; }
+    .det { display: grid; grid-template-columns: 260px 1fr; gap: 22px; }
+    .det .cover { border-radius: 16px; aspect-ratio: 9/16; }
+    .det h3 { font-family: Bungee, sans-serif; font-size: 28px; margin: 4px 0 8px; }
+    .det h4 { margin: 20px 0 8px; font-size: 16px; color: var(--acc2); text-transform: uppercase; letter-spacing: .6px; }
+    .det p { margin: 0 0 8px; color: #cfd6f5; white-space: pre-line; }
+    .rows { display: grid; gap: 6px; }
+    .row { display: grid; grid-template-columns: 26px 1fr auto 1.2fr; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 10px; background: rgba(255,255,255,.04); border-left: 4px solid var(--ok); font-size: 15px; }
+    .row.hurt { border-left-color: var(--bad); } .row.show { border-left-color: var(--show); }
+    .row .w { font-weight: 800; color: #ffe08a; } .row .c { color: var(--mut); font-size: 13px; white-space: nowrap; }
+    .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pill { padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,.06); border: 1px solid var(--line); font-size: 14px; }
+    .sets { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+    .set { padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid var(--line); }
+    .set b { display: block; margin-bottom: 4px; color: var(--gold); }
+    .set li { color: #c6cdee; font-size: 14px; }
+    .set ul { margin: 0; padding-left: 18px; }
+    .legend { display: flex; gap: 14px; font-size: 13px; color: var(--mut); margin-bottom: 8px; flex-wrap: wrap; }
+    .legend i { font-style: normal; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; }
+    /* Formulários */
+    .form { max-width: 440px; margin: 0 auto; }
+    .form h3 { font-family: Bungee, sans-serif; margin: 0 0 4px; font-size: 24px; }
+    .form p { color: var(--mut); margin: 0 0 14px; font-size: 15px; }
+    .form label { display: block; font-size: 13px; color: var(--mut); margin: 10px 0 5px; }
+    .form input, .form textarea { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: #0b1022; color: var(--txt); font: inherit; }
+    .form textarea { min-height: 70px; resize: vertical; }
+    .form .btn { width: 100%; margin-top: 16px; padding: 13px; }
+    .err { min-height: 20px; margin-top: 10px; color: #ff8aa1; font-size: 14px; }
+    .okmsg { padding: 14px; border-radius: 14px; background: rgba(74,222,128,.12); border: 1px solid rgba(74,222,128,.4); color: #bbf7d0; }
+    .switch { text-align: center; margin-top: 12px; font-size: 14px; color: var(--mut); }
+    .switch a { color: var(--acc2); font-weight: 800; cursor: pointer; }
+    .or { text-align: center; color: var(--mut); font-size: 13px; margin: 14px 0 8px; }
+    #gBtn { display: flex; justify-content: center; }
+    [hidden] { display: none !important; }
+    @media (max-width: 760px) {
+      nav.links { display: none; }
+      .det { grid-template-columns: 1fr; }
+      .det .cover { max-width: 240px; margin: 0 auto; }
+      .row { grid-template-columns: 22px 1fr; } .row .c, .row .ar { display: none; }
+      .search { margin-left: 0; width: 100%; }
+      .hero-bg { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo" href="#">🎮 Jogos <span>Interativos</span></a>
+    <button class="btn pri" data-open="login">Entrar</button>
+    <button class="btn" data-open="signup">Criar cadastro</button>
+    <nav class="links"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#jogos">Jogos</a></nav>
+  </header>
+
+  <div class="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-in">
+      <span class="tag">🔴 Para a sua live do TikTok</span>
+      <h1>Sua live vira um <em>jogo</em> que o público controla</h1>
+      <p>Presentes, comentários, likes, seguidores e compartilhamentos mexem no jogo na hora. Personagens 3D, voz que fala com o público, IA, placares e tudo configurável — é só conectar o seu @ e escolher o jogo.</p>
+      <div class="cta"><button class="btn pri big" data-open="signup">Quero usar na minha live</button><a class="btn big" href="#jogos" style="text-decoration:none">Ver os jogos</a></div>
+      <div class="stats"><div><b id="nGames">70+</b><span>jogos</span></div><div><b>9:16</b><span>feito para celular</span></div><div><b>3D</b><span>personagens animados</span></div><div><b>Ao vivo</b><span>presentes viram ações</span></div></div>
+    </div>
+  </div>
+
+  <section id="como">
+    <h2>Como funciona</h2>
+    <p class="sub">Em 3 passos a sua live já está jogando.</p>
+    <div class="steps">
+      <div class="step"><i>📝</i><b>1. Peça o seu acesso</b><p>Clique em "Criar cadastro". O administrador aprova e libera os jogos para você.</p></div>
+      <div class="step"><i>🔗</i><b>2. Conecte o seu @</b><p>Entre, digite o seu usuário do TikTok e coloque a tela do jogo no LIVE Studio (fonte Link) ou no OBS.</p></div>
+      <div class="step"><i>🎁</i><b>3. A live joga</b><p>Cada presente, comentário e like faz algo no jogo — e a tela mostra para o público o que cada coisa faz.</p></div>
+    </div>
+  </section>
+
+  <section id="recursos">
+    <h2>Recursos</h2>
+    <p class="sub">Tudo que vem junto com os jogos.</p>
+    <div class="feats">
+      <div class="feat"><i>🧍</i><div><b>Personagens 3D</b><small>Dezenas de personagens animados que andam, pulam, lutam e comemoram. O público troca de personagem com um presente.</small></div></div>
+      <div class="feat"><i>🗣️</i><div><b>Voz que fala com a live</b><small>Agradece quem segue, fala os presentes e comentários, dá parabéns a quem acerta. Volume e voz para cada tipo de fala.</small></div></div>
+      <div class="feat"><i>📋</i><div><b>"Como jogar" na tela</b><small>A lista com o que cada presente, comentário e like faz aparece sozinha, com ícone e valor.</small></div></div>
+      <div class="feat"><i>🤖</i><div><b>IA</b><small>Apresentador que responde o chat, aulas ao vivo, roast e previsões. Conecte a sua IA — algumas opções nem precisam de chave.</small></div></div>
+      <div class="feat"><i>🎵</i><div><b>Música do YouTube</b><small>Cole o link e toque na live, com botões de troca e barra de minutos.</small></div></div>
+      <div class="feat"><i>⚙️</i><div><b>Tudo configurável</b><small>Escolha que presente faz o quê, tempos, quantidades, dificuldade, personagens, alertas, efeitos e widgets.</small></div></div>
+    </div>
+  </section>
+
+  <section id="jogos">
+    <h2>Os jogos</h2>
+    <p class="sub">Clique em um jogo para ver tudo: como funciona, o que o público faz e o que dá para configurar.</p>
+    <div class="tools"><div class="chips" id="chips"></div><input class="search" id="q" type="search" placeholder="🔎 Buscar jogo"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <footer>🎮 Jogos Interativos · jogos para lives do TikTok · <a href="#" data-open="login">Entrar</a> · <a href="#" data-open="signup">Criar cadastro</a></footer>
+
+  <!-- Detalhe do jogo -->
+  <dialog id="dGame"><div class="box"><button class="x" data-close>✕</button><div id="gameBody"></div></div></dialog>
+  <!-- Entrar -->
+  <dialog id="dLogin"><div class="box"><button class="x" data-close>✕</button>
+    <form class="form" id="fLogin"><h3>Entrar</h3><p>Para quem já tem o cadastro aprovado.</p>
+      <label>Usuário ou e-mail</label><input id="lu" autocomplete="username" required>
+      <label>Senha</label><input id="lp" type="password" autocomplete="current-password" required>
+      <button class="btn pri">Entrar</button>
+      <div id="gWrap" hidden><div class="or">ou</div><div id="gBtn"></div></div>
+      <div class="err" id="lErr"></div>
+      <div class="switch">Ainda não tem acesso? <a data-open="signup">Criar cadastro</a></div></form>
+    <form class="form" id="fSetup" hidden><h3>Primeiro acesso</h3><p>Crie a conta do administrador (acesso total).</p>
+      <label>Código de instalação</label><input id="sc" required autocomplete="off">
+      <label>E-mail do admin</label><input id="su" required autocomplete="username">
+      <label>Senha (6 ou mais)</label><input id="sp" type="password" required minlength="6" autocomplete="new-password">
+      <button class="btn pri">Criar administrador</button><div class="err" id="sErr"></div></form>
+  </div></dialog>
+  <!-- Criar cadastro -->
+  <dialog id="dSignup"><div class="box"><button class="x" data-close>✕</button>
+    <form class="form" id="fSignup"><h3>Criar cadastro</h3><p>Preencha e envie. O administrador aprova o seu acesso e libera os jogos.</p>
+      <label>Seu nome</label><input id="rn" required maxlength="60">
+      <label>E-mail (vai ser o seu login)</label><input id="re" type="email" required maxlength="60" autocomplete="email">
+      <label>Senha (6 ou mais)</label><input id="rp" type="password" required minlength="6" autocomplete="new-password">
+      <label>Seu @ no TikTok</label><input id="rt" maxlength="40" placeholder="@seuusuario">
+      <label>Mensagem para o administrador (opcional)</label><textarea id="rm" maxlength="300" placeholder="Que jogos você quer usar?"></textarea>
+      <button class="btn pri">Enviar pedido</button><div class="err" id="rErr"></div>
+      <div class="switch">Já tem acesso? <a data-open="login">Entrar</a></div></form>
+    <div class="form" id="rOk" hidden><h3>Pedido enviado! ✅</h3><div class="okmsg">Agora é só aguardar: quando o administrador aprovar, você entra com o seu e-mail e a senha que criou.</div><button class="btn pri" data-open="login">Ir para Entrar</button></div>
+  </div></dialog>
+
+  <script>
+    const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const cover = (g) => `/assets/capas/${g.id}.webp`;
+    let CAT = { games: [], genres: [] }, genre = 'all', AUTH = {};
+    // ---------- Janelas ----------
+    const dlg = { login: $('#dLogin'), signup: $('#dSignup'), game: $('#dGame') };
+    const open = (k) => { Object.values(dlg).forEach((d) => d.open && d.close()); if (k === 'signup') { $('#fSignup').hidden = false; $('#rOk').hidden = true; } dlg[k].showModal(); };
+    document.addEventListener('click', (e) => { const o = e.target.closest('[data-open]'); if (o) { e.preventDefault(); open(o.dataset.open); } if (e.target.closest('[data-close]')) e.target.closest('dialog').close(); });
+    Object.values(dlg).forEach((d) => d.addEventListener('click', (e) => { if (e.target === d) d.close(); }));
+    const post = async (url, body) => { const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || 'Não deu certo, tente de novo.'); return j; };
+    const form = (f, errEl, fn) => f.addEventListener('submit', async (e) => { e.preventDefault(); $(errEl).textContent = ''; const b = f.querySelector('button'); b.disabled = true; try { await fn(); } catch (x) { $(errEl).textContent = x.message; } finally { b.disabled = false; } });
+    form($('#fLogin'), '#lErr', async () => { await post('/api/login', { username: $('#lu').value.trim(), password: $('#lp').value }); location.replace('/'); });
+    form($('#fSetup'), '#sErr', async () => { await post('/api/setup', { code: $('#sc').value.trim(), username: $('#su').value.trim(), password: $('#sp').value }); location.replace('/'); });
+    form($('#fSignup'), '#rErr', async () => { await post('/api/signup', { name: $('#rn').value.trim(), username: $('#re').value.trim(), password: $('#rp').value, tiktok: $('#rt').value.trim(), message: $('#rm').value.trim() }); $('#fSignup').hidden = true; $('#rOk').hidden = false; });
+    fetch('/api/auth').then((r) => r.json()).then((a) => {
+      AUTH = a;
+      if (a.user) { location.replace('/'); return; }
+      if (a.setup) { $('#fLogin').hidden = true; $('#fSetup').hidden = false; if (a.adminEmail) { $('#su').value = a.adminEmail; $('#su').readOnly = true; } }
+      if (a.google && !a.setup) {
+        $('#gWrap').hidden = false;
+        const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
+        s.onload = () => { google.accounts.id.initialize({ client_id: a.google, callback: async (r) => { $('#lErr').textContent = ''; try { await post('/api/google', { credential: r.credential }); location.replace('/'); } catch (x) { $('#lErr').textContent = x.message; } } }); google.accounts.id.renderButton($('#gBtn'), { theme: 'filled_black', size: 'large', shape: 'pill', text: 'signin_with', locale: 'pt-BR', width: 300 }); };
+        document.head.appendChild(s);
+      }
+      const p = new URLSearchParams(location.search); if (p.get('login') !== null || a.setup) open('login');
+    }).catch(() => {});
+    // ---------- Catálogo ----------
+    const badges = (g) => [g.three && '<i class="bd d3">3D</i>', g.ai && '<i class="bd ai">IA</i>', g.voice && '<i class="bd vo">VOZ</i>', g.chars && '<i class="bd ch">PERSONAGENS</i>'].filter(Boolean).join('');
+    const card = (g) => `<button class="game" data-g="${g.id}" style="--c:${esc(g.color || '#22e3ee')}"><div class="cover"><span>${g.icon}</span><img src="${cover(g)}" alt="" loading="lazy" onerror="this.remove()"><div class="badges">${badges(g)}</div></div>
+      <div class="gin"><small>${g.genreIcon} ${esc(g.genreName)}</small><b>${esc(g.name)}</b><p>${esc(g.desc)}</p><span class="more">Ver como funciona →</span></div></button>`;
+    function draw() {
+      const s = $('#q').value.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+      const list = CAT.games.filter((g) => (genre === 'all' || g.genre === genre) && (!s || (g.name + ' ' + g.desc).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').includes(s)));
+      $('#grid').innerHTML = list.map(card).join('') || '<p class="sub">Nenhum jogo encontrado.</p>';
+    }
+    const TRIG = { gift: 'Presente', comment: 'Comentário', like: 'Likes', follow: 'Seguir', share: 'Compartilhar', join: 'Entrar' };
+    function detail(id) {
+      const g = CAT.games.find((x) => x.id === id); if (!g) return;
+      const rows = g.rows.map((r) => `<div class="row ${r.tone}"><span>${r.e}</span><span class="w">${esc(r.what)}</span><span class="c">${r.coins != null ? esc(String(r.coins)) + ' 🪙' : ''}</span><span>${esc(r.eff)}</span></div>`).join('');
+      const sets = Object.entries(g.settings).map(([k, v]) => `<div class="set"><b>${esc(k)}</b><ul>${v.slice(0, 12).map((x) => `<li>${esc(x)}</li>`).join('')}${v.length > 12 ? `<li>…e mais ${v.length - 12}</li>` : ''}</ul></div>`).join('');
+      $('#gameBody').innerHTML = `<div class="det" style="--c:${esc(g.color || '#22e3ee')}">
+        <div><div class="cover"><span>${g.icon}</span><img src="${cover(g)}" alt="" onerror="this.remove()"><div class="badges">${badges(g)}</div></div>
+          <button class="btn pri" data-open="signup" style="width:100%;margin-top:12px">Quero usar este jogo</button></div>
+        <div><small style="color:var(--mut);font-weight:800">${g.genreIcon} ${esc(g.genreName)}${g.classic ? ' · Clássico' : ''}</small><h3>${g.icon} ${esc(g.name)}</h3><p>${esc(g.desc)}</p>
+          <h4>Como funciona</h4><p>${esc(g.help)}</p>
+          ${rows ? `<h4>O que o público faz</h4><div class="legend"><span><i style="background:var(--ok)"></i>ajuda</span><span><i style="background:var(--bad)"></i>atrapalha</span><span><i style="background:var(--show)"></i>aparece/entra</span><span>Tudo isso é configurável: escolha que presente faz o quê.</span></div><div class="rows">${rows}</div>` : ''}
+          ${g.actions.length ? `<h4>Ações do jogo</h4><div class="pills">${g.actions.map((a) => `<span class="pill">${esc(a)}</span>`).join('')}</div>` : ''}
+          ${sets ? `<h4>O que dá para configurar</h4><div class="sets">${sets}</div>` : ''}
+          <h4>Tipo de jogo</h4><div class="pills"><span class="pill">${g.genreIcon} ${esc(g.genreName)}</span>${g.three ? '<span class="pill">🧊 3D</span>' : '<span class="pill">🖼️ 2D</span>'}${g.ai ? '<span class="pill">🤖 usa IA</span>' : ''}${g.voice ? '<span class="pill">🗣️ com voz</span>' : ''}${g.chars ? '<span class="pill">🧍 personagens 3D</span>' : ''}<span class="pill">📱 9:16</span></div>
+        </div></div>`;
+      open('game');
+    }
+    fetch('/data/catalogo.json').then((r) => r.json()).then((c) => {
+      CAT = c; $('#nGames').textContent = c.games.length;
+      const counts = Object.fromEntries(c.genres.map((x) => [x.id, c.games.filter((g) => g.genre === x.id).length]));
+      $('#chips').innerHTML = [`<button class="chip on" data-genre="all">🎮 Todos ${c.games.length}</button>`, ...c.genres.filter((x) => counts[x.id]).map((x) => `<button class="chip" data-genre="${x.id}">${x.icon} ${esc(x.name)} ${counts[x.id]}</button>`)].join('');
+      $('#heroBg').innerHTML = c.games.filter((g) => !g.classic).slice(0, 24).map((g) => `<img src="${cover(g)}" alt="" loading="lazy" onerror="this.remove()">`).join('');
+      draw();
+      const h = location.hash.match(/^#jogo-(.+)$/); if (h) detail(h[1]);
+    });
+    $('#chips').addEventListener('click', (e) => { const b = e.target.closest('[data-genre]'); if (!b) return; genre = b.dataset.genre; $$('.chip').forEach((x) => x.classList.toggle('on', x === b)); draw(); });
+    $('#q').addEventListener('input', draw);
+    addEventListener('hashchange', () => { const h = location.hash.match(/^#jogo-(.+)$/); if (h && CAT) detail(h[1]); });
+    $('#grid').addEventListener('click', (e) => { const b = e.target.closest('[data-g]'); if (b) detail(b.dataset.g); });
+  </script>
+</body>
+</html>

@@ -189,6 +189,7 @@ const setSess = (req, res, token, maxAge) => res.setHeader('set-cookie', `sess=$
 const NOME_RE = /^[a-zA-Z0-9_.@+-]{3,60}$/; // usuário ou e-mail
 const ADMIN_EMAIL = String(process.env.ADMIN_EMAIL || '').trim().toLowerCase();
 const GOOGLE_CLIENT_ID = String(process.env.GOOGLE_CLIENT_ID || '').trim();
+const ESPERA = 'seu cadastro ainda está aguardando a aprovação do administrador';
 const AI_PROVS = ['sistema', 'puter', 'ollama', 'anthropic', 'openai', 'gemini', 'openrouter'];
 // O que o navegador pode ver da conta (sem senha nem a chave da IA)
 const PERMS = ['jogo', 'personagens', 'testar', 'efeitos', 'alertas', 'widgets', 'dj', 'musica', 'voz', 'placar', 'historico'];
@@ -270,7 +271,8 @@ const server = http.createServer(async (req, res) => {
     let c = await contas.porNome(email);
     // Primeiro acesso do dono: o e-mail do admin (ADMIN_EMAIL) vira o admin direto pelo Google
     if (!c && email === ADMIN_EMAIL && (await contas.quantas()) === 0) c = await contas.porId((await contas.criar({ username: email, senha: crypto.randomBytes(24).toString('hex'), role: 'admin' })).id);
-    if (!c || c.disabled) return sendJson(res, 403, { error: `o e-mail ${email} ainda não tem acesso — peça ao administrador para cadastrar` });
+    if (c?.status === 'pendente') return sendJson(res, 403, { error: ESPERA });
+    if (!c || c.disabled) return sendJson(res, 403, { error: `o e-mail ${email} ainda não tem acesso — clique em "Criar cadastro" e peça acesso` });
     const { token } = await contas.novaSessao(c.id); setSess(req, res, token, 2592000);
     return sendJson(res, 200, { ok: true });
   }
@@ -290,9 +292,27 @@ const server = http.createServer(async (req, res) => {
     const b = await lerJson(req); if (!b) return sendJson(res, 400, { error: 'dados inválidos' });
     if (demais(req)) return sendJson(res, 429, { error: 'muitas tentativas, espere um minuto' });
     const c = await contas.porNome(String(b.username || '').trim());
-    if (!c || c.disabled || !contas.confereSenha(b.password, c.pass)) return sendJson(res, 401, { error: 'usuário ou senha errados' });
+    if (!c || !contas.confereSenha(b.password, c.pass)) return sendJson(res, 401, { error: 'usuário ou senha errados' });
+    if (c.status === 'pendente') return sendJson(res, 403, { error: ESPERA });
+    if (c.disabled) return sendJson(res, 403, { error: 'seu acesso está desativado — fale com o administrador' });
     const { token } = await contas.novaSessao(c.id); setSess(req, res, token, 2592000);
     return sendJson(res, 200, { ok: true, user: contaPublica(c) });
+  }
+  if (url.pathname === '/api/signup' && req.method === 'POST') {
+    // Pedido de cadastro: a conta nasce "pendente" e só entra depois que o admin aprovar (aba Usuários)
+    const b = await lerJson(req); if (!b) return sendJson(res, 400, { error: 'dados inválidos' });
+    if (demais(req)) return sendJson(res, 429, { error: 'muitas tentativas, espere um minuto' });
+    const email = String(b.username || '').trim().toLowerCase(), nome = String(b.name || '').trim().slice(0, 60);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !NOME_RE.test(email)) return sendJson(res, 400, { error: 'coloque um e-mail válido' });
+    if (nome.length < 2) return sendJson(res, 400, { error: 'coloque o seu nome' });
+    if (String(b.password || '').length < 6) return sendJson(res, 400, { error: 'a senha precisa de 6 ou mais caracteres' });
+    if ((await contas.quantas()) === 0) return sendJson(res, 403, { error: 'o sistema ainda está sendo instalado, tente mais tarde' });
+    const ja = await contas.porNome(email);
+    if (ja) return sendJson(res, 409, { error: ja.status === 'pendente' ? ESPERA : 'esse e-mail já tem cadastro — use o botão Entrar' });
+    if ((await contas.listar()).filter((u) => u.status === 'pendente').length >= 200) return sendJson(res, 429, { error: 'muitos pedidos na fila, tente mais tarde' });
+    const info = { nome, tiktok: String(b.tiktok || '').trim().replace(/^@/, '').slice(0, 40), recado: String(b.message || '').trim().slice(0, 500) };
+    await contas.criar({ username: email, senha: b.password, status: 'pendente', info });
+    return sendJson(res, 200, { ok: true });
   }
   if (url.pathname === '/api/logout' && req.method === 'POST') { const t = decodeURIComponent(cookieDe(req, 'sess')); if (t) await contas.fimSessao(t); setSess(req, res, '', 0); return sendJson(res, 200, { ok: true }); }
   if (url.pathname === '/api/me') { const c = await contaDe(req); return c ? sendJson(res, 200, contaPublica(c)) : sendJson(res, 401, { error: 'faça login' }); }
@@ -308,7 +328,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/api/users' || url.pathname.startsWith('/api/users/')) {
     const c = await contaDe(req); if (!c || c.role !== 'admin') return sendJson(res, 403, { error: 'só o admin' });
     const id = Number(url.pathname.split('/')[3]) || 0;
-    if (req.method === 'GET' && !id) return sendJson(res, 200, { users: (await contas.listar()).map((u) => ({ ...contaPublica(u), disabled: u.disabled, created_at: u.created_at })), banco: contas.temBanco() });
+    if (req.method === 'GET' && !id) return sendJson(res, 200, { users: (await contas.listar()).map((u) => ({ ...contaPublica(u), disabled: u.disabled, status: u.status, info: u.info, created_at: u.created_at })), banco: contas.temBanco() });
     if (req.method === 'POST' && !id) {
       const b = await lerJson(req); if (!b || !NOME_RE.test(b.username || '') || String(b.password || '').length < 6) return sendJson(res, 400, { error: 'usuário ou e-mail e senha (6+ caracteres)' });
       if (await contas.porNome(b.username)) return sendJson(res, 409, { error: 'esse usuário já existe' });
@@ -318,15 +338,15 @@ const server = http.createServer(async (req, res) => {
       const b = await lerJson(req) || {};
       if (b.password && String(b.password).length < 6) return sendJson(res, 400, { error: 'senha com 6+ caracteres' });
       if (id === c.id && (b.role === 'user' || b.disabled)) return sendJson(res, 400, { error: 'você não pode tirar o seu próprio acesso de admin' });
-      const u = await contas.alterar(id, { senha: b.password || undefined, role: b.role === 'admin' || b.role === 'user' ? b.role : undefined, games: Array.isArray(b.games) ? b.games.slice(0, 200).map(String) : undefined, perms: limpaPerms(b.perms), disabled: typeof b.disabled === 'boolean' ? b.disabled : undefined });
+      const u = await contas.alterar(id, { senha: b.password || undefined, role: b.role === 'admin' || b.role === 'user' ? b.role : undefined, games: Array.isArray(b.games) ? b.games.slice(0, 200).map(String) : undefined, perms: limpaPerms(b.perms), disabled: typeof b.disabled === 'boolean' ? b.disabled : undefined, status: b.aprovar ? 'ok' : undefined });
       contas.esqueceCache(id);
       return u ? sendJson(res, 200, contaPublica(u)) : sendJson(res, 404, { error: 'não achei' });
     }
     if (req.method === 'DELETE' && id) { if (id === c.id) return sendJson(res, 400, { error: 'você não pode apagar a si mesmo' }); await contas.apagar(id); contas.esqueceCache(id); return sendJson(res, 200, { ok: true }); }
     return sendJson(res, 405, { error: 'método' });
   }
-  // Página do painel: sem login vai para a tela de entrar (a tela da live, ?clean=1, abre sem login — é a fonte do LIVE Studio/OBS)
-  if ((url.pathname === '/' || url.pathname === '/index.html') && url.searchParams.get('clean') !== '1' && !(await contaDe(req))) return sendStatic(req, res, path.join(PUBLIC_DIR, 'login.html'));
+  // Página do painel: sem login mostra a página de entrada com o catálogo (a tela da live, ?clean=1, abre sem login — é a fonte do LIVE Studio/OBS)
+  if ((url.pathname === '/' || url.pathname === '/index.html') && url.searchParams.get('clean') !== '1' && !(await contaDe(req))) return sendStatic(req, res, path.join(PUBLIC_DIR, 'inicio.html'));
   if (url.pathname === '/api/diag') {
     // Diagnóstico: tenta achar a sala de um @ e mostra o resultado de cada fonte.
     const user = (url.searchParams.get('u') || '').replace(/^@/, '').toLowerCase();
