@@ -6,6 +6,8 @@ const base = process.env.BASE || 'http://localhost:3123';
   const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--autoplay-policy=no-user-gesture-required'] });
   const p = await b.newPage({ viewport: { width: 1600, height: 1000 } });
   const errs = []; p.on('pageerror', (e) => errs.push(e.message)); p.on('console', (m) => m.type() === 'error' && !/404|Failed to load resource/.test(m.text()) && errs.push(m.text()));
+  // O painel pede login (TEST_USER/TEST_PASS; padrão = o admin criado no teste local)
+  await p.request.post(base + '/api/login', { data: { username: process.env.TEST_USER || 'godnexus.ia@gmail.com', password: process.env.TEST_PASS || 'segredo123' } });
   await p.goto(base + '/');
   await p.evaluate(() => three3dReady);
   await p.waitForTimeout(1500);

@@ -316,7 +316,10 @@ const ai = {
       });
     }
     let text = '';
-    try {
+    const prov = typeof ME !== 'undefined' ? ME?.ai?.provider : '';
+    // Puter e Ollama rodam aqui no navegador (sem chave); as outras pelo servidor
+    try { if (prov === 'puter') text = await aiPuter(system, prompt, ME.ai.model); else if (prov === 'ollama') text = await aiOllama(system, prompt, ME.ai.model, ME.ai.ollamaUrl); } catch {}
+    if (!text) try {
       const r = await fetch('/api/ai', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ system, prompt, max }) });
       if (r.ok) text = (await r.json()).text || '';
     } catch {}
@@ -332,6 +335,21 @@ const ai = {
     if (r) { this.waiting.delete(key); r(text); }
   },
 };
+// Puter: o usuário entra com a conta dele (sem chave) e a IA roda pela conta Puter
+let puterP = null;
+function loadPuter() { if (!puterP) puterP = new Promise((res, rej) => { if (window.puter) return res(window.puter); const s = document.createElement('script'); s.src = 'https://js.puter.com/v2/'; s.onload = () => res(window.puter); s.onerror = rej; document.head.appendChild(s); }); return puterP; }
+async function aiPuter(system, prompt, model) {
+  const P = await loadPuter();
+  const r = await P.ai.chat([{ role: 'system', content: system }, { role: 'user', content: prompt }], model ? { model } : undefined);
+  const c = r?.message?.content ?? r;
+  return String(Array.isArray(c) ? c.map((x) => x.text || '').join('') : c || '').trim();
+}
+// Ollama: IA instalada no computador do usuário
+async function aiOllama(system, prompt, model, url) {
+  const r = await fetch(`${(url || 'http://localhost:11434').replace(/\/$/, '')}/api/chat`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ model: model || 'llama3.2', stream: false, messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }] }), signal: AbortSignal.timeout(60000) });
+  if (!r.ok) throw new Error('ollama ' + r.status);
+  return String((await r.json())?.message?.content || '').trim();
+}
 // Tira markdown, aspas e emojis demais da resposta da IA (vai ser lida em voz alta).
 function cleanAi(t) {
   return String(t || '').replace(/[*_#`>]/g, '').replace(/^["“']|["”']$/g, '').replace(/\s+/g, ' ').trim().slice(0, 400);

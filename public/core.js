@@ -353,8 +353,9 @@ function fmtTime(secs) {
 
 // Guarda a configuração de um jogo neste navegador (sem quebrar se o armazenamento estiver bloqueado).
 const store = {
-  get(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } },
-  set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} },
+  // STORE_PREFIX (auth.js): cada usuário tem as próprias configurações neste navegador
+  get(key, fallback) { try { const v = localStorage.getItem((typeof STORE_PREFIX === 'string' ? STORE_PREFIX : '') + key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } },
+  set(key, value) { try { localStorage.setItem((typeof STORE_PREFIX === 'string' ? STORE_PREFIX : '') + key, JSON.stringify(value)); } catch {} },
 };
 
 // Texto sem contorno, para fundos claros e letras pequenas.

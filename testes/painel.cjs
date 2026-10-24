@@ -10,6 +10,7 @@ const shots = process.argv[2];
   const watch = (p, tag) => { p.on('pageerror', (e) => errs.push(tag + ': ' + e.message)); p.on('console', (m) => m.type() === 'error' && !/404|Failed to load resource/.test(m.text()) && errs.push(tag + ': ' + m.text())); };
   const panel = await b.newPage({ viewport: { width: 1600, height: 950 } }); watch(panel, 'painel');
   const user = 'teste_' + Date.now().toString(36);
+  await panel.request.post(base + '/api/login', { data: { username: process.env.TEST_USER || 'godnexus.ia@gmail.com', password: process.env.TEST_PASS || 'segredo123' } });
   await panel.goto(base + '/?user=' + user);
   await panel.waitForTimeout(2500);
   const screen = await b.newPage({ viewport: { width: 432, height: 768 } }); watch(screen, 'tela');

@@ -10,6 +10,7 @@ import { TikTokLiveConnection, WebcastEvent, ControlEvent } from 'tiktok-live-co
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 import Anthropic from '@anthropic-ai/sdk';
 import { userInfo, giftInfo } from './lib/eventos.js';
+import * as contas from './lib/contas.js';
 
 const PORT = Number(process.env.PORT) || 3000;
 const SIGN_API_KEY = process.env.SIGN_API_KEY || undefined;
@@ -181,6 +182,43 @@ function readBody(req, max) {
 }
 const sendJson = (res, code, body) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)); };
 
+// ---------- Login ----------
+const cookieDe = (req, nome) => (String(req.headers.cookie || '').split(/;\s*/).find((c) => c.startsWith(nome + '='))?.slice(nome.length + 1)) || '';
+const contaDe = (req) => contas.contaDaSessao(decodeURIComponent(cookieDe(req, 'sess')));
+const setSess = (req, res, token, maxAge) => res.setHeader('set-cookie', `sess=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : ''}`);
+const NOME_RE = /^[a-zA-Z0-9_.@+-]{3,60}$/; // usuário ou e-mail
+const ADMIN_EMAIL = String(process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+const GOOGLE_CLIENT_ID = String(process.env.GOOGLE_CLIENT_ID || '').trim();
+const AI_PROVS = ['sistema', 'puter', 'ollama', 'anthropic', 'openai', 'gemini', 'openrouter'];
+// O que o navegador pode ver da conta (sem senha nem a chave da IA)
+const PERMS = ['jogo', 'personagens', 'testar', 'efeitos', 'alertas', 'widgets', 'dj', 'musica', 'voz', 'placar', 'historico'];
+const limpaPerms = (p) => (Array.isArray(p) ? p.filter((x) => PERMS.includes(x)) : undefined);
+const contaPublica = (c) => c && { id: c.id, username: c.username, role: c.role, games: c.games || [], perms: c.perms || [], ai: { provider: c.ai?.provider || 'sistema', model: c.ai?.model || '', ollamaUrl: c.ai?.ollamaUrl || '', temChave: Boolean(c.ai?.key), feito: Boolean(c.ai?.feito) } };
+const tentativas = new Map(); // ip -> { n, ate }: no máximo 10 tentativas de login por minuto
+const ipDe = (req) => String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+function demais(req) { const k = ipDe(req), t = tentativas.get(k) || { n: 0, ate: Date.now() + 60000 }; if (Date.now() > t.ate) { t.n = 0; t.ate = Date.now() + 60000; } t.n++; tentativas.set(k, t); return t.n > 10; }
+async function lerJson(req) { try { return JSON.parse(await readBody(req, 64 * 1024)); } catch { return null; } }
+
+// IA com a chave do próprio usuário (Claude, ChatGPT, Gemini ou OpenRouter)
+const clientesClaude = new Map();
+async function aiReplyConta(ai, system, prompt, maxTokens) {
+  const key = ai.key, model = ai.model;
+  if (ai.provider === 'anthropic') {
+    let cl = clientesClaude.get(key); if (!cl) { cl = new Anthropic({ apiKey: key }); clientesClaude.set(key, cl); }
+    const r = await cl.messages.create({ model: model || 'claude-opus-5-5', max_tokens: Math.max(maxTokens, 512), system, messages: [{ role: 'user', content: prompt }] });
+    return r.content.filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
+  }
+  if (ai.provider === 'gemini') {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model || 'gemini-2.0-flash')}:generateContent?key=${encodeURIComponent(key)}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { maxOutputTokens: maxTokens } }), signal: AbortSignal.timeout(25000) });
+    if (!r.ok) throw new Error('gemini ' + r.status);
+    const j = await r.json(); return String(j?.candidates?.[0]?.content?.parts?.map((p) => p.text).join('') || '').trim();
+  }
+  const url = ai.provider === 'openai' ? 'https://api.openai.com/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
+  const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` }, body: JSON.stringify({ model: model || (ai.provider === 'openai' ? 'gpt-4o-mini' : 'openrouter/auto'), messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], max_tokens: maxTokens }), signal: AbortSignal.timeout(25000) });
+  if (!r.ok) throw new Error(ai.provider + ' ' + r.status);
+  const j = await r.json(); return String(j?.choices?.[0]?.message?.content || '').trim();
+}
+
 // Busca o avatar Roblox de um nick pela API pública da Roblox, com cache e limite de pedidos.
 const robloxCache = new Map(); // nick minúsculo -> { name, img } ou null
 let robloxBudget = 10;
@@ -218,6 +256,77 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { 'content-type': 'text/plain' });
     return res.end('ok');
   }
+  // ---------- Contas ----------
+  if (url.pathname === '/api/auth') { const c = await contaDe(req); return sendJson(res, 200, { setup: (await contas.quantas()) === 0, banco: contas.temBanco(), user: contaPublica(c), adminEmail: ADMIN_EMAIL, google: GOOGLE_CLIENT_ID }); }
+  if (url.pathname === '/api/google' && req.method === 'POST') {
+    // Entrar com o Google: confere o token no Google e entra na conta com o mesmo e-mail (o admin cadastra o e-mail como usuário)
+    const b = await lerJson(req);
+    if (!GOOGLE_CLIENT_ID || !b?.credential) return sendJson(res, 400, { error: 'login com Google não configurado' });
+    if (demais(req)) return sendJson(res, 429, { error: 'muitas tentativas, espere um minuto' });
+    let info;
+    try { const r = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(b.credential)}`, { signal: AbortSignal.timeout(8000) }); info = await r.json(); if (!r.ok) throw new Error(); } catch { return sendJson(res, 401, { error: 'o Google não confirmou o login' }); }
+    if (info.aud !== GOOGLE_CLIENT_ID || String(info.email_verified) !== 'true' || !info.email) return sendJson(res, 401, { error: 'o Google não confirmou o login' });
+    const email = String(info.email).toLowerCase();
+    let c = await contas.porNome(email);
+    // Primeiro acesso do dono: o e-mail do admin (ADMIN_EMAIL) vira o admin direto pelo Google
+    if (!c && email === ADMIN_EMAIL && (await contas.quantas()) === 0) c = await contas.porId((await contas.criar({ username: email, senha: crypto.randomBytes(24).toString('hex'), role: 'admin' })).id);
+    if (!c || c.disabled) return sendJson(res, 403, { error: `o e-mail ${email} ainda não tem acesso — peça ao administrador para cadastrar` });
+    const { token } = await contas.novaSessao(c.id); setSess(req, res, token, 2592000);
+    return sendJson(res, 200, { ok: true });
+  }
+  if (url.pathname === '/api/setup' && req.method === 'POST') {
+    // Primeiro acesso: cria a conta de admin com o código secreto (ADMIN_SETUP_CODE no Render)
+    const b = await lerJson(req); if (!b) return sendJson(res, 400, { error: 'dados inválidos' });
+    if (demais(req)) return sendJson(res, 429, { error: 'muitas tentativas, espere um minuto' });
+    if ((await contas.quantas()) > 0) return sendJson(res, 403, { error: 'o admin já foi criado' });
+    if (!process.env.ADMIN_SETUP_CODE || String(b.code || '').trim().toUpperCase() !== process.env.ADMIN_SETUP_CODE.toUpperCase()) return sendJson(res, 403, { error: 'código de instalação errado' });
+    if (!NOME_RE.test(b.username || '') || String(b.password || '').length < 6) return sendJson(res, 400, { error: 'usuário ou e-mail e senha (6+ caracteres)' });
+    if (ADMIN_EMAIL && String(b.username).trim().toLowerCase() !== ADMIN_EMAIL) return sendJson(res, 403, { error: `o admin é ${ADMIN_EMAIL}` });
+    const c = await contas.criar({ username: String(b.username).trim().toLowerCase(), senha: b.password, role: 'admin' });
+    const { token } = await contas.novaSessao(c.id); setSess(req, res, token, 2592000);
+    return sendJson(res, 200, { ok: true });
+  }
+  if (url.pathname === '/api/login' && req.method === 'POST') {
+    const b = await lerJson(req); if (!b) return sendJson(res, 400, { error: 'dados inválidos' });
+    if (demais(req)) return sendJson(res, 429, { error: 'muitas tentativas, espere um minuto' });
+    const c = await contas.porNome(String(b.username || '').trim());
+    if (!c || c.disabled || !contas.confereSenha(b.password, c.pass)) return sendJson(res, 401, { error: 'usuário ou senha errados' });
+    const { token } = await contas.novaSessao(c.id); setSess(req, res, token, 2592000);
+    return sendJson(res, 200, { ok: true, user: contaPublica(c) });
+  }
+  if (url.pathname === '/api/logout' && req.method === 'POST') { const t = decodeURIComponent(cookieDe(req, 'sess')); if (t) await contas.fimSessao(t); setSess(req, res, '', 0); return sendJson(res, 200, { ok: true }); }
+  if (url.pathname === '/api/me') { const c = await contaDe(req); return c ? sendJson(res, 200, contaPublica(c)) : sendJson(res, 401, { error: 'faça login' }); }
+  if (url.pathname === '/api/me/ai' && req.method === 'PUT') {
+    const c = await contaDe(req); if (!c) return sendJson(res, 401, { error: 'faça login' });
+    const b = await lerJson(req); if (!b || !AI_PROVS.includes(b.provider)) return sendJson(res, 400, { error: 'escolha uma opção' });
+    const ai = { provider: b.provider, model: String(b.model || '').slice(0, 80), ollamaUrl: String(b.ollamaUrl || '').slice(0, 200), feito: true, key: c.ai?.key || '' };
+    if (typeof b.key === 'string' && b.key.trim() && !b.key.includes('•')) ai.key = b.key.trim().slice(0, 300);
+    if (['anthropic', 'openai', 'gemini', 'openrouter'].includes(ai.provider) && !ai.key) return sendJson(res, 400, { error: 'cole a sua chave' });
+    const nova = await contas.alterar(c.id, { ai }); contas.esqueceCache(c.id);
+    return sendJson(res, 200, contaPublica({ ...nova, ai }));
+  }
+  if (url.pathname === '/api/users' || url.pathname.startsWith('/api/users/')) {
+    const c = await contaDe(req); if (!c || c.role !== 'admin') return sendJson(res, 403, { error: 'só o admin' });
+    const id = Number(url.pathname.split('/')[3]) || 0;
+    if (req.method === 'GET' && !id) return sendJson(res, 200, { users: (await contas.listar()).map((u) => ({ ...contaPublica(u), disabled: u.disabled, created_at: u.created_at })), banco: contas.temBanco() });
+    if (req.method === 'POST' && !id) {
+      const b = await lerJson(req); if (!b || !NOME_RE.test(b.username || '') || String(b.password || '').length < 6) return sendJson(res, 400, { error: 'usuário ou e-mail e senha (6+ caracteres)' });
+      if (await contas.porNome(b.username)) return sendJson(res, 409, { error: 'esse usuário já existe' });
+      return sendJson(res, 200, contaPublica(await contas.criar({ username: String(b.username).trim().toLowerCase(), senha: b.password, role: b.role === 'admin' ? 'admin' : 'user', games: Array.isArray(b.games) ? b.games.slice(0, 200).map(String) : [], perms: limpaPerms(b.perms) || [] })));
+    }
+    if (req.method === 'PUT' && id) {
+      const b = await lerJson(req) || {};
+      if (b.password && String(b.password).length < 6) return sendJson(res, 400, { error: 'senha com 6+ caracteres' });
+      if (id === c.id && (b.role === 'user' || b.disabled)) return sendJson(res, 400, { error: 'você não pode tirar o seu próprio acesso de admin' });
+      const u = await contas.alterar(id, { senha: b.password || undefined, role: b.role === 'admin' || b.role === 'user' ? b.role : undefined, games: Array.isArray(b.games) ? b.games.slice(0, 200).map(String) : undefined, perms: limpaPerms(b.perms), disabled: typeof b.disabled === 'boolean' ? b.disabled : undefined });
+      contas.esqueceCache(id);
+      return u ? sendJson(res, 200, contaPublica(u)) : sendJson(res, 404, { error: 'não achei' });
+    }
+    if (req.method === 'DELETE' && id) { if (id === c.id) return sendJson(res, 400, { error: 'você não pode apagar a si mesmo' }); await contas.apagar(id); contas.esqueceCache(id); return sendJson(res, 200, { ok: true }); }
+    return sendJson(res, 405, { error: 'método' });
+  }
+  // Página do painel: sem login vai para a tela de entrar (a tela da live, ?clean=1, abre sem login — é a fonte do LIVE Studio/OBS)
+  if ((url.pathname === '/' || url.pathname === '/index.html') && url.searchParams.get('clean') !== '1' && !(await contaDe(req))) return sendStatic(req, res, path.join(PUBLIC_DIR, 'login.html'));
   if (url.pathname === '/api/diag') {
     // Diagnóstico: tenta achar a sala de um @ e mostra o resultado de cada fonte.
     const user = (url.searchParams.get('u') || '').replace(/^@/, '').toLowerCase();
@@ -319,11 +428,15 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/api/ai' && req.method === 'POST') {
     let body;
     try { body = JSON.parse(await readBody(req, 64 * 1024)); } catch { return sendJson(res, 400, { error: 'json' }); }
-    if (aiBudget <= 0) return sendJson(res, 429, { error: 'limite' });
-    aiBudget--;
+    const conta = await contaDe(req);
+    if (!conta) return sendJson(res, 401, { error: 'faça login' });
+    const own = ['anthropic', 'openai', 'gemini', 'openrouter'].includes(conta.ai?.provider) && conta.ai?.key;
+    if (!own) { if (aiBudget <= 0) return sendJson(res, 429, { error: 'limite' }); aiBudget--; }
     try {
-      const text = await aiReply(String(body.system || '').slice(0, 6000), String(body.prompt || '').slice(0, 4000), clamp(Number(body.max) || 200, 20, 800));
-      return sendJson(res, 200, { text, provider: anthropic ? 'claude' : 'gratis' });
+      const sys = String(body.system || '').slice(0, 6000), pr = String(body.prompt || '').slice(0, 4000), mx = clamp(Number(body.max) || 200, 20, 800);
+      // Com a chave do próprio usuário usa a IA dele; senão a do servidor (chave do admin no Render ou a grátis)
+      const text = own ? await aiReplyConta(conta.ai, sys, pr, mx) : await aiReply(sys, pr, mx);
+      return sendJson(res, 200, { text, provider: own ? conta.ai.provider : anthropic ? 'claude' : 'gratis' });
     } catch (err) {
       console.error('ia falhou:', err?.message);
       return sendJson(res, 502, { error: err?.message || 'falha' });
@@ -525,13 +638,16 @@ function leave(ws) {
 
 const wss = new WebSocketServer({ server, path: '/ws', maxPayload: 4 * 1024 * 1024 });
 
-wss.on('connection', (ws) => {
+wss.on('connection', (ws, req) => {
   ws.isAlive = true;
+  ws.token = decodeURIComponent(cookieDe(req, 'sess'));
   ws.on('pong', () => (ws.isAlive = true));
-  ws.on('message', (raw) => {
+  ws.on('message', async (raw) => {
     let msg;
     try { msg = JSON.parse(raw); } catch { return; }
     if (msg.type === 'connect') {
+      // Painel precisa de login; a tela da live (fonte do LIVE Studio/OBS) só assiste e não precisa
+      if (msg.role !== 'screen' && !(await contas.contaDaSessao(ws.token))) return ws.send(JSON.stringify({ type: 'status', state: 'error', message: 'Faça login de novo.' }));
       const username = String(msg.user || '').trim().replace(/^@/, '').toLowerCase();
       if (!USERNAME_RE.test(username)) {
         return ws.send(JSON.stringify({ type: 'status', state: 'error', message: 'Usuário inválido.' }));
@@ -548,7 +664,7 @@ wss.on('connection', (ws) => {
     } else if (msg.type === 'config') {
       // Configuração de um jogo (fotos, nomes) repassada às outras telas do mesmo @, como a fonte do OBS.
       const room = ws.username && rooms.get(ws.username);
-      if (!room || typeof msg.key !== 'string' || !/^[a-z0-9:_-]{1,48}$/.test(msg.key)) return;
+      if (!room || ws.role === 'screen' || typeof msg.key !== 'string' || !/^[a-z0-9:_-]{1,48}$/.test(msg.key)) return; // só o painel (com login) muda configurações
       room.configs[msg.key] = msg.data;
       const data = JSON.stringify({ type: 'config', key: msg.key, data: msg.data });
       for (const other of room.clients) if (other !== ws && other.readyState === other.OPEN) other.send(data);
@@ -558,6 +674,8 @@ wss.on('connection', (ws) => {
       const room = ws.username && rooms.get(ws.username);
       // 'bus' leva comandos do painel novo (pausar, ação de teste, DJ, alerta, shoutout, música…) num pacote livre.
       if (!room || !['game', 'reset', 'sim', 'press', 'current', 'bus'].includes(msg.action)) return;
+      // A tela da live (sem login) só avisa que trocou de jogo e devolve respostas da IA/estado do YouTube
+      if (ws.role === 'screen' && !(msg.action === 'current' || (msg.action === 'bus' && ['ai', 'ytState'].includes(msg.bus?.t)))) return;
       if (msg.action === 'game' || msg.action === 'current') { if (typeof msg.id !== 'string' || !/^[a-z0-9-]{1,30}$/.test(msg.id)) return; room.game = msg.id; }
       if (Number.isInteger(msg.seed)) room.seed = msg.seed;
       const data = JSON.stringify({ type: 'control', action: msg.action, id: msg.id, seed: Number.isInteger(msg.seed) ? msg.seed : undefined, ev: msg.action === 'sim' ? msg.ev : undefined, bus: msg.action === 'bus' ? msg.bus : undefined });
@@ -579,4 +697,4 @@ setInterval(() => {
   }
 }, 30000);
 
-server.listen(PORT, () => console.log(`Jogos interativos em http://localhost:${PORT}`));
+contas.iniciar().catch((e) => console.error('contas: banco não respondeu —', e.message)).finally(() => server.listen(PORT, () => console.log(`Jogos interativos em http://localhost:${PORT}`)));

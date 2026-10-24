@@ -10,12 +10,14 @@ if (!isClean) (() => {
     ['jogos', '🎮', 'Jogos'], ['jogo', '⚙️', 'Jogo atual'], ['personagens', '🧍', 'Personagens'], ['testar', '🧪', 'Testar'], ['efeitos', '✨', 'Efeitos'],
     ['alertas', '🔔', 'Alertas'], ['widgets', '🧩', 'Widgets'], ['dj', '🎛️', 'DJ Pad'], ['musica', '🎵', 'Música'],
     ['voz', '🗣️', 'Voz e chat'], ['placar', '🏆', 'Placar'], ['historico', '📊', 'Histórico'], ['tela', '🖥️', 'Tela da live'],
-  ];
+    ['ia', '🤖', 'Conectar IA'], ['usuarios', '👥', 'Usuários'],
+  ].filter(([id]) => IS_ADMIN || ['jogos', 'ia', 'tela'].includes(id) || (ME.perms || []).includes(id)); // usuário comum: jogos, IA, link da live e as funções que o admin liberou
   let curView = store.get('panelView', 'jogos');
   $('rail').innerHTML = VIEWS.map(([id, ic, nm]) => `<button data-view="${id}" title="${nm}"><span>${ic}</span><small>${nm}</small></button>`).join('');
   $('rail').addEventListener('click', (e) => { const b = e.target.closest('[data-view]'); if (b) show(b.dataset.view); });
   $('libBtn').addEventListener('click', () => show('jogos'));
   function show(v) {
+    if (!VIEWS.some(([id]) => id === v)) v = 'jogos';
     curView = v;
     store.set('panelView', v);
     document.querySelectorAll('#rail button').forEach((b) => b.classList.toggle('active', b.dataset.view === v));
@@ -191,7 +193,7 @@ if (!isClean) (() => {
         <div class="hero-txt"><span class="bd live">● NO AR AGORA</span>${badges(g0)}
           <h3>${esc(g0.name)}</h3><small>${genreOf(g0)?.icon || ''} ${esc(genreOf(g0)?.name || '')}</small>
           <p>${esc(trim(g0.desc || '', 180))}</p>
-          <div class="row"><button class="primary" id="heroOpen">⚙️ Configurar e testar</button><button id="heroReset">↺ Reiniciar</button></div></div>
+          <div class="row">${IS_ADMIN || (ME.perms || []).includes('jogo') ? '<button class="primary" id="heroOpen">⚙️ Configurar e testar</button>' : ''}<button id="heroReset">↺ Reiniciar</button></div></div>
       </section>
       <div class="chips" id="genres">${GENRES.filter((x) => counts[x.id]).map((x) => `<button data-g="${x.id}" class="${x.id === libGenre ? 'on' : ''}">${x.icon} ${x.name} <small>${counts[x.id]}</small></button>`).join('')}</div>
       <div class="gcards" id="cards"></div>`);
@@ -201,14 +203,14 @@ if (!isClean) (() => {
       q('#cards').innerHTML = list.map(gameCard).join('') || '<p class="small">Nenhum jogo encontrado.</p>';
     };
     draw();
-    q('#heroOpen').addEventListener('click', () => show('jogo'));
+    q('#heroOpen')?.addEventListener('click', () => show('jogo'));
     q('#heroReset').addEventListener('click', () => resetCurrent());
     q('#genres').addEventListener('click', (e) => { const b = e.target.closest('[data-g]'); if (!b) return; libGenre = b.dataset.g; store.set('libGenre', libGenre); qa('#genres button').forEach((x) => x.classList.toggle('on', x === b)); draw(); });
     q('#libSearch').addEventListener('input', (e) => { libSearch = e.target.value; draw(); });
     q('#cards').addEventListener('click', (e) => {
       const b = e.target.closest('[data-id]'); if (!b || b.classList.contains('off')) return;
       const g = GAMES.find((x) => x.id === b.dataset.id);
-      if (g !== current) { selectGame(g); RENDER.jogos(); toastMsg(`▶ ${g.name} no ar`); } else show('jogo');
+      if (g !== current) { selectGame(g); RENDER.jogos(); toastMsg(`▶ ${g.name} no ar`); } else if (IS_ADMIN || (ME.perms || []).includes('jogo')) show('jogo');
     });
   };
 
@@ -688,6 +690,94 @@ if (!isClean) (() => {
     q('#hClear')?.addEventListener('click', () => { if (confirm('Apagar todo o histórico?')) { store.set('history', []); RENDER.historico(); } });
   };
 
+  // ---------- Conectar a IA (cada usuário a sua) ----------
+  const AI_OPTS = [
+    ['sistema', '✨ IA do sistema', 'Já vem pronta, não precisa de nada. Usa a IA do servidor (grátis, ou o Claude se o admin colocou a chave).', false],
+    ['puter', '☁️ Puter (entrar com a sua conta, sem chave)', 'Clique em "Entrar no Puter" e faça login (grátis). A IA roda pela sua conta Puter, com modelos como Claude e GPT.', false],
+    ['ollama', '💻 Ollama (IA no seu computador, sem chave)', 'Instale o Ollama no seu PC, baixe um modelo (ex.: llama3.2) e deixe aberto. Não usa internet nem custa nada.', false],
+    ['anthropic', '🟠 Claude (chave da Anthropic)', 'Cole a sua chave sk-ant-… de console.anthropic.com.', true],
+    ['openai', '🟢 ChatGPT (chave da OpenAI)', 'Cole a sua chave sk-… de platform.openai.com.', true],
+    ['gemini', '🔵 Gemini (chave do Google AI Studio)', 'Cole a sua chave de aistudio.google.com.', true],
+    ['openrouter', '🟣 OpenRouter (chave)', 'Uma chave para vários modelos (openrouter.ai).', true],
+  ];
+  RENDER.ia = () => {
+    const a = ME.ai || {}, cur = a.provider || 'sistema';
+    h(`<div class="vhead"><h2>🤖 Conectar a sua IA</h2><span class="tag">${a.feito ? 'conectada: ' + esc(AI_OPTS.find((o) => o[0] === cur)?.[1] || cur) : 'primeiro acesso'}</span></div>
+      <div class="panel"><p class="small">A IA escreve as falas do Apresentador IA, do Roast, do Seu Futuro e as aulas da Aula ao Vivo. Escolha como conectar — as três primeiras opções <b>não precisam de chave</b>.</p>
+        <div class="aiopts">${AI_OPTS.map(([k, n, d]) => `<label class="aiopt ${k === cur ? 'on' : ''}"><input type="radio" name="aip" value="${k}" ${k === cur ? 'checked' : ''}><b>${n}</b><small>${d}</small></label>`).join('')}</div>
+        <div id="aiFields"></div>
+        <div class="row"><button class="primary" id="aiSave">💾 Salvar e usar</button><button id="aiTest">🧪 Testar</button></div>
+        <p class="small" id="aiOut"></p></div>`);
+    const fields = () => {
+      const p = q('input[name=aip]:checked').value, needKey = AI_OPTS.find((o) => o[0] === p)[3];
+      qa('.aiopt').forEach((l) => l.classList.toggle('on', l.querySelector('input').checked));
+      q('#aiFields').innerHTML = (p === 'puter' ? '<div class="row"><button id="puterIn">☁️ Entrar no Puter</button><span class="small" id="puterSt"></span></div>' : '')
+        + (p === 'ollama' ? `<label class="f"><span>Endereço do Ollama</span><input id="aiUrl" value="${esc(a.ollamaUrl || 'http://localhost:11434')}"></label><p class="small">No Windows, antes de abrir o Ollama, configure a variável <code>OLLAMA_ORIGINS=*</code> (para o navegador poder falar com ele).</p>` : '')
+        + (needKey ? `<label class="f"><span>Sua chave</span><input id="aiKey" type="password" placeholder="${a.temChave && p === cur ? '•••••• (já salva — deixe vazio para manter)' : 'cole aqui'}" autocomplete="off"></label>` : '')
+        + (p !== 'sistema' ? `<label class="f"><span>Modelo (opcional)</span><input id="aiModel" value="${esc(p === cur ? a.model || '' : '')}" placeholder="${{ puter: 'ex.: gpt-4o-mini, claude-sonnet-4', ollama: 'ex.: llama3.2', anthropic: 'claude-opus-5-5', openai: 'gpt-4o-mini', gemini: 'gemini-2.0-flash', openrouter: 'openrouter/auto' }[p] || ''}"></label>` : '');
+      q('#puterIn')?.addEventListener('click', async () => { try { const P = await loadPuter(); await P.auth.signIn(); q('#puterSt').textContent = '✅ conectado ao Puter'; } catch { q('#puterSt').textContent = 'não conectou — permita a janela do Puter'; } });
+    };
+    qa('input[name=aip]').forEach((r) => r.addEventListener('change', fields)); fields();
+    const body = () => ({ provider: q('input[name=aip]:checked').value, model: q('#aiModel')?.value.trim() || '', key: q('#aiKey')?.value || '', ollamaUrl: q('#aiUrl')?.value.trim() || '' });
+    q('#aiSave').addEventListener('click', async () => {
+      try { const r = await fetch('/api/me/ai', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body()) }); const j = await r.json(); if (!r.ok) throw new Error(j.error); Object.assign(ME, j); toastMsg('✅ IA conectada'); RENDER.ia(); } catch (e) { q('#aiOut').textContent = '⚠️ ' + (e.message || 'não salvou'); }
+    });
+    q('#aiTest').addEventListener('click', async () => {
+      q('#aiOut').textContent = '⏳ perguntando…';
+      const old = ME.ai; ME.ai = { ...old, ...body(), temChave: old?.temChave };
+      const t = await ai.ask('teste:' + Date.now(), 'Responda em uma frase curta em português.', 'Diga oi para a live e se apresente em uma frase.', '', 60);
+      ME.ai = old; q('#aiOut').textContent = t ? `✅ ${t}` : '⚠️ Não respondeu. Para chave nova, salve primeiro e teste de novo.';
+    });
+  };
+
+  // ---------- Usuários (só o admin) ----------
+  RENDER.usuarios = async () => {
+    h('<div class="vhead"><h2>👥 Usuários</h2></div><div class="panel"><p class="small">Carregando…</p></div>');
+    let data; try { data = await (await fetch('/api/users')).json(); } catch { data = { users: [] }; }
+    const all = GAMES.map((g) => [g.id, `${g.icon} ${g.name}`]);
+    const FUNCS = [['jogo', '⚙️ Configurar o jogo (gatilhos e opções)'], ['personagens', '🧍 Personagens'], ['testar', '🧪 Simulador'], ['efeitos', '✨ Efeitos'], ['alertas', '🔔 Alertas'], ['widgets', '🧩 Widgets'], ['dj', '🎛️ DJ Pad'], ['musica', '🎵 Música (YouTube)'], ['voz', '🗣️ Voz e chat'], ['placar', '🏆 Placar'], ['historico', '📊 Histórico']];
+    const funcPick = (sel) => `<div class="ugames ufuncs">${FUNCS.map(([id, n]) => `<label><input type="checkbox" data-perm value="${id}" ${sel.includes(id) ? 'checked' : ''}> ${n}</label>`).join('')}</div>`;
+    const gamePick = (sel) => `<div class="ugames">${all.map(([id, n]) => `<label><input type="checkbox" data-game value="${id}" ${sel.includes(id) ? 'checked' : ''}> ${esc(n)}</label>`).join('')}</div>`;
+    h(`<div class="vhead"><h2>👥 Usuários</h2><span class="tag">${data.users.length} contas</span></div>
+      ${data.banco ? '' : '<div class="panel warn"><b>⚠️ Banco de dados não ligado:</b> as contas somem quando o servidor reinicia.</div>'}
+      <div class="panel"><h3>➕ Novo usuário</h3>
+        <div class="grid2"><label class="f"><span>Usuário ou e-mail</span><input id="nuName" placeholder="ex.: maria ou maria@gmail.com"></label>
+          <label class="f"><span>Senha</span><div class="sl"><input id="nuPass"><button id="nuGen" type="button">🎲</button></div></label></div>
+        <label class="f"><span>Tipo</span><select id="nuRole"><option value="user">Usuário (só os jogos liberados)</option><option value="admin">Admin (acesso total)</option></select></label>
+        <p class="small">Jogos que este usuário vai ver: <button id="nuAll" type="button">marcar todos</button> <button id="nuNone" type="button">desmarcar</button></p>
+        <div id="nuGames">${gamePick(all.map(([id]) => id))}</div>
+        <p class="small">Funções que este usuário pode usar (Jogos, Tela da live e Conectar IA ele sempre vê):</p>
+        <div id="nuFuncs">${funcPick(['musica'])}</div>
+        <div class="row"><button class="primary" id="nuAdd">Criar acesso</button></div>
+        <p class="small">Com o e-mail do Google como usuário, a pessoa também pode usar "Entrar com o Google" (quando estiver configurado).</p></div>
+      <div class="panel"><h3>Contas</h3><div class="ulist">${data.users.map((u) => `<div class="urow" data-u="${u.id}">
+        <div><b>${esc(u.username)}</b> ${u.role === 'admin' ? '<i class="bd b3d">ADMIN</i>' : ''} ${u.disabled ? '<i class="bd boff">DESATIVADO</i>' : ''}<br><small>${u.role === 'admin' ? 'acesso total' : `${u.games.length} jogos · ${u.perms.length} funções`} · IA: ${esc(u.ai?.provider || 'sistema')}${u.id === ME.id ? ' · você' : ''}</small></div>
+        <div class="row">${u.role === 'admin' ? '' : '<button data-act="games">🎮 Jogos e funções</button>'}<button data-act="pass">🔑 Senha</button>${u.id === ME.id ? '' : `<button data-act="toggle">${u.disabled ? '✅ Ativar' : '⏸ Desativar'}</button><button data-act="del" class="danger">🗑</button>`}</div>
+        <div class="uedit" hidden><p class="small">Jogos:</p>${gamePick(u.games)}<p class="small">Funções:</p>${funcPick(u.perms || [])}<div class="row"><button class="primary" data-act="saveGames">Salvar</button></div></div></div>`).join('')}</div></div>`);
+    const gen = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => 'abcdefghjkmnpqrstuvwxyz23456789'[b % 31]).join('');
+    q('#nuPass').value = gen();
+    q('#nuGen').addEventListener('click', () => { q('#nuPass').value = gen(); });
+    q('#nuAll').addEventListener('click', () => qa('#nuGames input').forEach((i) => (i.checked = true)));
+    q('#nuNone').addEventListener('click', () => qa('#nuGames input').forEach((i) => (i.checked = false)));
+    const api = async (url, method, b) => { const r = await fetch(url, { method, headers: { 'content-type': 'application/json' }, body: b ? JSON.stringify(b) : undefined }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || 'não deu certo'); return j; };
+    q('#nuAdd').addEventListener('click', async () => {
+      const games = qa('#nuGames input:checked').map((i) => i.value), perms = qa('#nuFuncs input:checked').map((i) => i.value), role = q('#nuRole').value;
+      if (role === 'user' && !games.length) return toastMsg('Marque pelo menos um jogo.');
+      try { await api('/api/users', 'POST', { username: q('#nuName').value.trim(), password: q('#nuPass').value, role, games, perms }); toastMsg(`✅ Acesso criado — usuário: ${q('#nuName').value.trim()} · senha: ${q('#nuPass').value}`); setTimeout(RENDER.usuarios, 2800); } catch (e) { toastMsg('⚠️ ' + e.message); }
+    });
+    qa('.urow').forEach((row) => row.addEventListener('click', async (e) => {
+      const b = e.target.closest('[data-act]'); if (!b) return;
+      const id = Number(row.dataset.u), act = b.dataset.act;
+      try {
+        if (act === 'games') row.querySelector('.uedit').hidden = !row.querySelector('.uedit').hidden;
+        else if (act === 'saveGames') { const games = [...row.querySelectorAll('.uedit input[data-game]:checked')].map((i) => i.value), perms = [...row.querySelectorAll('.uedit input[data-perm]:checked')].map((i) => i.value); if (!games.length) return toastMsg('Marque pelo menos um jogo.'); await api(`/api/users/${id}`, 'PUT', { games, perms }); toastMsg('✅ Salvo — vale quando ele recarregar a página'); RENDER.usuarios(); }
+        else if (act === 'pass') { const p = prompt('Nova senha (6 ou mais caracteres):', gen()); if (p) { await api(`/api/users/${id}`, 'PUT', { password: p }); toastMsg(`✅ Nova senha: ${p}`); } }
+        else if (act === 'toggle') { await api(`/api/users/${id}`, 'PUT', { disabled: b.textContent.includes('Desativar') }); RENDER.usuarios(); }
+        else if (act === 'del' && confirm('Apagar este acesso? Não dá para desfazer.')) { await api(`/api/users/${id}`, 'DELETE'); RENDER.usuarios(); }
+      } catch (x) { toastMsg('⚠️ ' + x.message); }
+    }));
+  };
+
   RENDER.tela = () => {
     h(`<div class="vhead"><h2>🖥️ Tela da live</h2><span class="tag" id="peerTag"></span></div>
       <div class="panel"><h3>LIVE Studio (fonte Link) ou OBS — melhor opção</h3>
@@ -786,5 +876,10 @@ if (!isClean) (() => {
 
   if (!$('user').value) $('user').value = store.get('lastUser', '');
   $('curName').textContent = `${current.icon} ${current.name}`;
-  show(curView);
+  // Quem está logado + sair
+  const meBtn = document.createElement('button'); meBtn.id = 'meBtn'; meBtn.title = 'Sair'; meBtn.textContent = `👤 ${trim(ME.username, 22)}${IS_ADMIN ? ' (admin)' : ''} · Sair`;
+  meBtn.addEventListener('click', () => { if (confirm('Sair desta conta?')) logout(); });
+  document.querySelector('.topbtns')?.prepend(meBtn);
+  // Primeiro acesso: abre a aba para conectar a IA
+  show(!ME.ai?.feito ? 'ia' : curView);
 })();

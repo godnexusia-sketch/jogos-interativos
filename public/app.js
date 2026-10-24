@@ -194,6 +194,8 @@ function dispatchV2(ev) {
 }
 
 // ---------- Troca de jogo ----------
+// Usuário comum: só os jogos que o admin liberou para ele
+if (ME && !IS_ADMIN && ME.games?.length) { const ok = new Set(ME.games); for (let i = GAMES.length - 1; i >= 0; i--) if (!ok.has(GAMES[i].id)) GAMES.splice(i, 1); }
 let current = GAMES.find((g) => g.id === params.get('game')) || GAMES.find((g) => g.id === store.get('lastGame', '')) || GAMES[0];
 for (const g of GAMES) { try { g.init?.(); g.reset(); } catch (err) { console.error('jogo', g.id, err); } }
 

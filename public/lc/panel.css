@@ -352,3 +352,15 @@ button.primary:hover { box-shadow:0 8px 26px rgba(34,227,238,.45); }
 .vcat .sl input { flex: 1; }
 .vcat output { width: 40px; font-size: 12px; opacity: .8; }
 @media (max-width: 640px) { .vcat { grid-template-columns: 1fr 1fr; } }
+/* Conectar IA e Usuários */
+.aiopts { display: grid; gap: 8px; margin: 10px 0; }
+.aiopt { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,.1); cursor: pointer; }
+.aiopt input { grid-row: span 2; }
+.aiopt small { opacity: .7; grid-column: 2; }
+.aiopt.on { border-color: #22e3ee; background: rgba(34,227,238,.08); }
+.ugames { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 4px 10px; max-height: 260px; overflow: auto; padding: 8px; border-radius: 10px; background: rgba(0,0,0,.2); font-size: 13px; }
+.ulist { display: grid; gap: 8px; }
+.urow { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 10px; border-radius: 12px; background: rgba(255,255,255,.04); }
+.urow .uedit { grid-column: 1 / -1; }
+.panel.warn { border-color: rgba(250,204,21,.5); background: rgba(250,204,21,.08); }
+#meBtn { white-space: nowrap; }
