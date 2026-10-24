@@ -93,7 +93,7 @@ defineGame({
     else text = item.text || pick(HOST_CANNED.idle);
     if (this !== current) { this.busy = false; return; }
     this.cur = item; this.caption = text; this.capT = 0;
-    voice.say(text, { voice: this.s.hostVoice || this.look().voice, prio: 'high', filter: true, maxLen: 320, onEnd: () => { this.busy = false; this.wait = Number(this.s.pace); this.capT = 0.01; } });
+    voice.say(text, { voice: this.s.hostVoice || this.look().voice, prio: 'high', cat: 'host', filter: true, maxLen: 320, onEnd: () => { this.busy = false; this.wait = Number(this.s.pace); this.capT = 0.01; } });
     if (!mixer.here) setTimeout(() => { this.busy = false; this.wait = Number(this.s.pace); }, 1500 + text.length * 55);
   },
   update(dt) {
@@ -216,7 +216,7 @@ defineGame({
     this.roast(u).then((text) => {
       this.line = text;
       const done = () => { this.busy = false; this.laugh = 2; playSound('rimshot', 'fx', 0.8); setTimeout(() => playSound('applause', 'fx', 0.5), 400); this.t = Number(this.s.speed) / 2; };
-      if (this.s.ttsEnabled && this === current) voice.say(text, { voice: this.s.roastVoice, prio: 'high', onEnd: done });
+      if (this.s.ttsEnabled && this === current) voice.say(text, { voice: this.s.roastVoice, prio: 'high', cat: 'host', onEnd: done });
       else setTimeout(done, 2500 + text.length * 50);
     });
   },
@@ -295,7 +295,7 @@ defineGame({
       setTimeout(() => {
         this.line = text;
         const done = () => { this.busy = false; this.t = Number(this.s.speed) / 3; };
-        if (this.s.ttsEnabled && this === current) voice.say(text, { voice: this.s.fortuneVoice, prio: 'high', onEnd: done });
+        if (this.s.ttsEnabled && this === current) voice.say(text, { voice: this.s.fortuneVoice, prio: 'high', cat: 'host', onEnd: done });
         else setTimeout(done, 3000 + text.length * 50);
       }, 2200);
     });

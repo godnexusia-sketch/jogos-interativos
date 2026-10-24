@@ -62,6 +62,12 @@ const voiceById = (id) => VOICES.find((x) => x.id === id) || VOICES[0];
 // Palavrões comuns (filtro ligado por padrão no leitor de comentários).
 const BAD_WORDS = ['porra', 'caralho', 'merda', 'puta', 'puto', 'foda', 'fodase', 'buceta', 'cu', 'viado', 'arrombado', 'corno', 'piranha', 'vagabunda', 'desgraça', 'cacete', 'pinto', 'rola', 'pau no cu', 'fdp', 'vsf', 'pqp', 'krl', 'crl', 'tnc', 'otario', 'babaca', 'idiota', 'retardado'];
 
+// Tipos de fala: cada um com modelo de voz e volume (liveCfg.stream.voiceCats)
+const VOICE_CATS = [
+  ['game', '🎮 Narração dos jogos', 1], ['aula', '👩‍🏫 Aula ao Vivo (professora)', 1], ['host', '🤖 Apresentador IA, Roast e Futuro', 1],
+  ['locutor', '🎙️ Interações (presentes, comentários, entradas)', 0.75], ['follow', '⭐ Agradecimento de quem segue', 1], ['alert', '🔔 Alertas e shoutouts', 1],
+];
+function voiceCat(cat) { const d = VOICE_CATS.find((c) => c[0] === cat) || VOICE_CATS[0], o = (liveCfg.stream.voiceCats || {})[d[0]] || {}; return { voice: o.voice || '', vol: o.vol ?? d[2] }; }
 const voice = {
   queue: [],
   speaking: false,
@@ -82,12 +88,18 @@ const voice = {
     return t.replace(/https?:\/\/\S+/g, '').replace(/(.)\1{3,}/g, '$1$1$1').replace(/\s+/g, ' ').trim();
   },
   // Fala um texto. prio: 'high' fura a fila (ex.: apresentador respondendo).
-  say(text, { voice: vid, prio = 'normal', onStart, onEnd, maxLen = 300, filter = true } = {}) {
+  // cat: tipo de fala (VOICE_CATS) — cada tipo tem modelo de voz e volume próprios no painel 🗣️ Voz.
+  // As interações (locutor) têm a menor prioridade: saem da fila quando o jogo precisa falar.
+  say(text, { voice: vid, prio = 'normal', onStart, onEnd, maxLen = 300, filter = true, cat = 'game' } = {}) {
     let t = filter ? this.clean(text) : String(text);
     if (!t || !mixer.here) { onEnd?.(); return; }
     if (t.length > maxLen) t = t.slice(0, maxLen);
-    const item = { t, vp: voiceById(vid || liveCfg.stream.voice), onStart, onEnd };
+    const cc = voiceCat(cat);
+    if (cc.vol <= 0) { onEnd?.(); return; }
+    const item = { t, vp: voiceById(vid || cc.voice || liveCfg.stream.voice), onStart, onEnd, cat, vol: cc.vol };
     item.buf = this.load(item); // já começa a baixar enquanto espera a vez
+    if (cat !== 'locutor') this.queue = this.queue.filter((x) => x.cat !== 'locutor' || (x.onEnd?.(), false));
+    else if (this.queue.some((x) => x.cat !== 'locutor')) { onEnd?.(); return; }
     if (prio === 'high') this.queue.unshift(item); else this.queue.push(item);
     if (this.queue.length > 12) this.queue.splice(1, this.queue.length - 12).forEach((x) => x.onEnd?.());
     this.next();
@@ -115,7 +127,8 @@ const voice = {
       const ac = mixer.init();
       const src = ac.createBufferSource();
       src.buffer = buf;
-      src.connect(mixer.ch.voice);
+      const g = ac.createGain(); g.gain.value = item.vol ?? 1; // volume do tipo de fala
+      src.connect(g).connect(mixer.ch.voice);
       src.onended = done;
       item.src = src;
       item.onStart?.(buf.duration);
@@ -125,7 +138,7 @@ const voice = {
       if (this.cur !== item) return;
       try {
         const u = new SpeechSynthesisUtterance(item.t);
-        u.lang = item.vp.v.slice(0, 5);
+        u.lang = item.vp.v.slice(0, 5); u.volume = clamp(item.vol ?? 1, 0, 1);
         u.onend = done; u.onerror = done;
         item.onStart?.(item.t.length / 14);
         speechSynthesis.speak(u);
@@ -148,10 +161,16 @@ const commentReader = {
   nick(u) { return String(u?.nick || u?.handle || 'alguém').replace(/[_.]+/g, ' ').slice(0, 30); },
   onEvent(ev) {
     const st = liveCfg.stream, type = ev.type === 'social' ? (ev.action === 'share' ? 'share' : 'follow') : ev.type;
+    // Agradecimento por voz a quem começa a seguir (em todos os jogos), com o nome da pessoa
+    if (type === 'follow' && st.thankFollow !== false) {
+      const k = 'thank' + uid(ev);
+      if (performance.now() - (this.last.get(k) || -1e9) > 600000) { this.last.set(k, performance.now()); voice.say(String(st.thankFormat || 'Muito obrigado por seguir, {user}! Seja muito bem-vindo!').replace(/\{user\}/g, this.nick(ev.user)), { cat: 'follow', prio: 'high' }); }
+      return;
+    }
     // Sem o locutor ligado, continua valendo o leitor de comentários antigo
     if (!this.on()) { if (type === 'chat' && st.readComments) this.say('chat', ev, 4); return; }
     if (!this.types()[type]) return;
-    if (type === 'chat' && current?.speaksChat) return; // o apresentador IA e a professora já falam
+    if ((type === 'chat' || type === 'join') && current?.speaksChat) return; // o apresentador IA e a professora já falam com o chat
     if (type === 'chat' && norm(ev.text).replace(/ /g, '').length <= 2) return; // respostas de jogo ("a", "1", "kk") não são lidas
     if (type === 'like') {
       // Junta os likes da pessoa e fala no máximo um aviso a cada 20s por pessoa
@@ -177,7 +196,7 @@ const commentReader = {
     const plural = (n) => (/[aeiouáéó]$/i.test(n) && !/\s/.test(n) ? n + 's' : n);
     const gift = type === 'gift' ? (cnt > 1 ? `${cnt} ${plural(gname)}` : `${/^(rosa|rosquinha|casquinha|coroa|bola|baleia|estrela|flor|pizza|cerveja|m[aã]o|fatia|mina|arma|caneca|coxinha)/i.test(gname) ? 'uma' : 'um'} ${gname}`) : '';
     const msg = this.fmt(type).replace('{user}', this.nick(ev.user)).replace('{comment}', String(ev.text || '').slice(0, st.readMax || 120)).replace('{gift}', gift).replace('{count}', fmtNum(cnt));
-    voice.say(msg, { prio: type === 'gift' && coins(ev) >= 100 ? 'high' : 'normal' });
+    voice.say(msg, { prio: type === 'gift' && coins(ev) >= 100 ? 'high' : 'normal', cat: 'locutor' });
   },
   onChat(ev) { this.onEvent(ev); },
 };

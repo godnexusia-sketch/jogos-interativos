@@ -130,4 +130,4 @@ class Feed {
   }
 }
 // Fala o texto pela voz da live, se o jogo deixar.
-function narrate(g, str, opts = {}) { if (g.s.narrate !== false && g === current) voice.say(str, opts); }
+function narrate(g, str, opts = {}) { if (g.s.narrate !== false && g === current) voice.say(str, { cat: g.voiceCat || 'game', ...opts }); }

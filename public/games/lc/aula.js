@@ -20,16 +20,19 @@ const AULA_RE = /^(?:!aula|aula de|aula sobre|quero aprender(?: sobre)?|quero sa
 const aulaKey = (t) => norm(t).replace(/\b(o|a|os|as|de|do|da|dos|das)\b/g, ' ').replace(/\s+/g, ' ').trim();
 
 defineGame({
-  id: 'live-class', name: 'Aula ao Vivo', genre: 'talk', icon: '👩‍🏫', color: '#16a34a', ai: true, voice: true, hasChars: true, speaksChat: true, legendPos: { side: 'left', y: 812, cycle: false },
+  id: 'live-class', name: 'Aula ao Vivo', genre: 'talk', icon: '👩‍🏫', color: '#16a34a', ai: true, voice: true, hasChars: true, speaksChat: true, voiceCat: 'aula', legendPos: { side: 'left', y: 718, cycle: false },
   desc: 'O chat comenta o que quer aprender e a professora 3D explica na lousa, com voz, exemplo e uma pergunta no final. Para trocar de conteúdo, alguém manda moedas.',
-  help: '<p>Comente <b>"quero aprender …"</b>, <b>"aula de …"</b>, <b>"o que é …"</b> ou <b>!aula …</b>. O pedido entra na lista da tela.</p><p>A professora explica ponto por ponto, mostra um <b>exemplo</b> e faz uma <b>pergunta</b> (responda A, B, C ou D). Depois repete a aula.</p><p>🎁 Para <b>trocar de conteúdo</b>, mande o presente da ação "Trocar a aula" (padrão: 10 moedas ou mais): vale o seu pedido, ou o mais pedido da lista.</p>',
+  help: '<p>Na tela aparece a lista de <b>assuntos numerados</b>: comente só o <b>número</b> para votar (ou peça um assunto novo com <b>"quero aprender …"</b>, <b>"aula de …"</b>, <b>"o que é …"</b>).</p><p>A professora explica ponto por ponto, mostra um <b>exemplo</b> e faz uma <b>pergunta</b> (responda A, B, C ou D). Depois repete a aula. Quando não está explicando, ela conversa com o chat.</p><p>🎁 Para <b>trocar de assunto</b>, mande o presente da ação "Trocar a aula" (padrão: 10 moedas ou mais) e <b>digite o nome ou o número do assunto</b> que quer estudar.</p>',
   settings: [
     { key: 'firstFree', type: 'toggle', label: 'A primeira aula começa de graça (sem moedas)', default: true },
     { key: 'startTopic', type: 'text', label: 'Tema da primeira aula (vazio = espera o chat pedir)', default: '' },
     { key: 'level', type: 'select', label: 'Nível da explicação', options: [['crianca', 'Criança'], ['fundamental', 'Ensino fundamental'], ['medio', 'Ensino médio'], ['vestibular', 'Vestibular/ENEM']], default: 'medio' },
     { key: 'minSlide', type: 'number', label: 'Segundos mínimos em cada ponto', min: 4, max: 60, default: 9 },
     { key: 'quizSeconds', type: 'number', label: 'Segundos para responder a pergunta', min: 10, max: 120, default: 25 },
-    { key: 'loopPause', type: 'number', label: 'Pausa antes de repetir a aula (s)', min: 3, max: 120, default: 12 },
+    { key: 'loopPause', type: 'number', label: 'Pausa antes de repetir a aula (s)', min: 3, max: 120, default: 15 },
+    { key: 'suggest', type: 'textarea', label: 'Assuntos sugeridos na lista numerada (um por linha)', default: 'Frações\nPorcentagem\nEquação do 1º grau\nLogaritmo\nTeorema de Pitágoras\nFotossíntese\nSistema Solar\nVerbos em inglês' },
+    { key: 'menuSize', type: 'number', label: 'Quantos assuntos na lista numerada', min: 3, max: 9, default: 6 },
+    { key: 'chatter', type: 'toggle', label: 'Professora conversa com o chat quando não está explicando', default: true },
     charSetting('character', 'Professora (personagem)'),
     NARRATE_SETTING('Professora explica em voz alta'),
   ],
@@ -38,33 +41,75 @@ defineGame({
   kind() { return this.charOverride && CHARACTERS[this.charOverride] ? this.charOverride : pickKind(this.s.character || 'maga', 0, 'live-class'); },
   onCharPick(user, k) { this.charOverride = k; },
   // Na lista "Como jogar": o pedido por comentário também aparece
-  legendItems() { return [{ emoji: '💬', what: '"quero aprender …"', eff: 'Pede uma aula', icon: '📚', tone: 'show', trig: 'comment', times: 1 }, { emoji: '💬', what: 'A, B, C ou D', eff: 'Responde a pergunta', icon: '✅', tone: 'help', trig: 'comment', times: 1 }, ...legendItems({ ...this, legendItems: null })]; },
+  legendItems() { return [{ emoji: '💬', what: 'número do assunto', eff: 'Vota no assunto', icon: '🔢', tone: 'show', trig: 'comment', times: 1 }, { emoji: '💬', what: 'A, B, C ou D', eff: 'Responde a pergunta', icon: '✅', tone: 'help', trig: 'comment', times: 1 }, ...legendItems({ ...this, legendItems: null }).map((it) => (it.eff === 'Trocar a aula' ? { ...it, eff: 'Troca (digite o assunto)' } : it))]; },
   reset() {
-    this.reqs = new Map(); this.lastReq = new Map(); this.points = new Points(this.id); this.feed = new Feed(3);
+    this.reqs = new Map(); this.lastReq = new Map(); this.paid = new Map(); this.points = new Points(this.id); this.feed = new Feed(3); this.talkT = 0; this.callT = 20;
     this.lesson = null; this.st = 'idle'; this.t = 0; this.i = 0; this.loading = null; this.right = []; this.tried = new Set();
     if (this.s.startTopic) this.start(this.s.startTopic, null);
   },
   onSettings() { this.reset(); },
-  sample() { return this.st === 'quiz' ? pick(['a', 'b', 'c', 'd']) : pick(['quero aprender frações', 'aula de logaritmo', 'o que é fotossíntese', 'me ensina porcentagem', '!aula sistema solar']); },
+  sample() { return this.st === 'quiz' ? pick(['a', 'b', 'c', 'd']) : pick(['1', '2', '3', 'quero aprender frações', 'o que é fotossíntese', 'oi professora!']); },
+  // Lista numerada: os pedidos do chat (mais votados primeiro) e depois as sugestões do dono
+  menu() {
+    const cur = this.lesson ? aulaKey(this.lesson.topic) : '', out = [...this.reqs.entries()].sort((a, b) => b[1].n - a[1].n || a[1].t - b[1].t).map(([key, r]) => ({ key, topic: r.topic, n: r.n, users: r.users })).filter((x) => x.key !== cur);
+    for (const t of lines(this.s.suggest)) { const key = aulaKey(t); if (key && key !== cur && !out.some((x) => x.key === key)) out.push({ key, topic: t, n: 0, users: [] }); }
+    return out.slice(0, clamp(Number(this.s.menuSize) || 6, 3, 9));
+  },
+  addReq(topic, ev) {
+    const k = aulaKey(topic), r = this.reqs.get(k) || { topic, users: [], n: 0, t: Date.now() };
+    if (!r.users.some((u) => uid({ user: u }) === uid(ev))) { r.users.push(ev.user); r.n++; }
+    this.reqs.set(k, r); this.lastReq.set(uid(ev), { k, t: Date.now() });
+    return k;
+  },
+  // Alguém escolheu um assunto: se já pagou (ou é a primeira aula grátis), troca na hora
+  chose(topic, ev) {
+    const k = this.addReq(topic, ev), paid = this.paid.get(uid(ev));
+    if (paid && Date.now() - paid < 180000) { this.paid.delete(uid(ev)); return this.start(topic, ev.user, k); }
+    this.feed.push(ev.user, `📚 votou: ${trim(topic, 22)}`, '#86efac');
+    if (!this.lesson && !this.loading && this.s.firstFree) this.start(topic, ev.user, k);
+  },
+  explaining() { return !this.loading && (this.st === 'point' || this.st === 'example' || this.st === 'quiz'); }, // preparando a aula ela ainda conversa
+  teacherSay(text, prio = 'normal') {
+    voice.say(text, { cat: 'aula', prio });
+    const c = charLayer.chars.get('teacher'); if (c) { c.say(trim(text, 90), { secs: 4 }); if (!c.busy) c.play(pick(['interact', 'taunt', 'victory'])); }
+  },
+  onEvent(ev) {
+    // Boas-vindas a quem entra, quando não está explicando
+    if (ev.type !== 'join' || !this.s.chatter || this.explaining() || this !== current) return;
+    if (performance.now() - (this.joinT ?? -1e9) < 25000 || voice.queue.length > 1) return;
+    this.joinT = performance.now();
+    this.teacherSay(`Bem-vindo à aula, ${commentReader.nick(ev.user)}! Comente o número do assunto que você quer estudar.`);
+  },
+  // Conversa com o chat (IA, uma frase), só quando não está explicando
+  async chatter(ev) {
+    if (!this.s.chatter || this.explaining() || this !== current || this.talkT > 0 || voice.queue.length > 1) return;
+    const txt = String(ev.text || '').trim(); if (txt.length < 3) return;
+    this.talkT = 9;
+    const nick = commentReader.nick(ev.user), menu = this.menu().slice(0, 3).map((m, i) => `${i + 1} ${m.topic}`).join(', ');
+    const fb = pick([`Oi, ${nick}! Comente o número do assunto que você quer estudar.`, `Boa, ${nick}! Já escolheu o próximo assunto? É só comentar o número.`, `${nick}, obrigada por participar! Quer aprender o quê hoje?`]);
+    const r = await ai.ask('aulachat:' + uid(ev) + ':' + norm(txt).slice(0, 60), 'Você é uma professora brasileira simpática numa live de aula no TikTok. Responda em UMA frase curta (até 140 letras), em português, chamando a pessoa pelo nome. Sem emojis.', `${nick} comentou: "${txt.slice(0, 160)}". Responda e, se fizer sentido, convide a escolher um assunto pelo número (opções: ${menu}).`, fb, 120);
+    if (!this.explaining() && this === current) this.teacherSay(r || fb);
+  },
   onChat(ev) {
     const txt = String(ev.text || '').trim();
     if (this.st === 'quiz') { const lt = norm(txt).replace(/^letra /, '').replace(/ /g, ''); if (/^[abcd]$/.test(lt)) return this.answer(ev, lt.toUpperCase()); }
-    const m = txt.match(AULA_RE);
-    if (!m) return;
-    const topic = m[1].trim().replace(/\s+/g, ' ');
-    if (voice.clean(topic) !== topic || aulaKey(topic).length < 2) return; // palavrão ou vazio não vira aula
-    const k = aulaKey(topic), r = this.reqs.get(k) || { topic, users: [], n: 0, t: 0 };
-    if (!r.users.some((u) => uid({ user: u }) === uid(ev))) { r.users.push(ev.user); r.n++; }
-    r.t = Date.now(); this.reqs.set(k, r); this.lastReq.set(uid(ev), k);
-    this.feed.push(ev.user, `📚 pediu: ${trim(topic, 22)}`, '#86efac');
-    // Sem aula ainda: a primeira começa sozinha
-    if (!this.lesson && !this.loading && this.s.firstFree) this.start(topic, ev.user, k);
+    // Número da lista numerada
+    const num = txt.match(/^#?(\d{1,2})$/);
+    if (num) { const it = this.menu()[Number(num[1]) - 1]; if (it) this.chose(it.topic, ev); return; }
+    const m = txt.match(AULA_RE), paid = this.paid.has(uid(ev));
+    // Quem já mandou o presente pode digitar só o nome do assunto
+    const topic = (m ? m[1] : paid && txt.length >= 2 && txt.length <= 40 ? txt : '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+    if (!topic || voice.clean(topic) !== topic || aulaKey(topic).length < 2) return this.chatter(ev); // palavrão ou conversa: a professora responde
+    this.chose(topic, ev);
   },
   onAction(id, a) {
     if (id === 'change_topic') {
-      const k = this.lastReq.get(uid(a)) && this.reqs.has(this.lastReq.get(uid(a))) ? this.lastReq.get(uid(a)) : [...this.reqs.entries()].sort((x, y) => y[1].n - x[1].n || y[1].t - x[1].t)[0]?.[0];
-      if (!k) { this.feed.push(a.user, 'comente "quero aprender …" primeiro!', '#fde047'); return; }
-      this.start(this.reqs.get(k).topic, a.user, k);
+      // Já tinha escolhido um assunto nos últimos 3 minutos: troca na hora; senão espera digitar o nome ou o número
+      const lr = this.lastReq.get(uid(a));
+      if (lr && Date.now() - lr.t < 180000 && this.reqs.has(lr.k)) return this.start(this.reqs.get(lr.k).topic, a.user, lr.k);
+      this.paid.set(uid(a), Date.now());
+      this.feed.push(a.user, '🎁 digite o assunto!', '#fde047');
+      this.teacherSay(`Obrigada pelo presente, ${commentReader.nick(a.user)}! Agora digite o nome ou o número do assunto que você quer estudar.`, 'high');
     } else if (id === 'repeat_point' && this.st === 'point') { this.t = 0; this.speakPoint(); this.feed.push(a.user, '🔁 repetindo'); }
     else if (id === 'next_point' && this.st === 'point') this.t = 999;
   },
@@ -109,7 +154,10 @@ defineGame({
   },
   pointSecs(s) { return clamp(String(s || '').length / 12 + 2.5, this.s.minSlide, 40); },
   update(dt) {
-    this.feed.update(dt); this.loadT = (this.loadT || 0) + dt;
+    this.feed.update(dt); this.loadT = (this.loadT || 0) + dt; this.talkT = Math.max(0, this.talkT - dt);
+    for (const [k, t0] of this.paid) if (Date.now() - t0 > 180000) this.paid.delete(k);
+    // Fora da explicação, de tempos em tempos a professora chama o chat para escolher o assunto
+    if (this.s.chatter && !this.explaining() && this === current) { this.callT -= dt; if (this.callT <= 0 && !voice.queue.length) { this.callT = 35; const m = this.menu(); if (m.length) this.teacherSay(`Qual assunto vocês querem agora? ${m.slice(0, 3).map((x, i) => `${i + 1}: ${x.topic}`).join('. ')}. É só comentar o número!`); } }
     const L = this.lesson; if (!L || this.loading) return;
     this.t += dt;
     if (this.st === 'point' && this.t > this.pointSecs(L.p[this.i]) + (this.i === 0 ? 3 : 0)) {
@@ -136,7 +184,7 @@ defineGame({
     const t = performance.now() / 1000;
     // Sala de aula: parede, lousa verde com moldura de madeira
     if (!customBackground(this)) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#2b1d14'); g.addColorStop(0.75, '#4a3426'); g.addColorStop(1, '#23170f'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
-    const bx = 24, by = 150, bw = W - 48, bh = 640;
+    const bx = 24, by = 150, bw = W - 48, bh = 548;
     ctx.fillStyle = '#7c4a24'; ctx.beginPath(); ctx.roundRect(bx - 14, by - 14, bw + 28, bh + 28, 18); ctx.fill();
     const bg = ctx.createLinearGradient(0, by, 0, by + bh); bg.addColorStop(0, '#1f4d3a'); bg.addColorStop(1, '#173a2c'); ctx.fillStyle = bg; ctx.fillRect(bx, by, bw, bh);
     ctx.fillStyle = 'rgba(255,255,255,.04)'; for (let k = 0; k < 7; k++) ctx.fillRect(bx + ((k * 173) % bw), by, 60, bh);
@@ -147,8 +195,8 @@ defineGame({
       mathLines(this.loadingTopic, bw - 60, 44).slice(0, 2).forEach((l, i) => label(l, W / 2, by + 280 + i * 52, 44, yellow, 'center', 900));
       label('.'.repeat(1 + Math.floor(t * 3) % 3), W / 2, by + 400, 60, chalk, 'center', 900);
     } else if (!L) {
-      label('O que você quer aprender hoje?', W / 2, by + 140, 34, yellow, 'center', 900);
-      ['Comente:', '"quero aprender frações"', '"aula de logaritmo"', '"o que é fotossíntese"', '!aula sistema solar'].forEach((s, i) => label(s, W / 2, by + 220 + i * 52, i ? 30 : 26, i ? chalk : 'rgba(255,255,255,.7)', 'center', 800));
+      label('O que você quer aprender hoje?', W / 2, by + 110, 34, yellow, 'center', 900);
+      ['Comente o NÚMERO do assunto da lista', 'ou peça um novo:', '"quero aprender …"', '"o que é …"'].forEach((s, i) => label(s, W / 2, by + 190 + i * 52, i === 1 ? 24 : 30, i === 1 ? 'rgba(255,255,255,.7)' : chalk, 'center', 800));
     } else {
       pill(`📚 ${trim(L.t, 34)}`, W / 2, by + 34, { size: 22, bg: 'rgba(0,0,0,.35)', color: yellow });
       if (this.st === 'point' || this.st === 'loop' || this.st === 'example') {
@@ -163,7 +211,7 @@ defineGame({
       } else if (this.st === 'quiz' || this.st === 'answer') {
         mathLines('❓ ' + L.q, bw - 60, 30, 900).slice(0, 4).forEach((l, i) => label(l, W / 2, by + 100 + i * 40, 30, yellow, 'center', 900));
         L.o.forEach((o, i) => {
-          const y = by + 290 + i * 74, ok = this.st === 'answer' && 'ABCD'[i] === L.a;
+          const y = by + 240 + i * 68, ok = this.st === 'answer' && 'ABCD'[i] === L.a;
           ctx.fillStyle = ok ? 'rgba(34,197,94,.35)' : 'rgba(0,0,0,.25)'; ctx.beginPath(); ctx.roundRect(bx + 30, y, bw - 60, 62, 16); ctx.fill();
           if (ok) { ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 4; ctx.stroke(); }
           label('ABCD'[i], bx + 62, y + 32, 30, ok ? '#86efac' : yellow, 'center', 900, F_TITLE);
@@ -176,14 +224,20 @@ defineGame({
     // Professora 3D ao lado da lousa
     const c = charLayer.get('teacher', this.kind(), { height: 300 });
     if (c) { charLayer.place(c, W - 150, 1150, -0.5); if (!c.busy && c.state !== 'idle') c.play('idle'); charLayer.draw(); }
-    // Pedidos da live
-    // Pedidos da live (embaixo da lista "Como jogar")
-    const reqs = [...this.reqs.values()].sort((a, b) => b.n - a.n || b.t - a.t).slice(0, 2), py = 1030;
-    if (reqs.length) {
-      panel(12, py, 400, 44 + reqs.length * 48, { r: 18, from: 'rgba(15,23,42,.9)', to: 'rgba(15,23,42,.8)' });
-      label(`📚 PEDIDOS (${this.reqs.size}) · 🎁 troca a aula`, 28, py + 22, 16, '#fde68a', 'left', 900);
-      reqs.forEach((r, i) => { const y = py + 62 + i * 48; avatar(r.users[0], 42, y, 18, '#fde68a'); label(trim(r.topic, 20), 70, y, 20, '#fff', 'left', 800); label(`×${r.n}`, 396, y, 18, '#86efac', 'right', 900); });
-    } else if (L) pill('Comente "quero aprender …" · 🎁 troca a aula', 214, py + 24, { size: 15, bg: 'rgba(0,0,0,.55)', color: '#fde68a' });
+    // Lista numerada de assuntos (comentar o número vota; com presente, troca)
+    const menu = this.menu(), py = 918, rw = 404;
+    panel(10, py, rw, 44 + menu.length * 40, { r: 18, from: 'rgba(15,23,42,.92)', to: 'rgba(15,23,42,.82)', border: 'rgba(253,230,138,.5)' });
+    label('📚 ASSUNTOS · comente o NÚMERO', 26, py + 22, 17, '#fde68a', 'left', 900);
+    menu.forEach((m, i) => {
+      const y = py + 62 + i * 40;
+      ctx.fillStyle = 'rgba(253,230,138,.95)'; ctx.beginPath(); ctx.arc(36, y, 15, 0, 7); ctx.fill();
+      label(String(i + 1), 36, y + 1, 18, '#1c1917', 'center', 900, F_TITLE);
+      label(trim(m.topic, 22), 62, y, 19, '#fff', 'left', 800);
+      if (m.n) { avatar(m.users[0], rw - 64, y, 13, '#86efac'); label(`×${m.n}`, rw - 10, y, 17, '#86efac', 'right', 900); }
+    });
+    // Quem já mandou o presente e falta escolher
+    const payers = [...this.paid.keys()].length;
+    if (payers) pill(`🎁 ${payers === 1 ? 'quem mandou o presente' : payers + ' pessoas'}: digite o nome ou o número do assunto!`, W / 2, by + bh - 22, { size: 16, bg: 'rgba(250,204,21,.9)', color: '#1c1917' });
     this.feed.draw(20, 110);
   },
 });

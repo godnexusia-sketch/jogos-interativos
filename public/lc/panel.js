@@ -448,11 +448,12 @@ if (!isClean) (() => {
   RENDER.musica = () => {
     const c = music.cfg;
     const save = () => liveCfg.save('music', c);
+    if (!c.ytSeen) { c.ytSeen = true; c.mode = 'yt'; save(); } // a fonte padrão agora é o YouTube (link)
     h(`<div class="vhead"><h2>🎵 Música de fundo</h2><span class="tag">${music.playing ? '▶ tocando: ' + esc(music.now || '') : 'parada'}</span></div>
       <div class="panel"><div class="row"><button id="mPlay" class="primary">${music.playing ? '⏹ Parar' : '▶ Tocar'}</button><button id="mNext">⏭ Próxima</button></div>
         <label class="f"><span>Volume da música</span><input type="range" id="mVol" min="0" max="1" step="0.05" value="${mixer.vol.music}"></label>
-        <label class="f"><span>Fonte</span><select id="mMode"><option value="gen" ${c.mode !== 'list' ? 'selected' : ''}>Trilhas geradas (sem direitos autorais)</option><option value="list" ${c.mode === 'list' ? 'selected' : ''}>Minha playlist (MP3)</option></select></label>
-        ${c.mode !== 'list' ? `<label class="f"><span>Estilo</span><select id="mStyle">${Object.entries(MUSIC_STYLES).map(([k, s]) => `<option value="${k}" ${k === c.style ? 'selected' : ''}>${s.name}</option>`).join('')}</select></label>`
+        <label class="f"><span>Fonte</span><select id="mMode"><option value="yt" ${c.mode === 'yt' ? 'selected' : ''}>▶️ YouTube (cole o link)</option><option value="gen" ${!c.mode || c.mode === 'gen' ? 'selected' : ''}>Trilhas geradas (sem direitos autorais)</option><option value="list" ${c.mode === 'list' ? 'selected' : ''}>Minha playlist (MP3)</option></select></label>
+        ${c.mode === 'yt' ? ytPanel() : c.mode !== 'list' ? `<label class="f"><span>Estilo</span><select id="mStyle">${Object.entries(MUSIC_STYLES).map(([k, s]) => `<option value="${k}" ${k === c.style ? 'selected' : ''}>${s.name}</option>`).join('')}</select></label>`
         : `<div class="tracks">${c.tracks.map((t, i) => `<div class="trk"><span>${i + 1}. ${esc(t.name)}</span><button data-rm="${i}">✕</button></div>`).join('') || '<p class="small">Nenhuma música. Envie MP3 abaixo.</p>'}</div>
           <div class="row"><button id="mUp">+ Enviar MP3</button><label class="f tog"><input type="checkbox" id="mShuf" ${c.shuffle ? 'checked' : ''}><b></b><span>Aleatório</span></label></div>`}
         <p class="small">A música toca em loop na tela da live. Use só músicas que você tem direito de usar.</p></div>`);
@@ -464,6 +465,70 @@ if (!isClean) (() => {
     q('#mUp')?.addEventListener('click', async () => { const m = await chooseMedia('audio'); if (m) { c.tracks.push({ id: 't' + Date.now(), name: m.name, src: m.url }); save(); RENDER.musica(); } });
     q('#mShuf')?.addEventListener('change', (e) => { c.shuffle = e.target.checked; save(); });
     qa('[data-rm]').forEach((b) => b.addEventListener('click', () => { c.tracks.splice(Number(b.dataset.rm), 1); save(); RENDER.musica(); }));
+    if (c.mode === 'yt') ytWire(c, save);
+  };
+  // ---------- YouTube no painel ----------
+  const fmtTime = (s) => { s = Math.max(0, Math.floor(s || 0)); const h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, x = String(s % 60).padStart(2, '0'); return h ? `${h}:${String(m).padStart(2, '0')}:${x}` : `${m}:${x}`; };
+  const ytThumb = (it) => (it?.thumb ? it.thumb : it?.id ? `https://i.ytimg.com/vi/${it.id}/mqdefault.jpg` : '');
+  function ytPanel() {
+    const L = yt.cfg.list, st = yt.last || {};
+    return `<div class="ytbox">
+      <div class="row"><input id="ytLink" placeholder="Cole aqui o link do YouTube (música, vídeo ou playlist)" style="flex:1"><button id="ytNow" class="primary">▶ Tocar agora</button><button id="ytAdd">+ Fila</button></div>
+      <div class="ytnow"><img id="ytImg" alt="" src="${esc(ytThumb(L[st.idx]) || '')}" onerror="this.style.visibility='hidden'" onload="this.style.visibility='visible'">
+        <div class="ytinfo"><b id="ytTitle">${esc(st.title || (L.length ? 'Pronto para tocar' : 'Nenhuma música ainda'))}</b><small id="ytAuthor">${esc(st.author || '')}</small>
+          <div class="ytbar"><span id="ytCur">${fmtTime(st.cur)}</span><input type="range" id="ytSeek" min="0" max="${Math.max(1, Math.round(st.dur || 1))}" step="1" value="${Math.round(st.cur || 0)}"><span id="ytDur">${fmtTime(st.dur)}</span></div>
+          <div class="row ytbtns"><button id="ytPrev" title="Anterior">⏮</button><button id="ytPlay" class="primary" title="Tocar/pausar">${st.playing ? '⏸' : '▶'}</button><button id="ytNext" title="Próxima">⏭</button>
+            <label class="f tog"><input type="checkbox" id="ytShuf" ${yt.cfg.shuffle ? 'checked' : ''}><b></b><span>Aleatório</span></label><label class="f tog"><input type="checkbox" id="ytLoop" ${yt.cfg.loop !== false ? 'checked' : ''}><b></b><span>Repetir a lista</span></label></div>
+          <p class="small" id="ytErr"></p></div></div>
+      <div class="ytlist">${L.map((it, i) => `<div class="ytrow ${i === st.idx ? 'on' : ''}" data-yp="${i}"><img src="${esc(ytThumb(it))}" alt="" onerror="this.remove()"><span>${i + 1}. ${esc(it.title || it.id || it.list)}${it.list ? ' <i>(playlist)</i>' : ''}</span><button data-yrm="${i}" title="Tirar">✕</button></div>`).join('') || '<p class="small">Cole um link acima. Pode ser música, vídeo, shorts ou playlist inteira.</p>'}</div>
+      <p class="small">O som sai na tela da live (o player oficial do YouTube fica escondido nela). Alguns vídeos não deixam tocar fora do YouTube — esses são pulados sozinhos.</p></div>`;
+  }
+  function ytWire(c, save) {
+    const send = (b) => busDo({ t: 'yt', list: yt.cfg.list, ...b });
+    const add = async (now) => {
+      const link = q('#ytLink').value, p = ytParse(link);
+      if (!p) return toastMsg('Esse link não é do YouTube.');
+      q('#ytNow').disabled = q('#ytAdd').disabled = true;
+      let info = {};
+      try { const r = await fetch(`/api/yt-info?${p.id ? 'id=' + p.id : 'list=' + p.list}`); info = await r.json(); if (!r.ok) toastMsg(info.error || 'Não achei esse link no YouTube.'); } catch {}
+      q('#ytNow') && (q('#ytNow').disabled = q('#ytAdd').disabled = false);
+      if (info.error === 'o dono não deixa tocar fora do YouTube') return;
+      yt.cfg.list.push({ id: p.id || '', list: p.list || '', title: info.title || link, author: info.author || '', thumb: info.thumb || '' });
+      save();
+      if (now) send({ cmd: 'play', i: yt.cfg.list.length - 1 });
+      toastMsg(`🎵 ${now ? 'Tocando' : 'Na fila'}: ${trim(info.title || 'música do YouTube', 40)}`);
+      RENDER.musica();
+    };
+    q('#ytNow').addEventListener('click', () => add(true));
+    q('#ytAdd').addEventListener('click', () => add(false));
+    q('#ytLink').addEventListener('keydown', (e) => { if (e.key === 'Enter') add(true); });
+    q('#ytPlay').addEventListener('click', () => send({ cmd: yt.last?.playing ? 'pause' : 'play' }));
+    q('#ytNext').addEventListener('click', () => send({ cmd: 'next' }));
+    q('#ytPrev').addEventListener('click', () => send({ cmd: 'prev' }));
+    q('#ytShuf').addEventListener('change', (e) => { yt.cfg.shuffle = e.target.checked; save(); });
+    q('#ytLoop').addEventListener('change', (e) => { yt.cfg.loop = e.target.checked; save(); });
+    // Barra: arrastar mostra o minuto; soltar manda pular para ele
+    const seek = q('#ytSeek');
+    seek.addEventListener('input', () => { seek.dataset.drag = '1'; q('#ytCur').textContent = fmtTime(seek.value); });
+    seek.addEventListener('change', () => { send({ cmd: 'seek', sec: Number(seek.value) }); setTimeout(() => delete seek.dataset.drag, 1200); });
+    q('.ytlist').addEventListener('click', (e) => {
+      const rm = e.target.closest('[data-yrm]');
+      if (rm) { yt.cfg.list.splice(Number(rm.dataset.yrm), 1); save(); return RENDER.musica(); }
+      const row = e.target.closest('[data-yp]'); if (row) send({ cmd: 'play', i: Number(row.dataset.yp) });
+    });
+  }
+  // Estado que vem da tela (ou do player deste painel): atualiza a barra, o título e os botões sem redesenhar tudo
+  window.onYtState = (st) => {
+    yt.last = st;
+    if (curView !== 'musica' || !q('#ytSeek')) return;
+    const L = yt.cfg.list, seek = q('#ytSeek');
+    q('#ytTitle').textContent = st.title || 'Carregando…'; q('#ytAuthor').textContent = st.author || '';
+    q('#ytPlay').textContent = st.playing ? '⏸' : '▶';
+    q('#ytDur').textContent = fmtTime(st.dur); seek.max = Math.max(1, Math.round(st.dur || 1));
+    if (!seek.dataset.drag) { seek.value = Math.round(st.cur || 0); q('#ytCur').textContent = fmtTime(st.cur); }
+    const src = st.vid ? `https://i.ytimg.com/vi/${st.vid}/mqdefault.jpg` : ytThumb(L[st.idx]); if (src && q('#ytImg').getAttribute('src') !== src) q('#ytImg').src = src;
+    qa('.ytrow').forEach((r) => r.classList.toggle('on', Number(r.dataset.yp) === st.idx));
+    if (st.err) q('#ytErr').textContent = '⚠️ ' + st.err;
   };
   // Volume vale para todas as telas: vai junto da configuração de voz.
   function setMix(k, v) { mixer.set(k, v); liveCfg.save('stream', { ...liveCfg.stream, mix: { ...mixer.vol } }); }
@@ -525,6 +590,12 @@ if (!isClean) (() => {
         <div class="mixer">${[['master', 'Geral'], ['game', 'Sons do jogo'], ['voice', 'Voz'], ['music', 'Música'], ['fx', 'Alertas e efeitos'], ['dj', 'DJ Pad']].map(([k, n]) => `<label class="f"><span>${n}</span><input type="range" data-mix="${k}" min="0" max="1" step="0.05" value="${mixer.vol[k]}"></label>`).join('')}</div>
         <label class="f tog"><input type="checkbox" id="vHere" ${st.audioOnPanel ? 'checked' : ''}><b></b><span>Tocar o som também neste painel (com a tela da live aberta o painel fica mudo, para não dar eco)</span></label>
         <p class="small" id="aiStatus">IA: verificando…</p></div>
+      <div class="panel" id="vcatP"><h3>🎚️ Volume e voz de cada tipo de fala</h3>
+        <p class="small">Cada tipo de fala tem o seu modelo de voz e o seu volume. As interações têm a menor prioridade: quando o jogo ou a aula precisa falar, elas esperam ou são puladas, para não atrapalhar.</p>
+        ${VOICE_CATS.map(([k, n]) => { const o = voiceCat(k); return `<div class="vcat"><b>${n}</b><select data-vcv="${k}"><option value="">Voz padrão</option>${VOICES.map((v) => `<option value="${v.id}" ${v.id === o.voice ? 'selected' : ''}>${esc(v.name)}</option>`).join('')}</select><label class="sl"><input type="range" data-vcl="${k}" min="0" max="1" step="0.05" value="${o.vol}"><output>${Math.round(o.vol * 100)}%</output></label><button data-vct="${k}" title="Ouvir">▶</button></div>`; }).join('')}</div>
+      <div class="panel"><h3>⭐ Agradecimento de quem segue</h3>
+        <label class="f tog"><input type="checkbox" data-s="thankFollow" ${st.thankFollow !== false ? 'checked' : ''}><b></b><span>Agradecer por voz toda vez que alguém seguir, falando o nome da pessoa (em todos os jogos)</span></label>
+        <label class="f"><span>Frase ({user} = nome de quem seguiu)</span><input data-s="thankFormat" value="${esc(st.thankFormat || 'Muito obrigado por seguir, {user}! Seja muito bem-vindo!')}"></label></div>
       <div class="panel" id="readP"><h3>🎙️ Locutor da live</h3>
         <label class="f tog"><input type="checkbox" data-s="readAll" ${st.readAll !== false ? 'checked' : ''}><b></b><span>Falar cada interação com a voz escolhida ("José mandou uma rosa", "Maria comentou…")</span></label>
         ${[['gift', '🎁 Presentes'], ['chat', '💬 Comentários'], ['follow', '⭐ Seguir'], ['share', '🔁 Compartilhar'], ['join', '👋 Entrar na live'], ['like', '❤️ Curtidas (junta as da pessoa)']].map(([k, n]) => `<div class="grid2"><label class="f tog"><input type="checkbox" data-rt="${k}" ${(st.readTypes || {})[k] !== false ? 'checked' : ''}><b></b><span>${n}</span></label><label class="f"><input data-rf="${k}" value="${esc((st.readFormats || {})[k] || READ_FORMATS[k])}"></label></div>`).join('')}
@@ -547,6 +618,10 @@ if (!isClean) (() => {
     qa('[data-mix]').forEach((r) => r.addEventListener('input', () => setMix(r.dataset.mix, Number(r.value))));
     q('#vHere').addEventListener('change', (e) => { st.audioOnPanel = e.target.checked; save(); updateAudioHere(); });
     qa('[data-s]').forEach((inp) => inp.addEventListener('change', () => { st[inp.dataset.s] = inp.type === 'checkbox' ? inp.checked : inp.type === 'number' ? Number(inp.value) : inp.value; save(); }));
+    const setCat = (k, patch) => { st.voiceCats = { ...(st.voiceCats || {}), [k]: { ...((st.voiceCats || {})[k] || {}), ...patch } }; save(); };
+    qa('[data-vcv]').forEach((sel) => sel.addEventListener('change', () => setCat(sel.dataset.vcv, { voice: sel.value })));
+    qa('[data-vcl]').forEach((r) => { r.addEventListener('input', () => { r.nextElementSibling.textContent = Math.round(r.value * 100) + '%'; }); r.addEventListener('change', () => setCat(r.dataset.vcl, { vol: Number(r.value) })); });
+    qa('[data-vct]').forEach((b) => b.addEventListener('click', () => { const k = b.dataset.vct, demo = { game: 'Rodada vencida! Que jogada incrível!', aula: 'Olá, turma! Hoje vamos aprender frações.', host: 'Fala, galera! Bora responder umas perguntas?', locutor: 'José mandou uma rosa. Maria comentou: bora!', follow: 'Muito obrigado por seguir, Ana! Seja muito bem-vinda!', alert: 'Salve, galera! Obrigado por estar aqui!' }[k]; busDo({ t: 'say', text: demo, cat: k }); }));
     qa('[data-rt]').forEach((inp) => inp.addEventListener('change', () => { st.readTypes = { ...(st.readTypes || {}), [inp.dataset.rt]: inp.checked }; save(); }));
     qa('[data-rf]').forEach((inp) => inp.addEventListener('change', () => { st.readFormats = { ...(st.readFormats || {}), [inp.dataset.rf]: inp.value.trim() || READ_FORMATS[inp.dataset.rf] }; save(); }));
     q('#vMute').addEventListener('change', (e) => { st.muteWords = e.target.value.split(',').map((x) => x.trim()).filter(Boolean); save(); });

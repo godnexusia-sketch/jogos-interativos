@@ -327,3 +327,28 @@ button.primary:hover { box-shadow:0 8px 26px rgba(34,227,238,.45); }
 @keyframes chgalIn { from { transform:translateY(40px) scale(.9); opacity:0; } to { transform:none; opacity:1; } }
 @keyframes chgalOut { to { transform:translateY(-30px); opacity:0; } }
 @media (prefers-reduced-motion: reduce) { .chgal, .chgal.out { animation:none; } }
+
+/* Música do YouTube */
+.ytbox { display: grid; gap: 12px; }
+.ytnow { display: grid; grid-template-columns: 168px 1fr; gap: 14px; align-items: center; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 12px; }
+.ytnow img { width: 168px; aspect-ratio: 16/9; object-fit: cover; border-radius: 10px; background: #000; }
+.ytinfo { display: grid; gap: 6px; min-width: 0; }
+.ytinfo b { font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ytinfo small { opacity: .7; }
+.ytbar { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; font-variant-numeric: tabular-nums; font-size: 13px; }
+.ytbar input[type=range] { width: 100%; accent-color: #ff2d55; }
+.ytbtns button { font-size: 18px; min-width: 46px; }
+.ytlist { display: grid; gap: 6px; max-height: 320px; overflow: auto; }
+.ytrow { display: grid; grid-template-columns: 64px 1fr auto; gap: 10px; align-items: center; padding: 6px; border-radius: 10px; cursor: pointer; background: rgba(255,255,255,.03); }
+.ytrow:hover { background: rgba(255,255,255,.08); }
+.ytrow.on { outline: 2px solid #ff2d55; background: rgba(255,45,85,.12); }
+.ytrow img { width: 64px; aspect-ratio: 16/9; object-fit: cover; border-radius: 6px; }
+.ytrow span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+@media (max-width: 560px) { .ytnow { grid-template-columns: 1fr; } .ytnow img { width: 100%; } }
+/* Tipos de fala (voz e volume) */
+.vcat { display: grid; grid-template-columns: minmax(150px, 1.3fr) minmax(140px, 1fr) minmax(120px, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255,255,255,.07); }
+.vcat b { font-size: 14px; }
+.vcat .sl { display: flex; gap: 8px; align-items: center; }
+.vcat .sl input { flex: 1; }
+.vcat output { width: 40px; font-size: 12px; opacity: .8; }
+@media (max-width: 640px) { .vcat { grid-template-columns: 1fr 1fr; } }

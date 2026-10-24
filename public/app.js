@@ -138,15 +138,17 @@ function onControl(m) {
 let paused = false;
 function onBus(b, fromScreen = false) {
   if (b.t === 'ai') return ai.receive(b.key, b.text);
-  if (fromScreen) return; // a tela só manda respostas da IA para o painel
+  if (b.t === 'ytState') { if (!mixer.here) window.onYtState?.(b); return; } // a tela conta o que está tocando
+  if (fromScreen) return; // a tela só manda respostas da IA e o estado do YouTube para o painel
   if (b.t === 'pause') { paused = b.on; $('pausedTag').hidden = !paused; window.onPause?.(paused); }
   else if (b.t === 'action') { const g = GAMES.find((x) => x.id === b.game); if (g === current) testAction(g, b.id, b.coins || 1, b.user); }
   else if (b.t === 'fx') fx.test(b.kind);
   else if (b.t === 'alertTest') alerts.onEvent(b.ev);
   else if (b.t === 'shout') shoutout(b.user, b.msg);
-  else if (b.t === 'say') voice.say(b.text, { voice: b.voice, prio: 'high' });
+  else if (b.t === 'say') voice.say(b.text, { voice: b.voice, prio: 'high', cat: b.cat || 'game' });
   else if (b.t === 'dj') djPad.play(b.id);
   else if (b.t === 'sound') playSound(b.src, b.ch || 'fx');
+  else if (b.t === 'yt') yt.cmd(b);
   else if (b.t === 'music') { if (b.cmd === 'play') music.start(); else if (b.cmd === 'stop') music.stop(); else if (b.cmd === 'next') music.next(); }
   else if (b.t === 'timer') widgets.timerCmd(b.id, b.cmd, b.v);
   else if (b.t === 'panic') { overlay.panic(); window.onPanic?.(); }
@@ -372,6 +374,7 @@ if (bc) bc.onmessage = ({ data: m }) => {
     mirrorAlive = performance.now();
     if (!was || m.t === 'hello') { syncMirror(); updateAudioHere(); window.onMirror?.(true); }
   } else if (m.t === 'bye') { mirrorAlive = 0; updateAudioHere(); window.onMirror?.(false); }
+  else if (m.t === 'bus' && m.bus?.t === 'ytState') onBus(m.bus, true);
   else if (m.t === 'current') { const g = GAMES.find((x) => x.id === m.id); if (g && g !== current) selectGame(g, true); }
   else if (m.t === 'bus' && m.bus?.t === 'ai') ai.receive(m.bus.key, m.bus.text);
 };

@@ -19,7 +19,7 @@ const THREE_PATH = fileURLToPath(new URL('./node_modules/three/build/three.modul
 const THREE_JSM = fileURLToPath(new URL('./node_modules/three/examples/jsm', import.meta.url));
 const IMG_HOSTS = ['tiktokcdn.com', 'tiktokcdn-us.com', 'tiktokcdn-eu.com', 'ibyteimg.com', 'muscdn.com', 'byteimg.com', 'rbxcdn.com',
   'ibytedtos.com', 'ttwstatic.com', 'tiktokv.com', 'tiktokv.us', 'tiktok.com', 'byteoversea.com', 'bytecdn.cn', 'tiktokcdn-eu.com', 'tiktokw.us',
-  'flagcdn.com', 'wikimedia.org', 'www.google.com', 'gstatic.com', 'mc-heads.net', 'crafatar.com'];
+  'flagcdn.com', 'ytimg.com', 'wikimedia.org', 'www.google.com', 'gstatic.com', 'mc-heads.net', 'crafatar.com'];
 // Diagnóstico das fotos (/api/img-stats): quantas deram certo, as últimas falhas e sites recusados.
 const imgStats = { ok: 0, fail: 0, last: [], denied: {}, semFoto: 0 };
 // Pessoa do evento; conta (e mostra no log as primeiras) as que chegam sem foto nenhuma
@@ -270,6 +270,18 @@ const server = http.createServer(async (req, res) => {
       imgCache.set(target.href, img);
       return send(img);
     } catch (err) { imgLog(target, err?.name || 'erro'); return fail(502); }
+  }
+  if (url.pathname === '/api/yt-info') {
+    // Nome e capa de um vídeo ou playlist do YouTube (oEmbed público), para o painel mostrar a música certa
+    const id = url.searchParams.get('id') || '', list = url.searchParams.get('list') || '';
+    if (!/^[\w-]{6,20}$/.test(id) && !/^[\w-]{10,64}$/.test(list)) return sendJson(res, 400, { error: 'link inválido' });
+    const page = id ? `https://www.youtube.com/watch?v=${id}` : `https://www.youtube.com/playlist?list=${list}`;
+    try {
+      const r = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(page)}`, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(8000) });
+      if (!r.ok) return sendJson(res, r.status === 401 || r.status === 403 ? 403 : 404, { error: r.status === 401 || r.status === 403 ? 'o dono não deixa tocar fora do YouTube' : 'não encontrado' });
+      const j = await r.json();
+      return sendJson(res, 200, { title: j.title || '', author: j.author_name || '', thumb: j.thumbnail_url || (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '') });
+    } catch { return sendJson(res, 502, { error: 'sem resposta do YouTube' }); }
   }
   if (url.pathname === '/api/img-stats') return sendJson(res, 200, { ok: imgStats.ok, falhas: imgStats.fail, ultimas: imgStats.last, recusadas: imgStats.denied, eventosSemFoto: imgStats.semFoto });
   if (url.pathname === '/api/roblox') {

@@ -230,7 +230,7 @@ const alerts = {
         ${gimg ? `<img class="al-gift" src="${escHtml(gimg)}" alt="" onerror="this.remove()">` : ''}</div>`;
     ovl.append(el);
     playSound(conf.sound, 'fx');
-    if (conf.read) voice.say(fmtTpl(conf.text, data));
+    if (conf.read) voice.say(fmtTpl(conf.text, data), { cat: 'alert' });
     const secs = clamp(Number(conf.secs) || 4, 1, 20);
     setTimeout(() => el.classList.add('out'), secs * 1000);
     setTimeout(() => { el.remove(); this.busy = false; this.next(); }, secs * 1000 + 450);
@@ -247,7 +247,7 @@ function shoutout(user, msg) {
   el.innerHTML = `${user ? avatarHtml(user, 'shout-pic') : '<span class="shout-ic">📣</span>'}<div><small>SHOUTOUT</small><b>${escHtml(text)}</b></div>`;
   ovl.append(el);
   playSound('fanfare', 'fx', 0.6);
-  if (st.readShoutouts) voice.say(text, { prio: 'high' });
+  if (st.readShoutouts) voice.say(text, { prio: 'high', cat: 'alert' });
   setTimeout(() => el.classList.add('out'), 6000);
   setTimeout(() => el.remove(), 6500);
 }
