@@ -347,6 +347,7 @@ const server = http.createServer(async (req, res) => {
   }
   // Página do painel: sem login mostra a página de entrada com o catálogo (a tela da live, ?clean=1, abre sem login — é a fonte do LIVE Studio/OBS)
   if ((url.pathname === '/' || url.pathname === '/index.html') && url.searchParams.get('clean') !== '1' && !(await contaDe(req))) return sendStatic(req, res, path.join(PUBLIC_DIR, 'inicio.html'));
+  if (url.pathname === '/inicio') return sendStatic(req, res, path.join(PUBLIC_DIR, 'inicio.html')); // a logo do painel volta para cá (logado ou não)
   if (url.pathname === '/api/diag') {
     // Diagnóstico: tenta achar a sala de um @ e mostra o resultado de cada fonte.
     const user = (url.searchParams.get('u') || '').replace(/^@/, '').toLowerCase();

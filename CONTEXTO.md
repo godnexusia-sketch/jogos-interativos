@@ -75,6 +75,10 @@ alertas, efeitos, widgets, DJ Pad, música, voz neural e apresentador com IA. Se
 - Usuário comum vê só os jogos liberados e as funções (`perms`) que o admin marcou; Jogos, Tela da live e Conectar IA ele sempre vê. O localStorage é separado por conta. A tela da live (`?clean=1`) abre sem login.
 - Aba 🤖 Conectar IA (abre sozinha no primeiro acesso): Sistema (padrão), Puter (grátis, sem chave, no navegador), Ollama (no PC), ou chave própria (Claude, ChatGPT, Gemini, OpenRouter — a chave fica no servidor).
 - Ainda não feito: as configurações de jogo do admin não vão para os usuários (cada um começa com o padrão).
+- A logo do painel leva para `/inicio` (a página de entrada, mesmo logado; aí o topo mostra "Abrir meu painel").
+- Página de entrada com movimento (25/10/2026): celular com o jogo rodando dentro de uma "live" (chat, presentes, corações), faixa de jogos que anda e acelera ao rolar, passos com celular fixo, mini "Só Subindo" jogável com presentes, mosaico de recursos animado, letreiro final. Respeita "reduzir movimento".
+- Vídeos dos jogos em `public/assets/videos/<id>.mp4` (+ `.jpg`), gravados por `node testes/videos.cjs [id...]` com relógio falso (liso mesmo em PC lento). A lista `VIDS` em `inicio.html` tem que bater com os vídeos gravados.
+- Skills de design do dono (repositório godnexusia-sketch/designer) copiadas para `.claude/skills/` (frontend-design, animate, emil-design-eng, apple-design, review-animations etc.).
 
 ## Arquitetura
 ### Servidor (`server.js`, Node 22, `http` + `ws`)
