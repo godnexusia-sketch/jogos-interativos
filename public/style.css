@@ -57,3 +57,9 @@ body.clean canvas { border-radius:0; box-shadow:none; background:transparent; }
 button.primary { background:linear-gradient(180deg, #ff4d70, #e01e45); border-color:transparent; font-weight:700; }
 #simShop { display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; }
 #simShop button { min-width:0; padding:6px 2px; }
+
+/* Celular gravando a tela da live (?clean=1): fundo escuro e botão de tela cheia que some sozinho */
+body.clean.touch { background:#000; }
+#fsBtn { position:fixed; z-index:50; left:50%; bottom:calc(18px + env(safe-area-inset-bottom, 0px)); transform:translate(-50%, 20px); opacity:0; pointer-events:none; padding:12px 20px; border-radius:99px; background:rgba(0,0,0,.75); color:#fff; border:1px solid rgba(255,255,255,.25); font-weight:800; transition:opacity .25s, transform .25s; }
+#fsBtn.on { opacity:1; pointer-events:auto; transform:translate(-50%, 0); }
+[hidden] { display:none !important; }

@@ -72,12 +72,12 @@ const mascot = {
 const charLive = {
   wish: new Map(), // !nome pedido recentemente (vale para o presente de troca)
   lastGallery: 0,
-  isChangeGift(ev) { const c = charCfg(); return ev.type === 'gift' && ((c.changeGiftId && String(ev.giftId) === String(c.changeGiftId)) || (c.changeGiftName && norm(ev.name || '') === norm(c.changeGiftName))); },
+  isChangeGift(ev) { const c = charCfg(); return c.publicoEscolhe && ev.type === 'gift' && ((c.changeGiftId && String(ev.giftId) === String(c.changeGiftId)) || (c.changeGiftName && norm(ev.name || '') === norm(c.changeGiftName))); },
   onEvent(ev) {
     const c = charCfg();
     if (ev.type === 'chat') {
       const t = String(ev.text || '').trim();
-      if (c.galleryCmd && /^!(personagens|lista|skins|bonecos)$/i.test(t)) { this.showGallery(); return; }
+      if (c.publicoEscolhe && c.galleryCmd && /^!(personagens|lista|skins|bonecos)$/i.test(t)) { this.showGallery(); return; }
       const m = t.match(/^(?:!|personagem\s+|boneco\s+|skin\s+)(.{2,24})$/i), k = m && charByName(m[1]);
       if (k) this.wish.set(charKeyOf(ev.user), { k, t: Date.now() });
     }
@@ -112,7 +112,7 @@ const charLive = {
     setTimeout(() => el.remove(), 13600);
   },
   tick(dt) {
-    const every = Number(charCfg().galleryEvery) || 0;
+    const every = charCfg().publicoEscolhe ? Number(charCfg().galleryEvery) || 0 : 0; // lista na tela só se o dono deixar o público escolher
     if (!every) return;
     this.t = (this.t || 0) + dt;
     if (this.t >= every * 60) { this.t = 0; this.showGallery(); }

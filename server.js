@@ -201,12 +201,19 @@ let CAT_IDS = [];
 fs.readFile(path.join(PUBLIC_DIR, 'data', 'catalogo.json'), 'utf8').then((t) => { CAT_IDS = JSON.parse(t).games.map((g) => g.id); }).catch((e) => console.warn('catálogo:', e.message));
 // Plano pago: venceu (e não é admin) = fica sem jogos até pagar
 // Plano pago: os jogos só ficam liberados depois que o Asaas confirma o pagamento (e até a data paga)
-const planoVencido = (c) => Boolean(c?.role !== 'admin' && c?.plano?.ciclo && (c.plano.status === 'aguardando' || c.plano.status === 'teste' || Date.now() > Number(c.plano.ate || 0)));
+const planoVencido = (c) => Boolean(c?.role !== 'admin' && (c?.plano?.ciclo || c?.plano?.pagante) && (!c.plano.ciclo || c.plano.status === 'aguardando' || c.plano.status === 'teste' || Date.now() > Number(c.plano.ate || 0)));
+const destinoPagar = (c) => (c?.plano?.ciclo ? '/pagar?aviso=1' : '/planos'); // ainda sem plano: escolher os jogos; com plano: pagar
+// Bônus (funções do painel) de cada pacote: o admin escolhe; o pacote completo libera tudo
+const PACOTES_N = [1, 3, 5, 10, 20];
+const BONUS_PADRAO = { 1: ['musica', 'placar'], 3: ['musica', 'placar', 'voz', 'alertas'], 5: ['musica', 'placar', 'voz', 'alertas', 'efeitos', 'personagens'], 10: ['musica', 'placar', 'voz', 'alertas', 'efeitos', 'personagens', 'widgets', 'historico', 'testar'], 20: ['musica', 'placar', 'voz', 'alertas', 'efeitos', 'personagens', 'widgets', 'historico', 'testar', 'jogo', 'dj'] };
+const bonusTabela = () => ({ ...BONUS_PADRAO, ...(contas.lerConfig('bonus') || {}) });
+const faixaDe = (pl) => (pl.todos ? 'todos' : PACOTES_N.filter((n) => n <= Number(pl.cabe || (pl.games || []).length || 1)).pop() || 1);
+const bonusDe = (pl) => { const f = faixaDe(pl); return f === 'todos' ? PERMS.slice() : (bonusTabela()[f] || []).filter((x) => PERMS.includes(x)); };
 const AVISO_PAGAR = 'O pagamento para acesso aos jogos ainda não foi confirmado. Faça o pagamento o quanto antes para liberar o seu acesso.';
-const avisoDe = (c) => (c?.plano?.pagos?.length ? `Aguardando renovação do pacote: o seu acesso venceu em ${new Date(Number(c.plano.ate)).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}. Faça a renovação para voltar a usar os jogos, com todas as suas configurações.` : AVISO_PAGAR);
+const avisoDe = (c) => (!c?.plano?.ciclo ? 'Falta escolher o seu plano: escolha os jogos e faça o pagamento para liberar o acesso.' : c?.plano?.pagos?.length ? `Aguardando renovação do pacote: o seu acesso venceu em ${new Date(Number(c.plano.ate)).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}. Faça a renovação para voltar a usar os jogos, com todas as suas configurações.` : AVISO_PAGAR);
 const jogosDe = (c) => (c?.plano?.ciclo && c.plano.todos && CAT_IDS.length ? CAT_IDS : c?.games || []);
 const planoPublico = (p) => p?.ciclo ? { ciclo: p.ciclo, n: p.todos ? CAT_IDS.length : (p.games || []).length, todos: Boolean(p.todos), valor: p.valor, forma: p.forma, parcelas: p.parcelas || 1, status: p.status, teste: Boolean(p.teste), ate: p.ate, fatura: p.fatura || '' } : null;
-const contaPublica = (c) => c && { id: c.id, username: c.username, role: c.role, games: jogosDe(c), perms: c.perms || [], plano: planoPublico(c.plano), vencido: Boolean(planoVencido(c)), ai: { provider: c.ai?.provider || 'sistema', model: c.ai?.model || '', ollamaUrl: c.ai?.ollamaUrl || '', temChave: Boolean(c.ai?.key), feito: Boolean(c.ai?.feito) } };
+const contaPublica = (c) => c && { id: c.id, username: c.username, role: c.role, games: jogosDe(c), perms: c.plano?.ciclo ? bonusDe(c.plano) : c.perms || [], nome: c.info?.nome || '', pagante: Boolean(c.plano?.pagante || c.plano?.ciclo), plano: planoPublico(c.plano), vencido: Boolean(planoVencido(c)), ai: { provider: c.ai?.provider || 'sistema', model: c.ai?.model || '', ollamaUrl: c.ai?.ollamaUrl || '', temChave: Boolean(c.ai?.key), feito: Boolean(c.ai?.feito) } };
 const ASAAS_WEBHOOK_TOKEN = String(process.env.ASAAS_WEBHOOK_TOKEN || '').trim();
 const DIA = 86400e3;
 // Pagamento caiu: estende o acesso (mensal: até o próximo vencimento + folga; anual: 1 ano)
@@ -302,7 +309,13 @@ const server = http.createServer(async (req, res) => {
     // Primeiro acesso do dono: o e-mail do admin (ADMIN_EMAIL) vira o admin direto pelo Google
     if (!c && email === ADMIN_EMAIL && (await contas.quantas()) === 0) c = await contas.porId((await contas.criar({ username: email, senha: crypto.randomBytes(24).toString('hex'), role: 'admin' })).id);
     if (c?.status === 'pendente') return sendJson(res, 403, { error: ESPERA });
-    if (!c) return sendJson(res, 403, { error: `O e-mail ${email} ainda não tem conta. Clique em "Preços", escolha os jogos e crie a sua conta com este e-mail.` });
+    if (!c) {
+      // Cadastro pelo Google: a conta nasce sem acesso (escolhe o plano e paga); depois pede os dados que faltam
+      if ((await contas.quantas()) === 0) return sendJson(res, 403, { error: 'o sistema ainda está sendo instalado, tente mais tarde' });
+      const nova = await contas.criar({ username: email, senha: crypto.randomBytes(24).toString('hex'), plano: { pagante: true, status: 'escolher' }, info: { nome: String(info.name || '').slice(0, 80), google: true, origem: 'site' } });
+      const { token } = await contas.novaSessao(nova.id); setSess(req, res, token, 2592000);
+      return sendJson(res, 200, { ok: true, novo: true, completar: true, nome: nova.info?.nome || '', email });
+    }
     if (false) {
       if ((await contas.quantas()) === 0) return sendJson(res, 403, { error: 'o sistema ainda está sendo instalado, tente mais tarde' });
       if ((await contas.listar()).filter((u) => u.status === 'pendente').length >= 200) return sendJson(res, 429, { error: 'muitos pedidos na fila, tente mais tarde' });
@@ -312,7 +325,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (c.disabled) return sendJson(res, 403, { error: 'seu acesso está desativado — fale com o administrador' });
     const { token } = await contas.novaSessao(c.id); setSess(req, res, token, 2592000);
-    if (planoVencido(c)) return sendJson(res, 200, { ok: true, pagar: '/pagar?aviso=1', aviso: avisoDe(c) });
+    if (planoVencido(c)) return sendJson(res, 200, { ok: true, pagar: destinoPagar(c), aviso: avisoDe(c) });
     return sendJson(res, 200, { ok: true });
   }
   if (url.pathname === '/api/setup' && req.method === 'POST') {
@@ -335,8 +348,44 @@ const server = http.createServer(async (req, res) => {
     if (c.status === 'pendente') return sendJson(res, 403, { error: ESPERA });
     if (c.disabled) return sendJson(res, 403, { error: 'seu acesso está desativado — fale com o administrador' });
     const { token } = await contas.novaSessao(c.id); setSess(req, res, token, 2592000);
-    if (planoVencido(c)) return sendJson(res, 200, { ok: true, pagar: '/pagar?aviso=1', aviso: avisoDe(c) });
+    if (planoVencido(c)) return sendJson(res, 200, { ok: true, pagar: destinoPagar(c), aviso: avisoDe(c) });
     return sendJson(res, 200, { ok: true, user: contaPublica(c) });
+  }
+  if (url.pathname === '/api/cadastro' && req.method === 'POST') {
+    // Cadastro pelo site: cria a conta (sem acesso até pagar) e leva para escolher o plano
+    const b = await lerJson(req); if (!b) return sendJson(res, 400, { error: 'dados inválidos' });
+    if (demais(req)) return sendJson(res, 429, { error: 'muitas tentativas, espere um minuto' });
+    const email = String(b.email || '').trim().toLowerCase(), nome = String(b.nome || '').trim().slice(0, 80);
+    if (nome.length < 3 || !nome.includes(' ')) return sendJson(res, 400, { error: 'coloque o seu nome completo (nome e sobrenome)' });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !NOME_RE.test(email)) return sendJson(res, 400, { error: 'coloque um e-mail válido' });
+    if (String(b.senha || '').length < 6) return sendJson(res, 400, { error: 'a senha precisa de 6 ou mais caracteres' });
+    if ((await contas.quantas()) === 0) return sendJson(res, 403, { error: 'o sistema ainda está sendo instalado, tente mais tarde' });
+    if (await contas.porNome(email)) return sendJson(res, 409, { error: 'esse e-mail já tem conta: clique em Entrar' });
+    const c = await contas.criar({ username: email, senha: b.senha, plano: { pagante: true, status: 'escolher' }, info: { nome, celular: String(b.celular || '').replace(/\D/g, '').slice(0, 13), tiktok: String(b.tiktok || '').trim().replace(/^@/, '').slice(0, 40), origem: 'site' } });
+    const { token } = await contas.novaSessao(c.id); setSess(req, res, token, 2592000);
+    return sendJson(res, 200, { ok: true, ir: '/planos' });
+  }
+  if (url.pathname === '/api/me/dados' && req.method === 'PUT') {
+    // Completar o cadastro (depois do Google): nome, celular, @ e, se quiser, uma senha
+    const c = await contaDe(req); if (!c) return sendJson(res, 401, { error: 'faça login' });
+    const b = await lerJson(req) || {};
+    const nome = String(b.nome || '').trim().slice(0, 80);
+    if (nome.length < 3 || !nome.includes(' ')) return sendJson(res, 400, { error: 'coloque o seu nome completo (nome e sobrenome)' });
+    if (b.senha && String(b.senha).length < 6) return sendJson(res, 400, { error: 'a senha precisa de 6 ou mais caracteres' });
+    const info = { ...(c.info || {}), nome, celular: String(b.celular || c.info?.celular || '').replace(/\D/g, '').slice(0, 13), tiktok: String(b.tiktok || c.info?.tiktok || '').trim().replace(/^@/, '').slice(0, 40) };
+    await contas.alterar(c.id, { senha: b.senha || undefined, info }); contas.esqueceCache(c.id);
+    return sendJson(res, 200, { ok: true, ir: planoVencido(c) ? destinoPagar(c) : '/' });
+  }
+  if (url.pathname === '/api/config/bonus') {
+    const c = await contaDe(req);
+    if (req.method === 'PUT') {
+      if (c?.role !== 'admin') return sendJson(res, 403, { error: 'só o admin' });
+      const b = await lerJson(req) || {}, t = {};
+      for (const n of PACOTES_N) t[n] = (Array.isArray(b[n]) ? b[n] : []).filter((x) => PERMS.includes(x));
+      await contas.salvarConfig('bonus', t); contas.esqueceCache();
+      return sendJson(res, 200, { ok: true, bonus: t });
+    }
+    return sendJson(res, 200, { bonus: bonusTabela(), todos: PERMS, pacotes: PACOTES_N });
   }
   if (url.pathname === '/api/signup' && req.method === 'POST') return sendJson(res, 410, { error: 'Para criar a sua conta, clique em "Preços", escolha os jogos e faça o pagamento.' });
   if (url.pathname === '/api/signup-antigo' && req.method === 'POST') {
@@ -356,7 +405,7 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, { ok: true });
   }
   if (url.pathname === '/api/logout' && req.method === 'POST') { const t = decodeURIComponent(cookieDe(req, 'sess')); if (t) await contas.fimSessao(t); setSess(req, res, '', 0); return sendJson(res, 200, { ok: true }); }
-  if (url.pathname === '/api/me') { const c = await contaDe(req); if (c && planoVencido(c)) return sendJson(res, 402, { error: avisoDe(c), pagar: '/pagar?aviso=1' }); return c ? sendJson(res, 200, contaPublica(c)) : sendJson(res, 401, { error: 'faça login' }); }
+  if (url.pathname === '/api/me') { const c = await contaDe(req); if (c && planoVencido(c)) return sendJson(res, 402, { error: avisoDe(c), pagar: destinoPagar(c) }); return c ? sendJson(res, 200, contaPublica(c)) : sendJson(res, 401, { error: 'faça login' }); }
   if (url.pathname === '/api/me/ai' && req.method === 'PUT') {
     const c = await contaDe(req); if (!c) return sendJson(res, 401, { error: 'faça login' });
     const b = await lerJson(req); if (!b || !AI_PROVS.includes(b.provider)) return sendJson(res, 400, { error: 'escolha uma opção' });
@@ -405,6 +454,7 @@ const server = http.createServer(async (req, res) => {
     if (conta?.role === 'admin') return sendJson(res, 400, { error: 'a conta de admin já tem todos os jogos' });
     const cpf = String(b.cpf || '').replace(/\D/g, ''), celular = String(b.celular || '').replace(/\D/g, '').slice(0, 13);
     const nome = String(b.nome || conta?.info?.nome || '').trim().slice(0, 80);
+    if (conta?.plano?.pagante && !conta.plano.ciclo) conta.plano = {}; // primeira compra de quem se cadastrou pelo site
     if (nome.length < 3) return sendJson(res, 400, { error: 'coloque o seu nome completo' });
     if (!asaas.docValido(cpf)) return sendJson(res, 400, { error: 'CPF ou CNPJ inválido' });
     const email = conta ? (String(conta.username).includes('@') ? conta.username : String(b.email || '').trim().toLowerCase()) : String(b.email || '').trim().toLowerCase();
@@ -553,6 +603,7 @@ const server = http.createServer(async (req, res) => {
     }
     return sendJson(res, 404, { error: 'rota' });
   }
+  if (url.pathname === '/planos') { if (!(await contaDe(req))) { res.writeHead(302, { location: '/?login' }); return res.end(); } return sendStatic(req, res, path.join(PUBLIC_DIR, 'inicio.html')); }
   if (url.pathname === '/pagar') { if (!(await contaDe(req))) { res.writeHead(302, { location: '/?login' }); return res.end(); } return sendStatic(req, res, path.join(PUBLIC_DIR, 'pagar.html')); }
   if (url.pathname === '/api/email-livre') { const e = String(url.searchParams.get('e') || '').trim().toLowerCase(); if (demais(req)) return sendJson(res, 429, { error: 'espere um minuto' }); return sendJson(res, 200, { livre: !(await contas.porNome(e)) }); }
   if (url.pathname === '/api/planos') return sendJson(res, 200, { total: CAT_IDS.length, pagamentos: asaas.ligado(), sandbox: asaas.sandbox(), testeDias: TESTE_DIAS });
@@ -560,7 +611,7 @@ const server = http.createServer(async (req, res) => {
   if ((url.pathname === '/' || url.pathname === '/index.html') && url.searchParams.get('clean') !== '1') {
     const c = await contaDe(req);
     if (!c) return sendStatic(req, res, path.join(PUBLIC_DIR, 'inicio.html'));
-    if (planoVencido(c)) { res.writeHead(302, { location: '/pagar?aviso=1', 'cache-control': 'no-store' }); return res.end(); } // pagamento não confirmado: painel bloqueado
+    if (planoVencido(c)) { res.writeHead(302, { location: destinoPagar(c), 'cache-control': 'no-store' }); return res.end(); } // sem plano ou sem pagamento confirmado: painel bloqueado
   }
   if (url.pathname === '/inicio') return sendStatic(req, res, path.join(PUBLIC_DIR, 'inicio.html')); // a logo do painel volta para cá (logado ou não)
   if (url.pathname === '/api/diag') {

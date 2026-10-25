@@ -14,15 +14,16 @@ if (!isClean) (() => {
   ].filter(([id]) => IS_ADMIN || ['jogos', 'ia', 'tela'].includes(id) || (ME.perms || []).includes(id)); // usuário comum: jogos, IA, link da live e as funções que o admin liberou
   let curView = store.get('panelView', 'jogos');
   $('rail').innerHTML = VIEWS.map(([id, ic, nm]) => `<button data-view="${id}" title="${nm}"><span>${ic}</span><small>${nm}</small></button>`).join('');
-  $('rail').addEventListener('click', (e) => { const b = e.target.closest('[data-view]'); if (b) show(b.dataset.view); });
+  $('rail').addEventListener('click', (e) => { const b = e.target.closest('[data-view]'); if (b) show(b.dataset.view, true); });
   $('libBtn').addEventListener('click', () => show('jogos'));
-  function show(v) {
+  function show(v, rolar) {
     if (!VIEWS.some(([id]) => id === v)) v = 'jogos';
     curView = v;
     store.set('panelView', v);
     document.querySelectorAll('#rail button').forEach((b) => b.classList.toggle('active', b.dataset.view === v));
     view.scrollTop = 0;
     (RENDER[v] || RENDER.jogos)();
+    if (rolar && innerWidth <= 900) requestAnimationFrame(() => { const top = view.getBoundingClientRect().top + scrollY - (document.querySelector('.topbar')?.offsetHeight || 0) - 10; scrollTo({ top, behavior: 'smooth' }); }); // celular: a seção fica embaixo da tela do jogo (desconta o topo fixo)
   }
   const h = (html) => { view.innerHTML = html; return view; };
   const q = (sel, root = view) => root.querySelector(sel);
@@ -547,15 +548,18 @@ if (!isClean) (() => {
     }).join('')}</div></div>`;
     h(`<div class="vhead"><h2>🧍 Personagens 3D</h2><span class="tag">${HERO_KINDS.length} ativos</span></div>
       <div class="panel"><h3>Como escolher</h3>
+        <label class="f tog big"><input type="checkbox" id="chPub" ${cfg.publicoEscolhe ? 'checked' : ''}><b></b><span><strong>Deixar o público escolher o personagem</strong><br><small>Desligado: você escolhe abaixo e a tela não mostra "escolha seu personagem".</small></span></label>
+        <label class="f"><span>Personagem que você escolheu para todos (vazio = cada pessoa ganha um dos ativos)</span><select id="chFixed"><option value="">— cada um o seu —</option>${kinds.map((k) => `<option value="${k}" ${cfg.fixed === k ? 'selected' : ''}>${esc(CHARACTERS[k].name)}</option>`).join('')}</select></label>
+        <div id="chPubBox" ${cfg.publicoEscolhe ? '' : 'hidden'}>
         <label class="f tog"><input type="checkbox" id="chPick" ${cfg.viewerPick ? 'checked' : ''}><b></b><span>Espectador escolhe o próprio personagem comentando <strong>!nome</strong> (ex.: <code>!sapo</code>, <code>!astronauta</code>)</span></label>
-        <label class="f"><span>Personagem fixo para todos (vazio = cada espectador ganha um dos ativos)</span><select id="chFixed"><option value="">— cada um o seu —</option>${kinds.map((k) => `<option value="${k}" ${cfg.fixed === k ? 'selected' : ''}>${esc(CHARACTERS[k].name)}</option>`).join('')}</select></label>
         <label class="f"><span>🎁 Presente que troca o personagem de quem mandou (pega o que ele pediu com !nome, ou sorteia)</span><select id="chGift">${GIFT_CATALOG.filter((g) => g.coins <= 1000).sort((a, b) => a.coins - b.coins).map((g) => `<option value="${g.id}" ${String(cfg.changeGiftId) === g.id ? 'selected' : ''}>${esc(g.name)} · ${g.coins} 🪙</option>`).join('')}</select></label>
+        </div>
         <label class="f tog"><input type="checkbox" id="chMascot" ${cfg.mascotOn ? 'checked' : ''}><b></b><span>Personagem na tela nos jogos que não têm personagem próprio (reage a comentários, likes e presentes)</span></label>
         <div class="grid2"><label class="f"><span>Personagem desses jogos</span><select id="chMascotKind"><option value="">— sorteado e fixo para cada jogo —</option>${kinds.map((k) => `<option value="${k}" ${cfg.mascotKind === k ? 'selected' : ''}>${esc(CHARACTERS[k].name)}</option>`).join('')}</select></label>
           <label class="f"><span>Lado da tela</span><select id="chMascotPos"><option value="right" ${cfg.mascotPos !== 'left' ? 'selected' : ''}>Direita</option><option value="left" ${cfg.mascotPos === 'left' ? 'selected' : ''}>Esquerda</option></select></label></div>
-        <div class="grid2"><label class="f"><span>Mostrar a lista de personagens na tela a cada (minutos, 0 = nunca)</span><input id="chEvery" type="number" min="0" max="120" value="${Number(cfg.galleryEvery) || 0}"></label>
+        <div class="grid2 chPubOnly" ${cfg.publicoEscolhe ? '' : 'hidden'}><label class="f"><span>Mostrar a lista de personagens na tela a cada (minutos, 0 = nunca)</span><input id="chEvery" type="number" min="0" max="120" value="${Number(cfg.galleryEvery) || 0}"></label>
           <label class="f tog"><input type="checkbox" id="chCmd" ${cfg.galleryCmd ? 'checked' : ''}><b></b><span>Espectador abre a lista comentando <strong>!personagens</strong></span></label></div>
-        <div class="row"><button class="primary" id="chShow">📋 Mostrar a lista na tela agora</button></div>
+        <div class="row chPubOnly" ${cfg.publicoEscolhe ? '' : 'hidden'}><button class="primary" id="chShow">📋 Mostrar a lista na tela agora</button></div>
         <div class="row wrap"><button id="chAll">Ativar todos</button><button id="chPack2">Só o pacote 2</button><button id="chPack">Só o pacote 1</button><button id="chKay">Só os clássicos</button></div>
         <p class="note">Vale para todos os jogos 3D com personagens: Lutadores, Arena de Batalha, Pista de Dança, Guerra das Torres, Guerra de Territórios, Colina dos Zumbis, MMA dos Países, Festa Pixel 3D e as escaladas. Quem já está na tela troca quando entrar de novo.</p></div>
       ${group('Pacote 3', PACK3_KINDS, 'Panda e os Mechs têm animações próprias; os outros se movem por movimento simples.')}
@@ -568,6 +572,7 @@ if (!isClean) (() => {
       if (!en.size) { toastMsg('Deixe pelo menos um personagem ativo'); cb.checked = true; return; }
       save({ enabled: [...en] });
     }));
+    q('#chPub').addEventListener('change', (e) => save({ publicoEscolhe: e.target.checked }));
     q('#chPick').addEventListener('change', (e) => save({ viewerPick: e.target.checked }));
     q('#chGift').addEventListener('change', (e) => { const g = GIFT_CATALOG.find((x) => x.id === e.target.value); save({ changeGiftId: g?.id || '', changeGiftName: g?.name || '' }); });
     q('#chMascot').addEventListener('change', (e) => save({ mascotOn: e.target.checked }));
@@ -758,6 +763,10 @@ if (!isClean) (() => {
           <div><b>${esc(u.info?.nome || u.username)}</b> <i class="bd bnew">NOVO</i>${u.info?.google ? ' <i class="bd">GOOGLE</i>' : ''}<br><small>${esc(u.username)}${u.info?.tiktok ? ` · TikTok @${esc(u.info.tiktok)}` : ''} · pediu em ${new Date(u.created_at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</small>${u.info?.recado ? `<p class="small">💬 “${esc(u.info.recado)}”</p>` : ''}</div>
           <div class="row"><button data-act="games" class="primary">✅ Aprovar…</button><button data-act="del" class="danger">✖ Recusar</button></div>
           <div class="uedit" hidden><p class="small">Jogos: <button type="button" data-act="all">marcar todos</button> <button type="button" data-act="none">desmarcar</button></p>${gamePick([])}<p class="small">Funções:</p>${funcPick(['musica'])}<div class="row"><button class="primary" data-act="approve">Aprovar acesso</button></div></div></div>`).join('')}</div></div>` : ''}
+      <div class="panel" id="bonusBox"><h3>🎁 Bônus de cada pacote</h3>
+        <p class="small">Os jogos o cliente escolhe e paga. Aqui você define as <b>funções do painel</b> (bônus) que cada pacote libera. Vale na hora para todos os clientes daquele pacote. O pacote completo libera tudo.</p>
+        <div class="bonusgrid" id="bonusGrid"><p class="small">Carregando…</p></div>
+        <div class="row"><button class="primary" id="bonusSave">Salvar bônus</button></div></div>
       <div class="panel"><h3>➕ Novo usuário</h3>
         <p class="small">Contas criadas aqui pelo admin <b>não pagam</b>. Quem se cadastra pelo site só entra depois de pagar.</p>
         <div class="grid2"><label class="f"><span>Nome completo</span><input id="nuNome" placeholder="ex.: Maria da Silva"></label>
@@ -774,9 +783,18 @@ if (!isClean) (() => {
         <div class="row"><button class="primary" id="nuAdd">Criar acesso</button></div>
         <p class="small">Com o e-mail do Google como usuário, a pessoa também pode usar "Entrar com o Google" (quando estiver configurado).</p></div>
       <div class="panel"><h3>Contas</h3><div class="ulist">${data.users.map((u) => `<div class="urow" data-u="${u.id}">
-        <div><b>${esc(u.info?.nome || u.username)}</b>${u.info?.nome ? ` <small>${esc(u.username)}</small>` : ''} ${u.role === 'admin' ? '<i class="bd b3d">ADMIN</i>' : !u.plano ? '<i class="bd">CORTESIA</i>' : ''} ${u.disabled ? '<i class="bd boff">DESATIVADO</i>' : ''} ${planoTag(u)}<br><small>${u.role === 'admin' ? 'acesso total' : `${(u.gamesConta || u.games).length} jogos · ${u.perms.length} funções`}${planoTxt(u)} · IA: ${esc(u.ai?.provider || 'sistema')}${u.id === ME.id ? ' · você' : ''}</small></div>
+        <div><b>${esc(u.info?.nome || u.username)}</b>${u.info?.nome ? ` <small>${esc(u.username)}</small>` : ''} ${u.role === 'admin' ? '<i class="bd b3d">ADMIN</i>' : !u.pagante ? '<i class="bd">CORTESIA</i>' : !u.plano ? '<i class="bd boff">SEM PLANO</i>' : ''} ${u.disabled ? '<i class="bd boff">DESATIVADO</i>' : ''} ${planoTag(u)}<br><small>${u.role === 'admin' ? 'acesso total' : `${(u.gamesConta || u.games).length} jogos · ${u.perms.length} funções`}${planoTxt(u)} · IA: ${esc(u.ai?.provider || 'sistema')}${u.id === ME.id ? ' · você' : ''}</small></div>
         <div class="row">${u.role === 'admin' ? '' : '<button data-act="games">🎮 Jogos e funções</button>'}<button data-act="pass">🔑 Senha</button>${u.id === ME.id ? '' : `<button data-act="toggle">${u.disabled ? '✅ Ativar' : '⏸ Desativar'}</button><button data-act="del" class="danger">🗑</button>`}</div>
         <div class="uedit" hidden><p class="small">Jogos:</p>${gamePick(u.gamesConta || u.games)}<p class="small">Funções:</p>${funcPick(u.perms || [])}<div class="row"><button class="primary" data-act="saveGames">Salvar</button></div></div></div>`).join('')}</div></div>`);
+    fetch('/api/config/bonus').then((r) => r.json()).then((cfg) => {
+      const nome = (n) => (n === 1 ? '1 jogo (avulso)' : `Pacote ${n} jogos`);
+      q('#bonusGrid').innerHTML = cfg.pacotes.map((n) => `<div class="bonuscol" data-pk="${n}"><b>${nome(n)}</b>${FUNCS.map(([id, t]) => `<label><input type="checkbox" value="${id}" ${(cfg.bonus[n] || []).includes(id) ? 'checked' : ''}> ${t}</label>`).join('')}</div>`).join('')
+        + `<div class="bonuscol todos"><b>Pacote completo (todos os jogos)</b>${FUNCS.map(([, t]) => `<label><input type="checkbox" checked disabled> ${t}</label>`).join('')}<small>sempre tudo liberado</small></div>`;
+    }).catch(() => {});
+    q('#bonusSave').addEventListener('click', async () => {
+      const body = {}; qa('#bonusGrid .bonuscol[data-pk]').forEach((c) => (body[c.dataset.pk] = [...c.querySelectorAll('input:checked')].map((i) => i.value)));
+      try { await api('/api/config/bonus', 'PUT', body); toastMsg('✅ Bônus salvos: valem na próxima vez que cada cliente abrir o painel'); } catch (e) { toastMsg('⚠️ ' + e.message); }
+    });
     const gen = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => 'abcdefghjkmnpqrstuvwxyz23456789'[b % 31]).join('');
     q('#nuPass').value = gen();
     q('#nuGen').addEventListener('click', () => { q('#nuPass').value = gen(); });
@@ -907,12 +925,28 @@ if (!isClean) (() => {
   const meBtn = document.createElement('button'); meBtn.id = 'meBtn'; meBtn.title = 'Sair'; meBtn.textContent = `👤 ${trim(ME.username, 22)}${IS_ADMIN ? ' (admin)' : ''} · Sair`;
   meBtn.addEventListener('click', () => { if (confirm('Sair desta conta?')) logout(); });
   document.querySelector('.topbtns')?.prepend(meBtn);
+  // Botão de pânico e som: no celular só o ícone
+  $('panicBtn').innerHTML = '🛑<span class="t"> Pânico</span>';
+  // Menu ☰ (celular): todas as seções + conta, num painel que abre por cima
+  const mBtn = document.createElement('button'); mBtn.id = 'menuBtn'; mBtn.setAttribute('aria-label', 'Abrir o menu'); mBtn.innerHTML = '<i></i><i></i><i></i>';
+  document.querySelector('.topbtns')?.append(mBtn);
+  const dw = document.createElement('div'); dw.id = 'drawer'; dw.hidden = true;
+  const plTxt = () => { const p = ME.plano; if (!p) return IS_ADMIN ? 'Administrador · acesso total' : 'Acesso liberado pelo administrador'; return `${p.todos ? 'Todos os jogos' : `${p.n} jogo${p.n > 1 ? 's' : ''}`} · ${p.ciclo} · até ${new Date(p.ate).toLocaleDateString('pt-BR')}`; };
+  dw.innerHTML = `<div class="dwin"><div class="dwacc"><b>👤 ${esc(ME.nome || ME.username)}</b><small>${esc(ME.username)}</small><small>${esc(plTxt())}</small></div>
+    <div class="dwgrid">${VIEWS.map(([id, ic, nm]) => `<button data-dv="${id}"><span>${ic}</span>${esc(nm)}</button>`).join('')}</div>
+    <div class="dwrow"><a class="dwlink" href="/inicio">🏠 Página inicial</a>${ME.plano ? '<a class="dwlink" href="/pagar">💳 Meu plano</a>' : ''}<button class="dwlink" id="dwOut">🚪 Sair</button></div></div>`;
+  document.body.append(dw);
+  const drawer = (on) => { dw.hidden = !on; mBtn.classList.toggle('on', on); document.body.style.overflow = on ? 'hidden' : ''; };
+  mBtn.addEventListener('click', () => drawer(dw.hidden));
+  dw.addEventListener('click', (e) => { const b = e.target.closest('[data-dv]'); if (b) { drawer(false); show(b.dataset.dv, true); } else if (e.target === dw) drawer(false); });
+  dw.querySelector('#dwOut').addEventListener('click', () => { if (confirm('Sair desta conta?')) logout(); });
   // Quem assinou: botão do plano no topo e aviso quando falta pagar ou venceu
   if (ME.plano) {
     const p = ME.plano, ate = new Date(p.ate).toLocaleDateString('pt-BR');
     const b = document.createElement('a'); b.id = 'planBtn';
     b.href = '/pagar'; b.removeAttribute('target');
-    b.textContent = ME.vencido ? '⚠️ Plano vencido · pagar' : p.status === 'teste' ? `🎁 Teste grátis até ${ate}` : p.status === 'aguardando' ? '💳 Falta pagar' : p.status === 'atrasado' ? `⚠️ Pagamento atrasado · pagar` : `💳 Plano ativo até ${ate}`;
+    const txt = ME.vencido ? 'Plano vencido · pagar' : p.status === 'teste' ? `Teste grátis até ${ate}` : p.status === 'aguardando' ? 'Falta pagar' : p.status === 'atrasado' ? 'Pagamento atrasado · pagar' : `Plano ativo até ${ate}`;
+    b.innerHTML = `<span class="i">${ME.vencido || p.status === 'atrasado' ? '⚠️' : '💳'}</span><span class="t"> ${txt}</span>`; b.title = txt; // no celular fica só o ícone
     if (ME.vencido || p.status === 'atrasado' || p.status === 'aguardando') b.classList.add('warn');
     document.querySelector('.topbtns')?.prepend(b);
     if (ME.vencido) setTimeout(() => toastMsg(p.status === 'aguardando' ? '💳 Seus jogos liberam assim que o pagamento cair. Clique em "Falta pagar" no topo.' : '⚠️ O seu plano venceu. Pague pelo botão no topo para liberar os jogos de novo.'), 1200);

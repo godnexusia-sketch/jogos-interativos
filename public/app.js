@@ -8,6 +8,19 @@ const $ = (id) => document.getElementById(id);
 const isClean = params.get('clean') === '1'; // só o jogo (OBS, fonte Link, janela Tela da Live)
 const isMirror = params.get('mirror') === '1'; // janela Tela da Live aberta pelo painel
 if (isClean) document.body.classList.add('clean');
+// Celular gravando a tela: fundo escuro (não branco), botão de tela cheia e tela sempre acesa
+if (isClean && matchMedia('(hover: none)').matches) {
+  document.body.classList.add('touch');
+  addEventListener('DOMContentLoaded', () => {
+    const fs = document.createElement('button'); fs.id = 'fsBtn'; fs.textContent = '⛶ Tela cheia';
+    document.body.append(fs);
+    let t = 0; const mostra = () => { fs.classList.add('on'); clearTimeout(t); t = setTimeout(() => fs.classList.remove('on'), 3500); };
+    let lock = null; const acesa = async () => { try { lock = await navigator.wakeLock?.request('screen'); } catch {} };
+    fs.addEventListener('click', async (e) => { e.stopPropagation(); try { if (document.fullscreenElement) await document.exitFullscreen(); else await document.documentElement.requestFullscreen({ navigationUI: 'hide' }); } catch {} acesa(); fs.classList.remove('on'); });
+    addEventListener('pointerdown', mostra); document.addEventListener('visibilitychange', () => { if (!document.hidden) acesa(); });
+    mostra(); acesa();
+  });
+}
 
 // ---------- Conexão com o servidor ----------
 let ws = null;
@@ -285,7 +298,7 @@ function fitStage() {
   const box = $('stageBox');
   let maxW, maxH;
   if (isClean) { maxW = window.innerWidth; maxH = window.innerHeight; }
-  else if (window.innerWidth <= 900) { maxW = Math.min(window.innerWidth - 32, 540); maxH = Infinity; }
+  else if (window.innerWidth <= 900) { maxW = Math.min(document.documentElement.clientWidth - 24, 540); maxH = Infinity; } // celular: largura real da tela
   else {
     const sideW = window.innerWidth >= 1500 ? SIDE_W : 0;
     maxW = window.innerWidth - RAIL_W - VIEW_MIN - sideW - GAP * 4;
@@ -303,6 +316,8 @@ function fitStage() {
 }
 $('stage').addEventListener('wheel', (e) => { if (e.target.closest('#stageBox') && (window.innerWidth > 900 || isClean)) e.preventDefault(); }, { passive: false });
 window.addEventListener('resize', fitStage);
+window.addEventListener('load', fitStage);
+if (window.ResizeObserver) new ResizeObserver(() => fitStage()).observe(document.documentElement); // celular girou ou a barra do navegador mudou
 fitStage();
 
 // ---------- Laço ----------

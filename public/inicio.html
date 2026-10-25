@@ -265,6 +265,11 @@
     .pack .pv small { font-family: var(--f-body); font-size: 14px; color: var(--mut); font-weight: 700; }
     .pack .pe { color: var(--mut); font-size: 13.5px; font-weight: 700; }
     .pack .pe s { opacity: .7; }
+    .pack .pb { display: block; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line2); color: #c9d0f0; font-size: 12.5px; font-weight: 700; line-height: 1.35; }
+    body.modo-planos .hero, body.modo-planos .reel, body.modo-planos #como, body.modo-planos #presentes, body.modo-planos #recursos, body.modo-planos #jogos, body.modo-planos .final, body.modo-planos nav.links, body.modo-planos .pricelink { display: none !important; }
+    body.modo-planos #precos { padding-block-start: 30px; }
+    .boasvindas { margin: 0 0 22px; padding: 16px 18px; border-radius: 18px; background: linear-gradient(90deg, rgba(34,227,238,.14), rgba(255,45,85,.08)); border: 1px solid rgba(34,227,238,.4); font-weight: 700; }
+    .boasvindas b { color: var(--acc2); }
     .shop { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 22px; align-items: start; }
     .pick { min-width: 0; }
     .pick .tools { margin-bottom: 14px; }
@@ -315,8 +320,7 @@
     .grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 12px; }
     @media (max-width: 1100px) { .packs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
     @media (max-width: 960px) { .shop { grid-template-columns: minmax(0, 1fr); } .bag { position: static; } .pgrid { max-height: 460px; } body.shopping .mbar { display: flex; } body.shopping footer { padding-bottom: 90px; } }
-    @media (max-width: 680px) { .pricelink { display: inline; } .packs { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pgrid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); } .grid2 { grid-template-columns: minmax(0, 1fr); } }
-    @media (max-width: 420px) { header .logo { font-size: 0; gap: 0; margin-right: 0; } header .btn { padding: 8px 11px; font-size: 13.5px; } .pricelink { font-size: 14px; } }
+    @media (max-width: 680px) { .packs { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pgrid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); } .grid2 { grid-template-columns: minmax(0, 1fr); } }
 
     /* ---------- Janelas ---------- */
     dialog { border: 0; padding: 0; background: transparent; color: var(--txt); max-width: min(940px, calc(100vw - 24px)); width: 100%; }
@@ -360,6 +364,17 @@
     .gfake svg { width: 20px; height: 20px; flex: none; }
     .gnote { text-align: center; font-size: 13px; color: var(--mut); margin-top: 8px; }
 
+    /* ---------- Menu ☰ (celular) ---------- */
+    .menubtn { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 44px; height: 44px; margin-left: auto; padding: 0 11px; border-radius: 12px; border: 1px solid var(--line2); background: rgba(255,255,255,.06); }
+    .menubtn i { display: block; height: 2px; border-radius: 2px; background: var(--txt); transition: transform .25s var(--ease-out), opacity .2s ease; }
+    .menubtn[aria-expanded="true"] i:nth-child(1) { transform: translateY(7px) rotate(45deg); } .menubtn[aria-expanded="true"] i:nth-child(2) { opacity: 0; } .menubtn[aria-expanded="true"] i:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mmenu { position: fixed; inset: 0; z-index: 19; background: rgba(4,6,14,.6); backdrop-filter: blur(4px); }
+    .mmin { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 64px); left: 0; right: 0; padding: 14px var(--gutr) 20px var(--gut); background: #0c1124; border-bottom: 1px solid var(--line2); display: flex; flex-direction: column; gap: 2px; animation: mmIn .25s var(--ease-out); max-height: calc(100dvh - 70px); overflow: auto; }
+    @keyframes mmIn { from { opacity: 0; transform: translateY(-10px); } }
+    .mmin > a { padding: 14px 6px; border-bottom: 1px solid var(--line); font-weight: 800; font-size: 17px; text-decoration: none; }
+    .mmacc { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .mmacc .btn { width: 100%; }
+
     /* ---------- Celular e telas menores ---------- */
     @media (max-width: 960px) {
       .hero .wrap, .how, .play { grid-template-columns: minmax(0, 1fr); }
@@ -376,10 +391,20 @@
       .play .giftpad { order: 2; } .play .legendline { order: 3; } .play .sub { margin-bottom: 0; }
     }
     @media (max-width: 680px) {
-      header { gap: 8px; }
-      .logo { font-size: 15px; margin-right: 0; } .logo span { display: none; }
-      header .btn { padding: 9px 13px; font-size: 14px; }
+      header { gap: 8px; padding-block: 10px; }
+      .logo { font-size: 16px; margin-right: 0; min-width: 0; }
+      #hdrGuest, #hdrUser { display: none !important; }
+      .menubtn { display: flex; }
       nav.links { display: none; }
+      .proof { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 14px; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .gin { padding: 10px 11px 12px; } .gin b { font-size: 15.5px; } .gin small { font-size: 12.5px; }
+      .gin p { font-size: 13px; -webkit-line-clamp: 2; } .more { font-size: 13px; margin-top: 6px; }
+      .badges { top: 6px; left: 6px; } .bd { font-size: 9.5px; padding: 2px 5px; }
+      .pack { padding: 14px 12px; } .pack b { font-size: 19px; } .pack .pv { font-size: 21px; } .pack .pv small { font-size: 12px; } .pack .pe { font-size: 12.5px; }
+      .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 calc(-1 * var(--gutr)) 0 calc(-1 * var(--gut)); padding: 0 var(--gutr) 4px var(--gut); }
+      .chip { white-space: nowrap; flex: none; }
+      .tools { gap: 10px; }
       section { padding-block: 56px; }
       .det { grid-template-columns: minmax(0, 1fr); }
       .det .cover { max-width: 240px; margin: 0 auto; width: 100%; }
@@ -404,10 +429,17 @@
     <a class="logo" href="/inicio" aria-label="Jogos Interativos — início"><i class="dot"></i>Jogos <span>Interativos</span></a>
     <span id="hdrGuest"><button class="btn pri" data-open="login">Entrar</button> <button class="btn" data-open="signup">Criar cadastro</button></span>
     <span id="hdrUser" hidden><a class="btn pri" href="/">Abrir meu painel</a> <button class="btn" id="sairBtn">Sair</button></span>
-    <a class="pricelink" href="#precos" data-precos>Preços</a>
+    <button class="menubtn" id="menuBtn" aria-label="Abrir o menu" aria-expanded="false" aria-controls="mmenu"><i></i><i></i><i></i></button>
     <nav class="links"><a href="#precos" data-precos>Preços</a><a href="#como">Como funciona</a><a href="#presentes">Presentes</a><a href="#recursos">Recursos</a><a href="#jogos">Jogos</a></nav>
     <i id="prog"></i>
   </header>
+  <div class="mmenu" id="mmenu" hidden>
+    <div class="mmin">
+      <div class="mmacc" id="mmGuest"><button class="btn pri" data-open="login">Entrar</button><button class="btn" data-open="signup">Criar cadastro</button></div>
+      <div class="mmacc" id="mmUser" hidden><a class="btn pri" href="/" id="mmPainel">Abrir meu painel</a><button class="btn" id="mmSair">Sair</button></div>
+      <a href="#precos" data-precos>💰 Preços e planos</a><a href="#como">🧭 Como funciona</a><a href="#presentes">🎁 Experimente os presentes</a><a href="#recursos">✨ Recursos</a><a href="#jogos">🎮 Todos os jogos</a>
+    </div>
+  </div>
 
   <main>
     <!-- Destaque: o jogo rodando dentro de uma live -->
@@ -460,6 +492,7 @@
     <!-- Preços: só aparece quando a pessoa clica em "Preços" ou "Ver preços" -->
     <section id="precos" hidden>
       <div class="wrap">
+        <div class="boasvindas" id="boas" hidden></div>
         <div class="ph">
           <div><p class="kick">Planos e preços</p><h2>Pague só pelos jogos que vai usar</h2>
             <p class="sub" id="pSub">Monte a sua sacola: um jogo sai por R$ 9,90 por mês e os pacotes deixam cada jogo mais barato. Os jogos liberam assim que o pagamento é confirmado.</p></div>
@@ -661,16 +694,22 @@
   </div></dialog>
   <!-- Criar cadastro -->
   <dialog id="dSignup"><div class="box"><button class="x" data-close aria-label="Fechar">✕</button>
-    <form class="form" id="fSignup"><h3>Criar cadastro</h3><p>Preencha e envie, ou use a sua conta do Google. O administrador aprova o seu acesso e libera os jogos.</p>
+    <form class="form" id="fSignup"><h3>Criar cadastro</h3><p>Crie a sua conta em segundos. Depois você escolhe os jogos e o plano, paga, e os jogos liberam.</p>
       <div class="gbtn" data-gmodo="signup"></div><div class="or">ou preencha</div>
-      <label for="rn">Seu nome</label><input id="rn" required maxlength="60" autocomplete="name">
+      <label for="rn">Nome completo</label><input id="rn" required maxlength="80" autocomplete="name" placeholder="Nome e sobrenome">
       <label for="re">E-mail (vai ser o seu login)</label><input id="re" type="email" required maxlength="60" autocomplete="email">
-      <label for="rp">Senha (6 ou mais)</label><input id="rp" type="password" required minlength="6" autocomplete="new-password">
-      <label for="rt">Seu @ no TikTok</label><input id="rt" maxlength="40" placeholder="@seuusuario">
-      <label for="rm">Mensagem para o administrador (opcional)</label><textarea id="rm" maxlength="300" placeholder="Que jogos você quer usar?"></textarea>
-      <button class="btn pri">Enviar pedido</button><div class="err" id="rErr"></div>
-      <div class="switch">Já tem acesso? <a data-open="login">Entrar</a></div></form>
-    <div class="form" id="rOk" hidden><h3>Pedido enviado! ✅</h3><div class="okmsg" id="rOkMsg">Agora é só aguardar: quando o administrador aprovar, você entra com o seu e-mail e a senha que criou.</div><button class="btn pri" data-open="login">Ir para Entrar</button></div>
+      <label for="rp">Crie uma senha (6 ou mais)</label><input id="rp" type="password" required minlength="6" autocomplete="new-password">
+      <div class="grid2"><div><label for="rc">Celular com DDD</label><input id="rc" inputmode="tel" maxlength="16" placeholder="(11) 90000-0000" autocomplete="tel"></div>
+        <div><label for="rt">Seu @ no TikTok</label><input id="rt" maxlength="40" placeholder="@seuusuario"></div></div>
+      <button class="btn pri">Criar minha conta</button><div class="err" id="rErr"></div>
+      <div class="switch">Já tem conta? <a data-open="login">Entrar</a></div></form>
+    <!-- Depois do Google: pede só o que faltou -->
+    <form class="form" id="fCompletar" hidden><h3>Falta pouco! 👋</h3><p id="cpTxt">Confira o seu nome e complete os dados.</p>
+      <label for="cpNome">Nome completo</label><input id="cpNome" required maxlength="80" autocomplete="name" placeholder="Nome e sobrenome">
+      <div class="grid2"><div><label for="cpCel">Celular com DDD</label><input id="cpCel" inputmode="tel" maxlength="16" placeholder="(11) 90000-0000" autocomplete="tel" required></div>
+        <div><label for="cpTk">Seu @ no TikTok</label><input id="cpTk" maxlength="40" placeholder="@seuusuario"></div></div>
+      <label for="cpSenha">Senha para entrar também sem o Google (opcional)</label><input id="cpSenha" type="password" minlength="6" autocomplete="new-password">
+      <button class="btn pri">Continuar para os planos</button><div class="err" id="cpErr"></div></form>
   </div></dialog>
 
   <script>
@@ -690,10 +729,10 @@
     const dlg = { login: $('#dLogin'), signup: $('#dSignup'), game: $('#dGame') };
     const open = (k, jogo) => {
       // Cadastro pelo site = escolher os jogos e pagar (só o admin cria conta de graça, pelo painel)
-      if (k === 'signup' && window.abrirPrecos) { Object.values(dlg).forEach((d) => d.open && d.close()); window.abrirPrecos(jogo); return; }
-      if (AUTH.user && k === 'login') { location.href = '/'; return; } // já logado: vai para o painel
+      if (jogo) guardaSacola([jogo]); // "Quero usar este jogo": já vai na sacola depois do cadastro
+      if (AUTH.user && (k === 'login' || k === 'signup')) { location.href = AUTH.user.plano || AUTH.user.role === 'admin' ? '/' : '/planos'; return; } // já logado
       Object.values(dlg).forEach((d) => d.open && d.close());
-      if (k === 'signup') { $('#fSignup').hidden = false; $('#rOk').hidden = true; }
+      if (k === 'signup') { $('#fSignup').hidden = false; $('#fCompletar').hidden = true; }
       dlg[k].showModal();
     };
     document.addEventListener('click', (e) => { const o = e.target.closest('[data-open]'); if (o) { e.preventDefault(); open(o.dataset.open, o.dataset.jogo); } if (e.target.closest('[data-close]')) e.target.closest('dialog').close(); });
@@ -702,18 +741,26 @@
     const post = async (url, body) => { const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || 'Não deu certo, tente de novo.'); return j; };
     const form = (f, errEl, fn) => f.addEventListener('submit', async (e) => { e.preventDefault(); $(errEl).textContent = ''; const b = f.querySelector('button'); b.disabled = true; try { await fn(); } catch (x) { $(errEl).textContent = x.message; } finally { b.disabled = false; } });
     const vaiPagar = (j) => { if (!j.pagar) return false; $('#lErr').textContent = ''; dlg.login.querySelector('.form').innerHTML = `<h3>Pagamento pendente 💳</h3><div class="okmsg" style="background:rgba(255,200,61,.1);border-color:rgba(255,200,61,.4);color:#fde68a">${esc(j.aviso)}</div><a class="btn pri" href="${j.pagar}" style="width:100%;margin-top:16px">Fazer o pagamento agora</a>`; return true; };
-    form($('#fLogin'), '#lErr', async () => { const j = await post('/api/login', { username: $('#lu').value.trim(), password: $('#lp').value }); if (!vaiPagar(j)) location.replace('/'); });
+    form($('#fLogin'), '#lErr', async () => { const j = await post('/api/login', { username: $('#lu').value.trim(), password: $('#lp').value }); if (j.pagar === '/planos') { location.href = '/planos'; return; } if (!vaiPagar(j)) location.replace('/'); });
     form($('#fSetup'), '#sErr', async () => { await post('/api/setup', { code: $('#sc').value.trim(), username: $('#su').value.trim(), password: $('#sp').value }); location.replace('/'); });
-    form($('#fSignup'), '#rErr', async () => { await post('/api/signup', { name: $('#rn').value.trim(), username: $('#re').value.trim(), password: $('#rp').value, tiktok: $('#rt').value.trim(), message: $('#rm').value.trim() }); $('#fSignup').hidden = true; $('#rOk').hidden = false; });
+    const guardaSacola = (ids) => { try { const a = JSON.parse(sessionStorage.getItem('sacola') || '[]'); sessionStorage.setItem('sacola', JSON.stringify([...new Set([...a, ...ids])])); } catch {} };
+    const fmtCel = (e) => { const d = e.target.value.replace(/\D/g, '').slice(0, 11); e.target.value = d.length > 6 ? `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}` : d.length > 2 ? `(${d.slice(0, 2)}) ${d.slice(2)}` : d; };
+    $('#rc').addEventListener('input', fmtCel); $('#cpCel').addEventListener('input', fmtCel);
+    form($('#fSignup'), '#rErr', async () => { const j = await post('/api/cadastro', { nome: $('#rn').value.trim(), email: $('#re').value.trim(), senha: $('#rp').value, celular: $('#rc').value, tiktok: $('#rt').value.trim() }); location.href = j.ir || '/planos'; });
+    form($('#fCompletar'), '#cpErr', async () => { const r = await fetch('/api/me/dados', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ nome: $('#cpNome').value.trim(), celular: $('#cpCel').value, tiktok: $('#cpTk').value.trim(), senha: $('#cpSenha').value }) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || 'Não deu certo'); location.href = j.ir || '/planos'; });
     // ---------- Google: o mesmo botão entra (se já tem conta) ou pede o cadastro (se ainda não tem) ----------
     const G_SVG = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v9h12.4c-.5 2.9-2.1 5.3-4.6 7l7.2 5.6c4.2-3.9 7.1-9.6 7.1-17z"/><path fill="#FBBC05" d="M10.6 28.6A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.6l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.2-5.6c-2 1.4-4.7 2.3-8.7 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>';
     const googleOk = async (r) => {
       const signup = dlg.signup.open, errEl = signup ? '#rErr' : '#lErr';
       $(errEl).textContent = '';
       try {
-        const j = await post('/api/google', { credential: r.credential, name: $('#rn').value.trim(), tiktok: $('#rt').value.trim(), message: $('#rm').value.trim() });
-        if (j.pagar) { open('login'); vaiPagar(j); return; }
-        if (j.pendente) { open('signup'); $('#fSignup').hidden = true; $('#rOk').hidden = false; $('#rOkMsg').textContent = `Pedido enviado com o Google (${j.email}). Quando o administrador aprovar, é só clicar em "Continuar com o Google" no Entrar.`; return; }
+        const j = await post('/api/google', { credential: r.credential });
+        if (j.completar) { // conta nova pelo Google: pede o que faltou
+          Object.values(dlg).forEach((d) => d.open && d.close()); dlg.signup.showModal();
+          $('#fSignup').hidden = true; $('#fCompletar').hidden = false;
+          $('#cpTxt').textContent = `Conta criada com ${j.email}. Confira o seu nome e complete os dados.`; $('#cpNome').value = j.nome || ''; $('#cpNome').focus(); return;
+        }
+        if (j.pagar) { if (j.pagar === '/planos') { location.href = '/planos'; return; } open('login'); vaiPagar(j); return; }
         location.replace('/');
       } catch (x) { $(errEl).textContent = x.message; }
     };
@@ -732,12 +779,23 @@
       };
       document.head.appendChild(s);
     }
+    // Menu ☰ do celular
+    const mm = $('#mmenu'), mb = $('#menuBtn');
+    const menu = (on) => { mm.hidden = !on; mb.setAttribute('aria-expanded', on); document.body.style.overflow = on ? 'hidden' : ''; };
+    mb.addEventListener('click', () => menu(mm.hidden));
+    mm.addEventListener('click', (e) => { if (e.target === mm || e.target.closest('a, button')) menu(false); });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && !mm.hidden) menu(false); });
+    $('#mmSair').addEventListener('click', () => $('#sairBtn').click());
     $('#sairBtn').addEventListener('click', async () => { await fetch('/api/logout', { method: 'POST' }).catch(() => {}); location.replace('/'); });
     fetch('/api/auth').then((r) => r.json()).then((a) => {
       AUTH = a;
       if (a.user) {
         // Logado (veio pela logo do painel): mostra a página, com o botão de voltar ao painel
         $('#hdrGuest').hidden = true; $('#hdrUser').hidden = false;
+        $('#mmGuest').hidden = true; $('#mmUser').hidden = false;
+        if (a.user.vencido) { $('#mmPainel').textContent = a.user.plano ? 'Pagar meu plano' : 'Escolher meu plano'; $('#mmPainel').href = a.user.plano ? '/pagar' : '/planos'; }
+        if (a.user.vencido) { const b = $('#hdrUser a'); b.textContent = a.user.plano ? 'Pagar meu plano' : 'Escolher meu plano'; b.href = a.user.plano ? '/pagar' : '/planos'; }
+        if (location.pathname === '/planos') { const bv = $('#boas'); bv.hidden = false; bv.innerHTML = `Olá${a.user.nome ? ', <b>' + esc(a.user.nome.split(' ')[0]) + '</b>' : ''}! Sua conta está criada. Escolha os jogos e o plano abaixo; assim que o pagamento for confirmado, o painel libera os jogos e os bônus do seu pacote.`; }
         $$('[data-cta]').forEach((b) => (b.textContent = 'Abrir meu painel'));
         $('#ftLogin').textContent = 'Abrir meu painel'; $('#ftSignup').hidden = true; $('#ftSignup').previousSibling.textContent = ' ';
         return;
@@ -972,7 +1030,7 @@
 
     // ---------- Aparecer ao rolar (só o que ainda está fora da tela) ----------
     function reveal(els) {
-      if (REDUCE) return;
+      if (REDUCE || !FINE) return;
       const io = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { en.target.classList.remove('pre'); io.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px' });
       els.forEach((el, i) => { if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('rv', 'pre'); el.style.setProperty('--d', i % 6); io.observe(el); } });
     }
@@ -1036,8 +1094,12 @@
     // ---------- Preços, sacola e pagamento ----------
     import { preco, reais, PACOTES, AVULSO, TODOS, TESTE_DIAS } from '/precos.js';
     dlg.checkout = $('#dCheckout');
-    let ciclo = 'mensal', bag = new Set(), PL = { pagamentos: true };
+    let ciclo = 'mensal', bag = new Set(), PL = { pagamentos: true }, BONUS = null;
+    const PLANOS = location.pathname === '/planos'; // dentro da conta: só os planos e os jogos
+    const FN = { jogo: 'Configurar o jogo', personagens: 'Personagens', testar: 'Simulador', efeitos: 'Efeitos', alertas: 'Alertas', widgets: 'Widgets', dj: 'DJ Pad', musica: 'Música', voz: 'Voz e chat', placar: 'Placar', historico: 'Histórico' };
     fetch('/api/planos').then((r) => r.json()).then((j) => { PL = j; }).catch(() => {});
+    fetch('/api/config/bonus').then((r) => r.json()).then((j) => { BONUS = j; if (CAT.games.length) desenhaPacotes(); }).catch(() => {});
+    const bonusTxt = (n, T) => { if (!BONUS) return ''; if (n >= T) return 'Todas as funções do painel'; const f = [...BONUS.pacotes].reverse().find((x) => x <= n) || 1; const l = (BONUS.bonus[f] || []).map((k) => FN[k] || k); return l.length ? l.join(', ') : ''; };
     const esperaCat = () => (CAT.games.length ? Promise.resolve() : new Promise((r) => addEventListener('catalogo', r, { once: true })));
     const total = () => CAT.games.length;
 
@@ -1063,7 +1125,7 @@
         const p = preco(o.n, T), mes = ciclo === 'anual' ? p.anualMes : p.mensal, porJogo = Math.round(p.mensal / p.cabe);
         return `<button class="pack${o.n === T ? ' top' : ''}" data-n="${o.n}" type="button">${o.n === T ? '<span class="tg">MELHOR PREÇO</span>' : o.n === 5 ? '<span class="tg" style="background:var(--acc2);color:#001218">MAIS ESCOLHIDO</span>' : ''}
           <b>${o.nome}</b><span class="pv">${reais(mes)}<small>/mês</small></span>
-          <span class="pe">${ciclo === 'anual' ? `${reais(p.anual)} por ano · <s>${reais(p.mensal * 12)}</s>` : o.n === 1 ? 'por jogo, por mês' : `${reais(porJogo)} por jogo`}</span></button>`;
+          <span class="pe">${ciclo === 'anual' ? `${reais(p.anual)} por ano · <s>${reais(p.mensal * 12)}</s>` : o.n === 1 ? 'por jogo, por mês' : `${reais(porJogo)} por jogo`}</span>${bonusTxt(o.n, T) ? `<span class="pb">🎁 ${esc(bonusTxt(o.n, T))}</span>` : ''}</button>`;
       }).join('');
     }
     $('#packs').addEventListener('click', (e) => {
@@ -1142,6 +1204,7 @@
     $('#coPays').addEventListener('change', resumoCheckout);
     $('#buy').addEventListener('click', () => {
       if (!bag.size) return;
+      if (!AUTH.user) { guardaSacola([...bag]); open('signup'); return; } // primeiro cria a conta, depois escolhe e paga
       if (AUTH.user?.role === 'admin') { $('#tip').hidden = false; $('#tip').textContent = 'Você é o admin: já tem todos os jogos. Teste a compra com outra conta.'; return; }
       const logado = Boolean(AUTH.user);
       passo(logado ? 2 : 1); $('#coSteps').hidden = logado;
@@ -1178,7 +1241,12 @@
       } catch (x) { $('#coErr').textContent = x.message; } finally { b.disabled = false; b.textContent = t0; }
     });
 
-    esperaCat().then(() => { desenhaPacotes(); desenhaGrade(); conta(); marca(); });
+    esperaCat().then(() => {
+      // Volta do cadastro com a sacola guardada
+      try { for (const id of JSON.parse(sessionStorage.getItem('sacola') || '[]')) if (CAT.games.some((g) => g.id === id)) bag.add(id); sessionStorage.removeItem('sacola'); } catch {}
+      desenhaPacotes(); desenhaGrade(); conta(); marca();
+      if (PLANOS) { document.body.classList.add('modo-planos'); abrirPrecos(); }
+    });
   </script>
 </body>
 </html>

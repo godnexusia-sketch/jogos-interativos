@@ -82,7 +82,8 @@ const ALL_KINDS = Object.keys(CHARACTERS).filter((k) => !CHARACTERS[k].undead);
 // Personagens ativos (escolhidos no painel em 🧍 Personagens). Os jogos usam esta lista; ela muda ao vivo.
 // Padrão: todos à disposição em todos os jogos.
 const HERO_KINDS = [...ALL_KINDS];
-const CHAR_DEFAULTS = { enabled: [...ALL_KINDS], viewerPick: true, fixed: '', known: [...ALL_KINDS] };
+// publicoEscolhe: desligado (padrão) = o dono escolhe os personagens no painel e a tela não convida o público a trocar
+const CHAR_DEFAULTS = { enabled: [...ALL_KINDS], viewerPick: true, publicoEscolhe: false, fixed: '', known: [...ALL_KINDS] };
 function charCfg() {
   const c = { ...CHAR_DEFAULTS, ...(typeof liveCfg !== 'undefined' && liveCfg.chars || {}) };
   // Personagem novo (que ainda não existia quando a lista foi salva) já entra ativo
@@ -119,7 +120,7 @@ function charByName(txt) {
   return Object.keys(CHARACTERS).find((k) => !CHARACTERS[k].undead && (flat(CHARACTERS[k].name) === n || flat(k) === n));
 }
 function charPickFromChat(ev) {
-  if (ev.type !== 'chat' || !charCfg().viewerPick) return null;
+  if (ev.type !== 'chat' || !charCfg().viewerPick || !charCfg().publicoEscolhe) return null;
   const m = String(ev.text || '').trim().match(/^(?:!|personagem\s+|boneco\s+|skin\s+)(.{2,24})$/i);
   const k = m && charByName(m[1]);
   if (!k || !HERO_KINDS.includes(k)) return null;

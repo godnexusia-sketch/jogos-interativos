@@ -172,7 +172,7 @@
       const ids = D.jogos.length ? D.jogos : Object.keys(CAT);
       const capas = ids.slice(0, 16).map((id) => `<img src="/assets/capas/${id}.webp" alt="" loading="lazy" onerror="this.remove()">`).join('');
       const valorAgora = pend ? pend.valor : p.valor;
-      const aviso = D.vencido && D.aviso;
+      const aviso = D.vencido && D.aviso && new URLSearchParams(location.search).has('aviso'); // só quando veio do login/painel bloqueado
       $('.back').hidden = D.vencido;
       const html = `
         ${aviso ? `<div class="banner" style="background:linear-gradient(90deg,rgba(255,200,61,.16),rgba(255,45,85,.08));border-color:rgba(255,200,61,.45)"><i>💳</i><div>${esc(D.aviso)}</div></div>` : ''}
