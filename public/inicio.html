@@ -533,7 +533,7 @@
     const FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
     // Jogos com vídeo gravado (testes/videos.cjs)
     const VIDS = ['battle-arena', 'horse-race', 'million-quiz', 'only-climb', 'tower-war', 'messi-vs-ronaldo', 'guess-the-flag', 'mma-clash', 'territory-war', 'dance-floor', 'math-geometry', 'car-race'];
-    const vsrc = (v, id) => { v.src = `/assets/videos/${id}.mp4`; v.poster = `/assets/videos/${id}.jpg`; v.load(); };
+    const vsrc = (v, id) => { v.innerHTML = `<source src="/assets/videos/${id}.mp4" type="video/mp4"><source src="/assets/videos/${id}.webm" type="video/webm">`; v.poster = `/assets/videos/${id}.jpg`; v.load(); };
     let CAT = { games: [], genres: [] }, genre = 'all', AUTH = {};
     const gameName = (id) => CAT.games.find((g) => g.id === id)?.name || id;
     const rnd = (a) => a[(Math.random() * a.length) | 0];

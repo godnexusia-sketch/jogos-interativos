@@ -42,6 +42,7 @@ const IDS = process.argv.slice(2).length ? process.argv.slice(2) : ['battle-aren
     }
     const src = path.join(dir, '%04d.jpg');
     execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS), '-i', src, '-c:v', 'libx264', '-profile:v', 'main', '-pix_fmt', 'yuv420p', '-crf', '30', '-preset', 'slow', '-movflags', '+faststart', '-an', path.join(OUT, id + '.mp4')]);
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', path.join(OUT, id + '.mp4'), '-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '44', '-row-mt', '1', '-an', path.join(OUT, id + '.webm')]); // reserva para navegador sem H.264
     fs.copyFileSync(path.join(dir, '0012.jpg'), path.join(OUT, id + '.jpg'));
     fs.rmSync(dir, { recursive: true, force: true });
     const kb = (f) => Math.round(fs.statSync(path.join(OUT, f)).size / 1024);
