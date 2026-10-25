@@ -93,6 +93,10 @@ alertas, efeitos, widgets, DJ Pad, música, voz neural e apresentador com IA. Se
   - Bônus por pacote: o admin marca, na aba Usuários → "Bônus de cada pacote", as funções do painel que cada pacote (1, 3, 5, 10, 20 jogos) libera (`/api/config/bonus`, guardado na tabela `config`). Pacote completo = tudo, fixo. As funções das contas pagas vêm do pacote na hora (contaPublica). Os cartões de preço mostram os bônus.
   - Personagens: botão "Deixar o público escolher o personagem" (`publicoEscolhe`, desligado por padrão). Desligado = sem "escolha seu personagem", sem !nome e sem presente de troca; o dono escolhe no painel.
   - Celular: página de entrada com menu ☰ (Entrar/Cadastro/seções), números 2×2, catálogo em 2 colunas; painel com topo compacto (som, pânico, ☰) e gaveta com todas as seções e a conta; a tela do jogo se ajusta à largura real; tela da live (?clean=1) no celular com fundo preto, botão de tela cheia e tela sempre acesa.
+- Atualização (25/10/2026, manhã):
+  - Gatilhos nos 14 jogos clássicos: em "Jogo atual" → "⚡ Gatilhos do jogo" (quantos likes = 1 moeda, multiplicador de presentes, quanto vale seguir/compartilhar, presentes com valor próprio, palavras no comentário que valem moedas). Guardado em `liveCfg.valores[jogo]` e aplicado por `valoresClassico()` (lc/legenda.js) antes do `onEvent` do jogo; a lista "Como jogar" mostra os valores.
+  - "Configurar o jogo" (gatilhos) vem em todo pacote pago (fixo) e já marcado nas cortesias novas.
+  - Meu perfil: clicar no nome (ou no menu ☰ do celular) abre perfil (nome, celular, @TikTok) e troca de senha (`PUT /api/me/perfil`, `PUT /api/me/senha`, pede a senha atual; conta do Google sem senha cria uma). `contas.alterar` agora grava `info` (antes ignorava).
 - O admin vê o plano de cada conta (etiqueta TESTE GRÁTIS / PAGO / ATRASADO / VENCIDO) na aba Usuários.
 
 ## Arquitetura

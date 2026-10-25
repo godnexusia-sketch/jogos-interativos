@@ -1096,10 +1096,10 @@
     dlg.checkout = $('#dCheckout');
     let ciclo = 'mensal', bag = new Set(), PL = { pagamentos: true }, BONUS = null;
     const PLANOS = location.pathname === '/planos'; // dentro da conta: só os planos e os jogos
-    const FN = { jogo: 'Configurar o jogo', personagens: 'Personagens', testar: 'Simulador', efeitos: 'Efeitos', alertas: 'Alertas', widgets: 'Widgets', dj: 'DJ Pad', musica: 'Música', voz: 'Voz e chat', placar: 'Placar', historico: 'Histórico' };
+    const FN = { jogo: 'Gatilhos do jogo', personagens: 'Personagens', testar: 'Simulador', efeitos: 'Efeitos', alertas: 'Alertas', widgets: 'Widgets', dj: 'DJ Pad', musica: 'Música', voz: 'Voz e chat', placar: 'Placar', historico: 'Histórico' };
     fetch('/api/planos').then((r) => r.json()).then((j) => { PL = j; }).catch(() => {});
     fetch('/api/config/bonus').then((r) => r.json()).then((j) => { BONUS = j; if (CAT.games.length) desenhaPacotes(); }).catch(() => {});
-    const bonusTxt = (n, T) => { if (!BONUS) return ''; if (n >= T) return 'Todas as funções do painel'; const f = [...BONUS.pacotes].reverse().find((x) => x <= n) || 1; const l = (BONUS.bonus[f] || []).map((k) => FN[k] || k); return l.length ? l.join(', ') : ''; };
+    const bonusTxt = (n, T) => { if (!BONUS) return ''; if (n >= T) return 'Todas as funções do painel'; const f = [...BONUS.pacotes].reverse().find((x) => x <= n) || 1; const l = ['jogo', ...(BONUS.bonus[f] || []).filter((k) => k !== 'jogo')].map((k) => FN[k] || k); return l.join(', '); };
     const esperaCat = () => (CAT.games.length ? Promise.resolve() : new Promise((r) => addEventListener('catalogo', r, { once: true })));
     const total = () => CAT.games.length;
 

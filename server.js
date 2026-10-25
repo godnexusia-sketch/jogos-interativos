@@ -208,12 +208,13 @@ const PACOTES_N = [1, 3, 5, 10, 20];
 const BONUS_PADRAO = { 1: ['musica', 'placar'], 3: ['musica', 'placar', 'voz', 'alertas'], 5: ['musica', 'placar', 'voz', 'alertas', 'efeitos', 'personagens'], 10: ['musica', 'placar', 'voz', 'alertas', 'efeitos', 'personagens', 'widgets', 'historico', 'testar'], 20: ['musica', 'placar', 'voz', 'alertas', 'efeitos', 'personagens', 'widgets', 'historico', 'testar', 'jogo', 'dj'] };
 const bonusTabela = () => ({ ...BONUS_PADRAO, ...(contas.lerConfig('bonus') || {}) });
 const faixaDe = (pl) => (pl.todos ? 'todos' : PACOTES_N.filter((n) => n <= Number(pl.cabe || (pl.games || []).length || 1)).pop() || 1);
-const bonusDe = (pl) => { const f = faixaDe(pl); const base = f === 'todos' ? PERMS.slice() : (bonusTabela()[f] || []).filter((x) => PERMS.includes(x)); return [...new Set([...base, ...(Array.isArray(pl.extras) ? pl.extras.filter((x) => PERMS.includes(x)) : [])])]; }; // bônus do pacote + o que o admin liberou a mais para a conta
+// Configurar o jogo (gatilhos) vem em todo pacote; o resto vem da tabela de bônus do admin
+const bonusDe = (pl) => { const f = faixaDe(pl); const base = f === 'todos' ? PERMS.slice() : ['jogo', ...(bonusTabela()[f] || []).filter((x) => PERMS.includes(x))]; return [...new Set([...base, ...(Array.isArray(pl.extras) ? pl.extras.filter((x) => PERMS.includes(x)) : [])])]; }; // bônus do pacote + o que o admin liberou a mais para a conta
 const AVISO_PAGAR = 'O pagamento para acesso aos jogos ainda não foi confirmado. Faça o pagamento o quanto antes para liberar o seu acesso.';
 const avisoDe = (c) => (!c?.plano?.ciclo ? 'Falta escolher o seu plano: escolha os jogos e faça o pagamento para liberar o acesso.' : c?.plano?.pagos?.length ? `Aguardando renovação do pacote: o seu acesso venceu em ${new Date(Number(c.plano.ate)).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}. Faça a renovação para voltar a usar os jogos, com todas as suas configurações.` : AVISO_PAGAR);
 const jogosDe = (c) => (c?.plano?.ciclo && c.plano.todos && CAT_IDS.length ? CAT_IDS : c?.games || []);
 const planoPublico = (p) => p?.ciclo ? { ciclo: p.ciclo, n: p.todos ? CAT_IDS.length : (p.games || []).length, todos: Boolean(p.todos), valor: p.valor, forma: p.forma, parcelas: p.parcelas || 1, status: p.status, teste: Boolean(p.teste), ate: p.ate, fatura: p.fatura || '' } : null;
-const contaPublica = (c) => c && { id: c.id, username: c.username, role: c.role, games: jogosDe(c), perms: c.plano?.ciclo ? bonusDe(c.plano) : c.perms || [], nome: c.info?.nome || '', pagante: Boolean(c.plano?.pagante || c.plano?.ciclo), plano: planoPublico(c.plano), vencido: Boolean(planoVencido(c)), ai: { provider: c.ai?.provider || 'sistema', model: c.ai?.model || '', ollamaUrl: c.ai?.ollamaUrl || '', temChave: Boolean(c.ai?.key), feito: Boolean(c.ai?.feito) } };
+const contaPublica = (c) => c && { id: c.id, username: c.username, role: c.role, games: jogosDe(c), perms: c.plano?.ciclo ? bonusDe(c.plano) : c.perms || [], nome: c.info?.nome || '', perfil: { nome: c.info?.nome || '', celular: c.info?.celular || '', tiktok: c.info?.tiktok || '', google: Boolean(c.info?.google), senhaPropria: c.info?.google ? Boolean(c.info?.senhaPropria) : true }, pagante: Boolean(c.plano?.pagante || c.plano?.ciclo), plano: planoPublico(c.plano), vencido: Boolean(planoVencido(c)), ai: { provider: c.ai?.provider || 'sistema', model: c.ai?.model || '', ollamaUrl: c.ai?.ollamaUrl || '', temChave: Boolean(c.ai?.key), feito: Boolean(c.ai?.feito) } };
 const ASAAS_WEBHOOK_TOKEN = String(process.env.ASAAS_WEBHOOK_TOKEN || '').trim();
 const DIA = 86400e3;
 // Pagamento caiu: estende o acesso (mensal: até o próximo vencimento + folga; anual: 1 ano)
@@ -372,9 +373,31 @@ const server = http.createServer(async (req, res) => {
     const nome = String(b.nome || '').trim().slice(0, 80);
     if (nome.length < 3 || !nome.includes(' ')) return sendJson(res, 400, { error: 'coloque o seu nome completo (nome e sobrenome)' });
     if (b.senha && String(b.senha).length < 6) return sendJson(res, 400, { error: 'a senha precisa de 6 ou mais caracteres' });
-    const info = { ...(c.info || {}), nome, celular: String(b.celular || c.info?.celular || '').replace(/\D/g, '').slice(0, 13), tiktok: String(b.tiktok || c.info?.tiktok || '').trim().replace(/^@/, '').slice(0, 40) };
+    if (b.senha && (!c.info?.google || c.info?.senhaPropria)) return sendJson(res, 400, { error: 'para trocar a senha use Meu perfil → Senha' });
+    const info = { ...(c.info || {}), nome, ...(b.senha ? { senhaPropria: true } : {}), celular: String(b.celular || c.info?.celular || '').replace(/\D/g, '').slice(0, 13), tiktok: String(b.tiktok || c.info?.tiktok || '').trim().replace(/^@/, '').slice(0, 40) };
     await contas.alterar(c.id, { senha: b.senha || undefined, info }); contas.esqueceCache(c.id);
     return sendJson(res, 200, { ok: true, ir: planoVencido(c) ? destinoPagar(c) : '/' });
+  }
+  if (url.pathname === '/api/me/senha' && req.method === 'PUT') {
+    // Trocar a senha: pede a atual (quem entrou pelo Google e nunca criou senha pode criar sem ela)
+    const c = await contaDe(req); if (!c) return sendJson(res, 401, { error: 'faça login' });
+    if (demais(req)) return sendJson(res, 429, { error: 'muitas tentativas, espere um minuto' });
+    const b = await lerJson(req) || {}, nova = String(b.nova || '');
+    const semSenha = c.info?.google && !c.info?.senhaPropria;
+    if (!semSenha && !contas.confereSenha(String(b.atual || ''), c.pass)) return sendJson(res, 400, { error: 'a senha atual está errada' });
+    if (nova.length < 6) return sendJson(res, 400, { error: 'a nova senha precisa de 6 ou mais caracteres' });
+    if (nova === String(b.atual || '')) return sendJson(res, 400, { error: 'a nova senha é igual à atual' });
+    await contas.alterar(c.id, { senha: nova, info: { ...(c.info || {}), senhaPropria: true } });
+    contas.esqueceCache(c.id);
+    return sendJson(res, 200, { ok: true });
+  }
+  if (url.pathname === '/api/me/perfil' && req.method === 'PUT') {
+    const c = await contaDe(req); if (!c) return sendJson(res, 401, { error: 'faça login' });
+    const b = await lerJson(req) || {}, nome = String(b.nome || '').trim().slice(0, 80);
+    if (nome.length < 3) return sendJson(res, 400, { error: 'coloque o seu nome completo' });
+    const info = { ...(c.info || {}), nome, celular: String(b.celular || '').replace(/\D/g, '').slice(0, 13), tiktok: String(b.tiktok || '').trim().replace(/^@/, '').slice(0, 40) };
+    await contas.alterar(c.id, { info }); contas.esqueceCache(c.id);
+    return sendJson(res, 200, { ok: true, perfil: { nome: info.nome, celular: info.celular, tiktok: info.tiktok } });
   }
   if (url.pathname === '/api/config/bonus') {
     const c = await contaDe(req);

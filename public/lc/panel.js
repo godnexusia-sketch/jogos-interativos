@@ -218,7 +218,7 @@ if (!isClean) (() => {
   RENDER.jogo = () => {
     const g = current;
     h(`<div class="vhead"><h2>${g.icon} ${esc(g.name)}</h2><span class="tag">${esc(GENRES.find((x) => x.id === g.genre)?.name || '')}</span></div>
-      <div class="panel"><div id="help" class="help">${g.help || ''}</div>${g.v2 ? '' : '<p class="small">Clássico: as regras de presentes e comentários estão no próprio jogo.</p>'}
+      <div class="panel"><div id="help" class="help">${g.help || ''}</div>
         <div class="row"><button id="hEdit" ${g.edit ? '' : 'hidden'}>Editar</button></div></div>
       <div class="panel" id="legendP"><div class="ph"><h3>📋 "Como jogar" na tela</h3><label class="tog mini"><input type="checkbox" data-l="on" ${liveCfg.legend.on ? 'checked' : ''}><b></b></label></div>
         <p class="small">A lista com tudo que cada presente, comentário, like, seguir e compartilhar faz aparece na tela da live, com o ícone e o valor. <b style="color:#16a34a">Verde</b> ajuda, <b style="color:#dc2626">vermelho</b> atrapalha, <b style="color:#ca8a04">amarelo</b> faz aparecer. Mudou um gatilho aqui embaixo? A lista muda sozinha na hora.</p>
@@ -234,7 +234,8 @@ if (!isClean) (() => {
         <label class="small inl">valor do teste 🪙 <input id="testCoins" type="number" min="1" value="${store.get('testCoins', 10)}" style="width:90px"></label></div>
       <div class="panel"><h3>⚡ Gatilhos de ação</h3><div id="binds"></div></div>
       <div class="panel"><h3>Configurações do jogo <small>(mudam ao vivo)</small></h3><div id="sets"></div></div>`
-      : `<div class="panel" id="oldSetsP"><h3>Configurar</h3><div id="settings"></div></div>`}`);
+      : `<div class="panel" id="valP"><h3>⚡ Gatilhos do jogo</h3><div id="vals"></div></div>
+      <div class="panel" id="oldSetsP"><h3>Configurações do jogo</h3><div id="settings"></div></div>`}`);
     q('#hEdit').addEventListener('click', () => g.edit?.());
     qa('[data-l]', q('#legendP')).forEach((inp) => inp.addEventListener('change', () => {
       const L = { ...liveCfg.legend }, k = inp.dataset.l;
@@ -247,9 +248,53 @@ if (!isClean) (() => {
       q('#testCoins').addEventListener('change', (e) => store.set('testCoins', Number(e.target.value) || 1));
       triggersEditor(g, q('#binds'));
       settingsForm(g, q('#sets'));
-    } else if (g.renderSettings) g.renderSettings(q('#settings'), (cfg) => shareConfig(g.configKey, cfg));
-    else q('#oldSetsP').hidden = true;
+    } else {
+      valoresEditor(g, q('#vals'));
+      if (g.renderSettings) g.renderSettings(q('#settings'), (cfg) => shareConfig(g.configKey, cfg)); else q('#oldSetsP').hidden = true;
+    }
   };
+
+  // Gatilhos dos clássicos: quanto vale cada like, seguir, compartilhar, presente e palavra (legenda.js → valoresClassico)
+  function valoresEditor(g, box) {
+    const gifts = GIFT_CATALOG.slice().sort((a, b) => a.coins - b.coins);
+    const draw = () => {
+      const v = valoresDe(g);
+      box.innerHTML = `<p class="small">Escolha quanto vale cada coisa neste jogo. O jogo transforma tudo em moedas 🪙: quanto mais moedas, mais forte a ação. Muda na hora, inclusive na tela da live.</p>
+        <div class="grid2">
+          <label class="f"><span>❤️ Quantos likes valem 1 moeda</span><input type="number" min="0" max="1000" data-v="likes" value="${v.likes}"><small class="small">0 = like não conta</small></label>
+          <label class="f"><span>🎁 Multiplicador de todos os presentes</span><select data-v="mult">${[0.5, 1, 2, 3, 5, 10].map((m) => `<option value="${m}" ${Number(v.mult) === m ? 'selected' : ''}>×${String(m).replace('.', ',')}</option>`).join('')}</select></label>
+          <label class="f"><span>⭐ Seguir vale (moedas)</span><input type="number" min="0" max="100000" data-v="follow" value="${v.follow}"><small class="small">0 = não conta</small></label>
+          <label class="f"><span>🔁 Compartilhar vale (moedas)</span><input type="number" min="0" max="100000" data-v="share" value="${v.share}"></label>
+        </div>
+        <h4 class="vsub">🎁 Presentes com valor próprio</h4>
+        <div class="vlist">${(v.gifts || []).map((r, i) => `<div class="vrow" data-gi="${i}"><select data-gk="id">${gifts.map((x) => `<option value="${x.id}" ${String(r.id) === x.id ? 'selected' : ''}>${esc(x.name)} · ${x.coins} 🪙</option>`).join('')}</select><label class="inl">vale <input type="number" min="0" max="1000000" data-gk="coins" value="${r.coins}"> 🪙</label><button data-del-g="${i}" title="Tirar">✕</button></div>`).join('') || '<p class="small">Nenhum. Cada presente vale o preço dele em moedas.</p>'}</div>
+        <button data-add-g>＋ Adicionar presente</button>
+        <h4 class="vsub">💬 Palavras no comentário que valem como presente</h4>
+        <div class="vlist">${(v.words || []).map((w, i) => `<div class="vrow" data-wi="${i}"><input data-wk="text" placeholder="ex.: bora, vai" value="${esc(w.text || '')}"><label class="inl">vale <input type="number" min="0" max="100000" data-wk="coins" value="${w.coins}"> 🪙</label><button data-del-w="${i}" title="Tirar">✕</button></div>`).join('') || '<p class="small">Nenhuma.</p>'}</div>
+        <button data-add-w>＋ Adicionar palavra</button>
+        <div class="row" style="margin-top:12px"><button data-reset>↺ Voltar ao padrão do jogo</button></div>`;
+    };
+    const save = (patch) => { const cur = valoresDe(g); liveCfg.save('valores', { ...liveCfg.valores, [g.id]: { ...cur, ...patch } }); };
+    box.addEventListener('change', (e) => {
+      const t = e.target, v = valoresDe(g);
+      if (t.dataset.v) return save({ [t.dataset.v]: Math.max(0, Number(t.value) || 0) });
+      const gr = t.closest('[data-gi]'), wr = t.closest('[data-wi]');
+      if (gr) { const list = v.gifts.slice(), i = Number(gr.dataset.gi), gi = GIFT_CATALOG.find((x) => x.id === gr.querySelector('[data-gk="id"]').value); list[i] = { id: gi?.id || '', name: gi?.name || '', coins: Math.max(0, Number(gr.querySelector('[data-gk="coins"]').value) || 0) }; save({ gifts: list }); }
+      if (wr) { const list = v.words.slice(), i = Number(wr.dataset.wi); list[i] = { text: wr.querySelector('[data-wk="text"]').value.trim(), coins: Math.max(0, Number(wr.querySelector('[data-wk="coins"]').value) || 0) }; save({ words: list }); }
+      toastMsg('✅ Gatilho salvo');
+    });
+    box.addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return; const v = valoresDe(g);
+      if (b.hasAttribute('data-add-g')) { const r = GIFT_CATALOG.find((x) => /^rosa$/i.test(x.name)) || GIFT_CATALOG.find((x) => x.coins === 1) || GIFT_CATALOG[0]; save({ gifts: [...v.gifts, { id: r.id, name: r.name, coins: 10 }] }); }
+      else if (b.hasAttribute('data-add-w')) save({ words: [...v.words, { text: '', coins: 5 }] });
+      else if (b.dataset.delG != null) save({ gifts: v.gifts.filter((_, i) => i !== Number(b.dataset.delG)) });
+      else if (b.dataset.delW != null) save({ words: v.words.filter((_, i) => i !== Number(b.dataset.delW)) });
+      else if (b.hasAttribute('data-reset')) { if (!confirm('Voltar os gatilhos deste jogo ao padrão?')) return; const all = { ...liveCfg.valores }; delete all[g.id]; liveCfg.save('valores', all); }
+      else return;
+      draw();
+    });
+    draw();
+  }
 
   RENDER.testar = () => {
     h(`<div class="vhead"><h2>🧪 Simulador</h2><span class="tag">sem precisar de live</span></div>
@@ -779,7 +824,7 @@ if (!isClean) (() => {
         <p class="small">Jogos que este usuário vai ver: <button id="nuAll" type="button">marcar todos</button> <button id="nuNone" type="button">desmarcar</button></p>
         <div id="nuGames">${gamePick(all.map(([id]) => id))}</div>
         <p class="small">Funções que este usuário pode usar (Jogos, Tela da live e Conectar IA ele sempre vê):</p>
-        <div id="nuFuncs">${funcPick(['musica'])}</div>
+        <div id="nuFuncs">${funcPick(['jogo', 'musica'])}</div>
         <div class="row"><button class="primary" id="nuAdd">Criar acesso</button></div>
         <p class="small">Com o e-mail do Google como usuário, a pessoa também pode usar "Entrar com o Google" (quando estiver configurado).</p></div>
       <div class="panel"><h3>Contas</h3><div class="ulist">${data.users.map((u) => `<div class="urow" data-u="${u.id}">
@@ -788,7 +833,7 @@ if (!isClean) (() => {
         <div class="uedit" hidden><p class="small">Jogos:</p>${gamePick(u.gamesConta || u.games)}<p class="small">Funções:${u.plano ? ' <b>(as do pacote já vêm marcadas; o que você marcar a mais fica liberado só para esta conta)</b>' : ''}</p>${funcPick(u.perms || [])}<div class="row"><button class="primary" data-act="saveGames">Salvar</button></div></div></div>`).join('')}</div></div>`);
     fetch('/api/config/bonus').then((r) => r.json()).then((cfg) => {
       const nome = (n) => (n === 1 ? '1 jogo (avulso)' : `Pacote ${n} jogos`);
-      q('#bonusGrid').innerHTML = cfg.pacotes.map((n) => `<div class="bonuscol" data-pk="${n}"><b>${nome(n)}</b>${FUNCS.map(([id, t]) => `<label><input type="checkbox" value="${id}" ${(cfg.bonus[n] || []).includes(id) ? 'checked' : ''}> ${t}</label>`).join('')}</div>`).join('')
+      q('#bonusGrid').innerHTML = cfg.pacotes.map((n) => `<div class="bonuscol" data-pk="${n}"><b>${nome(n)}</b>${FUNCS.map(([id, t]) => id === 'jogo' ? `<label title="Vem em todo pacote"><input type="checkbox" checked disabled> ${t} <small>(sempre)</small></label>` : `<label><input type="checkbox" value="${id}" ${(cfg.bonus[n] || []).includes(id) ? 'checked' : ''}> ${t}</label>`).join('')}</div>`).join('')
         + `<div class="bonuscol todos"><b>Pacote completo (todos os jogos)</b>${FUNCS.map(([, t]) => `<label><input type="checkbox" checked disabled> ${t}</label>`).join('')}<small>sempre tudo liberado</small></div>`;
     }).catch(() => {});
     q('#bonusSave').addEventListener('click', async () => {
@@ -922,8 +967,45 @@ if (!isClean) (() => {
   if (!$('user').value) $('user').value = store.get('lastUser', '');
   $('curName').textContent = `${current.icon} ${current.name}`;
   // Quem está logado + sair
-  const meBtn = document.createElement('button'); meBtn.id = 'meBtn'; meBtn.title = 'Sair'; meBtn.textContent = `👤 ${trim(ME.username, 22)}${IS_ADMIN ? ' (admin)' : ''} · Sair`;
-  meBtn.addEventListener('click', () => { if (confirm('Sair desta conta?')) logout(); });
+  const meBtn = document.createElement('button'); meBtn.id = 'meBtn'; meBtn.title = 'Meu perfil e senha';
+  const inicial = (ME.nome || ME.username || '?').trim()[0].toUpperCase();
+  meBtn.innerHTML = `<i class="av0">${esc(inicial)}</i><span>${esc(trim(ME.nome || ME.username, 22))}${IS_ADMIN ? ' (admin)' : ''}</span><b>▾</b>`;
+  meBtn.addEventListener('click', () => abrirPerfil());
+  // ---------- Meu perfil: dados e troca de senha ----------
+  const pf = document.createElement('dialog'); pf.id = 'perfilDlg';
+  const P = ME.perfil || {};
+  pf.innerHTML = `<div class="pfbox"><button class="pfx" data-pfclose aria-label="Fechar">✕</button>
+    <div class="pfhead"><i class="av0 big">${esc(inicial)}</i><div><b>${esc(ME.nome || ME.username)}</b><small>${esc(ME.username)}</small></div></div>
+    <div class="pftabs"><button data-pft="dados" class="on">👤 Perfil</button><button data-pft="senha">🔑 Senha</button></div>
+    <form id="pfDados" class="pfform">
+      <label class="f"><span>Nome completo</span><input id="pfNome" maxlength="80" value="${esc(P.nome || ME.nome || '')}" required></label>
+      <label class="f"><span>E-mail / login</span><input value="${esc(ME.username)}" disabled></label>
+      <div class="grid2"><label class="f"><span>Celular com DDD</span><input id="pfCel" inputmode="tel" maxlength="16" value="${esc(P.celular || '')}" placeholder="(11) 90000-0000"></label>
+        <label class="f"><span>@ no TikTok</span><input id="pfTk" maxlength="40" value="${esc(P.tiktok ? '@' + P.tiktok : '')}" placeholder="@seuusuario"></label></div>
+      <button class="primary" id="pfSalvar">Salvar perfil</button><p class="pfmsg" id="pfMsg1"></p></form>
+    <form id="pfSenha" class="pfform" hidden>
+      ${P.senhaPropria === false ? '<p class="small">Você entrou com o Google. Crie uma senha para entrar também com e-mail e senha.</p>' : `<label class="f"><span>Senha atual</span><input id="pfAtual" type="password" autocomplete="current-password" required></label>`}
+      <label class="f"><span>Nova senha (6 ou mais)</span><input id="pfNova" type="password" autocomplete="new-password" minlength="6" required></label>
+      <label class="f"><span>Repita a nova senha</span><input id="pfNova2" type="password" autocomplete="new-password" minlength="6" required></label>
+      <button class="primary">Trocar senha</button><p class="pfmsg" id="pfMsg2"></p></form>
+    <button class="pfout" id="pfOut">🚪 Sair da conta</button></div>`;
+  document.body.append(pf);
+  function abrirPerfil(aba = 'dados') { pf.querySelectorAll('[data-pft]').forEach((b) => b.classList.toggle('on', b.dataset.pft === aba)); pf.querySelector('#pfDados').hidden = aba !== 'dados'; pf.querySelector('#pfSenha').hidden = aba !== 'senha'; pf.querySelectorAll('.pfmsg').forEach((m) => (m.textContent = '')); pf.showModal(); }
+  pf.addEventListener('click', (e) => { const t = e.target.closest('[data-pft]'); if (t) abrirPerfil(t.dataset.pft); if (e.target === pf || e.target.closest('[data-pfclose]')) pf.close(); });
+  pf.querySelector('#pfCel').addEventListener('input', (e) => { const d = e.target.value.replace(/\D/g, '').slice(0, 11); e.target.value = d.length > 6 ? `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}` : d.length > 2 ? `(${d.slice(0, 2)}) ${d.slice(2)}` : d; });
+  const pfMsg = (id, t, ok) => { const m = pf.querySelector(id); m.textContent = t; m.className = 'pfmsg ' + (ok ? 'ok' : 'bad'); };
+  const enviar = async (url, body) => { const r = await fetch(url, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || 'não deu certo'); return j; };
+  pf.querySelector('#pfDados').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try { const j = await enviar('/api/me/perfil', { nome: pf.querySelector('#pfNome').value, celular: pf.querySelector('#pfCel').value, tiktok: pf.querySelector('#pfTk').value }); ME.nome = j.perfil.nome; meBtn.querySelector('span').textContent = trim(j.perfil.nome, 22) + (IS_ADMIN ? ' (admin)' : ''); pfMsg('#pfMsg1', '✅ Perfil salvo', true); } catch (x) { pfMsg('#pfMsg1', '⚠️ ' + x.message); }
+  });
+  pf.querySelector('#pfSenha').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nova = pf.querySelector('#pfNova').value;
+    if (nova !== pf.querySelector('#pfNova2').value) return pfMsg('#pfMsg2', '⚠️ As duas senhas novas não são iguais');
+    try { await enviar('/api/me/senha', { atual: pf.querySelector('#pfAtual')?.value || '', nova }); e.target.reset(); pfMsg('#pfMsg2', '✅ Senha trocada! Use a nova senha da próxima vez que entrar.', true); } catch (x) { pfMsg('#pfMsg2', '⚠️ ' + x.message); }
+  });
+  pf.querySelector('#pfOut').addEventListener('click', () => { if (confirm('Sair desta conta?')) logout(); });
   document.querySelector('.topbtns')?.prepend(meBtn);
   // Botão de pânico e som: no celular só o ícone
   $('panicBtn').innerHTML = '🛑<span class="t"> Pânico</span>';
@@ -934,11 +1016,13 @@ if (!isClean) (() => {
   const plTxt = () => { const p = ME.plano; if (!p) return IS_ADMIN ? 'Administrador · acesso total' : 'Acesso liberado pelo administrador'; return `${p.todos ? 'Todos os jogos' : `${p.n} jogo${p.n > 1 ? 's' : ''}`} · ${p.ciclo} · até ${new Date(p.ate).toLocaleDateString('pt-BR')}`; };
   dw.innerHTML = `<div class="dwin"><div class="dwacc"><b>👤 ${esc(ME.nome || ME.username)}</b><small>${esc(ME.username)}</small><small>${esc(plTxt())}</small></div>
     <div class="dwgrid">${VIEWS.map(([id, ic, nm]) => `<button data-dv="${id}"><span>${ic}</span>${esc(nm)}</button>`).join('')}</div>
-    <div class="dwrow"><a class="dwlink" href="/inicio">🏠 Página inicial</a>${ME.plano ? '<a class="dwlink" href="/pagar">💳 Meu plano</a>' : ''}<button class="dwlink" id="dwOut">🚪 Sair</button></div></div>`;
+    <div class="dwrow"><button class="dwlink" id="dwPerfil">👤 Meu perfil e senha</button><a class="dwlink" href="/inicio">🏠 Página inicial</a>${ME.plano ? '<a class="dwlink" href="/pagar">💳 Meu plano</a>' : ''}<button class="dwlink" id="dwOut">🚪 Sair</button></div></div>`;
   document.body.append(dw);
   const drawer = (on) => { dw.hidden = !on; mBtn.classList.toggle('on', on); document.body.style.overflow = on ? 'hidden' : ''; };
   mBtn.addEventListener('click', () => drawer(dw.hidden));
   dw.addEventListener('click', (e) => { const b = e.target.closest('[data-dv]'); if (b) { drawer(false); show(b.dataset.dv, true); } else if (e.target === dw) drawer(false); });
+  dw.querySelector('#dwPerfil').addEventListener('click', () => { drawer(false); abrirPerfil(); });
+  dw.querySelector('.dwacc').addEventListener('click', () => { drawer(false); abrirPerfil(); });
   dw.querySelector('#dwOut').addEventListener('click', () => { if (confirm('Sair desta conta?')) logout(); });
   // Quem assinou: botão do plano no topo e aviso quando falta pagar ou venceu
   if (ME.plano) {

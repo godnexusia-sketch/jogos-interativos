@@ -421,3 +421,32 @@ label.f.tog.big small { color:var(--muted); font-weight:600; }
   .urow > .row button { flex:1 1 auto; }
 }
 @media (max-width: 900px) { #planBtn .t { display:none; } #planBtn { padding:8px 10px; } }
+
+/* ---------- Meu perfil ---------- */
+#meBtn { display:inline-flex; align-items:center; gap:8px; }
+#meBtn b { font-size:11px; color:var(--muted); }
+.av0 { display:inline-grid; place-items:center; width:26px; height:26px; border-radius:50%; background:conic-gradient(#ff2d55, #ffc93c, #22e3ee, #ff2d55); color:#fff; font-style:normal; font-weight:900; font-size:13px; flex:none; text-shadow:0 1px 2px rgba(0,0,0,.6); }
+.av0.big { width:52px; height:52px; font-size:24px; }
+#perfilDlg { border:0; padding:0; background:transparent; color:var(--text); width:min(460px, calc(100vw - 24px)); }
+#perfilDlg::backdrop { background:rgba(3,5,12,.7); backdrop-filter:blur(4px); }
+.pfbox { position:relative; background:linear-gradient(180deg, #171c2d, #10141f); border:1px solid var(--line); border-radius:20px; padding:20px; display:flex; flex-direction:column; gap:14px; max-height:calc(100dvh - 30px); overflow:auto; }
+.pfx { position:absolute; top:12px; right:12px; width:36px; height:36px; border-radius:50%; padding:0; }
+.pfhead { display:flex; gap:12px; align-items:center; padding-right:40px; }
+.pfhead b { display:block; font-size:18px; overflow-wrap:anywhere; } .pfhead small { color:var(--muted); overflow-wrap:anywhere; }
+.pftabs { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:4px; border-radius:12px; background:rgba(0,0,0,.25); }
+.pftabs button { border-color:transparent; background:transparent; font-weight:800; }
+.pftabs button.on { background:var(--panel2); border-color:rgba(34,227,238,.45); color:#fff; }
+.pfform { display:flex; flex-direction:column; gap:4px; }
+.pfform label.f input { width:100%; }
+.pfform button.primary { margin-top:10px; padding:12px; }
+.pfmsg { margin:6px 0 0; min-height:18px; font-size:14px; font-weight:700; } .pfmsg.ok { color:#8dffb6; } .pfmsg.bad { color:#ffb3bd; }
+.pfout { background:rgba(255,45,85,.12); border-color:rgba(255,45,85,.45); font-weight:800; padding:12px; }
+.dwacc { cursor:pointer; }
+
+/* Gatilhos dos jogos clássicos */
+.vsub { margin:14px 0 6px; font-size:13px; color:var(--gold); }
+.vlist { display:flex; flex-direction:column; gap:6px; margin-bottom:8px; }
+.vrow { display:grid; grid-template-columns:minmax(0, 1fr) auto auto; gap:8px; align-items:center; }
+.vrow input[data-gk="coins"], .vrow input[data-wk="coins"] { width:90px; }
+.vrow .inl { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); white-space:nowrap; }
+@media (max-width: 560px) { .vrow { grid-template-columns:minmax(0, 1fr) auto; } .vrow .inl { grid-column:1; } }

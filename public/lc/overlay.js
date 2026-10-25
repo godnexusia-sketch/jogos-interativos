@@ -34,6 +34,7 @@ const liveCfg = {
   dj: store.get('live:dj', null),
   music: store.get('live:music', null),
   chars: store.get('live:chars', null),
+  valores: store.get('live:valores', null) || {}, // gatilhos dos jogos clássicos (legenda.js)
   save(key, data, share = true) {
     this[key] = data;
     store.set('live:' + key, data);

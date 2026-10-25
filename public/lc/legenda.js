@@ -219,3 +219,41 @@ const actFeed = {
     });
   },
 };
+
+// ---------- Gatilhos dos jogos clássicos ----------
+// Os clássicos têm as regras dentro do jogo; aqui o dono ajusta quanto vale cada coisa (por jogo):
+// quantos likes valem 1 moeda, quanto vale seguir/compartilhar, multiplicador dos presentes,
+// presente específico com valor próprio e palavras no comentário que valem como presente.
+const VALOR_PADRAO = { likes: 25, follow: SOCIAL_COINS.follow, share: SOCIAL_COINS.share, mult: 1, gifts: [], words: [] };
+function valoresDe(g) { return { ...VALOR_PADRAO, ...(liveCfg.valores?.[g?.id] || {}) }; }
+function valoresClassico(g, ev) {
+  const v = valoresDe(g);
+  if (ev.type === 'like') return v.likes > 0 ? [{ ...ev, count: Math.max(1, Math.round((ev.count || 1) * (25 / v.likes))) }] : [];
+  if (ev.type === 'social') {
+    const share = ev.action === 'share', n = Number(share ? v.share : v.follow), pad = share ? SOCIAL_COINS.share : SOCIAL_COINS.follow;
+    if (!(n > 0)) return [];
+    return n === pad ? [ev] : [{ type: 'gift', user: ev.user, name: share ? 'Compartilhar' : 'Seguir', giftId: 'social-' + ev.action, diamonds: n, count: 1, synthetic: true }];
+  }
+  if (ev.type === 'gift' && !ev.synthetic) {
+    const r = (v.gifts || []).find((x) => (x.id && String(x.id) === String(ev.giftId)) || (x.name && norm(x.name) === norm(ev.name || '')));
+    if (r && !(Number(r.coins) > 0)) return []; // valor 0 = esse presente não faz nada no jogo
+    const d = r ? Number(r.coins) : (ev.diamonds || 1) * (Number(v.mult) || 1);
+    return [{ ...ev, diamonds: Math.max(1, Math.round(d)) }];
+  }
+  if (ev.type === 'chat') {
+    const out = [ev];
+    for (const w of v.words || []) if (w.text && Number(w.coins) > 0 && keywordHit(ev.text, w.text)) out.push({ type: 'gift', user: ev.user, name: w.text, giftId: 'palavra', diamonds: Number(w.coins), count: 1, synthetic: true });
+    return out;
+  }
+  return [ev];
+}
+// "Como jogar" dos clássicos com os valores escolhidos
+const legendItemsBase = legendItems;
+legendItems = function (g) {
+  const items = legendItemsBase(g);
+  if (g.v2 || g.legendItems) return items;
+  const v = valoresDe(g), out = items.map((it) => (it.trig === 'like' ? { ...it, what: String(it.what).replace(/^\d+\s*likes?/i, `${v.likes} likes`) } : it));
+  for (const r of v.gifts || []) if (r.name || r.id) { const gi = r.id ? giftInfo(r.id) : null; out.unshift({ img: gi?.img || '', emoji: giftEmoji(gi?.en || r.name || ''), what: gi?.name || r.name, coins: Number(r.coins) > 0 ? Number(r.coins) : undefined, eff: Number(r.coins) > 0 ? `vale ${r.coins} 🪙` : 'não conta', tone: Number(r.coins) > 0 ? 'help' : 'hurt', trig: 'gift' }); }
+  for (const w of v.words || []) if (w.text && Number(w.coins) > 0) out.push({ emoji: '💬', what: `"${String(w.text).split(',')[0].trim()}"`, eff: `vale ${w.coins} 🪙`, tone: 'help', trig: 'comment' });
+  return out;
+};
