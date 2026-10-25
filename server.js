@@ -208,7 +208,7 @@ const PACOTES_N = [1, 3, 5, 10, 20];
 const BONUS_PADRAO = { 1: ['musica', 'placar'], 3: ['musica', 'placar', 'voz', 'alertas'], 5: ['musica', 'placar', 'voz', 'alertas', 'efeitos', 'personagens'], 10: ['musica', 'placar', 'voz', 'alertas', 'efeitos', 'personagens', 'widgets', 'historico', 'testar'], 20: ['musica', 'placar', 'voz', 'alertas', 'efeitos', 'personagens', 'widgets', 'historico', 'testar', 'jogo', 'dj'] };
 const bonusTabela = () => ({ ...BONUS_PADRAO, ...(contas.lerConfig('bonus') || {}) });
 const faixaDe = (pl) => (pl.todos ? 'todos' : PACOTES_N.filter((n) => n <= Number(pl.cabe || (pl.games || []).length || 1)).pop() || 1);
-const bonusDe = (pl) => { const f = faixaDe(pl); return f === 'todos' ? PERMS.slice() : (bonusTabela()[f] || []).filter((x) => PERMS.includes(x)); };
+const bonusDe = (pl) => { const f = faixaDe(pl); const base = f === 'todos' ? PERMS.slice() : (bonusTabela()[f] || []).filter((x) => PERMS.includes(x)); return [...new Set([...base, ...(Array.isArray(pl.extras) ? pl.extras.filter((x) => PERMS.includes(x)) : [])])]; }; // bônus do pacote + o que o admin liberou a mais para a conta
 const AVISO_PAGAR = 'O pagamento para acesso aos jogos ainda não foi confirmado. Faça o pagamento o quanto antes para liberar o seu acesso.';
 const avisoDe = (c) => (!c?.plano?.ciclo ? 'Falta escolher o seu plano: escolha os jogos e faça o pagamento para liberar o acesso.' : c?.plano?.pagos?.length ? `Aguardando renovação do pacote: o seu acesso venceu em ${new Date(Number(c.plano.ate)).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}. Faça a renovação para voltar a usar os jogos, com todas as suas configurações.` : AVISO_PAGAR);
 const jogosDe = (c) => (c?.plano?.ciclo && c.plano.todos && CAT_IDS.length ? CAT_IDS : c?.games || []);
@@ -429,7 +429,11 @@ const server = http.createServer(async (req, res) => {
       const b = await lerJson(req) || {};
       if (b.password && String(b.password).length < 6) return sendJson(res, 400, { error: 'senha com 6+ caracteres' });
       if (id === c.id && (b.role === 'user' || b.disabled)) return sendJson(res, 400, { error: 'você não pode tirar o seu próprio acesso de admin' });
-      const u = await contas.alterar(id, { senha: b.password || undefined, role: b.role === 'admin' || b.role === 'user' ? b.role : undefined, games: Array.isArray(b.games) ? b.games.slice(0, 200).map(String) : undefined, perms: limpaPerms(b.perms), disabled: typeof b.disabled === 'boolean' ? b.disabled : undefined, status: b.aprovar ? 'ok' : undefined });
+      // Cliente que comprou: as funções marcadas aqui somam aos bônus do pacote (ficam em plano.extras)
+      const alvo = await contas.porId(id), pagante = alvo?.plano?.ciclo || alvo?.plano?.pagante;
+      let perms = limpaPerms(b.perms), plano;
+      if (pagante && perms) { const base = alvo.plano.ciclo ? bonusDe({ ...alvo.plano, extras: [] }) : []; plano = { ...alvo.plano, extras: perms.filter((x) => !base.includes(x)) }; perms = undefined; }
+      const u = await contas.alterar(id, { senha: b.password || undefined, role: b.role === 'admin' || b.role === 'user' ? b.role : undefined, games: Array.isArray(b.games) ? b.games.slice(0, 200).map(String) : undefined, perms, plano, disabled: typeof b.disabled === 'boolean' ? b.disabled : undefined, status: b.aprovar ? 'ok' : undefined });
       contas.esqueceCache(id);
       return u ? sendJson(res, 200, contaPublica(u)) : sendJson(res, 404, { error: 'não achei' });
     }
