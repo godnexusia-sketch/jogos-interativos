@@ -1,0 +1,61 @@
+Algo que você come no cinema|pipoca:52|refrigerante:16:refri,coca|chocolate:12|bala:9:jujuba|nachos:7:salgadinho
+Um animal que tem listras|zebra:48|tigre:28|abelha:10|gato:7|peixe-palhaço:4:peixe palhaco
+Uma coisa que você faz antes de dormir|escovar os dentes:40:escovar dentes,escovar|mexer no celular:25:celular|tomar banho:15:banho|rezar:10:orar|ler:6:ler um livro
+Um nome de cachorro muito comum|rex:30|bob:22|thor:18|mel:14|luna:10
+Algo que tem botões|controle remoto:32:controle|celular:24|camisa:18:roupa|elevador:12|teclado:10
+Uma comida que leva ovo|bolo:34|omelete:26|maionese:14|pudim:12|panqueca:10
+Um lugar onde as pessoas ficam em fila|banco:36|supermercado:24:mercado|cinema:14|hospital:12|show:8:balada
+Uma coisa que tem cheiro forte|alho:30|perfume:26|cebola:18|peixe:14|gasolina:8
+Algo que você usa quando chove|guarda-chuva:58:guarda chuva,sombrinha|capa de chuva:18:capa|bota:12:galocha|casaco:6:jaqueta|toalha:3
+Um esporte que se joga na praia|vôlei de praia:40:volei,volei de praia|futevôlei:24:futevolei|frescobol:16|beach tennis:12|surfe:6:surf
+Uma coisa que você encontra numa mochila de escola|caderno:36|estojo:22|lápis:16:lapis,caneta|livro:12|lanche:10:merenda
+Uma fruta que tem caroço|manga:32|abacate:24|pêssego:16:pessego|azeitona:12|ameixa:10
+Um bicho que dá medo|aranha:34|cobra:30|barata:16|tubarão:10:tubarao|rato:7
+Algo que tem na festa junina|quentão:24:quentao|pipoca:22|quadrilha:20|fogueira:18|milho:12:pamonha
+Uma coisa que as crianças pedem no Natal|brinquedo:40|videogame:22:video game|bicicleta:16:bike|celular:12|boneca:8
+Um lugar quente|praia:32|deserto:28|sauna:16|nordeste:12:sertao|vulcão:8:vulcao
+Algo que você coloca no café|açúcar:48:acucar|leite:30|adoçante:12:adocante|canela:5|chantilly:3
+Uma coisa que é amarela|sol:34|banana:28|canário:10:canario|ovo (gema):14:gema|queijo:10
+Uma cor de carro muito comum|branco:36|preto:26|prata:20:cinza|vermelho:12|azul:4
+Algo que você faz quando está entediado|mexe no celular:42:celular,mexer no celular|dorme:20:dormir|come:14:comer|assiste tv:12:televisao,tv|joga:8:jogar videogame
+Um país famoso por futebol|Brasil:44|Argentina:24|Alemanha:12|Itália:10:italia|Espanha:6
+Algo que tem no carro|volante:30|cinto de segurança:22:cinto|rádio:16:radio|pneu:16:roda|banco:12
+Um animal que é rápido|guepardo:36:chita|cavalo:24|leopardo:14:leao|coelho:12|gazela:10
+Algo que você precisa para fazer um bolo|farinha:34:trigo|ovo:26:ovos|açúcar:20:acucar|leite:12|fermento:6
+Uma coisa que você faz na academia|musculação:40:malhar,musculacao|esteira:24:correr|abdominal:16|bicicleta:10|alongamento:8:alongar
+Um nome de gato muito comum|mingau:28|frajola:20|nina:18|tom:16|garfield:12
+Algo que você lava|louça:32:louca,prato|roupa:30|carro:16|cabelo:12|mão:8:maos,mao
+Uma coisa que se encontra num parque|árvore:32:arvore|banco:22|balanço:18:balanco,escorregador|lago:14|pipoca:10:pipoqueiro
+Um sabor de sorvete|chocolate:42|morango:22|creme:14:baunilha|flocos:12|limão:8:limao
+Algo que é pesado|elefante:30|caminhão:24:caminhao|pedra:20|piano:14|geladeira:10
+Uma coisa que tem chave|porta:46|carro:30|cadeado:12|cofre:8|gaveta:4
+Algo que você faz no aniversário|cantar parabéns:38:parabens,cantar|soprar a vela:28:vela,velas|comer bolo:16:bolo|abrir presente:12:presente|festa:6
+Uma coisa que se vê na fazenda|vaca:32|cavalo:22|trator:18|galinha:16|porco:10
+Um personagem de desenho animado|Bob Esponja:30:bob esponja|Mickey:24|Pernalonga:16|Pica-Pau:14:pica pau|Scooby-Doo:12:scooby
+Algo que você usa no inverno|casaco:44:jaqueta,blusa|cachecol:18|luva:14:luvas|gorro:12:touca|meia:10:meias
+Uma comida de rua brasileira|pastel:30|cachorro-quente:26:cachorro quente,hot dog|espetinho:18:churrasquinho|acarajé:14:acaraje|tapioca:10
+Algo que você encontra na praia|areia:34|mar:24:agua|concha:16|guarda-sol:14:guarda sol|caranguejo:10
+Uma coisa que tem números|relógio:32:relogio|calendário:22:calendario|celular:18:telefone|calculadora:16|dinheiro:10:nota
+Algo que voa|avião:36:aviao|pássaro:30:passaro,ave|helicóptero:14:helicoptero|borboleta:10|pipa:8
+Uma profissão que trabalha em hospital|médico:42:medico|enfermeiro:30:enfermeira|recepcionista:10|cirurgião:10:cirurgiao|faxineiro:6
+Um lugar para levar as crianças no domingo|parque:36|shopping:24|praia:16|zoológico:14:zoologico,zoo|cinema:8
+Algo que você toma quando está doente|remédio:44:remedio|chá:24:cha|sopa:14:canja|água:10:agua|vitamina:6
+Uma coisa que faz você rir|piada:36|meme:24:memes|cócegas:18:cocegas|comédia:12:filme de comedia|amigos:8
+Algo que tem na sala de estar|sofá:42:sofa|televisão:30:tv,televisao|tapete:12|mesa de centro:8:mesa|quadro:6
+Um bicho que vive na Amazônia|onça:30:onca,onca-pintada|arara:22|macaco:18|boto:14|sucuri:12:cobra
+Uma comida que se come com a mão|pizza:28|hambúrguer:26:hamburguer,lanche|coxinha:20|sanduíche:14:sanduiche|pipoca:10
+Algo que você faz quando acaba a luz|acende vela:44:vela,velas|lanterna do celular:24:lanterna|dorme:16:dormir|reclama:8|conversa:6
+Um time de futebol brasileiro|Flamengo:30|Corinthians:24|Palmeiras:18|São Paulo:14:sao paulo|Vasco:12
+Algo que você encontra num aeroporto|avião:34:aviao|mala:22:bagagem|passaporte:16|esteira:14|segurança:12:seguranca
+Uma coisa que é gostosa quando está quente|café:34:cafe|pão:22:pao|pizza:20|sopa:14|chocolate quente:8
+Algo que tem cauda|cachorro:32|gato:26|peixe:14|cometa:14|macaco:12
+Uma coisa que tem muitas cores|arco-íris:44:arco iris,arcoiris|borboleta:16|lápis de cor:16:lapis de cor|papagaio:12:arara|bandeira:8
+Um lugar onde é proibido fazer barulho|biblioteca:46|hospital:30|cinema:12|igreja:8|sala de aula:4:escola
+Algo que você esquece de levar quando viaja|carregador:38|escova de dente:24:escova|documento:16:rg|toalha:12|chinelo:8
+Uma coisa que é macia|travesseiro:34|algodão:22:algodao|ursinho de pelúcia:16:pelucia,ursinho|cama:14|nuvem:10
+Algo que tem rodas e não é carro|bicicleta:40:bike|moto:24|skate:16|patins:12|carrinho de mercado:6:carrinho
+Uma coisa que as pessoas fazem no Ano-Novo|pular sete ondas:30:pular ondas|ver fogos:26:fogos|fazer promessa:18:promessa|usar branco:16:roupa branca|abraçar:8:abracar
+Algo que você ouve de manhã|despertador:42:alarme|passarinho:24:passaros|galo:16|buzina:10:transito|rádio:6:radio
+Um animal de estimação|cachorro:48:cao|gato:34|peixe:8|pássaro:6:passaro,calopsita|hamster:4
+Uma comida que é verde|alface:30|brócolis:22:brocolis|couve:16|abacate:16|pepino:14
+Algo que você faz no domingo|almoço em família:30:almoco,almocar|descansar:26:dormir|ver futebol:18:futebol|passear:14|igreja:10:missa

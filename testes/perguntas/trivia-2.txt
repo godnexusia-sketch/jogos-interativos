@@ -1,0 +1,67 @@
+Brasil|1|Qual é a moeda oficial do Brasil?|Real|Cruzeiro|Peso|Dólar
+Brasil|1|Qual é o maior estado do Brasil em área?|Amazonas|Pará|Mato Grosso|Minas Gerais
+Brasil|1|Em que cidade fica o Cristo Redentor?|Rio de Janeiro|São Paulo|Salvador|Belo Horizonte
+Brasil|1|Quais são as cores da bandeira do Brasil?|Verde, amarelo, azul e branco|Verde e amarelo|Azul e branco|Verde, amarelo e vermelho
+Brasil|1|Qual é a capital da Bahia?|Salvador|Recife|Fortaleza|Ilhéus
+Brasil|2|Em que ano foi proclamada a República no Brasil?|1889|1822|1888|1930
+Brasil|2|Qual é a capital do Rio Grande do Norte?|Natal|Mossoró|João Pessoa|Maceió
+Brasil|2|Qual rio forma as Cataratas do Iguaçu?|Rio Iguaçu|Rio Paraná|Rio São Francisco|Rio Tietê
+Brasil|2|Qual é o ponto mais alto do Brasil?|Pico da Neblina|Pico da Bandeira|Monte Roraima|Pico do Itatiaia
+Brasil|2|Quem escreveu "Dom Casmurro"?|Machado de Assis|José de Alencar|Jorge Amado|Graciliano Ramos
+Brasil|2|Qual estado brasileiro tem a capital Palmas?|Tocantins|Goiás|Maranhão|Piauí
+Brasil|3|Qual foi a primeira capital do Brasil?|Salvador|Rio de Janeiro|São Vicente|Olinda
+Brasil|3|Em que ano a capital mudou para Brasília?|1960|1950|1964|1955
+Brasil|3|Quantos estados o Brasil tem (sem contar o Distrito Federal)?|26|27|25|24
+Brasil|3|Qual lei aboliu a escravidão no Brasil?|Lei Áurea|Lei do Ventre Livre|Lei Eusébio de Queirós|Lei dos Sexagenários
+Comida|1|De qual fruta é feito o guacamole?|Abacate|Limão|Manga|Tomate
+Comida|1|Qual é o ingrediente principal do pão de queijo?|Polvilho|Farinha de trigo|Fubá|Arroz
+Comida|1|Qual país é famoso pela pizza?|Itália|França|Grécia|Espanha
+Comida|1|Qual é a cor de dentro da melancia?|Vermelha|Amarela|Verde|Branca
+Comida|2|Qual prato é feito com feijão-preto e carnes de porco?|Feijoada|Acarajé|Moqueca|Vatapá
+Comida|2|De que país vem o sushi?|Japão|China|Coreia do Sul|Tailândia
+Comida|2|O acarajé é um prato típico de qual estado?|Bahia|Pernambuco|Ceará|Maranhão
+Comida|2|Qual tempero dá a cor amarela ao arroz da paella?|Açafrão|Cúrcuma|Páprica|Cominho
+Comida|2|De qual planta vem o chocolate?|Cacau|Café|Baunilha|Coco
+Comida|3|Qual queijo é tradicional na pizza margherita?|Muçarela|Parmesão|Gorgonzola|Provolone
+Comida|3|O tucupi é extraído de qual alimento?|Mandioca|Açaí|Milho|Cupuaçu
+Comida|3|Qual país criou o croissant como conhecemos hoje?|França|Áustria|Bélgica|Suíça
+Comida|3|Qual é o principal ingrediente do homus?|Grão-de-bico|Lentilha|Ervilha|Feijão-branco
+Animais|1|Qual é o maior animal do mundo?|Baleia-azul|Elefante|Tubarão-baleia|Girafa
+Animais|1|Qual animal é conhecido como o rei da selva?|Leão|Tigre|Elefante|Gorila
+Animais|1|Quantas patas tem uma aranha?|8|6|10|4
+Animais|1|Qual ave é símbolo da paz?|Pomba|Águia|Coruja|Cisne
+Animais|2|Qual é o animal terrestre mais rápido?|Guepardo|Leão|Cavalo|Gazela
+Animais|2|Os golfinhos são peixes ou mamíferos?|Mamíferos|Peixes|Anfíbios|Répteis
+Animais|2|Qual animal muda de cor para se camuflar?|Camaleão|Iguana|Sapo|Tartaruga
+Animais|2|Qual é o maior felino do mundo?|Tigre|Leão|Onça-pintada|Leopardo
+Animais|2|Qual mamífero consegue voar?|Morcego|Esquilo-voador|Pinguim|Avestruz
+Animais|3|Qual é o único mamífero que bota ovos e tem bico de pato?|Ornitorrinco|Equidna|Lontra|Castor
+Animais|3|Qual é o animal símbolo da Austrália?|Canguru|Coala|Ornitorrinco|Emu
+Animais|3|Qual ave não voa e vive na Nova Zelândia?|Kiwi|Pinguim|Emu|Dodô
+Animais|3|Qual é o maior réptil do mundo?|Crocodilo-de-água-salgada|Sucuri|Dragão-de-komodo|Jacaré-açu
+Tecnologia|1|O que significa a sigla "Wi-Fi" no dia a dia?|Internet sem fio|Cabo de rede|Bateria|Bluetooth
+Tecnologia|1|Qual empresa criou o iPhone?|Apple|Samsung|Google|Microsoft
+Tecnologia|1|Qual é a rede social de vídeos curtos com a nota musical como logo?|TikTok|Instagram|Facebook|Twitter
+Tecnologia|1|Qual tecla apaga o caractere à esquerda do cursor?|Backspace|Delete|Enter|Shift
+Tecnologia|2|Quem fundou a Microsoft junto com Paul Allen?|Bill Gates|Steve Jobs|Mark Zuckerberg|Elon Musk
+Tecnologia|2|O que significa "CPU"?|Unidade central de processamento|Computador pessoal único|Central de usuários|Placa de vídeo
+Tecnologia|2|Qual empresa desenvolve o sistema Android?|Google|Apple|Microsoft|Samsung
+Tecnologia|2|Quantos bits tem um byte?|8|4|16|10
+Tecnologia|2|Qual site é a maior enciclopédia colaborativa online?|Wikipédia|Google|Yahoo|Britannica
+Tecnologia|3|Em que ano foi lançado o primeiro iPhone?|2007|2005|2009|2010
+Tecnologia|3|Qual linguagem de programação tem o nome de uma cobra?|Python|Java|Ruby|Swift
+Tecnologia|3|Quem é considerado o pai da computação moderna?|Alan Turing|Charles Babbage|John von Neumann|Ada Lovelace
+Tecnologia|3|O que significa a sigla "HTML"?|Linguagem de marcação de hipertexto|Programa de e-mail|Protocolo de internet|Formato de imagem
+Conhecimentos gerais|1|Quantos dias tem um ano bissexto?|366|365|364|367
+Conhecimentos gerais|1|Quantas horas tem um dia?|24|12|20|48
+Conhecimentos gerais|1|Qual é a cor resultante da mistura de azul e amarelo?|Verde|Roxo|Laranja|Marrom
+Conhecimentos gerais|1|Quantos meses têm 31 dias?|7|6|5|8
+Conhecimentos gerais|2|Qual é o idioma mais falado no mundo como língua nativa?|Mandarim|Inglês|Espanhol|Hindi
+Conhecimentos gerais|2|Quantos lados tem um hexágono?|6|5|7|8
+Conhecimentos gerais|2|Qual instrumento mede a pressão atmosférica?|Barômetro|Termômetro|Higrômetro|Anemômetro
+Conhecimentos gerais|2|Quem pintou a Mona Lisa?|Leonardo da Vinci|Michelangelo|Van Gogh|Picasso
+Conhecimentos gerais|2|Qual é o número romano que representa 50?|L|C|X|D
+Conhecimentos gerais|3|Qual é o livro mais vendido da história?|Bíblia|Dom Quixote|O Pequeno Príncipe|Harry Potter
+Conhecimentos gerais|3|Quantos ossos tem o corpo humano adulto?|206|186|226|300
+Conhecimentos gerais|3|Qual é a pedra preciosa mais dura?|Diamante|Rubi|Safira|Esmeralda
+Conhecimentos gerais|3|Qual é a montanha mais alta do mundo?|Everest|K2|Aconcágua|Kilimanjaro

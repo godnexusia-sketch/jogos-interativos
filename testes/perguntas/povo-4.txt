@@ -1,0 +1,37 @@
+Algo que tem no fundo do armário|roupa velha:38:roupa|caixa:20|sapato:18|mala:14|presente esquecido:10
+Uma coisa que você faz em dia de chuva|dorme:30:dormir|vê filme:28:filme|toma chocolate quente:16:chocolate quente|fica em casa:16|come pipoca:10:pipoca
+Uma coisa que você encontra na sala de aula|carteira:30:mesa|quadro:26:lousa|professor:20|aluno:14|mochila:10
+Algo que tem na igreja|banco:30|cruz:26|padre:20:pastor|vela:14|santo:10:imagem
+Um aplicativo de transporte|Uber:52|99:28|Waze:10|Google Maps:6:maps|Moovit:4
+Algo que se faz no shopping|compras:42:comprar|comer:22:praca de alimentacao|cinema:18|passear:12|ver vitrine:6
+Uma coisa que tem no quintal|cachorro:30|planta:24:arvore|varal:20|piscina:14|churrasqueira:12
+Algo que se joga|bola:38|dado:22|videogame:18|cartas:12:baralho|xadrez:10
+Uma coisa que fica embaixo da cama|chinelo:32|poeira:26:sujeira|caixa:18|monstro:14|meia:10
+Algo que você faz quando ganha um presente|abre:38:abrir|agradece:28:agradecer,obrigado|sorri:16|abraça:12:abraco|tira foto:6
+Um lugar onde se vê muito verde|floresta:34:mata|parque:24|campo:18:fazenda|jardim:14|praça:10:praca
+Uma comida que leva chocolate|bolo:36|brigadeiro:28|sorvete:16|mousse:12|cookie:8:biscoito
+Algo que tem no salão de beleza|secador:28|tesoura:24|cabeleireiro:20|esmalte:16:manicure|espelho:12
+Uma coisa que é difícil de acordar cedo para fazer|trabalhar:40:trabalho|estudar:28:escola|academia:16:malhar|missa:10:igreja|viajar:6
+Algo que você vê no céu à noite|lua:44|estrelas:36:estrela|avião:10:aviao|satélite:6:satelite|nuvem:4
+Um bicho que faz barulho à noite|grilo:38|sapo:24|coruja:16|cachorro:12|gato:10
+Uma coisa que se faz no feriado|viajar:36|descansar:30:dormir|churrasco:16|praia:12|maratona de série:6:serie
+Uma coisa que tem ponta|lápis:30:lapis|faca:24|agulha:20|caneta:14|prego:12
+Algo que se usa na cozinha|panela:34|faca:22|colher:20|fogão:14:fogao|tábua:10:tabua
+Uma coisa que o cachorro faz|late:40:latir|abana o rabo:24:rabo|morde:14:morder|dorme:12|pede comida:10
+Algo que tem na loja de brinquedos|boneca:30|carrinho:26|bola:18|videogame:14:jogo|quebra-cabeça:12:quebra cabeca
+Algo que tem gosto azedo|limão:56:limao|vinagre:16|maracujá:12:maracuja|iogurte:8|tamarindo:8
+Uma coisa que acontece no ano novo|fogos:40|festa:22|champanhe:16:espumante|contagem regressiva:14:contagem|abraços:8:abraco
+Algo que você faz numa festa|dança:38:dancar|come:24:comer|conversa:18:conversar|bebe:12:beber|tira foto:8:foto
+Um bicho pequeno|formiga:36|mosquito:20|abelha:16|pulga:16|joaninha:12
+Uma coisa que tem no campo de futebol|bola:30|gol:24:trave|grama:18|juiz:16:arbitro|torcida:12
+Algo que se coloca na pizza|queijo:40:mucarela|tomate:20:molho|orégano:16:oregano|calabresa:14|azeitona:10
+Uma coisa que faz você suar|calor:36|exercício:26:exercicio,academia|correr:18|nervoso:12:nervosismo|comida apimentada:8:pimenta
+Algo que se usa para ir à praia|biquíni:30:biquini,sunga|chinelo:24|protetor solar:20:protetor|óculos de sol:14:oculos|boné:12:bone
+Um lugar onde se toca música alta|balada:40:boate|show:28|festa:18|carro:8|academia:6
+Uma coisa que tem no laboratório|microscópio:36:microscopio|tubo de ensaio:24:tubo|jaleco:16|cientista:14|óculos de proteção:10:oculos
+Algo que tem no quarto de criança|brinquedo:40|cama:22|ursinho:16:pelucia|berço:12:berco|abajur:10
+Algo que se faz com o celular na live|comentar:36:comentario|mandar presente:24:presente|curtir:20:like|compartilhar:12|seguir:8
+Um lugar onde tem eco|caverna:44|igreja:20|túnel:18:tunel|banheiro:10|ginásio vazio:8:ginasio
+Algo que você faz no primeiro dia de aula|conhece colegas:36:fazer amigos,conhecer|se apresenta:22:apresentar|fica nervoso:18:nervoso|ganha material:14:material|escolhe lugar:10
+Um personagem do folclore brasileiro|Saci:42:saci-perere|Curupira:22|Iara:16:sereia|Boitatá:12:boitata|Mula sem cabeça:8:mula
+Algo que tem no baile funk|música alta:38:som|dança:26:dancar|DJ:18:dj|luz:10|fumaça:8

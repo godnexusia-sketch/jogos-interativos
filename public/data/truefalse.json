@@ -1,1 +1,2222 @@
-{"cats":["Geografia","História","Ciências","Esportes","Entretenimento","Brasil","Comida","Animais","Tecnologia","Conhecimentos gerais"],"q":[{"cat":"Animais","t":true,"s":"O polvo tem três corações.","e":"Dois bombeiam sangue para as brânquias e um para o corpo."},{"cat":"Animais","t":false,"s":"O avestruz enterra a cabeça na areia quando tem medo.","e":"É mito: ele abaixa a cabeça para cuidar dos ovos no ninho."},{"cat":"Animais","t":true,"s":"Os golfinhos dormem com metade do cérebro de cada vez.","e":"Assim continuam nadando e respirando."},{"cat":"Animais","t":false,"s":"Os morcegos são cegos.","e":"Eles enxergam, e muitos ainda usam ecolocalização."},{"cat":"Animais","t":true,"s":"A girafa tem o mesmo número de vértebras no pescoço que o ser humano.","e":"São sete, só que bem maiores."},{"cat":"Animais","t":false,"s":"O camelo guarda água na corcova.","e":"A corcova guarda gordura."},{"cat":"Animais","t":true,"s":"As vacas têm melhores amigas e ficam estressadas quando separadas.","e":"Estudos mostram isso no comportamento delas."},{"cat":"Animais","t":false,"s":"Peixe-dourado tem memória de só três segundos.","e":"Eles lembram de coisas por meses."},{"cat":"Animais","t":true,"s":"O coração do camarão fica na cabeça.","e":"Fica na região do cefalotórax."},{"cat":"Animais","t":true,"s":"Formigas não dormem como nós, mas tiram centenas de cochilos curtos.","e":"Cada cochilo dura cerca de um minuto."},{"cat":"Animais","t":false,"s":"Elefantes têm medo de ratos.","e":"Não há prova disso; eles se assustam com movimentos repentinos."},{"cat":"Animais","t":true,"s":"O beija-flor é a única ave que voa para trás.","e":"O jeito de bater as asas permite isso."},{"cat":"Ciências","t":false,"s":"Raio nunca cai duas vezes no mesmo lugar.","e":"Cai sim: prédios altos são atingidos várias vezes por ano."},{"cat":"Ciências","t":true,"s":"A Lua está se afastando da Terra aos pouquinhos.","e":"Cerca de 3,8 cm por ano."},{"cat":"Ciências","t":false,"s":"A Grande Muralha da China pode ser vista da Lua a olho nu.","e":"Nem da órbita baixa ela é fácil de ver."},{"cat":"Ciências","t":true,"s":"Vênus é o planeta mais quente do Sistema Solar.","e":"O efeito estufa da atmosfera dele prende o calor."},{"cat":"Ciências","t":false,"s":"Usamos só 10% do nosso cérebro.","e":"Usamos praticamente todo ele."},{"cat":"Ciências","t":true,"s":"Um dia em Vênus é mais longo que um ano em Vênus.","e":"Ele gira muito devagar em torno de si."},{"cat":"Ciências","t":true,"s":"A água quente pode congelar mais rápido que a fria em certas condições.","e":"É o chamado efeito Mpemba."},{"cat":"Ciências","t":false,"s":"O Sol é amarelo.","e":"A luz do Sol é praticamente branca; a atmosfera muda a cor que vemos."},{"cat":"Ciências","t":true,"s":"Bananas são levemente radioativas.","e":"Por causa do potássio natural."},{"cat":"Ciências","t":false,"s":"O sangue dentro do corpo é azul.","e":"É sempre vermelho, mais escuro nas veias."},{"cat":"Ciências","t":true,"s":"O DNA humano é cerca de 60% parecido com o da banana.","e":"Muitos genes básicos são compartilhados."},{"cat":"Ciências","t":false,"s":"Mercúrio é o planeta mais quente por ser o mais perto do Sol.","e":"O mais quente é Vênus."},{"cat":"Ciências","t":true,"s":"O som não se propaga no vácuo do espaço.","e":"Ele precisa de um meio, como o ar."},{"cat":"Ciências","t":true,"s":"Os humanos brilham fracamente no escuro.","e":"A luz é fraca demais para nossos olhos verem."},{"cat":"Geografia","t":true,"s":"A Rússia tem 11 fusos horários.","e":"É o país com mais fusos contínuos."},{"cat":"Geografia","t":false,"s":"O Monte Everest é a montanha mais alta medindo da base ao topo.","e":"O Mauna Kea, no Havaí, é mais alto da base no fundo do mar."},{"cat":"Geografia","t":true,"s":"O Brasil faz fronteira com quase todos os países da América do Sul.","e":"Só não faz com Chile e Equador."},{"cat":"Geografia","t":false,"s":"A capital da Austrália é Sydney.","e":"É Camberra."},{"cat":"Geografia","t":true,"s":"O Canadá tem mais lagos do que o resto do mundo junto.","e":"Tem mais da metade dos lagos naturais do planeta."},{"cat":"Geografia","t":false,"s":"O deserto do Saara é o maior deserto do mundo.","e":"O maior é a Antártida, que também é deserto."},{"cat":"Geografia","t":true,"s":"A Islândia não tem mosquitos.","e":"É um dos raros lugares sem eles."},{"cat":"Geografia","t":true,"s":"O Rio Amazonas já correu no sentido contrário, para o Pacífico.","e":"Há milhões de anos ele corria para o Pacífico."},{"cat":"Geografia","t":false,"s":"O Brasil é o maior país do mundo.","e":"É o quinto; a Rússia é o maior."},{"cat":"História","t":false,"s":"Os vikings usavam capacetes com chifres.","e":"Isso veio de figurinos de ópera do século 19."},{"cat":"História","t":true,"s":"Cleópatra viveu mais perto da invenção do iPhone do que da construção da Grande Pirâmide.","e":"A pirâmide é cerca de 2.500 anos mais antiga que ela."},{"cat":"História","t":false,"s":"Napoleão era muito baixinho.","e":"Ele tinha altura normal para a época, cerca de 1,69 m."},{"cat":"História","t":true,"s":"O Brasil já teve um imperador nascido aqui.","e":"Dom Pedro II nasceu no Rio de Janeiro."},{"cat":"História","t":true,"s":"A Torre Eiffel era para ser desmontada depois de 20 anos.","e":"Ela foi mantida porque servia como antena."},{"cat":"História","t":false,"s":"Santos Dumont inventou o helicóptero.","e":"Ele é famoso pelo avião 14-Bis e pelos dirigíveis."},{"cat":"História","t":true,"s":"O Rio de Janeiro já foi capital de Portugal.","e":"Entre 1808 e 1821, com a corte portuguesa aqui."},{"cat":"História","t":false,"s":"A Proclamação da República foi em 1822.","e":"Foi em 1889; 1822 é a Independência."},{"cat":"Comida","t":true,"s":"O tomate é uma fruta.","e":"Do ponto de vista botânico, sim."},{"cat":"Comida","t":false,"s":"O chocolate branco é feito com cacau em pó.","e":"Ele usa manteiga de cacau, sem o pó."},{"cat":"Comida","t":true,"s":"O mel praticamente não estraga.","e":"Já acharam mel comestível em tumbas egípcias."},{"cat":"Comida","t":false,"s":"Cenoura melhora muito a visão no escuro.","e":"Ajuda a saúde dos olhos, mas não dá visão noturna."},{"cat":"Comida","t":true,"s":"O amendoim não é uma noz, é uma leguminosa.","e":"É parente do feijão."},{"cat":"Comida","t":false,"s":"A pizza foi inventada nos Estados Unidos.","e":"A pizza moderna nasceu em Nápoles, na Itália."},{"cat":"Comida","t":true,"s":"O morango tem as sementes do lado de fora.","e":"Cerca de 200 por fruta."},{"cat":"Comida","t":false,"s":"O café é feito da folha de uma planta.","e":"É feito da semente torrada do cafeeiro."},{"cat":"Esportes","t":true,"s":"O Brasil é o único país que jogou todas as Copas do Mundo.","e":"Esteve em todas as edições."},{"cat":"Esportes","t":false,"s":"O futebol foi inventado no Brasil.","e":"As regras modernas surgiram na Inglaterra."},{"cat":"Esportes","t":true,"s":"Uma partida de tênis já durou mais de 11 horas.","e":"Isner x Mahut em Wimbledon, 2010."},{"cat":"Esportes","t":false,"s":"O vôlei foi criado no Japão.","e":"Foi criado nos Estados Unidos, em 1895."},{"cat":"Esportes","t":true,"s":"As bolas de golfe têm cerca de 300 a 500 covinhas.","e":"Elas ajudam a bola a voar mais longe."},{"cat":"Esportes","t":false,"s":"Pelé ganhou quatro Copas do Mundo.","e":"Ganhou três: 1958, 1962 e 1970."},{"cat":"Entretenimento","t":true,"s":"Mickey Mouse foi o primeiro personagem de desenho a ganhar estrela na Calçada da Fama.","e":"Foi em 1978."},{"cat":"Entretenimento","t":false,"s":"Os Simpsons têm cinco dedos em cada mão.","e":"Eles têm quatro."},{"cat":"Entretenimento","t":true,"s":"O nome original do Pac-Man era Puck-Man.","e":"Mudaram para evitar piadas."},{"cat":"Entretenimento","t":false,"s":"Harry Potter estudava em Hogsmeade.","e":"Ele estudava em Hogwarts."},{"cat":"Entretenimento","t":true,"s":"O Super Mario era carpinteiro no começo.","e":"No primeiro jogo, ele era Jumpman, um carpinteiro."},{"cat":"Entretenimento","t":false,"s":"A Branca de Neve tinha oito anões.","e":"Eram sete."},{"cat":"Tecnologia","t":true,"s":"O primeiro vídeo do YouTube foi gravado num zoológico.","e":"\"Me at the zoo\", de 2005."},{"cat":"Tecnologia","t":false,"s":"O Wi-Fi foi inventado pela Apple.","e":"Ele tem várias origens, incluindo pesquisas na Austrália."},{"cat":"Tecnologia","t":true,"s":"Existem mais celulares do que pessoas no mundo.","e":"Contando todas as linhas ativas."},{"cat":"Tecnologia","t":false,"s":"Fechar os aplicativos sempre economiza muita bateria.","e":"Na maioria dos celulares atuais quase não muda."},{"cat":"Conhecimentos gerais","t":true,"s":"O alfabeto português tem 26 letras.","e":"K, W e Y voltaram oficialmente em 2009."},{"cat":"Conhecimentos gerais","t":false,"s":"Uma semana tem 160 horas.","e":"Tem 168."},{"cat":"Conhecimentos gerais","t":true,"s":"Um ano bissexto tem 366 dias.","e":"Fevereiro ganha o dia 29."},{"cat":"Conhecimentos gerais","t":false,"s":"O número zero é ímpar.","e":"Zero é par."},{"cat":"Conhecimentos gerais","t":true,"s":"\"Arara\" é um palíndromo.","e":"Lê-se igual de trás para frente."},{"cat":"Conhecimentos gerais","t":true,"s":"O piano é considerado um instrumento de percussão e de cordas.","e":"Martelos batem nas cordas."},{"cat":"Conhecimentos gerais","t":false,"s":"O arco-íris tem seis cores.","e":"Tradicionalmente tem sete."},{"cat":"Brasil","t":true,"s":"O Brasil tem a maior floresta tropical do mundo.","e":"A Amazônia, que divide com outros países."},{"cat":"Brasil","t":false,"s":"O Carnaval é feriado nacional oficial no Brasil inteiro.","e":"É ponto facultativo em muitos lugares."},{"cat":"Brasil","t":true,"s":"O pão de queijo é originário de Minas Gerais.","e":"É símbolo da culinária mineira."},{"cat":"Brasil","t":true,"s":"O Brasil tem mais de 7 mil quilômetros de litoral.","e":"Cerca de 7.400 km."},{"cat":"Brasil","t":false,"s":"Brasília foi a primeira capital do Brasil.","e":"As primeiras foram Salvador e o Rio de Janeiro."},{"cat":"Brasil","t":true,"s":"O Pantanal é a maior planície alagável do mundo.","e":"Fica em MS, MT e chega à Bolívia e ao Paraguai."}]}
+{
+"cats": [
+"Geografia",
+"História",
+"Ciências",
+"Esportes",
+"Entretenimento",
+"Brasil",
+"Comida",
+"Animais",
+"Tecnologia",
+"Conhecimentos gerais",
+"Espaço",
+"Corpo humano",
+"Música",
+"Matemática",
+"Português",
+"Arte e Cultura",
+"Mitologia",
+"Futebol"
+],
+"q": [
+{
+"cat": "Animais",
+"t": true,
+"s": "O polvo tem três corações.",
+"e": "Dois bombeiam sangue para as brânquias e um para o corpo.",
+"d": 2
+},
+{
+"cat": "Animais",
+"t": false,
+"s": "O avestruz enterra a cabeça na areia quando tem medo.",
+"e": "É mito: ele abaixa a cabeça para cuidar dos ovos no ninho.",
+"d": 2
+},
+{
+"cat": "Animais",
+"t": true,
+"s": "Os golfinhos dormem com metade do cérebro de cada vez.",
+"e": "Assim continuam nadando e respirando.",
+"d": 2
+},
+{
+"cat": "Animais",
+"t": false,
+"s": "Os morcegos são cegos.",
+"e": "Eles enxergam, e muitos ainda usam ecolocalização.",
+"d": 2
+},
+{
+"cat": "Animais",
+"t": true,
+"s": "A girafa tem o mesmo número de vértebras no pescoço que o ser humano.",
+"e": "São sete, só que bem maiores.",
+"d": 2
+},
+{
+"cat": "Animais",
+"t": false,
+"s": "O camelo guarda água na corcova.",
+"e": "A corcova guarda gordura.",
+"d": 2
+},
+{
+"cat": "Animais",
+"t": true,
+"s": "As vacas têm melhores amigas e ficam estressadas quando separadas.",
+"e": "Estudos mostram isso no comportamento delas.",
+"d": 2
+},
+{
+"cat": "Animais",
+"t": false,
+"s": "Peixe-dourado tem memória de só três segundos.",
+"e": "Eles lembram de coisas por meses.",
+"d": 2
+},
+{
+"cat": "Animais",
+"t": true,
+"s": "O coração do camarão fica na cabeça.",
+"e": "Fica na região do cefalotórax.",
+"d": 2
+},
+{
+"cat": "Animais",
+"t": true,
+"s": "Formigas não dormem como nós, mas tiram centenas de cochilos curtos.",
+"e": "Cada cochilo dura cerca de um minuto.",
+"d": 2
+},
+{
+"cat": "Animais",
+"t": false,
+"s": "Elefantes têm medo de ratos.",
+"e": "Não há prova disso; eles se assustam com movimentos repentinos.",
+"d": 2
+},
+{
+"cat": "Animais",
+"t": true,
+"s": "O beija-flor é a única ave que voa para trás.",
+"e": "O jeito de bater as asas permite isso.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": false,
+"s": "Raio nunca cai duas vezes no mesmo lugar.",
+"e": "Cai sim: prédios altos são atingidos várias vezes por ano.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": true,
+"s": "A Lua está se afastando da Terra aos pouquinhos.",
+"e": "Cerca de 3,8 cm por ano.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": false,
+"s": "A Grande Muralha da China pode ser vista da Lua a olho nu.",
+"e": "Nem da órbita baixa ela é fácil de ver.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": true,
+"s": "Vênus é o planeta mais quente do Sistema Solar.",
+"e": "O efeito estufa da atmosfera dele prende o calor.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": false,
+"s": "Usamos só 10% do nosso cérebro.",
+"e": "Usamos praticamente todo ele.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": true,
+"s": "Um dia em Vênus é mais longo que um ano em Vênus.",
+"e": "Ele gira muito devagar em torno de si.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": true,
+"s": "A água quente pode congelar mais rápido que a fria em certas condições.",
+"e": "É o chamado efeito Mpemba.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": false,
+"s": "O Sol é amarelo.",
+"e": "A luz do Sol é praticamente branca; a atmosfera muda a cor que vemos.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": true,
+"s": "Bananas são levemente radioativas.",
+"e": "Por causa do potássio natural.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": false,
+"s": "O sangue dentro do corpo é azul.",
+"e": "É sempre vermelho, mais escuro nas veias.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": true,
+"s": "O DNA humano é cerca de 60% parecido com o da banana.",
+"e": "Muitos genes básicos são compartilhados.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": false,
+"s": "Mercúrio é o planeta mais quente por ser o mais perto do Sol.",
+"e": "O mais quente é Vênus.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": true,
+"s": "O som não se propaga no vácuo do espaço.",
+"e": "Ele precisa de um meio, como o ar.",
+"d": 2
+},
+{
+"cat": "Ciências",
+"t": true,
+"s": "Os humanos brilham fracamente no escuro.",
+"e": "A luz é fraca demais para nossos olhos verem.",
+"d": 2
+},
+{
+"cat": "Geografia",
+"t": true,
+"s": "A Rússia tem 11 fusos horários.",
+"e": "É o país com mais fusos contínuos.",
+"d": 2
+},
+{
+"cat": "Geografia",
+"t": false,
+"s": "O Monte Everest é a montanha mais alta medindo da base ao topo.",
+"e": "O Mauna Kea, no Havaí, é mais alto da base no fundo do mar.",
+"d": 2
+},
+{
+"cat": "Geografia",
+"t": true,
+"s": "O Brasil faz fronteira com quase todos os países da América do Sul.",
+"e": "Só não faz com Chile e Equador.",
+"d": 2
+},
+{
+"cat": "Geografia",
+"t": false,
+"s": "A capital da Austrália é Sydney.",
+"e": "É Camberra.",
+"d": 2
+},
+{
+"cat": "Geografia",
+"t": true,
+"s": "O Canadá tem mais lagos do que o resto do mundo junto.",
+"e": "Tem mais da metade dos lagos naturais do planeta.",
+"d": 2
+},
+{
+"cat": "Geografia",
+"t": false,
+"s": "O deserto do Saara é o maior deserto do mundo.",
+"e": "O maior é a Antártida, que também é deserto.",
+"d": 2
+},
+{
+"cat": "Geografia",
+"t": true,
+"s": "A Islândia não tem mosquitos.",
+"e": "É um dos raros lugares sem eles.",
+"d": 2
+},
+{
+"cat": "Geografia",
+"t": true,
+"s": "O Rio Amazonas já correu no sentido contrário, para o Pacífico.",
+"e": "Há milhões de anos ele corria para o Pacífico.",
+"d": 2
+},
+{
+"cat": "Geografia",
+"t": false,
+"s": "O Brasil é o maior país do mundo.",
+"e": "É o quinto; a Rússia é o maior.",
+"d": 2
+},
+{
+"cat": "História",
+"t": false,
+"s": "Os vikings usavam capacetes com chifres.",
+"e": "Isso veio de figurinos de ópera do século 19.",
+"d": 2
+},
+{
+"cat": "História",
+"t": true,
+"s": "Cleópatra viveu mais perto da invenção do iPhone do que da construção da Grande Pirâmide.",
+"e": "A pirâmide é cerca de 2.500 anos mais antiga que ela.",
+"d": 2
+},
+{
+"cat": "História",
+"t": false,
+"s": "Napoleão era muito baixinho.",
+"e": "Ele tinha altura normal para a época, cerca de 1,69 m.",
+"d": 2
+},
+{
+"cat": "História",
+"t": true,
+"s": "O Brasil já teve um imperador nascido aqui.",
+"e": "Dom Pedro II nasceu no Rio de Janeiro.",
+"d": 2
+},
+{
+"cat": "História",
+"t": true,
+"s": "A Torre Eiffel era para ser desmontada depois de 20 anos.",
+"e": "Ela foi mantida porque servia como antena.",
+"d": 2
+},
+{
+"cat": "História",
+"t": false,
+"s": "Santos Dumont inventou o helicóptero.",
+"e": "Ele é famoso pelo avião 14-Bis e pelos dirigíveis.",
+"d": 2
+},
+{
+"cat": "História",
+"t": true,
+"s": "O Rio de Janeiro já foi capital de Portugal.",
+"e": "Entre 1808 e 1821, com a corte portuguesa aqui.",
+"d": 2
+},
+{
+"cat": "História",
+"t": false,
+"s": "A Proclamação da República foi em 1822.",
+"e": "Foi em 1889; 1822 é a Independência.",
+"d": 2
+},
+{
+"cat": "Comida",
+"t": true,
+"s": "O tomate é uma fruta.",
+"e": "Do ponto de vista botânico, sim.",
+"d": 2
+},
+{
+"cat": "Comida",
+"t": false,
+"s": "O chocolate branco é feito com cacau em pó.",
+"e": "Ele usa manteiga de cacau, sem o pó.",
+"d": 2
+},
+{
+"cat": "Comida",
+"t": true,
+"s": "O mel praticamente não estraga.",
+"e": "Já acharam mel comestível em tumbas egípcias.",
+"d": 2
+},
+{
+"cat": "Comida",
+"t": false,
+"s": "Cenoura melhora muito a visão no escuro.",
+"e": "Ajuda a saúde dos olhos, mas não dá visão noturna.",
+"d": 2
+},
+{
+"cat": "Comida",
+"t": true,
+"s": "O amendoim não é uma noz, é uma leguminosa.",
+"e": "É parente do feijão.",
+"d": 2
+},
+{
+"cat": "Comida",
+"t": false,
+"s": "A pizza foi inventada nos Estados Unidos.",
+"e": "A pizza moderna nasceu em Nápoles, na Itália.",
+"d": 2
+},
+{
+"cat": "Comida",
+"t": true,
+"s": "O morango tem as sementes do lado de fora.",
+"e": "Cerca de 200 por fruta.",
+"d": 2
+},
+{
+"cat": "Comida",
+"t": false,
+"s": "O café é feito da folha de uma planta.",
+"e": "É feito da semente torrada do cafeeiro.",
+"d": 2
+},
+{
+"cat": "Esportes",
+"t": true,
+"s": "O Brasil é o único país que jogou todas as Copas do Mundo.",
+"e": "Esteve em todas as edições.",
+"d": 2
+},
+{
+"cat": "Esportes",
+"t": false,
+"s": "O futebol foi inventado no Brasil.",
+"e": "As regras modernas surgiram na Inglaterra.",
+"d": 2
+},
+{
+"cat": "Esportes",
+"t": true,
+"s": "Uma partida de tênis já durou mais de 11 horas.",
+"e": "Isner x Mahut em Wimbledon, 2010.",
+"d": 2
+},
+{
+"cat": "Esportes",
+"t": false,
+"s": "O vôlei foi criado no Japão.",
+"e": "Foi criado nos Estados Unidos, em 1895.",
+"d": 2
+},
+{
+"cat": "Esportes",
+"t": true,
+"s": "As bolas de golfe têm cerca de 300 a 500 covinhas.",
+"e": "Elas ajudam a bola a voar mais longe.",
+"d": 2
+},
+{
+"cat": "Esportes",
+"t": false,
+"s": "Pelé ganhou quatro Copas do Mundo.",
+"e": "Ganhou três: 1958, 1962 e 1970.",
+"d": 2
+},
+{
+"cat": "Entretenimento",
+"t": true,
+"s": "Mickey Mouse foi o primeiro personagem de desenho a ganhar estrela na Calçada da Fama.",
+"e": "Foi em 1978.",
+"d": 2
+},
+{
+"cat": "Entretenimento",
+"t": false,
+"s": "Os Simpsons têm cinco dedos em cada mão.",
+"e": "Eles têm quatro.",
+"d": 2
+},
+{
+"cat": "Entretenimento",
+"t": true,
+"s": "O nome original do Pac-Man era Puck-Man.",
+"e": "Mudaram para evitar piadas.",
+"d": 2
+},
+{
+"cat": "Entretenimento",
+"t": false,
+"s": "Harry Potter estudava em Hogsmeade.",
+"e": "Ele estudava em Hogwarts.",
+"d": 2
+},
+{
+"cat": "Entretenimento",
+"t": true,
+"s": "O Super Mario era carpinteiro no começo.",
+"e": "No primeiro jogo, ele era Jumpman, um carpinteiro.",
+"d": 2
+},
+{
+"cat": "Entretenimento",
+"t": false,
+"s": "A Branca de Neve tinha oito anões.",
+"e": "Eram sete.",
+"d": 2
+},
+{
+"cat": "Tecnologia",
+"t": true,
+"s": "O primeiro vídeo do YouTube foi gravado num zoológico.",
+"e": "\"Me at the zoo\", de 2005.",
+"d": 2
+},
+{
+"cat": "Tecnologia",
+"t": false,
+"s": "O Wi-Fi foi inventado pela Apple.",
+"e": "Ele tem várias origens, incluindo pesquisas na Austrália.",
+"d": 2
+},
+{
+"cat": "Tecnologia",
+"t": true,
+"s": "Existem mais celulares do que pessoas no mundo.",
+"e": "Contando todas as linhas ativas.",
+"d": 2
+},
+{
+"cat": "Tecnologia",
+"t": false,
+"s": "Fechar os aplicativos sempre economiza muita bateria.",
+"e": "Na maioria dos celulares atuais quase não muda.",
+"d": 2
+},
+{
+"cat": "Conhecimentos gerais",
+"t": true,
+"s": "O alfabeto português tem 26 letras.",
+"e": "K, W e Y voltaram oficialmente em 2009.",
+"d": 2
+},
+{
+"cat": "Conhecimentos gerais",
+"t": false,
+"s": "Uma semana tem 160 horas.",
+"e": "Tem 168.",
+"d": 2
+},
+{
+"cat": "Conhecimentos gerais",
+"t": true,
+"s": "Um ano bissexto tem 366 dias.",
+"e": "Fevereiro ganha o dia 29.",
+"d": 2
+},
+{
+"cat": "Conhecimentos gerais",
+"t": false,
+"s": "O número zero é ímpar.",
+"e": "Zero é par.",
+"d": 2
+},
+{
+"cat": "Conhecimentos gerais",
+"t": true,
+"s": "\"Arara\" é um palíndromo.",
+"e": "Lê-se igual de trás para frente.",
+"d": 2
+},
+{
+"cat": "Conhecimentos gerais",
+"t": true,
+"s": "O piano é considerado um instrumento de percussão e de cordas.",
+"e": "Martelos batem nas cordas.",
+"d": 2
+},
+{
+"cat": "Conhecimentos gerais",
+"t": false,
+"s": "O arco-íris tem seis cores.",
+"e": "Tradicionalmente tem sete.",
+"d": 2
+},
+{
+"cat": "Brasil",
+"t": true,
+"s": "O Brasil tem a maior floresta tropical do mundo.",
+"e": "A Amazônia, que divide com outros países.",
+"d": 2
+},
+{
+"cat": "Brasil",
+"t": false,
+"s": "O Carnaval é feriado nacional oficial no Brasil inteiro.",
+"e": "É ponto facultativo em muitos lugares.",
+"d": 2
+},
+{
+"cat": "Brasil",
+"t": true,
+"s": "O pão de queijo é originário de Minas Gerais.",
+"e": "É símbolo da culinária mineira.",
+"d": 2
+},
+{
+"cat": "Brasil",
+"t": true,
+"s": "O Brasil tem mais de 7 mil quilômetros de litoral.",
+"e": "Cerca de 7.400 km.",
+"d": 2
+},
+{
+"cat": "Brasil",
+"t": false,
+"s": "Brasília foi a primeira capital do Brasil.",
+"e": "As primeiras foram Salvador e o Rio de Janeiro.",
+"d": 2
+},
+{
+"cat": "Brasil",
+"t": true,
+"s": "O Pantanal é a maior planície alagável do mundo.",
+"e": "Fica em MS, MT e chega à Bolívia e ao Paraguai.",
+"d": 2
+},
+{
+"cat": "Animais",
+"d": 1,
+"t": true,
+"s": "A baleia-azul é o maior animal que já existiu.",
+"e": "Ela pode passar de 30 metros e 150 toneladas, mais que qualquer dinossauro conhecido."
+},
+{
+"cat": "Animais",
+"d": 1,
+"t": false,
+"s": "A aranha é um inseto.",
+"e": "Aranhas são aracnídeos: têm 8 patas, os insetos têm 6."
+},
+{
+"cat": "Animais",
+"d": 1,
+"t": true,
+"s": "O pinguim é uma ave.",
+"e": "Ele não voa, mas tem penas, bico e bota ovos como toda ave."
+},
+{
+"cat": "Animais",
+"d": 1,
+"t": false,
+"s": "O morcego é uma ave.",
+"e": "Morcego é mamífero: mama quando filhote e tem pelos."
+},
+{
+"cat": "Animais",
+"d": 1,
+"t": true,
+"s": "A tartaruga existe desde a época dos dinossauros.",
+"e": "Os primeiros quelônios surgiram há mais de 200 milhões de anos."
+},
+{
+"cat": "Animais",
+"d": 1,
+"t": false,
+"s": "A baleia é um peixe.",
+"e": "Baleia é mamífera: respira ar e amamenta os filhotes."
+},
+{
+"cat": "Animais",
+"d": 2,
+"t": true,
+"s": "O guepardo pode passar de 100 km/h em uma corrida curta.",
+"e": "Ele é o animal terrestre mais rápido, mas cansa em poucos segundos."
+},
+{
+"cat": "Animais",
+"d": 2,
+"t": false,
+"s": "Todas as cobras são venenosas.",
+"e": "A maioria das espécies de cobras não tem veneno perigoso para humanos."
+},
+{
+"cat": "Animais",
+"d": 2,
+"t": true,
+"s": "O ornitorrinco é um mamífero que bota ovos.",
+"e": "Ele e a equidna são os únicos mamíferos que botam ovos."
+},
+{
+"cat": "Animais",
+"d": 2,
+"t": true,
+"s": "O cavalo-marinho macho é quem carrega os filhotes.",
+"e": "A fêmea coloca os ovos numa bolsa do macho, que dá à luz."
+},
+{
+"cat": "Animais",
+"d": 2,
+"t": false,
+"s": "A coruja consegue girar a cabeça 360 graus.",
+"e": "Ela gira cerca de 270 graus, não uma volta completa."
+},
+{
+"cat": "Animais",
+"d": 2,
+"t": true,
+"s": "O tubarão existe há mais tempo que as árvores.",
+"e": "Tubarões surgiram há uns 400 milhões de anos; as primeiras árvores, há uns 385."
+},
+{
+"cat": "Animais",
+"d": 2,
+"t": false,
+"s": "O avestruz é a menor ave do mundo.",
+"e": "O avestruz é a maior ave; a menor é o beija-flor-abelha."
+},
+{
+"cat": "Animais",
+"d": 3,
+"t": true,
+"s": "O polvo tem sangue azul.",
+"e": "O sangue dele usa cobre (hemocianina) e não ferro para levar oxigênio."
+},
+{
+"cat": "Animais",
+"d": 3,
+"t": true,
+"s": "A água-viva não tem cérebro.",
+"e": "Ela tem uma rede de nervos espalhada, mas nenhum cérebro central."
+},
+{
+"cat": "Animais",
+"d": 3,
+"t": false,
+"s": "O elefante é o único animal que não consegue pular.",
+"e": "Outros animais também não pulam, como o bicho-preguiça e o hipopótamo adulto."
+},
+{
+"cat": "Animais",
+"d": 3,
+"t": true,
+"s": "As abelhas se comunicam dançando.",
+"e": "A \"dança do requebrado\" mostra às outras a direção e a distância das flores."
+},
+{
+"cat": "Animais",
+"d": 3,
+"t": false,
+"s": "O tamanduá tem dentes enormes.",
+"e": "O tamanduá não tem dentes: usa a língua comprida e pegajosa."
+},
+{
+"cat": "Ciências",
+"d": 1,
+"t": true,
+"s": "A Terra gira em torno do Sol.",
+"e": "Uma volta completa leva cerca de 365 dias."
+},
+{
+"cat": "Ciências",
+"d": 1,
+"t": false,
+"s": "O Sol gira em torno da Terra.",
+"e": "É a Terra que gira em torno do Sol, desde Copérnico sabemos disso."
+},
+{
+"cat": "Ciências",
+"d": 1,
+"t": true,
+"s": "A água congela a 0 °C ao nível do mar.",
+"e": "Abaixo de zero grau Celsius a água pura vira gelo."
+},
+{
+"cat": "Ciências",
+"d": 1,
+"t": false,
+"s": "O gelo afunda na água.",
+"e": "O gelo é menos denso que a água líquida, por isso boia."
+},
+{
+"cat": "Ciências",
+"d": 1,
+"t": true,
+"s": "As plantas soltam oxigênio na fotossíntese.",
+"e": "Elas usam luz, água e gás carbônico e liberam oxigênio."
+},
+{
+"cat": "Ciências",
+"d": 1,
+"t": false,
+"s": "A Lua tem luz própria.",
+"e": "A Lua só reflete a luz do Sol."
+},
+{
+"cat": "Ciências",
+"d": 2,
+"t": true,
+"s": "O som viaja mais rápido na água do que no ar.",
+"e": "Na água o som anda cerca de quatro vezes mais rápido."
+},
+{
+"cat": "Ciências",
+"d": 2,
+"t": false,
+"s": "O raio é mais lento que o trovão.",
+"e": "A luz do raio chega antes; o som do trovão é bem mais lento."
+},
+{
+"cat": "Ciências",
+"d": 2,
+"t": true,
+"s": "O diamante é feito de carbono.",
+"e": "O mesmo carbono do grafite do lápis, só que organizado de outro jeito."
+},
+{
+"cat": "Ciências",
+"d": 2,
+"t": false,
+"s": "O vidro é feito de plástico.",
+"e": "O vidro comum é feito principalmente de areia (sílica) derretida."
+},
+{
+"cat": "Ciências",
+"d": 2,
+"t": true,
+"s": "Um eclipse solar acontece quando a Lua fica entre o Sol e a Terra.",
+"e": "A sombra da Lua cobre parte da Terra."
+},
+{
+"cat": "Ciências",
+"d": 2,
+"t": false,
+"s": "O oxigênio é o gás mais abundante do ar.",
+"e": "O mais abundante é o nitrogênio, quase 78% do ar."
+},
+{
+"cat": "Ciências",
+"d": 2,
+"t": true,
+"s": "A luz branca é a mistura de várias cores.",
+"e": "Um prisma separa a luz branca nas cores do arco-íris."
+},
+{
+"cat": "Ciências",
+"d": 3,
+"t": true,
+"s": "Existem mais estrelas no universo do que grãos de areia em todas as praias da Terra.",
+"e": "As estimativas de estrelas passam de bilhões de trilhões."
+},
+{
+"cat": "Ciências",
+"d": 3,
+"t": false,
+"s": "Os átomos são a menor coisa que existe.",
+"e": "Os átomos têm prótons, nêutrons e elétrons, e os prótons têm quarks."
+},
+{
+"cat": "Ciências",
+"d": 3,
+"t": true,
+"s": "Um ano-luz é uma medida de distância, não de tempo.",
+"e": "É a distância que a luz percorre em um ano: uns 9,5 trilhões de km."
+},
+{
+"cat": "Ciências",
+"d": 3,
+"t": false,
+"s": "O ferro é o metal mais abundante na crosta terrestre.",
+"e": "O mais abundante é o alumínio."
+},
+{
+"cat": "Ciências",
+"d": 3,
+"t": true,
+"s": "Uma colher de chá de uma estrela de nêutrons pesaria bilhões de toneladas.",
+"e": "Essas estrelas são incrivelmente densas."
+},
+{
+"cat": "Ciências",
+"d": 3,
+"t": false,
+"s": "O vírus é um tipo de bactéria.",
+"e": "Vírus são bem menores e não têm células; bactérias são células vivas."
+},
+{
+"cat": "Espaço",
+"d": 1,
+"t": true,
+"s": "Júpiter é o maior planeta do Sistema Solar.",
+"e": "Caberiam mais de mil Terras dentro dele."
+},
+{
+"cat": "Espaço",
+"d": 1,
+"t": false,
+"s": "Marte é conhecido como planeta azul.",
+"e": "Marte é o planeta vermelho; o planeta azul é a Terra."
+},
+{
+"cat": "Espaço",
+"d": 1,
+"t": true,
+"s": "O Sol é uma estrela.",
+"e": "É a estrela mais próxima da Terra."
+},
+{
+"cat": "Espaço",
+"d": 2,
+"t": true,
+"s": "Plutão deixou de ser considerado planeta em 2006.",
+"e": "Hoje ele é classificado como planeta anão."
+},
+{
+"cat": "Espaço",
+"d": 2,
+"t": false,
+"s": "No espaço o céu é azul.",
+"e": "Sem atmosfera para espalhar a luz, o céu do espaço é preto."
+},
+{
+"cat": "Espaço",
+"d": 2,
+"t": true,
+"s": "Saturno é tão leve que boiaria numa banheira gigante.",
+"e": "A densidade dele é menor que a da água."
+},
+{
+"cat": "Espaço",
+"d": 2,
+"t": false,
+"s": "Existe som no espaço como na Terra.",
+"e": "O som precisa de ar ou outro meio; no vácuo ele não se propaga."
+},
+{
+"cat": "Espaço",
+"d": 3,
+"t": true,
+"s": "Um dia em Mercúrio dura mais que o seu ano.",
+"e": "Mercúrio gira muito devagar: um dia solar lá dura uns 176 dias terrestres."
+},
+{
+"cat": "Espaço",
+"d": 3,
+"t": false,
+"s": "A Estação Espacial Internacional fica parada no céu.",
+"e": "Ela dá uma volta na Terra a cada 90 minutos, a 28 mil km/h."
+},
+{
+"cat": "Espaço",
+"d": 3,
+"t": true,
+"s": "Há montanhas em Marte maiores que o Everest.",
+"e": "O Monte Olimpo de Marte tem uns 22 km de altura."
+},
+{
+"cat": "Espaço",
+"d": 3,
+"t": true,
+"s": "A Via Láctea vai colidir com a galáxia de Andrômeda.",
+"e": "Isso deve acontecer daqui a uns 4 a 5 bilhões de anos."
+},
+{
+"cat": "Corpo humano",
+"d": 1,
+"t": true,
+"s": "O coração é um músculo.",
+"e": "Ele é um músculo que bate a vida toda sem parar."
+},
+{
+"cat": "Corpo humano",
+"d": 1,
+"t": false,
+"s": "Os adultos têm mais ossos que os bebês.",
+"e": "Bebês nascem com uns 300 ossos; vários se juntam e o adulto fica com 206."
+},
+{
+"cat": "Corpo humano",
+"d": 1,
+"t": true,
+"s": "A pele é o maior órgão do corpo.",
+"e": "Num adulto ela pode pesar uns 4 kg."
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"t": true,
+"s": "As unhas das mãos crescem mais rápido que as dos pés.",
+"e": "As das mãos crescem cerca de 3 mm por mês."
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"t": false,
+"s": "O cabelo e as unhas continuam crescendo depois da morte.",
+"e": "É a pele que seca e se retrai, dando essa impressão."
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"t": true,
+"s": "Cada pessoa tem uma impressão digital única.",
+"e": "Nem gêmeos idênticos têm digitais iguais."
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"t": false,
+"s": "Engolir chiclete faz ele ficar 7 anos no estômago.",
+"e": "O corpo elimina o chiclete em poucos dias, como outros alimentos."
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"t": true,
+"s": "O osso mais forte do corpo é o fêmur.",
+"e": "Ele fica na coxa e aguenta muito peso."
+},
+{
+"cat": "Corpo humano",
+"d": 3,
+"t": true,
+"s": "O ser humano pisca cerca de 15 a 20 vezes por minuto.",
+"e": "Piscar limpa e umedece os olhos."
+},
+{
+"cat": "Corpo humano",
+"d": 3,
+"t": false,
+"s": "Temos apenas cinco sentidos.",
+"e": "Além dos cinco clássicos, temos equilíbrio, noção da posição do corpo, temperatura e dor."
+},
+{
+"cat": "Corpo humano",
+"d": 3,
+"t": true,
+"s": "O estômago troca a camada interna a cada poucos dias.",
+"e": "Isso protege o estômago do próprio ácido."
+},
+{
+"cat": "Corpo humano",
+"d": 3,
+"t": false,
+"s": "O lado esquerdo do cérebro controla o lado esquerdo do corpo.",
+"e": "É o contrário: o lado esquerdo do cérebro controla o lado direito do corpo."
+},
+{
+"cat": "Geografia",
+"d": 1,
+"t": true,
+"s": "O Brasil é o maior país da América do Sul.",
+"e": "Ele ocupa quase metade do continente."
+},
+{
+"cat": "Geografia",
+"d": 1,
+"t": false,
+"s": "A capital do Brasil é o Rio de Janeiro.",
+"e": "Desde 1960 a capital é Brasília."
+},
+{
+"cat": "Geografia",
+"d": 1,
+"t": true,
+"s": "O Oceano Pacífico é o maior do planeta.",
+"e": "Ele cobre cerca de um terço da superfície da Terra."
+},
+{
+"cat": "Geografia",
+"d": 1,
+"t": false,
+"s": "O Egito fica na Ásia.",
+"e": "O Egito fica no nordeste da África (só a península do Sinai fica na Ásia)."
+},
+{
+"cat": "Geografia",
+"d": 1,
+"t": true,
+"s": "O Japão é formado por ilhas.",
+"e": "São mais de 6 mil ilhas; as quatro principais concentram a maior parte da população."
+},
+{
+"cat": "Geografia",
+"d": 2,
+"t": true,
+"s": "A Rússia é o maior país do mundo.",
+"e": "Ela tem mais de 17 milhões de km²."
+},
+{
+"cat": "Geografia",
+"d": 2,
+"t": false,
+"s": "O Rio Nilo fica na América do Sul.",
+"e": "O Nilo atravessa o nordeste da África."
+},
+{
+"cat": "Geografia",
+"d": 2,
+"t": true,
+"s": "A Antártida é o continente mais frio do mundo.",
+"e": "Lá foi medido o recorde de -89 °C."
+},
+{
+"cat": "Geografia",
+"d": 2,
+"t": false,
+"s": "A Austrália é uma ilha que faz parte da Ásia.",
+"e": "A Austrália é um país-continente, na Oceania."
+},
+{
+"cat": "Geografia",
+"d": 2,
+"t": true,
+"s": "O Chile é um país comprido e estreito.",
+"e": "Tem mais de 4 mil km de norte a sul e, em média, menos de 200 km de largura."
+},
+{
+"cat": "Geografia",
+"d": 2,
+"t": false,
+"s": "O Canadá fica abaixo dos Estados Unidos no mapa.",
+"e": "O Canadá fica ao norte dos Estados Unidos."
+},
+{
+"cat": "Geografia",
+"d": 3,
+"t": true,
+"s": "O Lago Titicaca fica na fronteira entre Peru e Bolívia.",
+"e": "É um dos lagos navegáveis mais altos do mundo."
+},
+{
+"cat": "Geografia",
+"d": 3,
+"t": false,
+"s": "A Groenlândia é um país independente.",
+"e": "A Groenlândia é um território autônomo ligado à Dinamarca."
+},
+{
+"cat": "Geografia",
+"d": 3,
+"t": true,
+"s": "A Mongólia não tem saída para o mar.",
+"e": "Ela fica entre a Rússia e a China."
+},
+{
+"cat": "Geografia",
+"d": 3,
+"t": false,
+"s": "O Monte Everest fica na Índia.",
+"e": "Ele fica na fronteira entre Nepal e China (Tibete)."
+},
+{
+"cat": "Geografia",
+"d": 3,
+"t": true,
+"s": "A Indonésia é o maior país formado só por ilhas.",
+"e": "São mais de 17 mil ilhas."
+},
+{
+"cat": "Brasil",
+"d": 1,
+"t": true,
+"s": "O Brasil tem 26 estados e o Distrito Federal.",
+"e": "São 27 unidades federativas no total."
+},
+{
+"cat": "Brasil",
+"d": 1,
+"t": false,
+"s": "O português do Brasil veio da Espanha.",
+"e": "Veio de Portugal, que colonizou o Brasil."
+},
+{
+"cat": "Brasil",
+"d": 1,
+"t": true,
+"s": "A bandeira do Brasil tem estrelas.",
+"e": "Cada estrela representa um estado e o Distrito Federal."
+},
+{
+"cat": "Brasil",
+"d": 2,
+"t": true,
+"s": "O Brasil é o país com mais espécies de plantas e animais do mundo.",
+"e": "É considerado o país de maior biodiversidade do planeta."
+},
+{
+"cat": "Brasil",
+"d": 2,
+"t": false,
+"s": "O Brasil foi colonizado pela França.",
+"e": "Foi colonizado por Portugal, a partir de 1500."
+},
+{
+"cat": "Brasil",
+"d": 2,
+"t": true,
+"s": "O Brasil é o maior produtor de café do mundo.",
+"e": "Faz isso há mais de 150 anos."
+},
+{
+"cat": "Brasil",
+"d": 2,
+"t": false,
+"s": "A Amazônia fica só no Brasil.",
+"e": "Ela também se estende por Peru, Colômbia, Bolívia e outros vizinhos."
+},
+{
+"cat": "Brasil",
+"d": 2,
+"t": true,
+"s": "Fernando de Noronha é um arquipélago brasileiro.",
+"e": "Fica no Oceano Atlântico e pertence a Pernambuco."
+},
+{
+"cat": "Brasil",
+"d": 3,
+"t": true,
+"s": "A primeira capital do Brasil foi Salvador.",
+"e": "Ela foi a capital de 1549 a 1763."
+},
+{
+"cat": "Brasil",
+"d": 3,
+"t": false,
+"s": "O Brasil nunca teve imperadores.",
+"e": "Teve dois: Dom Pedro I e Dom Pedro II."
+},
+{
+"cat": "Brasil",
+"d": 3,
+"t": true,
+"s": "A Lei Áurea foi assinada pela Princesa Isabel em 1888.",
+"e": "Ela aboliu oficialmente a escravidão no Brasil."
+},
+{
+"cat": "Brasil",
+"d": 3,
+"t": false,
+"s": "O Brasil já foi capital do Império Espanhol.",
+"e": "O Rio de Janeiro foi sede do Reino de Portugal, não da Espanha."
+},
+{
+"cat": "História",
+"d": 1,
+"t": true,
+"s": "Os dinossauros existiram antes dos seres humanos.",
+"e": "Eles sumiram há 66 milhões de anos, muito antes do homem."
+},
+{
+"cat": "História",
+"d": 1,
+"t": false,
+"s": "Os humanos e os dinossauros viveram juntos.",
+"e": "Os dinossauros não-aves sumiram milhões de anos antes do primeiro humano."
+},
+{
+"cat": "História",
+"d": 1,
+"t": true,
+"s": "As pirâmides do Egito têm milhares de anos.",
+"e": "A Grande Pirâmide tem cerca de 4.500 anos."
+},
+{
+"cat": "História",
+"d": 2,
+"t": true,
+"s": "A Segunda Guerra Mundial terminou em 1945.",
+"e": "Terminou com a rendição da Alemanha e depois do Japão."
+},
+{
+"cat": "História",
+"d": 2,
+"t": false,
+"s": "Cristóvão Colombo era português.",
+"e": "Colombo era genovês (da atual Itália) e navegou pela Espanha."
+},
+{
+"cat": "História",
+"d": 2,
+"t": true,
+"s": "Os maias criaram um calendário muito preciso.",
+"e": "Eles acompanhavam o Sol, a Lua e Vênus com muita precisão."
+},
+{
+"cat": "História",
+"d": 2,
+"t": false,
+"s": "A Revolução Francesa aconteceu no século 20.",
+"e": "Ela começou em 1789, no século 18."
+},
+{
+"cat": "História",
+"d": 3,
+"t": true,
+"s": "O Império Romano do Oriente durou até 1453.",
+"e": "Terminou com a queda de Constantinopla para os otomanos."
+},
+{
+"cat": "História",
+"d": 3,
+"t": false,
+"s": "Albert Einstein ganhou o Nobel pela teoria da relatividade.",
+"e": "Ele ganhou o Nobel de Física de 1921 pelo efeito fotoelétrico."
+},
+{
+"cat": "História",
+"d": 3,
+"t": true,
+"s": "A Inglaterra e a França lutaram a Guerra dos Cem Anos por mais de cem anos.",
+"e": "Ela durou de 1337 a 1453, 116 anos."
+},
+{
+"cat": "História",
+"d": 3,
+"t": false,
+"s": "A Guerra dos Cem Anos durou exatamente cem anos.",
+"e": "Durou 116 anos, de 1337 a 1453."
+},
+{
+"cat": "Esportes",
+"d": 1,
+"t": true,
+"s": "No futebol, o goleiro pode pegar a bola com as mãos dentro da área.",
+"e": "Fora da área ele não pode usar as mãos."
+},
+{
+"cat": "Esportes",
+"d": 1,
+"t": false,
+"s": "Um jogo de basquete tem 11 jogadores em quadra por time.",
+"e": "São 5 jogadores por time no basquete."
+},
+{
+"cat": "Esportes",
+"d": 1,
+"t": true,
+"s": "As Olimpíadas acontecem de quatro em quatro anos.",
+"e": "Existem os Jogos de Verão e os de Inverno, alternados."
+},
+{
+"cat": "Esportes",
+"d": 2,
+"t": true,
+"s": "O Brasil é pentacampeão mundial de futebol.",
+"e": "Venceu em 1958, 1962, 1970, 1994 e 2002."
+},
+{
+"cat": "Esportes",
+"d": 2,
+"t": false,
+"s": "Ayrton Senna foi campeão de Fórmula 1 cinco vezes.",
+"e": "Senna foi tricampeão: 1988, 1990 e 1991."
+},
+{
+"cat": "Esportes",
+"d": 2,
+"t": true,
+"s": "Marta é uma das maiores jogadoras de futebol da história.",
+"e": "Ela foi eleita a melhor do mundo seis vezes."
+},
+{
+"cat": "Esportes",
+"d": 2,
+"t": false,
+"s": "O golfe é jogado com uma bola de tênis.",
+"e": "A bola de golfe é pequena, dura e cheia de covinhas."
+},
+{
+"cat": "Esportes",
+"d": 3,
+"t": true,
+"s": "Uma partida oficial de handebol tem dois tempos de 30 minutos.",
+"e": "É o tempo das partidas adultas."
+},
+{
+"cat": "Esportes",
+"d": 3,
+"t": false,
+"s": "O xadrez nunca foi considerado esporte.",
+"e": "O Comitê Olímpico Internacional reconhece o xadrez como esporte."
+},
+{
+"cat": "Esportes",
+"d": 3,
+"t": true,
+"s": "O Brasil ganhou o ouro no futebol masculino nas Olimpíadas de 2016.",
+"e": "Venceu a Alemanha nos pênaltis no Maracanã."
+},
+{
+"cat": "Comida",
+"d": 1,
+"t": true,
+"s": "O feijão com arroz é um prato muito comum no Brasil.",
+"e": "É a base do almoço de grande parte dos brasileiros."
+},
+{
+"cat": "Comida",
+"d": 1,
+"t": false,
+"s": "O leite vem das galinhas.",
+"e": "O leite comum vem principalmente das vacas; as galinhas botam ovos."
+},
+{
+"cat": "Comida",
+"d": 1,
+"t": true,
+"s": "O suco de laranja tem vitamina C.",
+"e": "A laranja é rica em vitamina C."
+},
+{
+"cat": "Comida",
+"d": 2,
+"t": true,
+"s": "O abacate é uma fruta.",
+"e": "Ele é uma fruta de semente grande, usada doce ou salgada."
+},
+{
+"cat": "Comida",
+"d": 2,
+"t": false,
+"s": "A batata é uma raiz.",
+"e": "A batata é um caule (tubérculo), não uma raiz."
+},
+{
+"cat": "Comida",
+"d": 2,
+"t": true,
+"s": "O sushi pode ser feito sem peixe cru.",
+"e": "Há sushis com peixe cozido, legumes, frutas e até ovo."
+},
+{
+"cat": "Comida",
+"d": 2,
+"t": false,
+"s": "A pipoca é feita de arroz.",
+"e": "A pipoca é feita de um tipo de milho."
+},
+{
+"cat": "Comida",
+"d": 3,
+"t": true,
+"s": "O açafrão-verdadeiro é um dos temperos mais caros do mundo.",
+"e": "Cada flor dá só três fiozinhos, colhidos à mão."
+},
+{
+"cat": "Comida",
+"d": 3,
+"t": false,
+"s": "A feijoada foi inventada na Itália.",
+"e": "A feijoada é um prato brasileiro."
+},
+{
+"cat": "Comida",
+"d": 3,
+"t": true,
+"s": "A mandioca crua de algumas variedades pode ser venenosa.",
+"e": "A mandioca-brava tem compostos tóxicos que somem ao processar e cozinhar."
+},
+{
+"cat": "Tecnologia",
+"d": 1,
+"t": true,
+"s": "A internet conecta computadores do mundo inteiro.",
+"e": "É uma rede de redes espalhada por todo o planeta."
+},
+{
+"cat": "Tecnologia",
+"d": 1,
+"t": false,
+"s": "O celular foi inventado antes da roda.",
+"e": "A roda tem uns 5.500 anos; o celular surgiu nos anos 1970."
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"t": true,
+"s": "O primeiro iPhone foi lançado em 2007.",
+"e": "Foi apresentado por Steve Jobs em janeiro de 2007."
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"t": false,
+"s": "Um byte tem 10 bits.",
+"e": "Um byte tem 8 bits."
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"t": true,
+"s": "O e-mail surgiu antes das redes sociais.",
+"e": "O primeiro e-mail foi enviado em 1971."
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"t": false,
+"s": "O Android foi criado pela Apple.",
+"e": "O Android é do Google; a Apple faz o iOS."
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"t": true,
+"s": "O primeiro computador eletrônico pesava cerca de 27 toneladas.",
+"e": "O ENIAC, de 1946, ocupava uma sala inteira."
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"t": false,
+"s": "O Bluetooth tem esse nome por causa de um dente azul de verdade.",
+"e": "O nome homenageia o rei viking Harald \"Dente Azul\"."
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"t": true,
+"s": "O primeiro domínio \".com\" foi registrado em 1985.",
+"e": "Foi o symbolics.com."
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"t": true,
+"s": "O Mickey Mouse foi criado por Walt Disney.",
+"e": "Junto com o desenhista Ub Iwerks, em 1928."
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"t": false,
+"s": "A Mônica, da Turma da Mônica, tem cabelo azul.",
+"e": "A Mônica tem cabelo preto e usa vestido vermelho."
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"t": true,
+"s": "O Bob Esponja mora num abacaxi.",
+"e": "O abacaxi fica no fundo do mar, na Fenda do Biquíni."
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"t": true,
+"s": "O Homem-Aranha é Peter Parker.",
+"e": "É a identidade secreta do herói da Marvel."
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"t": false,
+"s": "O Batman tem superpoderes.",
+"e": "Bruce Wayne não tem poderes: usa treino, inteligência e tecnologia."
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"t": true,
+"s": "O desenho \"Os Simpsons\" estreou como série em 1989.",
+"e": "É uma das séries mais longas da TV."
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"t": false,
+"s": "O Shrek é um dragão.",
+"e": "O Shrek é um ogro; o dragão é a parceira do Burro."
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"t": true,
+"s": "\"Toy Story\" foi o primeiro longa feito todo em computação gráfica.",
+"e": "Foi lançado em 1995 pela Pixar."
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"t": false,
+"s": "A Pixar foi criada pelo Mauricio de Sousa.",
+"e": "A Pixar nasceu de um grupo da Lucasfilm e teve Steve Jobs como investidor."
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"t": true,
+"s": "O Pokémon Pikachu é do tipo elétrico.",
+"e": "Ele solta choques pelas bochechas."
+},
+{
+"cat": "Música",
+"d": 1,
+"t": true,
+"s": "O violão tem cordas.",
+"e": "O violão comum tem seis cordas."
+},
+{
+"cat": "Música",
+"d": 1,
+"t": false,
+"s": "A flauta é um instrumento de cordas.",
+"e": "A flauta é um instrumento de sopro."
+},
+{
+"cat": "Música",
+"d": 2,
+"t": true,
+"s": "Roberto Carlos é conhecido como o Rei.",
+"e": "Ele é um dos cantores que mais vendeu discos no Brasil."
+},
+{
+"cat": "Música",
+"d": 2,
+"t": false,
+"s": "O samba nasceu nos Estados Unidos.",
+"e": "O samba nasceu no Brasil, com raízes africanas."
+},
+{
+"cat": "Música",
+"d": 2,
+"t": true,
+"s": "Mozart começou a compor música quando era criança.",
+"e": "Ele compunha desde os 5 anos."
+},
+{
+"cat": "Música",
+"d": 3,
+"t": true,
+"s": "A bossa nova surgiu no Rio de Janeiro no fim dos anos 1950.",
+"e": "Com nomes como João Gilberto, Tom Jobim e Vinicius de Moraes."
+},
+{
+"cat": "Música",
+"d": 3,
+"t": false,
+"s": "Beethoven nasceu no Brasil.",
+"e": "Beethoven nasceu em Bonn, na Alemanha, em 1770."
+},
+{
+"cat": "Música",
+"d": 3,
+"t": true,
+"s": "O piano tem 88 teclas.",
+"e": "São 52 brancas e 36 pretas."
+},
+{
+"cat": "Matemática",
+"d": 1,
+"t": true,
+"s": "Todo número par é divisível por 2.",
+"e": "É a definição de número par."
+},
+{
+"cat": "Matemática",
+"d": 1,
+"t": false,
+"s": "Dez é um número ímpar.",
+"e": "Dez é par, porque divide por 2 sem sobrar."
+},
+{
+"cat": "Matemática",
+"d": 1,
+"t": true,
+"s": "Um quadrado tem quatro lados iguais.",
+"e": "E quatro ângulos retos de 90 graus."
+},
+{
+"cat": "Matemática",
+"d": 2,
+"t": true,
+"s": "O número 7 é primo.",
+"e": "Ele só é divisível por 1 e por ele mesmo."
+},
+{
+"cat": "Matemática",
+"d": 2,
+"t": false,
+"s": "O número 1 é primo.",
+"e": "Para ser primo é preciso ter exatamente dois divisores; o 1 só tem um."
+},
+{
+"cat": "Matemática",
+"d": 2,
+"t": true,
+"s": "A soma dos ângulos internos de um triângulo é 180 graus.",
+"e": "Vale para qualquer triângulo no plano."
+},
+{
+"cat": "Matemática",
+"d": 2,
+"t": false,
+"s": "Metade de 100 é 25.",
+"e": "Metade de 100 é 50."
+},
+{
+"cat": "Matemática",
+"d": 3,
+"t": true,
+"s": "Qualquer número elevado a zero é igual a 1 (menos o zero).",
+"e": "Por exemplo, 5⁰ = 1."
+},
+{
+"cat": "Matemática",
+"d": 3,
+"t": false,
+"s": "O número pi é exatamente 3,14.",
+"e": "Pi é irracional: 3,14159... com infinitas casas sem padrão."
+},
+{
+"cat": "Matemática",
+"d": 3,
+"t": true,
+"s": "Existem infinitos números primos.",
+"e": "Euclides provou isso há mais de 2 mil anos."
+},
+{
+"cat": "Português",
+"d": 1,
+"t": true,
+"s": "\"Gato\" é um substantivo.",
+"e": "Substantivo é a palavra que dá nome a seres e coisas."
+},
+{
+"cat": "Português",
+"d": 1,
+"t": false,
+"s": "A palavra \"feliz\" é um verbo.",
+"e": "\"Feliz\" é um adjetivo; verbo é ação, como \"correr\"."
+},
+{
+"cat": "Português",
+"d": 2,
+"t": true,
+"s": "O plural de \"mão\" é \"mãos\".",
+"e": "É uma das palavras em -ão que fazem plural em -ãos."
+},
+{
+"cat": "Português",
+"d": 2,
+"t": false,
+"s": "\"Cachorro\" se escreve com X: \"caxorro\".",
+"e": "O certo é \"cachorro\", com CH."
+},
+{
+"cat": "Português",
+"d": 2,
+"t": true,
+"s": "\"Ovo\" é um palíndromo.",
+"e": "Lido de trás para frente, continua \"ovo\"."
+},
+{
+"cat": "Português",
+"d": 3,
+"t": true,
+"s": "\"Paralelepípedo\" é uma palavra proparoxítona.",
+"e": "A sílaba mais forte é a antepenúltima: \"pí\"."
+},
+{
+"cat": "Português",
+"d": 3,
+"t": false,
+"s": "O português é a língua oficial só de Portugal e do Brasil.",
+"e": "Também é oficial em Angola, Moçambique, Cabo Verde e outros países."
+},
+{
+"cat": "Português",
+"d": 3,
+"t": true,
+"s": "A letra K voltou oficialmente ao alfabeto português em 2009.",
+"e": "Junto com W e Y, pelo Acordo Ortográfico."
+},
+{
+"cat": "Arte e Cultura",
+"d": 1,
+"t": true,
+"s": "A Mona Lisa foi pintada por Leonardo da Vinci.",
+"e": "Ela fica no Museu do Louvre, em Paris."
+},
+{
+"cat": "Arte e Cultura",
+"d": 1,
+"t": false,
+"s": "O Saci-Pererê tem duas pernas.",
+"e": "No folclore, o Saci tem uma perna só."
+},
+{
+"cat": "Arte e Cultura",
+"d": 2,
+"t": true,
+"s": "A Festa Junina tem origem em festas europeias levadas pelos portugueses.",
+"e": "No Brasil ganhou quadrilha, comidas de milho e fogueira."
+},
+{
+"cat": "Arte e Cultura",
+"d": 2,
+"t": false,
+"s": "Van Gogh vendeu centenas de quadros em vida.",
+"e": "Ele vendeu pouquíssimos quadros enquanto estava vivo."
+},
+{
+"cat": "Arte e Cultura",
+"d": 2,
+"t": true,
+"s": "Tarsila do Amaral pintou o Abaporu.",
+"e": "É um dos quadros mais famosos do modernismo brasileiro."
+},
+{
+"cat": "Arte e Cultura",
+"d": 3,
+"t": true,
+"s": "A Semana de Arte Moderna aconteceu em São Paulo em 1922.",
+"e": "Foi no Theatro Municipal."
+},
+{
+"cat": "Arte e Cultura",
+"d": 3,
+"t": false,
+"s": "Aleijadinho era um pintor francês.",
+"e": "Aleijadinho foi um escultor e arquiteto brasileiro de Minas Gerais."
+},
+{
+"cat": "Arte e Cultura",
+"d": 3,
+"t": true,
+"s": "Shakespeare escreveu \"Hamlet\".",
+"e": "É uma das peças de teatro mais encenadas do mundo."
+},
+{
+"cat": "Mitologia",
+"d": 1,
+"t": true,
+"s": "Thor é o deus do trovão na mitologia nórdica.",
+"e": "Ele carrega o martelo Mjölnir."
+},
+{
+"cat": "Mitologia",
+"d": 2,
+"t": true,
+"s": "Na mitologia grega, Zeus é o rei dos deuses.",
+"e": "Ele vivia no Monte Olimpo."
+},
+{
+"cat": "Mitologia",
+"d": 2,
+"t": false,
+"s": "Poseidon é o deus grego do fogo.",
+"e": "Poseidon é o deus dos mares; o do fogo e da forja é Hefesto."
+},
+{
+"cat": "Mitologia",
+"d": 3,
+"t": true,
+"s": "Hércules é o nome romano do herói grego Héracles.",
+"e": "Ele é famoso pelos doze trabalhos."
+},
+{
+"cat": "Mitologia",
+"d": 3,
+"t": false,
+"s": "A Medusa transformava pessoas em ouro.",
+"e": "O olhar dela transformava pessoas em pedra."
+},
+{
+"cat": "Futebol",
+"d": 1,
+"t": true,
+"s": "Pelé jogou pelo Santos.",
+"e": "Ele fez a maior parte da carreira no Santos."
+},
+{
+"cat": "Futebol",
+"d": 1,
+"t": false,
+"s": "No futebol, o time que faz menos gols vence.",
+"e": "Vence quem faz mais gols."
+},
+{
+"cat": "Futebol",
+"d": 2,
+"t": true,
+"s": "O Maracanã fica no Rio de Janeiro.",
+"e": "Foi inaugurado para a Copa de 1950."
+},
+{
+"cat": "Futebol",
+"d": 2,
+"t": false,
+"s": "A Argentina nunca ganhou uma Copa do Mundo.",
+"e": "A Argentina ganhou em 1978, 1986 e 2022."
+},
+{
+"cat": "Futebol",
+"d": 3,
+"t": true,
+"s": "O Uruguai venceu a primeira Copa do Mundo, em 1930.",
+"e": "Ganhou a final contra a Argentina em Montevidéu."
+},
+{
+"cat": "Futebol",
+"d": 3,
+"t": false,
+"s": "O \"Maracanaço\" foi uma vitória do Brasil.",
+"e": "Foi a derrota do Brasil para o Uruguai na final de 1950."
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 1,
+"t": true,
+"s": "Uma hora tem 60 minutos.",
+"e": "E cada minuto tem 60 segundos."
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 1,
+"t": false,
+"s": "O ano tem 13 meses.",
+"e": "O ano tem 12 meses."
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"t": true,
+"s": "O semáforo amarelo significa atenção.",
+"e": "Indica que o sinal vai fechar."
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"t": false,
+"s": "O dia 25 de dezembro é o Dia da Independência do Brasil.",
+"e": "A Independência é 7 de setembro; 25 de dezembro é Natal."
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 3,
+"t": true,
+"s": "O Dia do Trabalhador é comemorado em 1º de maio.",
+"e": "É feriado em muitos países, incluindo o Brasil."
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 3,
+"t": false,
+"s": "A ONU foi criada antes da Primeira Guerra Mundial.",
+"e": "A ONU foi criada em 1945, depois da Segunda Guerra."
+},
+{
+"cat": "Animais",
+"d": 1,
+"t": true,
+"s": "O cachorro é um mamífero.",
+"e": "Ele mama quando filhote e tem pelos."
+},
+{
+"cat": "Animais",
+"d": 1,
+"t": false,
+"s": "As galinhas mamam quando são filhotes.",
+"e": "Galinhas são aves: nascem de ovos e não mamam."
+},
+{
+"cat": "Animais",
+"d": 2,
+"t": true,
+"s": "O bicho-preguiça desce da árvore mais ou menos uma vez por semana.",
+"e": "Ele desce principalmente para fazer suas necessidades."
+},
+{
+"cat": "Animais",
+"d": 2,
+"t": false,
+"s": "O camaleão muda de cor só para se esconder.",
+"e": "Ele muda de cor também para mostrar humor e regular a temperatura."
+},
+{
+"cat": "Animais",
+"d": 2,
+"t": true,
+"s": "O lobo-guará é um animal brasileiro.",
+"e": "Vive principalmente no Cerrado e está na nota de 200 reais."
+},
+{
+"cat": "Animais",
+"d": 3,
+"t": true,
+"s": "O canguru não consegue andar para trás com facilidade.",
+"e": "O rabo grande e as patas fortes dificultam esse movimento."
+},
+{
+"cat": "Animais",
+"d": 3,
+"t": false,
+"s": "O panda come principalmente peixe.",
+"e": "O panda-gigante come quase só bambu."
+},
+{
+"cat": "Ciências",
+"d": 1,
+"t": true,
+"s": "O fogo precisa de oxigênio para queimar.",
+"e": "Sem oxigênio a chama apaga."
+},
+{
+"cat": "Ciências",
+"d": 1,
+"t": false,
+"s": "O ímã atrai madeira.",
+"e": "O ímã atrai metais como ferro, níquel e cobalto."
+},
+{
+"cat": "Ciências",
+"d": 2,
+"t": true,
+"s": "A água do mar é salgada por causa de sais minerais dissolvidos.",
+"e": "O principal é o cloreto de sódio, o sal de cozinha."
+},
+{
+"cat": "Ciências",
+"d": 2,
+"t": false,
+"s": "O arco-íris aparece só à noite.",
+"e": "O arco-íris aparece com sol e gotas de chuva ao mesmo tempo."
+},
+{
+"cat": "Ciências",
+"d": 3,
+"t": true,
+"s": "O ouro não enferruja.",
+"e": "O ouro quase não reage com o oxigênio, por isso não oxida."
+},
+{
+"cat": "Ciências",
+"d": 3,
+"t": false,
+"s": "O ser humano veio diretamente do chimpanzé.",
+"e": "Humanos e chimpanzés têm um ancestral comum, mas um não veio do outro."
+},
+{
+"cat": "Espaço",
+"d": 1,
+"t": false,
+"s": "A Terra é plana.",
+"e": "A Terra é quase uma esfera, um pouco achatada nos polos."
+},
+{
+"cat": "Espaço",
+"d": 2,
+"t": true,
+"s": "A Lua sempre mostra a mesma face para a Terra.",
+"e": "Ela gira em torno de si no mesmo tempo que dá a volta na Terra."
+},
+{
+"cat": "Espaço",
+"d": 2,
+"t": false,
+"s": "As estrelas cadentes são estrelas caindo.",
+"e": "São pedrinhas do espaço queimando ao entrar na atmosfera."
+},
+{
+"cat": "Espaço",
+"d": 3,
+"t": true,
+"s": "O Sol representa mais de 99% da massa do Sistema Solar.",
+"e": "Todos os planetas juntos são uma pequena fração."
+},
+{
+"cat": "Corpo humano",
+"d": 1,
+"t": true,
+"s": "O sangue leva oxigênio para o corpo.",
+"e": "As hemácias carregam o oxigênio dos pulmões para as células."
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"t": false,
+"s": "Ler no escuro estraga a visão para sempre.",
+"e": "Pode cansar os olhos, mas não causa dano permanente."
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"t": true,
+"s": "Bocejar pode ser contagioso.",
+"e": "Ver alguém bocejar costuma dar vontade de bocejar."
+},
+{
+"cat": "Corpo humano",
+"d": 3,
+"t": true,
+"s": "O nariz consegue diferenciar milhares de cheiros.",
+"e": "Estudos estimam que conseguimos distinguir muito mais de mil odores."
+},
+{
+"cat": "Geografia",
+"d": 1,
+"t": true,
+"s": "O Brasil faz fronteira com a Argentina.",
+"e": "A fronteira fica no Sul, na região de Foz do Iguaçu e do rio Uruguai."
+},
+{
+"cat": "Geografia",
+"d": 2,
+"t": false,
+"s": "Londres é a capital da França.",
+"e": "Londres é a capital do Reino Unido; a da França é Paris."
+},
+{
+"cat": "Geografia",
+"d": 2,
+"t": true,
+"s": "Na Antártida não existe um país dono.",
+"e": "Ela é regida pelo Tratado da Antártida, para pesquisa e paz."
+},
+{
+"cat": "Geografia",
+"d": 3,
+"t": true,
+"s": "A Turquia fica em dois continentes.",
+"e": "Uma parte fica na Europa e a maior parte na Ásia."
+},
+{
+"cat": "Geografia",
+"d": 3,
+"t": false,
+"s": "O Rio Amazonas desemboca no Oceano Pacífico.",
+"e": "Ele desemboca no Oceano Atlântico, no Pará e no Amapá."
+},
+{
+"cat": "Brasil",
+"d": 1,
+"t": true,
+"s": "O Carnaval é uma das festas mais famosas do Brasil.",
+"e": "Acontece todo ano antes da Quaresma."
+},
+{
+"cat": "Brasil",
+"d": 2,
+"t": true,
+"s": "Brasília foi planejada por Lúcio Costa e Oscar Niemeyer.",
+"e": "Lúcio Costa fez o plano urbano e Niemeyer, os prédios."
+},
+{
+"cat": "Brasil",
+"d": 2,
+"t": false,
+"s": "O Pantanal fica no litoral brasileiro.",
+"e": "O Pantanal fica no centro-oeste, em Mato Grosso e Mato Grosso do Sul."
+},
+{
+"cat": "Brasil",
+"d": 3,
+"t": true,
+"s": "O Brasil tem o maior número de falantes de português do mundo.",
+"e": "São mais de 200 milhões de pessoas."
+},
+{
+"cat": "História",
+"d": 2,
+"t": true,
+"s": "Santos Dumont é chamado de \"Pai da Aviação\" no Brasil.",
+"e": "Ele voou com o 14-Bis em Paris, em 1906."
+},
+{
+"cat": "História",
+"d": 2,
+"t": false,
+"s": "Tiradentes foi o primeiro presidente do Brasil.",
+"e": "Tiradentes foi líder da Inconfidência Mineira; o primeiro presidente foi Deodoro."
+},
+{
+"cat": "História",
+"d": 3,
+"t": true,
+"s": "A Revolução Industrial começou na Inglaterra.",
+"e": "No século 18, com máquinas a vapor e fábricas."
+},
+{
+"cat": "Esportes",
+"d": 2,
+"t": true,
+"s": "No vôlei, cada time pode tocar na bola até três vezes antes de passar.",
+"e": "O bloqueio não conta como um desses toques."
+},
+{
+"cat": "Esportes",
+"d": 3,
+"t": false,
+"s": "A primeira Olimpíada moderna foi em 1960.",
+"e": "Foi em 1896, em Atenas."
+},
+{
+"cat": "Comida",
+"d": 2,
+"t": true,
+"s": "O brigadeiro é um doce brasileiro.",
+"e": "É feito com leite condensado, chocolate e manteiga."
+},
+{
+"cat": "Comida",
+"d": 3,
+"t": true,
+"s": "O tomate veio originalmente das Américas.",
+"e": "Ele foi levado para a Europa depois das grandes navegações."
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"t": true,
+"s": "QR Code foi inventado no Japão.",
+"e": "Foi criado em 1994 pela empresa Denso Wave."
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"t": false,
+"s": "A primeira mensagem de texto (SMS) foi enviada em 2005.",
+"e": "O primeiro SMS foi enviado em 1992 e dizia \"Feliz Natal\"."
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"t": true,
+"s": "O Chaves é um personagem de série mexicana.",
+"e": "A série foi criada por Roberto Gómez Bolaños."
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"t": false,
+"s": "\"Frozen\" é um filme da DreamWorks.",
+"e": "\"Frozen\" é um filme da Disney."
+},
+{
+"cat": "Música",
+"d": 2,
+"t": true,
+"s": "Luiz Gonzaga é chamado de \"Rei do Baião\".",
+"e": "Ele popularizou o baião e o forró pelo Brasil."
+},
+{
+"cat": "Matemática",
+"d": 2,
+"t": true,
+"s": "Um triângulo pode ter um ângulo de 90 graus.",
+"e": "É o triângulo retângulo, onde vale o teorema de Pitágoras."
+},
+{
+"cat": "Matemática",
+"d": 3,
+"t": false,
+"s": "Dividir um número por zero dá zero.",
+"e": "A divisão por zero não é definida."
+},
+{
+"cat": "Futebol",
+"d": 2,
+"t": true,
+"s": "A Copa do Mundo de 2014 foi no Brasil.",
+"e": "Foi a segunda Copa no Brasil; a primeira foi em 1950."
+}
+]
+}

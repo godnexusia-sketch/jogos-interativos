@@ -1,0 +1,45 @@
+Animais|1|V|O cachorro é um mamífero.|Ele mama quando filhote e tem pelos.
+Animais|1|F|As galinhas mamam quando são filhotes.|Galinhas são aves: nascem de ovos e não mamam.
+Animais|2|V|O bicho-preguiça desce da árvore mais ou menos uma vez por semana.|Ele desce principalmente para fazer suas necessidades.
+Animais|2|F|O camaleão muda de cor só para se esconder.|Ele muda de cor também para mostrar humor e regular a temperatura.
+Animais|2|V|O lobo-guará é um animal brasileiro.|Vive principalmente no Cerrado e está na nota de 200 reais.
+Animais|3|V|O canguru não consegue andar para trás com facilidade.|O rabo grande e as patas fortes dificultam esse movimento.
+Animais|3|F|O panda come principalmente peixe.|O panda-gigante come quase só bambu.
+Ciências|1|V|O fogo precisa de oxigênio para queimar.|Sem oxigênio a chama apaga.
+Ciências|1|F|O ímã atrai madeira.|O ímã atrai metais como ferro, níquel e cobalto.
+Ciências|2|V|A água do mar é salgada por causa de sais minerais dissolvidos.|O principal é o cloreto de sódio, o sal de cozinha.
+Ciências|2|F|O arco-íris aparece só à noite.|O arco-íris aparece com sol e gotas de chuva ao mesmo tempo.
+Ciências|3|V|O ouro não enferruja.|O ouro quase não reage com o oxigênio, por isso não oxida.
+Ciências|3|F|O ser humano veio diretamente do chimpanzé.|Humanos e chimpanzés têm um ancestral comum, mas um não veio do outro.
+Espaço|1|F|A Terra é plana.|A Terra é quase uma esfera, um pouco achatada nos polos.
+Espaço|2|V|A Lua sempre mostra a mesma face para a Terra.|Ela gira em torno de si no mesmo tempo que dá a volta na Terra.
+Espaço|2|F|As estrelas cadentes são estrelas caindo.|São pedrinhas do espaço queimando ao entrar na atmosfera.
+Espaço|3|V|O Sol representa mais de 99% da massa do Sistema Solar.|Todos os planetas juntos são uma pequena fração.
+Corpo humano|1|V|O sangue leva oxigênio para o corpo.|As hemácias carregam o oxigênio dos pulmões para as células.
+Corpo humano|2|F|Ler no escuro estraga a visão para sempre.|Pode cansar os olhos, mas não causa dano permanente.
+Corpo humano|2|V|Bocejar pode ser contagioso.|Ver alguém bocejar costuma dar vontade de bocejar.
+Corpo humano|3|V|O nariz consegue diferenciar milhares de cheiros.|Estudos estimam que conseguimos distinguir muito mais de mil odores.
+Geografia|1|V|O Brasil faz fronteira com a Argentina.|A fronteira fica no Sul, na região de Foz do Iguaçu e do rio Uruguai.
+Geografia|2|F|Londres é a capital da França.|Londres é a capital do Reino Unido; a da França é Paris.
+Geografia|2|V|Na Antártida não existe um país dono.|Ela é regida pelo Tratado da Antártida, para pesquisa e paz.
+Geografia|3|V|A Turquia fica em dois continentes.|Uma parte fica na Europa e a maior parte na Ásia.
+Geografia|3|F|O Rio Amazonas desemboca no Oceano Pacífico.|Ele desemboca no Oceano Atlântico, no Pará e no Amapá.
+Brasil|1|V|O Carnaval é uma das festas mais famosas do Brasil.|Acontece todo ano antes da Quaresma.
+Brasil|2|V|Brasília foi planejada por Lúcio Costa e Oscar Niemeyer.|Lúcio Costa fez o plano urbano e Niemeyer, os prédios.
+Brasil|2|F|O Pantanal fica no litoral brasileiro.|O Pantanal fica no centro-oeste, em Mato Grosso e Mato Grosso do Sul.
+Brasil|3|V|O Brasil tem o maior número de falantes de português do mundo.|São mais de 200 milhões de pessoas.
+História|2|V|Santos Dumont é chamado de "Pai da Aviação" no Brasil.|Ele voou com o 14-Bis em Paris, em 1906.
+História|2|F|Tiradentes foi o primeiro presidente do Brasil.|Tiradentes foi líder da Inconfidência Mineira; o primeiro presidente foi Deodoro.
+História|3|V|A Revolução Industrial começou na Inglaterra.|No século 18, com máquinas a vapor e fábricas.
+Esportes|2|V|No vôlei, cada time pode tocar na bola até três vezes antes de passar.|O bloqueio não conta como um desses toques.
+Esportes|3|F|A primeira Olimpíada moderna foi em 1960.|Foi em 1896, em Atenas.
+Comida|2|V|O brigadeiro é um doce brasileiro.|É feito com leite condensado, chocolate e manteiga.
+Comida|3|V|O tomate veio originalmente das Américas.|Ele foi levado para a Europa depois das grandes navegações.
+Tecnologia|2|V|QR Code foi inventado no Japão.|Foi criado em 1994 pela empresa Denso Wave.
+Tecnologia|3|F|A primeira mensagem de texto (SMS) foi enviada em 2005.|O primeiro SMS foi enviado em 1992 e dizia "Feliz Natal".
+Entretenimento|2|V|O Chaves é um personagem de série mexicana.|A série foi criada por Roberto Gómez Bolaños.
+Entretenimento|3|F|"Frozen" é um filme da DreamWorks.|"Frozen" é um filme da Disney.
+Música|2|V|Luiz Gonzaga é chamado de "Rei do Baião".|Ele popularizou o baião e o forró pelo Brasil.
+Matemática|2|V|Um triângulo pode ter um ângulo de 90 graus.|É o triângulo retângulo, onde vale o teorema de Pitágoras.
+Matemática|3|F|Dividir um número por zero dá zero.|A divisão por zero não é definida.
+Futebol|2|V|A Copa do Mundo de 2014 foi no Brasil.|Foi a segunda Copa no Brasil; a primeira foi em 1950.

@@ -1,0 +1,55 @@
+Espaço|1|Qual é a estrela mais próxima da Terra?|Sol|Sírius|Alfa Centauri|Estrela Polar
+Espaço|1|Qual é o planeta conhecido como "planeta vermelho"?|Marte|Júpiter|Vênus|Saturno
+Espaço|1|Qual é o maior planeta do Sistema Solar?|Júpiter|Saturno|Netuno|Terra
+Espaço|1|Qual planeta é famoso pelos seus anéis?|Saturno|Marte|Mercúrio|Vênus
+Espaço|1|Qual é o satélite natural da Terra?|Lua|Fobos|Europa|Titã
+Espaço|2|Quantos planetas tem o Sistema Solar?|8|9|7|10
+Espaço|2|Quem foi o primeiro ser humano a ir ao espaço?|Yuri Gagarin|Neil Armstrong|Buzz Aldrin|Marcos Pontes
+Espaço|2|Qual foi o primeiro brasileiro a ir ao espaço?|Marcos Pontes|Ayrton Senna|Santos Dumont|César Lattes
+Espaço|2|Como se chama a nossa galáxia?|Via Láctea|Andrômeda|Sombrero|Triângulo
+Espaço|2|Qual planeta é o mais quente do Sistema Solar?|Vênus|Mercúrio|Marte|Júpiter
+Espaço|2|Plutão hoje é classificado como...?|Planeta anão|Planeta|Estrela|Cometa
+Espaço|3|Quanto tempo a luz do Sol leva para chegar à Terra, mais ou menos?|8 minutos|8 segundos|1 hora|1 dia
+Espaço|3|Qual é a lua mais famosa de Júpiter com oceano sob o gelo?|Europa|Titã|Tritão|Fobos
+Espaço|3|Qual sonda foi a primeira a sair do Sistema Solar?|Voyager 1|Apollo 11|Sputnik|Hubble
+Espaço|3|Qual planeta gira "deitado", quase de lado?|Urano|Netuno|Saturno|Marte
+Espaço|3|Como se chama o ponto de não retorno de um buraco negro?|Horizonte de eventos|Singularidade|Nebulosa|Supernova
+Arte e Cultura|1|Quem pintou "A Noite Estrelada"?|Van Gogh|Picasso|Monet|Da Vinci
+Arte e Cultura|1|Em que cidade fica o Museu do Louvre?|Paris|Londres|Roma|Madri
+Arte e Cultura|1|Qual é a festa brasileira com quadrilha e fogueira?|Festa Junina|Carnaval|Réveillon|Círio de Nazaré
+Arte e Cultura|1|Qual personagem do folclore tem os pés virados para trás?|Curupira|Saci|Boitatá|Iara
+Arte e Cultura|2|Qual personagem do folclore tem uma perna só e usa gorro vermelho?|Saci-Pererê|Curupira|Boto|Cuca
+Arte e Cultura|2|Quem pintou "Abaporu"?|Tarsila do Amaral|Anita Malfatti|Di Cavalcanti|Portinari
+Arte e Cultura|2|Qual escultor brasileiro fez os profetas de Congonhas?|Aleijadinho|Victor Brecheret|Mestre Valentim|Portinari
+Arte e Cultura|2|Em que cidade acontece o Festival de Parintins?|Parintins|Manaus|Belém|São Luís
+Arte e Cultura|2|Quem escreveu "Romeu e Julieta"?|William Shakespeare|Charles Dickens|Victor Hugo|Cervantes
+Arte e Cultura|3|Qual movimento artístico teve a Semana de Arte Moderna de 1922?|Modernismo|Barroco|Romantismo|Realismo
+Arte e Cultura|3|Quem pintou "Guernica"?|Pablo Picasso|Salvador Dalí|Joan Miró|Goya
+Arte e Cultura|3|Quem escreveu "Dom Quixote"?|Miguel de Cervantes|Gabriel García Márquez|Jorge Luis Borges|Camões
+Arte e Cultura|3|Quem pintou "O Grito"?|Edvard Munch|Gustav Klimt|Van Gogh|Matisse
+Arte e Cultura|3|Qual é o nome da famosa escultura de Michelangelo de um jovem nu?|Davi|Moisés|O Pensador|Vênus de Milo
+Mitologia|1|Quem é o deus dos mares na mitologia grega?|Poseidon|Zeus|Hades|Apolo
+Mitologia|1|Qual deus nórdico usa um martelo?|Thor|Odin|Loki|Freyr
+Mitologia|2|Quem é o rei dos deuses na mitologia grega?|Zeus|Cronos|Ares|Hermes
+Mitologia|2|Qual criatura tem cabelos de serpente e transforma pessoas em pedra?|Medusa|Hidra|Quimera|Esfinge
+Mitologia|2|Qual herói grego tinha o calcanhar como ponto fraco?|Aquiles|Hércules|Ulisses|Perseu
+Mitologia|2|Quem é o deus egípcio com cabeça de chacal?|Anúbis|Rá|Hórus|Osíris
+Mitologia|2|Qual é a deusa grega da sabedoria?|Atena|Afrodite|Hera|Ártemis
+Mitologia|3|Qual é o nome romano do deus grego Zeus?|Júpiter|Marte|Netuno|Mercúrio
+Mitologia|3|Quem roubou o fogo dos deuses para dar aos humanos?|Prometeu|Ícaro|Hermes|Atlas
+Mitologia|3|Como se chama o cão de três cabeças que guarda o mundo dos mortos?|Cérbero|Fenrir|Ortros|Hidra
+Mitologia|3|Qual é o salão dos guerreiros mortos na mitologia nórdica?|Valhalla|Olimpo|Asgard|Midgard
+Mitologia|3|Quem voou perto demais do Sol com asas de cera?|Ícaro|Dédalo|Perseu|Teseu
+Cinema e séries|1|Qual é o nome do ogro verde da DreamWorks?|Shrek|Hulk|Grinch|Fiona
+Cinema e séries|1|Em qual filme os brinquedos ganham vida quando ninguém está vendo?|Toy Story|Carros|Up|Divertida Mente
+Cinema e séries|1|Qual é o nome do peixe-palhaço que se perde no oceano?|Nemo|Dory|Marlin|Gill
+Cinema e séries|2|Qual ator interpretou o Homem de Ferro nos filmes da Marvel?|Robert Downey Jr.|Chris Evans|Chris Hemsworth|Mark Ruffalo
+Cinema e séries|2|Em qual série crianças enfrentam o "Mundo Invertido"?|Stranger Things|Dark|Wandinha|The Umbrella Academy
+Cinema e séries|2|Qual filme brasileiro de 2002 mostra a vida na favela pelos olhos de Buscapé?|Cidade de Deus|Tropa de Elite|Central do Brasil|Carandiru
+Cinema e séries|2|Qual é a escola de magia de Harry Potter?|Hogwarts|Beauxbatons|Durmstrang|Ilvermorny
+Cinema e séries|2|Qual é o nome da filha da família Addams que ganhou série própria?|Wandinha|Mortícia|Feioso|Tropeço
+Cinema e séries|3|Quem dirigiu "Titanic" e "Avatar"?|James Cameron|Steven Spielberg|George Lucas|Ridley Scott
+Cinema e séries|3|Qual filme brasileiro foi indicado ao Oscar de melhor filme estrangeiro em 1999?|Central do Brasil|O Auto da Compadecida|Cidade de Deus|O Quatrilho
+Cinema e séries|3|Em que ano foi lançado o primeiro filme de "Star Wars"?|1977|1983|1969|1990
+Cinema e séries|3|Qual série espanhola mostra um assalto à Casa da Moeda?|La Casa de Papel|Elite|Narcos|Vis a Vis
+Cinema e séries|3|Qual atriz brasileira foi indicada ao Oscar por "Central do Brasil"?|Fernanda Montenegro|Fernanda Torres|Sônia Braga|Glória Pires

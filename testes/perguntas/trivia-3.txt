@@ -1,0 +1,73 @@
+Matemática|1|Quanto é 7 × 8?|56|54|48|64
+Matemática|1|Quanto é a metade de 50?|25|20|30|15
+Matemática|1|Quantos minutos tem uma hora?|60|100|30|50
+Matemática|1|Quanto é 12 + 15?|27|26|28|25
+Matemática|1|Quantos centímetros tem um metro?|100|10|1000|50
+Matemática|1|Qual é o dobro de 35?|70|65|75|60
+Matemática|1|Quanto é 9 × 9?|81|72|99|89
+Matemática|1|Quantos lados tem um triângulo?|3|4|5|6
+Matemática|2|Quanto é 15% de 200?|30|15|20|25
+Matemática|2|Qual é a raiz quadrada de 144?|12|14|11|16
+Matemática|2|Quanto é 2 elevado a 5?|32|25|10|64
+Matemática|2|Quantos graus tem a soma dos ângulos internos de um triângulo?|180|360|90|270
+Matemática|2|Qual é o próximo número primo depois de 7?|11|9|13|10
+Matemática|2|Quanto é 3/4 escrito em porcentagem?|75%|34%|43%|70%
+Matemática|2|Quanto vale x em 2x + 6 = 20?|7|8|6|13
+Matemática|2|Qual é o MMC de 4 e 6?|12|24|2|10
+Matemática|2|Quantos segundos tem um minuto e meio?|90|60|150|120
+Matemática|3|Qual é o valor aproximado de π (pi)?|3,14|3,41|2,71|1,61
+Matemática|3|Quanto é log de 1000 na base 10?|3|10|100|4
+Matemática|3|Qual é a soma dos ângulos internos de um hexágono?|720°|540°|900°|360°
+Matemática|3|Quanto é 0! (zero fatorial)?|1|0|Não existe|10
+Matemática|3|Quantas diagonais tem um pentágono?|5|10|3|7
+Matemática|3|Qual é a área de um círculo de raio 2 (use π = 3)?|12|6|24|9
+Matemática|3|Qual é o 10º termo da PA 2, 5, 8, 11...?|29|32|30|27
+Matemática|3|Quanto é 1/3 + 1/6?|1/2|2/9|1/9|2/3
+Português|1|Qual é o plural de "pão"?|Pães|Pãos|Pões|Pãoes
+Português|1|Qual é o antônimo de "alto"?|Baixo|Grande|Largo|Comprido
+Português|1|Quantas vogais tem o alfabeto?|5|6|4|7
+Português|1|Qual palavra está escrita corretamente?|Exceção|Excessão|Esceção|Exessão
+Português|1|Qual é o sinônimo de "feliz"?|Alegre|Triste|Bravo|Cansado
+Português|2|Qual é o plural de "cidadão"?|Cidadãos|Cidadões|Cidadães|Cidadans
+Português|2|Em "O gato dormiu", qual é o sujeito?|O gato|Dormiu|Gato dormiu|Não há sujeito
+Português|2|Qual palavra é um verbo?|Correr|Rápido|Mesa|Feliz
+Português|2|Qual é o coletivo de lobos?|Alcateia|Matilha|Cardume|Manada
+Português|2|Qual é o coletivo de peixes?|Cardume|Enxame|Bando|Rebanho
+Português|2|Qual palavra é oxítona?|Café|Mesa|Lâmpada|Árvore
+Português|2|Qual é o feminino de "ator"?|Atriz|Atora|Atôra|Atoa
+Português|3|Qual palavra é proparoxítona?|Pássaro|Caju|Livro|Janela
+Português|3|Quem escreveu "Os Lusíadas"?|Luís de Camões|Fernando Pessoa|Eça de Queirós|Machado de Assis
+Português|3|"Mal" é o contrário de...?|Bem|Mau|Bom|Bonito
+Português|3|Qual figura de linguagem há em "Choveu um rio de lágrimas"?|Hipérbole|Metáfora|Ironia|Eufemismo
+Português|3|Qual é a forma correta?|Haja vista|Haja visto|Aja vista|Aja visto
+Português|3|Qual é o coletivo de abelhas?|Enxame|Colmeia|Bando|Cáfila
+Português|3|Quem escreveu "Vidas Secas"?|Graciliano Ramos|Rachel de Queiroz|Jorge Amado|Clarice Lispector
+Música|1|Quantas notas musicais básicas existem (dó, ré, mi...)?|7|5|8|12
+Música|1|Qual instrumento tem teclas brancas e pretas?|Piano|Violão|Flauta|Bateria
+Música|1|Qual instrumento tem seis cordas e é muito usado no samba e na MPB?|Violão|Cavaquinho|Bandolim|Viola caipira
+Música|1|Qual é o ritmo brasileiro famoso no carnaval do Rio?|Samba|Forró|Frevo|Axé
+Música|2|Qual cantor é conhecido como o "Rei" da música brasileira?|Roberto Carlos|Caetano Veloso|Gilberto Gil|Chico Buarque
+Música|2|De qual estado vem o frevo?|Pernambuco|Bahia|Rio de Janeiro|Ceará
+Música|2|Qual instrumento Luiz Gonzaga tocava?|Sanfona|Violão|Pandeiro|Triângulo
+Música|2|Qual banda tinha Freddie Mercury como vocalista?|Queen|The Beatles|U2|Led Zeppelin
+Música|2|Qual cantora é chamada de "Rainha do Pop"?|Madonna|Beyoncé|Lady Gaga|Britney Spears
+Música|2|Quem compôs "Garota de Ipanema" com Vinicius de Moraes?|Tom Jobim|João Gilberto|Chico Buarque|Toquinho
+Música|3|Qual compositor ficou surdo e mesmo assim compôs a 9ª Sinfonia?|Beethoven|Mozart|Bach|Chopin
+Música|3|Quantas linhas tem uma pauta musical?|5|4|6|7
+Música|3|De qual país é o gênero musical reggae?|Jamaica|Cuba|Brasil|Estados Unidos
+Música|3|Qual instrumento Heitor Villa-Lobos tocava muito bem e usava em obras?|Violoncelo|Trompete|Harpa|Oboé
+Música|3|Qual cantora gravou "Águas de Março" com Tom Jobim em 1974?|Elis Regina|Gal Costa|Maria Bethânia|Rita Lee
+Corpo humano|1|Qual é o maior órgão do corpo humano?|Pele|Fígado|Pulmão|Intestino
+Corpo humano|1|Quantos dentes tem um adulto, normalmente?|32|28|36|24
+Corpo humano|1|Com qual órgão nós respiramos?|Pulmões|Coração|Estômago|Rins
+Corpo humano|1|Quantos sentidos básicos o ser humano tem?|5|4|6|7
+Corpo humano|2|Qual é o maior osso do corpo humano?|Fêmur|Tíbia|Úmero|Coluna
+Corpo humano|2|Que tipo sanguíneo é chamado de doador universal?|O negativo|AB positivo|A positivo|B negativo
+Corpo humano|2|Qual órgão produz a insulina?|Pâncreas|Fígado|Estômago|Rim
+Corpo humano|2|Qual é o menor osso do corpo humano?|Estribo|Martelo|Falange|Bigorna
+Corpo humano|2|Qual vitamina o corpo produz com a luz do sol?|Vitamina D|Vitamina C|Vitamina A|Vitamina B12
+Corpo humano|3|Quantos litros de sangue um adulto tem, mais ou menos?|5|2|10|8
+Corpo humano|3|Qual parte do cérebro controla o equilíbrio?|Cerebelo|Córtex|Hipotálamo|Bulbo
+Corpo humano|3|Quantas câmaras tem o coração humano?|4|2|3|6
+Corpo humano|3|Qual é o nome da proteína que dá cor vermelha ao sangue?|Hemoglobina|Melanina|Queratina|Colágeno
+Corpo humano|3|Onde ficam as cordas vocais?|Laringe|Faringe|Traqueia|Esôfago

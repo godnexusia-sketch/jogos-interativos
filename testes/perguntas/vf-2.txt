@@ -1,0 +1,59 @@
+Geografia|1|V|O Brasil é o maior país da América do Sul.|Ele ocupa quase metade do continente.
+Geografia|1|F|A capital do Brasil é o Rio de Janeiro.|Desde 1960 a capital é Brasília.
+Geografia|1|V|O Oceano Pacífico é o maior do planeta.|Ele cobre cerca de um terço da superfície da Terra.
+Geografia|1|F|O Egito fica na Ásia.|O Egito fica no nordeste da África (só a península do Sinai fica na Ásia).
+Geografia|1|V|O Japão é formado por ilhas.|São mais de 6 mil ilhas; as quatro principais concentram a maior parte da população.
+Geografia|2|V|A Rússia é o maior país do mundo.|Ela tem mais de 17 milhões de km².
+Geografia|2|F|O Rio Nilo fica na América do Sul.|O Nilo atravessa o nordeste da África.
+Geografia|2|V|A Antártida é o continente mais frio do mundo.|Lá foi medido o recorde de -89 °C.
+Geografia|2|F|A Austrália é uma ilha que faz parte da Ásia.|A Austrália é um país-continente, na Oceania.
+Geografia|2|V|O Chile é um país comprido e estreito.|Tem mais de 4 mil km de norte a sul e, em média, menos de 200 km de largura.
+Geografia|2|F|O Canadá fica abaixo dos Estados Unidos no mapa.|O Canadá fica ao norte dos Estados Unidos.
+Geografia|3|V|O Lago Titicaca fica na fronteira entre Peru e Bolívia.|É um dos lagos navegáveis mais altos do mundo.
+Geografia|3|F|A Groenlândia é um país independente.|A Groenlândia é um território autônomo ligado à Dinamarca.
+Geografia|3|V|A Mongólia não tem saída para o mar.|Ela fica entre a Rússia e a China.
+Geografia|3|F|O Monte Everest fica na Índia.|Ele fica na fronteira entre Nepal e China (Tibete).
+Geografia|3|V|A Indonésia é o maior país formado só por ilhas.|São mais de 17 mil ilhas.
+Brasil|1|V|O Brasil tem 26 estados e o Distrito Federal.|São 27 unidades federativas no total.
+Brasil|1|F|O português do Brasil veio da Espanha.|Veio de Portugal, que colonizou o Brasil.
+Brasil|1|V|A bandeira do Brasil tem estrelas.|Cada estrela representa um estado e o Distrito Federal.
+Brasil|2|V|O Brasil é o país com mais espécies de plantas e animais do mundo.|É considerado o país de maior biodiversidade do planeta.
+Brasil|2|F|O Brasil foi colonizado pela França.|Foi colonizado por Portugal, a partir de 1500.
+Brasil|2|V|O Brasil é o maior produtor de café do mundo.|Faz isso há mais de 150 anos.
+Brasil|2|F|A Amazônia fica só no Brasil.|Ela também se estende por Peru, Colômbia, Bolívia e outros vizinhos.
+Brasil|2|V|Fernando de Noronha é um arquipélago brasileiro.|Fica no Oceano Atlântico e pertence a Pernambuco.
+Brasil|3|V|A primeira capital do Brasil foi Salvador.|Ela foi a capital de 1549 a 1763.
+Brasil|3|F|O Brasil nunca teve imperadores.|Teve dois: Dom Pedro I e Dom Pedro II.
+Brasil|3|V|A Lei Áurea foi assinada pela Princesa Isabel em 1888.|Ela aboliu oficialmente a escravidão no Brasil.
+Brasil|3|F|O Brasil já foi capital do Império Espanhol.|O Rio de Janeiro foi sede do Reino de Portugal, não da Espanha.
+História|1|V|Os dinossauros existiram antes dos seres humanos.|Eles sumiram há 66 milhões de anos, muito antes do homem.
+História|1|F|Os humanos e os dinossauros viveram juntos.|Os dinossauros não-aves sumiram milhões de anos antes do primeiro humano.
+História|1|V|As pirâmides do Egito têm milhares de anos.|A Grande Pirâmide tem cerca de 4.500 anos.
+História|2|V|A Segunda Guerra Mundial terminou em 1945.|Terminou com a rendição da Alemanha e depois do Japão.
+História|2|F|Cristóvão Colombo era português.|Colombo era genovês (da atual Itália) e navegou pela Espanha.
+História|2|V|Os maias criaram um calendário muito preciso.|Eles acompanhavam o Sol, a Lua e Vênus com muita precisão.
+História|2|F|A Revolução Francesa aconteceu no século 20.|Ela começou em 1789, no século 18.
+História|3|V|O Império Romano do Oriente durou até 1453.|Terminou com a queda de Constantinopla para os otomanos.
+História|3|F|Albert Einstein ganhou o Nobel pela teoria da relatividade.|Ele ganhou o Nobel de Física de 1921 pelo efeito fotoelétrico.
+História|3|V|A Inglaterra e a França lutaram a Guerra dos Cem Anos por mais de cem anos.|Ela durou de 1337 a 1453, 116 anos.
+História|3|F|A Guerra dos Cem Anos durou exatamente cem anos.|Durou 116 anos, de 1337 a 1453.
+Esportes|1|V|No futebol, o goleiro pode pegar a bola com as mãos dentro da área.|Fora da área ele não pode usar as mãos.
+Esportes|1|F|Um jogo de basquete tem 11 jogadores em quadra por time.|São 5 jogadores por time no basquete.
+Esportes|1|V|As Olimpíadas acontecem de quatro em quatro anos.|Existem os Jogos de Verão e os de Inverno, alternados.
+Esportes|2|V|O Brasil é pentacampeão mundial de futebol.|Venceu em 1958, 1962, 1970, 1994 e 2002.
+Esportes|2|F|Ayrton Senna foi campeão de Fórmula 1 cinco vezes.|Senna foi tricampeão: 1988, 1990 e 1991.
+Esportes|2|V|Marta é uma das maiores jogadoras de futebol da história.|Ela foi eleita a melhor do mundo seis vezes.
+Esportes|2|F|O golfe é jogado com uma bola de tênis.|A bola de golfe é pequena, dura e cheia de covinhas.
+Esportes|3|V|Uma partida oficial de handebol tem dois tempos de 30 minutos.|É o tempo das partidas adultas.
+Esportes|3|F|O xadrez nunca foi considerado esporte.|O Comitê Olímpico Internacional reconhece o xadrez como esporte.
+Esportes|3|V|O Brasil ganhou o ouro no futebol masculino nas Olimpíadas de 2016.|Venceu a Alemanha nos pênaltis no Maracanã.
+Comida|1|V|O feijão com arroz é um prato muito comum no Brasil.|É a base do almoço de grande parte dos brasileiros.
+Comida|1|F|O leite vem das galinhas.|O leite comum vem principalmente das vacas; as galinhas botam ovos.
+Comida|1|V|O suco de laranja tem vitamina C.|A laranja é rica em vitamina C.
+Comida|2|V|O abacate é uma fruta.|Ele é uma fruta de semente grande, usada doce ou salgada.
+Comida|2|F|A batata é uma raiz.|A batata é um caule (tubérculo), não uma raiz.
+Comida|2|V|O sushi pode ser feito sem peixe cru.|Há sushis com peixe cozido, legumes, frutas e até ovo.
+Comida|2|F|A pipoca é feita de arroz.|A pipoca é feita de um tipo de milho.
+Comida|3|V|O açafrão-verdadeiro é um dos temperos mais caros do mundo.|Cada flor dá só três fiozinhos, colhidos à mão.
+Comida|3|F|A feijoada foi inventada na Itália.|A feijoada é um prato brasileiro.
+Comida|3|V|A mandioca crua de algumas variedades pode ser venenosa.|A mandioca-brava tem compostos tóxicos que somem ao processar e cozinhar.

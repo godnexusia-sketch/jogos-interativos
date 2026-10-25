@@ -1,1 +1,6009 @@
-{"cats":["Geografia","História","Ciências","Esportes","Entretenimento","Brasil","Comida","Animais","Tecnologia","Conhecimentos gerais"],"q":[{"cat":"Geografia","d":1,"q":"Qual é a capital do Brasil?","a":["Brasília","Rio de Janeiro","São Paulo","Salvador"]},{"cat":"Geografia","d":1,"q":"Qual é o maior país do mundo em área?","a":["Rússia","China","Canadá","Brasil"]},{"cat":"Geografia","d":1,"q":"Em que continente fica o Egito?","a":["África","Ásia","Europa","Oceania"]},{"cat":"Geografia","d":1,"q":"Qual é o maior oceano da Terra?","a":["Pacífico","Atlântico","Índico","Ártico"]},{"cat":"Geografia","d":1,"q":"Qual é a capital da Argentina?","a":["Buenos Aires","Montevidéu","Santiago","Lima"]},{"cat":"Geografia","d":1,"q":"Qual país tem a forma de uma bota?","a":["Itália","Espanha","Grécia","Portugal"]},{"cat":"Geografia","d":1,"q":"Qual é a capital da França?","a":["Paris","Lyon","Marselha","Nice"]},{"cat":"Geografia","d":1,"q":"Qual é o rio mais volumoso do mundo?","a":["Amazonas","Nilo","Mississippi","Yangtzé"]},{"cat":"Geografia","d":1,"q":"Quantos estados tem o Brasil?","a":["26","24","27","25"]},{"cat":"Geografia","d":2,"q":"Qual é a capital da Austrália?","a":["Camberra","Sydney","Melbourne","Perth"]},{"cat":"Geografia","d":2,"q":"Qual é a capital do Canadá?","a":["Ottawa","Toronto","Vancouver","Montreal"]},{"cat":"Geografia","d":2,"q":"Qual é a montanha mais alta do mundo?","a":["Everest","K2","Aconcágua","Kilimanjaro"]},{"cat":"Geografia","d":2,"q":"Em qual país fica Machu Picchu?","a":["Peru","Bolívia","Chile","Equador"]},{"cat":"Geografia","d":2,"q":"Qual é o menor país do mundo?","a":["Vaticano","Mônaco","Malta","San Marino"]},{"cat":"Geografia","d":2,"q":"Qual estado brasileiro tem a maior área?","a":["Amazonas","Pará","Mato Grosso","Minas Gerais"]},{"cat":"Geografia","d":2,"q":"Qual é a capital do Japão?","a":["Tóquio","Osaka","Kyoto","Hiroshima"]},{"cat":"Geografia","d":2,"q":"Qual deserto é o maior deserto quente do mundo?","a":["Saara","Atacama","Gobi","Kalahari"]},{"cat":"Geografia","d":2,"q":"Qual é a capital de Portugal?","a":["Lisboa","Porto","Coimbra","Braga"]},{"cat":"Geografia","d":2,"q":"Qual país tem mais habitantes na América do Sul?","a":["Brasil","Argentina","Colômbia","Peru"]},{"cat":"Geografia","d":2,"q":"Qual é a capital da Bahia?","a":["Salvador","Feira de Santana","Ilhéus","Porto Seguro"]},{"cat":"Geografia","d":2,"q":"Qual cidade é conhecida como Cidade Maravilhosa?","a":["Rio de Janeiro","Salvador","Recife","Florianópolis"]},{"cat":"Geografia","d":2,"q":"As Cataratas do Iguaçu ficam na fronteira do Brasil com qual país?","a":["Argentina","Uruguai","Bolívia","Chile"]},{"cat":"Geografia","d":3,"q":"Qual é a capital da Turquia?","a":["Ancara","Istambul","Esmirna","Antália"]},{"cat":"Geografia","d":3,"q":"Qual é a capital da Nova Zelândia?","a":["Wellington","Auckland","Christchurch","Queenstown"]},{"cat":"Geografia","d":3,"q":"Qual país tem mais ilhas no mundo?","a":["Suécia","Indonésia","Filipinas","Noruega"]},{"cat":"Geografia","d":3,"q":"Qual é o ponto mais alto do Brasil?","a":["Pico da Neblina","Pico da Bandeira","Monte Roraima","Pedra da Mina"]},{"cat":"Geografia","d":3,"q":"Qual é a capital do Marrocos?","a":["Rabat","Casablanca","Marrakech","Fez"]},{"cat":"Geografia","d":3,"q":"Qual é o lago mais profundo do mundo?","a":["Baikal","Titicaca","Vitória","Superior"]},{"cat":"Geografia","d":3,"q":"Quantos países a Rússia faz fronteira por terra (aproximadamente)?","a":["14","8","20","5"]},{"cat":"Geografia","d":3,"q":"Qual estado brasileiro não faz fronteira com nenhum outro país e tem a menor área?","a":["Sergipe","Alagoas","Espírito Santo","Rio Grande do Norte"]},{"cat":"História","d":1,"q":"Em que ano o Brasil foi descoberto pelos portugueses?","a":["1500","1492","1822","1600"]},{"cat":"História","d":1,"q":"Quem proclamou a independência do Brasil?","a":["Dom Pedro I","Dom Pedro II","Tiradentes","Deodoro da Fonseca"]},{"cat":"História","d":1,"q":"Em que ano o homem pisou na Lua pela primeira vez?","a":["1969","1959","1975","1981"]},{"cat":"História","d":1,"q":"Quem descobriu a América em 1492?","a":["Cristóvão Colombo","Pedro Álvares Cabral","Vasco da Gama","Fernão de Magalhães"]},{"cat":"História","d":2,"q":"Em que ano foi proclamada a República no Brasil?","a":["1889","1822","1888","1930"]},{"cat":"História","d":2,"q":"Quem assinou a Lei Áurea?","a":["Princesa Isabel","Dom Pedro II","Dom João VI","Getúlio Vargas"]},{"cat":"História","d":2,"q":"Em que ano começou a Segunda Guerra Mundial?","a":["1939","1914","1945","1929"]},{"cat":"História","d":2,"q":"Qual civilização construiu as pirâmides de Gizé?","a":["Egípcia","Romana","Grega","Maia"]},{"cat":"História","d":2,"q":"Quem foi o primeiro presidente do Brasil?","a":["Deodoro da Fonseca","Floriano Peixoto","Getúlio Vargas","Prudente de Morais"]},{"cat":"História","d":2,"q":"Em que ano caiu o Muro de Berlim?","a":["1989","1991","1985","1979"]},{"cat":"História","d":2,"q":"Qual cidade foi a primeira capital do Brasil?","a":["Salvador","Rio de Janeiro","São Paulo","Recife"]},{"cat":"História","d":3,"q":"Em que ano Brasília foi inaugurada?","a":["1960","1950","1964","1956"]},{"cat":"História","d":3,"q":"Quem foi o líder da Inconfidência Mineira executado em 1792?","a":["Tiradentes","Zumbi","Frei Caneca","Bento Gonçalves"]},{"cat":"História","d":3,"q":"Qual imperador romano teria tocado lira enquanto Roma ardia, segundo a lenda?","a":["Nero","César","Augusto","Calígula"]},{"cat":"História","d":3,"q":"Em que ano terminou a Primeira Guerra Mundial?","a":["1918","1919","1916","1920"]},{"cat":"História","d":3,"q":"Qual navegador português chegou à Índia por mar em 1498?","a":["Vasco da Gama","Bartolomeu Dias","Cabral","Magalhães"]},{"cat":"História","d":3,"q":"Quem pintou o teto da Capela Sistina?","a":["Michelangelo","Leonardo da Vinci","Rafael","Donatello"]},{"cat":"Ciências","d":1,"q":"Qual planeta é conhecido como Planeta Vermelho?","a":["Marte","Júpiter","Vênus","Saturno"]},{"cat":"Ciências","d":1,"q":"Quantas patas tem uma aranha?","a":["8","6","10","12"]},{"cat":"Ciências","d":1,"q":"Qual é o maior planeta do Sistema Solar?","a":["Júpiter","Saturno","Netuno","Terra"]},{"cat":"Ciências","d":1,"q":"Qual gás as plantas absorvem do ar para fazer fotossíntese?","a":["Gás carbônico","Oxigênio","Nitrogênio","Hélio"]},{"cat":"Ciências","d":1,"q":"Qual é o maior órgão do corpo humano?","a":["Pele","Fígado","Cérebro","Coração"]},{"cat":"Ciências","d":1,"q":"A água ferve a quantos graus Celsius ao nível do mar?","a":["100","90","80","120"]},{"cat":"Ciências","d":1,"q":"Qual é a estrela mais próxima da Terra?","a":["Sol","Sirius","Alfa Centauri","Polaris"]},{"cat":"Ciências","d":2,"q":"Qual é o símbolo químico do ouro?","a":["Au","Ag","Go","Or"]},{"cat":"Ciências","d":2,"q":"Quantos ossos tem o corpo humano adulto?","a":["206","180","250","300"]},{"cat":"Ciências","d":2,"q":"Qual é o osso mais longo do corpo humano?","a":["Fêmur","Tíbia","Úmero","Coluna"]},{"cat":"Ciências","d":2,"q":"Qual planeta tem os anéis mais famosos?","a":["Saturno","Urano","Júpiter","Netuno"]},{"cat":"Ciências","d":2,"q":"Qual é a fórmula química da água?","a":["H2O","CO2","O2","H2O2"]},{"cat":"Ciências","d":2,"q":"Quantos corações tem um polvo?","a":["3","1","2","4"]},{"cat":"Ciências","d":2,"q":"Qual é o animal terrestre mais rápido?","a":["Guepardo","Leão","Cavalo","Antílope"]},{"cat":"Ciências","d":2,"q":"Qual é o metal líquido em temperatura ambiente?","a":["Mercúrio","Chumbo","Alumínio","Estanho"]},{"cat":"Ciências","d":2,"q":"Quantos planetas tem o Sistema Solar?","a":["8","9","7","10"]},{"cat":"Ciências","d":3,"q":"Qual cientista formulou a teoria da relatividade?","a":["Albert Einstein","Isaac Newton","Galileu","Stephen Hawking"]},{"cat":"Ciências","d":3,"q":"Qual é o símbolo químico do ferro?","a":["Fe","Ir","F","Fr"]},{"cat":"Ciências","d":3,"q":"Qual é o elemento mais abundante no universo?","a":["Hidrogênio","Hélio","Oxigênio","Carbono"]},{"cat":"Ciências","d":3,"q":"A luz do Sol leva cerca de quanto tempo para chegar à Terra?","a":["8 minutos","8 segundos","1 hora","1 dia"]},{"cat":"Ciências","d":3,"q":"Qual parte da célula guarda o DNA?","a":["Núcleo","Membrana","Ribossomo","Citoplasma"]},{"cat":"Ciências","d":3,"q":"Qual planeta gira \"deitado\", quase de lado?","a":["Urano","Netuno","Mercúrio","Marte"]},{"cat":"Ciências","d":3,"q":"Qual é a unidade de medida da corrente elétrica?","a":["Ampère","Volt","Watt","Ohm"]},{"cat":"Esportes","d":1,"q":"Quantos jogadores um time de futebol tem em campo?","a":["11","10","9","12"]},{"cat":"Esportes","d":1,"q":"Quantas Copas do Mundo o Brasil já ganhou?","a":["5","4","6","3"]},{"cat":"Esportes","d":1,"q":"Qual país sediou a Copa do Mundo de 2014?","a":["Brasil","Alemanha","Rússia","África do Sul"]},{"cat":"Esportes","d":1,"q":"Em qual esporte se usa uma raquete e uma peteca?","a":["Badminton","Tênis","Squash","Pingue-pongue"]},{"cat":"Esportes","d":1,"q":"Quem é conhecido como Rei do Futebol?","a":["Pelé","Maradona","Zico","Ronaldo"]},{"cat":"Esportes","d":2,"q":"De quantos em quantos anos acontecem as Olimpíadas de verão?","a":["4","2","3","5"]},{"cat":"Esportes","d":2,"q":"Qual país ganhou a Copa do Mundo de 2022?","a":["Argentina","França","Brasil","Croácia"]},{"cat":"Esportes","d":2,"q":"Em que ano o Brasil ganhou sua quinta Copa?","a":["2002","1994","1998","2006"]},{"cat":"Esportes","d":2,"q":"Qual piloto brasileiro foi tricampeão de Fórmula 1 e morreu em 1994?","a":["Ayrton Senna","Nelson Piquet","Emerson Fittipaldi","Rubens Barrichello"]},{"cat":"Esportes","d":2,"q":"Quantos pontos vale uma cesta de três no basquete?","a":["3","2","4","1"]},{"cat":"Esportes","d":2,"q":"Qual seleção tem mais títulos da Copa América?","a":["Argentina","Brasil","Uruguai","Chile"]},{"cat":"Esportes","d":2,"q":"Em qual esporte se faz um \"home run\"?","a":["Beisebol","Críquete","Golfe","Rúgbi"]},{"cat":"Esportes","d":3,"q":"Qual cidade sediou as Olimpíadas de 2016?","a":["Rio de Janeiro","Londres","Tóquio","Pequim"]},{"cat":"Esportes","d":3,"q":"Quantos sets precisa vencer um jogador para ganhar um jogo masculino de Grand Slam?","a":["3","2","4","5"]},{"cat":"Esportes","d":3,"q":"Qual país inventou o vôlei?","a":["Estados Unidos","Brasil","Japão","Itália"]},{"cat":"Esportes","d":3,"q":"Qual brasileira foi eleita melhor jogadora do mundo seis vezes?","a":["Marta","Formiga","Cristiane","Debinha"]},{"cat":"Esportes","d":3,"q":"Em que esporte o Brasil tem o maior número de medalhas olímpicas?","a":["Judô","Vôlei","Natação","Atletismo"]},{"cat":"Entretenimento","d":1,"q":"Qual é o nome do rato mais famoso da Disney?","a":["Mickey","Jerry","Remy","Stuart"]},{"cat":"Entretenimento","d":1,"q":"Quantas cores tem o arco-íris?","a":["7","6","5","8"]},{"cat":"Entretenimento","d":1,"q":"Qual super-herói é conhecido como Homem-Morcego?","a":["Batman","Superman","Homem-Aranha","Flash"]},{"cat":"Entretenimento","d":1,"q":"Em que desenho aparecem Ash e Pikachu?","a":["Pokémon","Digimon","Dragon Ball","Naruto"]},{"cat":"Entretenimento","d":1,"q":"Qual é o nome do boneco de madeira cujo nariz cresce quando mente?","a":["Pinóquio","Peter Pan","Aladim","Gepeto"]},{"cat":"Entretenimento","d":2,"q":"Quem cantou \"Garota de Ipanema\" com Tom Jobim no disco famoso de 1964?","a":["João Gilberto","Caetano Veloso","Chico Buarque","Gilberto Gil"]},{"cat":"Entretenimento","d":2,"q":"Qual é o nome da princesa de \"Frozen\" que tem poderes de gelo?","a":["Elsa","Anna","Aurora","Ariel"]},{"cat":"Entretenimento","d":2,"q":"Qual banda britânica tinha John, Paul, George e Ringo?","a":["Beatles","Rolling Stones","Queen","Oasis"]},{"cat":"Entretenimento","d":2,"q":"Qual é o nome do bruxo protagonista criado por J.K. Rowling?","a":["Harry Potter","Gandalf","Merlin","Frodo"]},{"cat":"Entretenimento","d":2,"q":"Em qual cidade fica a Times Square?","a":["Nova York","Los Angeles","Chicago","Las Vegas"]},{"cat":"Entretenimento","d":2,"q":"Qual é o videogame mais vendido de todos os tempos?","a":["Minecraft","Tetris","GTA V","Mario Kart 8"]},{"cat":"Entretenimento","d":2,"q":"Qual cantora é conhecida como Rainha do Pop?","a":["Madonna","Beyoncé","Lady Gaga","Britney Spears"]},{"cat":"Entretenimento","d":2,"q":"Qual personagem vive num abacaxi no fundo do mar?","a":["Bob Esponja","Patrick","Lula Molusco","Sirigueijo"]},{"cat":"Entretenimento","d":3,"q":"Qual filme ganhou o primeiro Oscar de melhor filme internacional para o Brasil?","a":["Ainda Estou Aqui","Central do Brasil","Cidade de Deus","O Pagador de Promessas"]},{"cat":"Entretenimento","d":3,"q":"Quem escreveu \"Dom Casmurro\"?","a":["Machado de Assis","José de Alencar","Jorge Amado","Graciliano Ramos"]},{"cat":"Entretenimento","d":3,"q":"Qual é o nome do ogro verde do cinema da DreamWorks?","a":["Shrek","Hulk","Grinch","Fiona"]},{"cat":"Entretenimento","d":3,"q":"Quem pintou a Mona Lisa?","a":["Leonardo da Vinci","Michelangelo","Van Gogh","Picasso"]},{"cat":"Entretenimento","d":3,"q":"Quantas casas tem um tabuleiro de xadrez?","a":["64","36","81","100"]},{"cat":"Entretenimento","d":3,"q":"Qual instrumento tem 88 teclas?","a":["Piano","Órgão","Acordeão","Teclado de 61"]},{"cat":"Brasil","d":1,"q":"Qual é o prato típico brasileiro feito com feijão preto e carnes?","a":["Feijoada","Acarajé","Moqueca","Vatapá"]},{"cat":"Brasil","d":1,"q":"Qual é a festa mais famosa do Brasil em fevereiro?","a":["Carnaval","Festa Junina","Réveillon","Oktoberfest"]},{"cat":"Brasil","d":1,"q":"Qual é a moeda do Brasil?","a":["Real","Peso","Cruzeiro","Dólar"]},{"cat":"Brasil","d":1,"q":"Qual estátua famosa fica no morro do Corcovado?","a":["Cristo Redentor","Estátua da Liberdade","Padre Cícero","Iemanjá"]},{"cat":"Brasil","d":2,"q":"Qual é o maior bioma do Brasil?","a":["Amazônia","Cerrado","Caatinga","Pantanal"]},{"cat":"Brasil","d":2,"q":"Qual é a ave símbolo do Brasil?","a":["Sabiá-laranjeira","Arara","Tucano","Bem-te-vi"]},{"cat":"Brasil","d":2,"q":"Qual é a maior cidade do Brasil em população?","a":["São Paulo","Rio de Janeiro","Brasília","Salvador"]},{"cat":"Brasil","d":2,"q":"O acarajé é um prato típico de qual estado?","a":["Bahia","Pernambuco","Ceará","Maranhão"]},{"cat":"Brasil","d":2,"q":"Em qual estado fica a cidade de Gramado?","a":["Rio Grande do Sul","Santa Catarina","Paraná","Minas Gerais"]},{"cat":"Brasil","d":2,"q":"Qual é a fruta usada para fazer o açaí na tigela?","a":["Açaí","Cupuaçu","Graviola","Jabuticaba"]},{"cat":"Brasil","d":3,"q":"Qual é a capital de Tocantins?","a":["Palmas","Araguaína","Gurupi","Porto Nacional"]},{"cat":"Brasil","d":3,"q":"Quem compôs o Hino Nacional Brasileiro (música)?","a":["Francisco Manuel da Silva","Carlos Gomes","Villa-Lobos","Osório Duque-Estrada"]},{"cat":"Brasil","d":3,"q":"Qual é a capital de Roraima?","a":["Boa Vista","Macapá","Rio Branco","Porto Velho"]},{"cat":"Brasil","d":3,"q":"Qual rio passa pela cidade de São Paulo e é famoso pela poluição?","a":["Tietê","São Francisco","Paraná","Doce"]},{"cat":"Brasil","d":3,"q":"Qual festa nordestina homenageia São João?","a":["Festa Junina","Bumba meu boi","Círio de Nazaré","Maracatu"]},{"cat":"Comida","d":1,"q":"De qual fruta é feito o guacamole?","a":["Abacate","Limão","Manga","Pepino"]},{"cat":"Comida","d":1,"q":"Qual é o ingrediente principal da pipoca?","a":["Milho","Arroz","Trigo","Feijão"]},{"cat":"Comida","d":1,"q":"O sushi é uma comida típica de qual país?","a":["Japão","China","Coreia","Tailândia"]},{"cat":"Comida","d":1,"q":"Qual fruta é amarela e curvada?","a":["Banana","Manga","Pera","Limão"]},{"cat":"Comida","d":2,"q":"De qual país vem a pizza margherita?","a":["Itália","Estados Unidos","França","Grécia"]},{"cat":"Comida","d":2,"q":"Qual é o ingrediente principal do pão de queijo?","a":["Polvilho","Farinha de trigo","Fubá","Aveia"]},{"cat":"Comida","d":2,"q":"O chocolate é feito a partir de qual fruto?","a":["Cacau","Café","Castanha","Coco"]},{"cat":"Comida","d":3,"q":"Qual é o queijo usado no tradicional tiramisù?","a":["Mascarpone","Muçarela","Parmesão","Ricota"]},{"cat":"Comida","d":3,"q":"De qual país é originário o croissant como conhecemos hoje?","a":["França","Áustria","Bélgica","Suíça"]},{"cat":"Comida","d":3,"q":"O que é wasabi?","a":["Raiz picante","Molho de soja","Alga","Peixe cru"]},{"cat":"Animais","d":1,"q":"Qual é o maior animal do mundo?","a":["Baleia-azul","Elefante","Tubarão-baleia","Girafa"]},{"cat":"Animais","d":1,"q":"Qual animal é conhecido como rei da selva?","a":["Leão","Tigre","Elefante","Gorila"]},{"cat":"Animais","d":1,"q":"Quantas pernas tem um inseto?","a":["6","8","4","10"]},{"cat":"Animais","d":1,"q":"Qual animal muda de cor para se camuflar?","a":["Camaleão","Sapo","Coruja","Coelho"]},{"cat":"Animais","d":2,"q":"Qual é a ave que não voa e vive na Antártida?","a":["Pinguim","Avestruz","Emu","Kiwi"]},{"cat":"Animais","d":2,"q":"Qual mamífero voa?","a":["Morcego","Esquilo-voador","Pinguim","Coruja"]},{"cat":"Animais","d":2,"q":"Quantos dentes tem um adulto humano normalmente?","a":["32","28","30","36"]},{"cat":"Animais","d":2,"q":"Qual animal tem o pescoço mais longo?","a":["Girafa","Avestruz","Camelo","Lhama"]},{"cat":"Animais","d":2,"q":"O boto-cor-de-rosa vive em qual rio?","a":["Amazonas","São Francisco","Paraná","Tietê"]},{"cat":"Animais","d":3,"q":"Qual é o único mamífero que bota ovos além da equidna?","a":["Ornitorrinco","Morcego","Canguru","Coala"]},{"cat":"Animais","d":3,"q":"Quantos estômagos tem uma vaca?","a":["4","1","2","3"]},{"cat":"Animais","d":3,"q":"Qual animal dorme até 22 horas por dia?","a":["Coala","Preguiça","Gato","Leão"]},{"cat":"Tecnologia","d":1,"q":"Qual empresa criou o iPhone?","a":["Apple","Samsung","Google","Microsoft"]},{"cat":"Tecnologia","d":1,"q":"O que significa a sigla \"Wi-Fi\" na prática?","a":["Internet sem fio","Computador portátil","Vídeo ao vivo","Rede de TV"]},{"cat":"Tecnologia","d":2,"q":"Qual rede social tem como símbolo uma nota musical?","a":["TikTok","Instagram","Twitter","Facebook"]},{"cat":"Tecnologia","d":2,"q":"Quem fundou a Microsoft com Paul Allen?","a":["Bill Gates","Steve Jobs","Mark Zuckerberg","Elon Musk"]},{"cat":"Tecnologia","d":2,"q":"Quantos bits tem um byte?","a":["8","4","16","10"]},{"cat":"Tecnologia","d":2,"q":"Qual empresa é dona do YouTube?","a":["Google","Meta","Amazon","Apple"]},{"cat":"Tecnologia","d":3,"q":"Em que ano foi lançado o primeiro iPhone?","a":["2007","2005","2009","2010"]},{"cat":"Tecnologia","d":3,"q":"O que significa \"URL\"?","a":["Endereço de uma página","Tipo de vírus","Placa de vídeo","Linguagem de programação"]},{"cat":"Tecnologia","d":3,"q":"Qual linguagem é usada para dar estilo às páginas da internet?","a":["CSS","SQL","Python","C++"]},{"cat":"Conhecimentos gerais","d":1,"q":"Quantos dias tem um ano bissexto?","a":["366","365","364","360"]},{"cat":"Conhecimentos gerais","d":1,"q":"Quantos minutos tem uma hora?","a":["60","100","30","90"]},{"cat":"Conhecimentos gerais","d":1,"q":"Qual é a cor resultante da mistura de azul e amarelo?","a":["Verde","Roxo","Laranja","Marrom"]},{"cat":"Conhecimentos gerais","d":1,"q":"Quantos lados tem um triângulo?","a":["3","4","5","6"]},{"cat":"Conhecimentos gerais","d":1,"q":"Qual é o contrário de \"quente\"?","a":["Frio","Morno","Seco","Molhado"]},{"cat":"Conhecimentos gerais","d":2,"q":"Quantos segundos tem um minuto?","a":["60","100","30","120"]},{"cat":"Conhecimentos gerais","d":2,"q":"Quanto é 7 vezes 8?","a":["56","54","64","48"]},{"cat":"Conhecimentos gerais","d":2,"q":"Qual é o número romano para 10?","a":["X","V","L","C"]},{"cat":"Conhecimentos gerais","d":2,"q":"Quantos zeros tem um milhão?","a":["6","5","7","9"]},{"cat":"Conhecimentos gerais","d":2,"q":"Qual é o plural de \"pão\"?","a":["Pães","Pãos","Pões","Pãs"]},{"cat":"Conhecimentos gerais","d":2,"q":"Quantas horas tem uma semana?","a":["168","144","172","120"]},{"cat":"Conhecimentos gerais","d":3,"q":"Qual é o número romano para 50?","a":["L","C","D","X"]},{"cat":"Conhecimentos gerais","d":3,"q":"Qual é a raiz quadrada de 144?","a":["12","14","11","16"]},{"cat":"Conhecimentos gerais","d":3,"q":"Quantos lados tem um hexágono?","a":["6","8","5","7"]},{"cat":"Conhecimentos gerais","d":3,"q":"Qual é o idioma mais falado do mundo como língua nativa?","a":["Mandarim","Inglês","Espanhol","Hindi"]},{"cat":"Conhecimentos gerais","d":3,"q":"Quantos graus tem a soma dos ângulos de um triângulo?","a":["180","360","90","270"]},{"cat":"Geografia","d":2,"q":"Qual país é famoso pela Torre Eiffel?","a":["França","Itália","Bélgica","Inglaterra"]},{"cat":"Geografia","d":1,"q":"Qual é a capital dos Estados Unidos?","a":["Washington","Nova York","Los Angeles","Chicago"]},{"cat":"Geografia","d":2,"q":"Em qual país fica a Grande Muralha?","a":["China","Japão","Índia","Mongólia"]},{"cat":"Geografia","d":3,"q":"Qual é a capital da Islândia?","a":["Reykjavík","Oslo","Helsinque","Copenhague"]},{"cat":"Geografia","d":2,"q":"Qual país é conhecido como Terra do Sol Nascente?","a":["Japão","China","Coreia do Sul","Tailândia"]},{"cat":"Geografia","d":3,"q":"Qual país tem o formato mais comprido e estreito da América do Sul?","a":["Chile","Peru","Argentina","Equador"]},{"cat":"Ciências","d":1,"q":"Qual é o satélite natural da Terra?","a":["Lua","Sol","Marte","Vênus"]},{"cat":"Ciências","d":2,"q":"O que mede um termômetro?","a":["Temperatura","Pressão","Peso","Velocidade"]},{"cat":"Ciências","d":2,"q":"Qual é o planeta mais próximo do Sol?","a":["Mercúrio","Vênus","Marte","Terra"]},{"cat":"Ciências","d":3,"q":"Quantos cromossomos tem uma célula humana comum?","a":["46","23","48","44"]},{"cat":"Entretenimento","d":1,"q":"Qual é a cor do Hulk?","a":["Verde","Azul","Vermelho","Roxo"]},{"cat":"Entretenimento","d":2,"q":"Qual herói usa um escudo com uma estrela?","a":["Capitão América","Homem de Ferro","Thor","Pantera Negra"]},{"cat":"Entretenimento","d":2,"q":"Em qual desenho o personagem diz \"Ao infinito e além\"?","a":["Toy Story","Carros","Procurando Nemo","Up"]},{"cat":"Entretenimento","d":3,"q":"Qual o nome verdadeiro do Homem-Aranha?","a":["Peter Parker","Bruce Wayne","Clark Kent","Tony Stark"]},{"cat":"Esportes","d":1,"q":"Qual é o esporte mais popular do Brasil?","a":["Futebol","Vôlei","Basquete","Tênis"]},{"cat":"Esportes","d":2,"q":"Em qual esporte o Brasil tem Rayssa Leal como estrela?","a":["Skate","Surfe","Ginástica","Judô"]},{"cat":"Esportes","d":3,"q":"Qual surfista brasileiro foi o primeiro campeão mundial do país?","a":["Gabriel Medina","Ítalo Ferreira","Adriano de Souza","Filipe Toledo"]},{"cat":"Comida","d":2,"q":"Qual bebida é feita com cachaça, limão, açúcar e gelo?","a":["Caipirinha","Mojito","Margarita","Batida"]},{"cat":"Comida","d":1,"q":"Qual é a cor de dentro da melancia?","a":["Vermelha","Verde","Amarela","Branca"]},{"cat":"Animais","d":1,"q":"Qual animal faz \"muu\"?","a":["Vaca","Cabra","Ovelha","Porco"]},{"cat":"Animais","d":2,"q":"Qual é o animal símbolo da Austrália?","a":["Canguru","Coala","Ornitorrinco","Emu"]},{"cat":"Tecnologia","d":1,"q":"Qual tecla apaga o caractere à esquerda do cursor?","a":["Backspace","Enter","Shift","Tab"]},{"cat":"Brasil","d":1,"q":"Em qual cidade fica o Pão de Açúcar?","a":["Rio de Janeiro","São Paulo","Salvador","Fortaleza"]},{"cat":"Brasil","d":2,"q":"Qual é o maior estádio do Brasil?","a":["Maracanã","Mineirão","Morumbi","Arena Corinthians"]},{"cat":"História","d":1,"q":"Quem foi o primeiro homem a pisar na Lua?","a":["Neil Armstrong","Buzz Aldrin","Yuri Gagarin","Michael Collins"]},{"cat":"História","d":2,"q":"Qual povo construiu a cidade de Machu Picchu?","a":["Incas","Maias","Astecas","Olmecas"]},{"cat":"Conhecimentos gerais","d":1,"q":"Qual é o primeiro mês do ano?","a":["Janeiro","Fevereiro","Dezembro","Março"]},{"cat":"Conhecimentos gerais","d":2,"q":"Quantas semanas tem um ano?","a":["52","48","50","54"]}]}
+{
+"cats": [
+"Geografia",
+"História",
+"Ciências",
+"Esportes",
+"Entretenimento",
+"Brasil",
+"Comida",
+"Animais",
+"Tecnologia",
+"Conhecimentos gerais",
+"Matemática",
+"Português",
+"Música",
+"Corpo humano",
+"Espaço",
+"Arte e Cultura",
+"Mitologia",
+"Cinema e séries",
+"Futebol"
+],
+"q": [
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Qual é a capital do Brasil?",
+"a": [
+"Brasília",
+"Rio de Janeiro",
+"São Paulo",
+"Salvador"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Qual é o maior país do mundo em área?",
+"a": [
+"Rússia",
+"China",
+"Canadá",
+"Brasil"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Em que continente fica o Egito?",
+"a": [
+"África",
+"Ásia",
+"Europa",
+"Oceania"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Qual é o maior oceano da Terra?",
+"a": [
+"Pacífico",
+"Atlântico",
+"Índico",
+"Ártico"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Qual é a capital da Argentina?",
+"a": [
+"Buenos Aires",
+"Montevidéu",
+"Santiago",
+"Lima"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Qual país tem a forma de uma bota?",
+"a": [
+"Itália",
+"Espanha",
+"Grécia",
+"Portugal"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Qual é a capital da França?",
+"a": [
+"Paris",
+"Lyon",
+"Marselha",
+"Nice"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Qual é o rio mais volumoso do mundo?",
+"a": [
+"Amazonas",
+"Nilo",
+"Mississippi",
+"Yangtzé"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Quantos estados tem o Brasil?",
+"a": [
+"26",
+"24",
+"27",
+"25"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual é a capital da Austrália?",
+"a": [
+"Camberra",
+"Sydney",
+"Melbourne",
+"Perth"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual é a capital do Canadá?",
+"a": [
+"Ottawa",
+"Toronto",
+"Vancouver",
+"Montreal"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual é a montanha mais alta do mundo?",
+"a": [
+"Everest",
+"K2",
+"Aconcágua",
+"Kilimanjaro"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Em qual país fica Machu Picchu?",
+"a": [
+"Peru",
+"Bolívia",
+"Chile",
+"Equador"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual é o menor país do mundo?",
+"a": [
+"Vaticano",
+"Mônaco",
+"Malta",
+"San Marino"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual estado brasileiro tem a maior área?",
+"a": [
+"Amazonas",
+"Pará",
+"Mato Grosso",
+"Minas Gerais"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual é a capital do Japão?",
+"a": [
+"Tóquio",
+"Osaka",
+"Kyoto",
+"Hiroshima"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual deserto é o maior deserto quente do mundo?",
+"a": [
+"Saara",
+"Atacama",
+"Gobi",
+"Kalahari"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual é a capital de Portugal?",
+"a": [
+"Lisboa",
+"Porto",
+"Coimbra",
+"Braga"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual país tem mais habitantes na América do Sul?",
+"a": [
+"Brasil",
+"Argentina",
+"Colômbia",
+"Peru"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual é a capital da Bahia?",
+"a": [
+"Salvador",
+"Feira de Santana",
+"Ilhéus",
+"Porto Seguro"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual cidade é conhecida como Cidade Maravilhosa?",
+"a": [
+"Rio de Janeiro",
+"Salvador",
+"Recife",
+"Florianópolis"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "As Cataratas do Iguaçu ficam na fronteira do Brasil com qual país?",
+"a": [
+"Argentina",
+"Uruguai",
+"Bolívia",
+"Chile"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual é a capital da Turquia?",
+"a": [
+"Ancara",
+"Istambul",
+"Esmirna",
+"Antália"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual é a capital da Nova Zelândia?",
+"a": [
+"Wellington",
+"Auckland",
+"Christchurch",
+"Queenstown"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual país tem mais ilhas no mundo?",
+"a": [
+"Suécia",
+"Indonésia",
+"Filipinas",
+"Noruega"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual é o ponto mais alto do Brasil?",
+"a": [
+"Pico da Neblina",
+"Pico da Bandeira",
+"Monte Roraima",
+"Pedra da Mina"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual é a capital do Marrocos?",
+"a": [
+"Rabat",
+"Casablanca",
+"Marrakech",
+"Fez"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual é o lago mais profundo do mundo?",
+"a": [
+"Baikal",
+"Titicaca",
+"Vitória",
+"Superior"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Quantos países a Rússia faz fronteira por terra (aproximadamente)?",
+"a": [
+"14",
+"8",
+"20",
+"5"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual estado brasileiro não faz fronteira com nenhum outro país e tem a menor área?",
+"a": [
+"Sergipe",
+"Alagoas",
+"Espírito Santo",
+"Rio Grande do Norte"
+]
+},
+{
+"cat": "História",
+"d": 1,
+"q": "Em que ano o Brasil foi descoberto pelos portugueses?",
+"a": [
+"1500",
+"1492",
+"1822",
+"1600"
+]
+},
+{
+"cat": "História",
+"d": 1,
+"q": "Quem proclamou a independência do Brasil?",
+"a": [
+"Dom Pedro I",
+"Dom Pedro II",
+"Tiradentes",
+"Deodoro da Fonseca"
+]
+},
+{
+"cat": "História",
+"d": 1,
+"q": "Em que ano o homem pisou na Lua pela primeira vez?",
+"a": [
+"1969",
+"1959",
+"1975",
+"1981"
+]
+},
+{
+"cat": "História",
+"d": 1,
+"q": "Quem descobriu a América em 1492?",
+"a": [
+"Cristóvão Colombo",
+"Pedro Álvares Cabral",
+"Vasco da Gama",
+"Fernão de Magalhães"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Em que ano foi proclamada a República no Brasil?",
+"a": [
+"1889",
+"1822",
+"1888",
+"1930"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Quem assinou a Lei Áurea?",
+"a": [
+"Princesa Isabel",
+"Dom Pedro II",
+"Dom João VI",
+"Getúlio Vargas"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Em que ano começou a Segunda Guerra Mundial?",
+"a": [
+"1939",
+"1914",
+"1945",
+"1929"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Qual civilização construiu as pirâmides de Gizé?",
+"a": [
+"Egípcia",
+"Romana",
+"Grega",
+"Maia"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Quem foi o primeiro presidente do Brasil?",
+"a": [
+"Deodoro da Fonseca",
+"Floriano Peixoto",
+"Getúlio Vargas",
+"Prudente de Morais"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Em que ano caiu o Muro de Berlim?",
+"a": [
+"1989",
+"1991",
+"1985",
+"1979"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Qual cidade foi a primeira capital do Brasil?",
+"a": [
+"Salvador",
+"Rio de Janeiro",
+"São Paulo",
+"Recife"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Em que ano Brasília foi inaugurada?",
+"a": [
+"1960",
+"1950",
+"1964",
+"1956"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Quem foi o líder da Inconfidência Mineira executado em 1792?",
+"a": [
+"Tiradentes",
+"Zumbi",
+"Frei Caneca",
+"Bento Gonçalves"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Qual imperador romano teria tocado lira enquanto Roma ardia, segundo a lenda?",
+"a": [
+"Nero",
+"César",
+"Augusto",
+"Calígula"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Em que ano terminou a Primeira Guerra Mundial?",
+"a": [
+"1918",
+"1919",
+"1916",
+"1920"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Qual navegador português chegou à Índia por mar em 1498?",
+"a": [
+"Vasco da Gama",
+"Bartolomeu Dias",
+"Cabral",
+"Magalhães"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Quem pintou o teto da Capela Sistina?",
+"a": [
+"Michelangelo",
+"Leonardo da Vinci",
+"Rafael",
+"Donatello"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "Qual planeta é conhecido como Planeta Vermelho?",
+"a": [
+"Marte",
+"Júpiter",
+"Vênus",
+"Saturno"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "Quantas patas tem uma aranha?",
+"a": [
+"8",
+"6",
+"10",
+"12"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "Qual é o maior planeta do Sistema Solar?",
+"a": [
+"Júpiter",
+"Saturno",
+"Netuno",
+"Terra"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "Qual gás as plantas absorvem do ar para fazer fotossíntese?",
+"a": [
+"Gás carbônico",
+"Oxigênio",
+"Nitrogênio",
+"Hélio"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "Qual é o maior órgão do corpo humano?",
+"a": [
+"Pele",
+"Fígado",
+"Cérebro",
+"Coração"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "A água ferve a quantos graus Celsius ao nível do mar?",
+"a": [
+"100",
+"90",
+"80",
+"120"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "Qual é a estrela mais próxima da Terra?",
+"a": [
+"Sol",
+"Sirius",
+"Alfa Centauri",
+"Polaris"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Qual é o símbolo químico do ouro?",
+"a": [
+"Au",
+"Ag",
+"Go",
+"Or"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Quantos ossos tem o corpo humano adulto?",
+"a": [
+"206",
+"180",
+"250",
+"300"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Qual é o osso mais longo do corpo humano?",
+"a": [
+"Fêmur",
+"Tíbia",
+"Úmero",
+"Coluna"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Qual planeta tem os anéis mais famosos?",
+"a": [
+"Saturno",
+"Urano",
+"Júpiter",
+"Netuno"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Qual é a fórmula química da água?",
+"a": [
+"H2O",
+"CO2",
+"O2",
+"H2O2"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Quantos corações tem um polvo?",
+"a": [
+"3",
+"1",
+"2",
+"4"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Qual é o animal terrestre mais rápido?",
+"a": [
+"Guepardo",
+"Leão",
+"Cavalo",
+"Antílope"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Qual é o metal líquido em temperatura ambiente?",
+"a": [
+"Mercúrio",
+"Chumbo",
+"Alumínio",
+"Estanho"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Quantos planetas tem o Sistema Solar?",
+"a": [
+"8",
+"9",
+"7",
+"10"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual cientista formulou a teoria da relatividade?",
+"a": [
+"Albert Einstein",
+"Isaac Newton",
+"Galileu",
+"Stephen Hawking"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual é o símbolo químico do ferro?",
+"a": [
+"Fe",
+"Ir",
+"F",
+"Fr"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual é o elemento mais abundante no universo?",
+"a": [
+"Hidrogênio",
+"Hélio",
+"Oxigênio",
+"Carbono"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "A luz do Sol leva cerca de quanto tempo para chegar à Terra?",
+"a": [
+"8 minutos",
+"8 segundos",
+"1 hora",
+"1 dia"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual parte da célula guarda o DNA?",
+"a": [
+"Núcleo",
+"Membrana",
+"Ribossomo",
+"Citoplasma"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual planeta gira \"deitado\", quase de lado?",
+"a": [
+"Urano",
+"Netuno",
+"Mercúrio",
+"Marte"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual é a unidade de medida da corrente elétrica?",
+"a": [
+"Ampère",
+"Volt",
+"Watt",
+"Ohm"
+]
+},
+{
+"cat": "Esportes",
+"d": 1,
+"q": "Quantos jogadores um time de futebol tem em campo?",
+"a": [
+"11",
+"10",
+"9",
+"12"
+]
+},
+{
+"cat": "Esportes",
+"d": 1,
+"q": "Quantas Copas do Mundo o Brasil já ganhou?",
+"a": [
+"5",
+"4",
+"6",
+"3"
+]
+},
+{
+"cat": "Esportes",
+"d": 1,
+"q": "Qual país sediou a Copa do Mundo de 2014?",
+"a": [
+"Brasil",
+"Alemanha",
+"Rússia",
+"África do Sul"
+]
+},
+{
+"cat": "Esportes",
+"d": 1,
+"q": "Em qual esporte se usa uma raquete e uma peteca?",
+"a": [
+"Badminton",
+"Tênis",
+"Squash",
+"Pingue-pongue"
+]
+},
+{
+"cat": "Esportes",
+"d": 1,
+"q": "Quem é conhecido como Rei do Futebol?",
+"a": [
+"Pelé",
+"Maradona",
+"Zico",
+"Ronaldo"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "De quantos em quantos anos acontecem as Olimpíadas de verão?",
+"a": [
+"4",
+"2",
+"3",
+"5"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Qual país ganhou a Copa do Mundo de 2022?",
+"a": [
+"Argentina",
+"França",
+"Brasil",
+"Croácia"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Em que ano o Brasil ganhou sua quinta Copa?",
+"a": [
+"2002",
+"1994",
+"1998",
+"2006"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Qual piloto brasileiro foi tricampeão de Fórmula 1 e morreu em 1994?",
+"a": [
+"Ayrton Senna",
+"Nelson Piquet",
+"Emerson Fittipaldi",
+"Rubens Barrichello"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Quantos pontos vale uma cesta de três no basquete?",
+"a": [
+"3",
+"2",
+"4",
+"1"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Qual seleção tem mais títulos da Copa América?",
+"a": [
+"Argentina",
+"Brasil",
+"Uruguai",
+"Chile"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Em qual esporte se faz um \"home run\"?",
+"a": [
+"Beisebol",
+"Críquete",
+"Golfe",
+"Rúgbi"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Qual cidade sediou as Olimpíadas de 2016?",
+"a": [
+"Rio de Janeiro",
+"Londres",
+"Tóquio",
+"Pequim"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Quantos sets precisa vencer um jogador para ganhar um jogo masculino de Grand Slam?",
+"a": [
+"3",
+"2",
+"4",
+"5"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Qual país inventou o vôlei?",
+"a": [
+"Estados Unidos",
+"Brasil",
+"Japão",
+"Itália"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Qual brasileira foi eleita melhor jogadora do mundo seis vezes?",
+"a": [
+"Marta",
+"Formiga",
+"Cristiane",
+"Debinha"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Em que esporte o Brasil tem o maior número de medalhas olímpicas?",
+"a": [
+"Judô",
+"Vôlei",
+"Natação",
+"Atletismo"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"q": "Qual é o nome do rato mais famoso da Disney?",
+"a": [
+"Mickey",
+"Jerry",
+"Remy",
+"Stuart"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"q": "Quantas cores tem o arco-íris?",
+"a": [
+"7",
+"6",
+"5",
+"8"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"q": "Qual super-herói é conhecido como Homem-Morcego?",
+"a": [
+"Batman",
+"Superman",
+"Homem-Aranha",
+"Flash"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"q": "Em que desenho aparecem Ash e Pikachu?",
+"a": [
+"Pokémon",
+"Digimon",
+"Dragon Ball",
+"Naruto"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"q": "Qual é o nome do boneco de madeira cujo nariz cresce quando mente?",
+"a": [
+"Pinóquio",
+"Peter Pan",
+"Aladim",
+"Gepeto"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Quem cantou \"Garota de Ipanema\" com Tom Jobim no disco famoso de 1964?",
+"a": [
+"João Gilberto",
+"Caetano Veloso",
+"Chico Buarque",
+"Gilberto Gil"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Qual é o nome da princesa de \"Frozen\" que tem poderes de gelo?",
+"a": [
+"Elsa",
+"Anna",
+"Aurora",
+"Ariel"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Qual banda britânica tinha John, Paul, George e Ringo?",
+"a": [
+"Beatles",
+"Rolling Stones",
+"Queen",
+"Oasis"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Qual é o nome do bruxo protagonista criado por J.K. Rowling?",
+"a": [
+"Harry Potter",
+"Gandalf",
+"Merlin",
+"Frodo"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Em qual cidade fica a Times Square?",
+"a": [
+"Nova York",
+"Los Angeles",
+"Chicago",
+"Las Vegas"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Qual é o videogame mais vendido de todos os tempos?",
+"a": [
+"Minecraft",
+"Tetris",
+"GTA V",
+"Mario Kart 8"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Qual cantora é conhecida como Rainha do Pop?",
+"a": [
+"Madonna",
+"Beyoncé",
+"Lady Gaga",
+"Britney Spears"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Qual personagem vive num abacaxi no fundo do mar?",
+"a": [
+"Bob Esponja",
+"Patrick",
+"Lula Molusco",
+"Sirigueijo"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Qual filme ganhou o primeiro Oscar de melhor filme internacional para o Brasil?",
+"a": [
+"Ainda Estou Aqui",
+"Central do Brasil",
+"Cidade de Deus",
+"O Pagador de Promessas"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Quem escreveu \"Dom Casmurro\"?",
+"a": [
+"Machado de Assis",
+"José de Alencar",
+"Jorge Amado",
+"Graciliano Ramos"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Qual é o nome do ogro verde do cinema da DreamWorks?",
+"a": [
+"Shrek",
+"Hulk",
+"Grinch",
+"Fiona"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Quem pintou a Mona Lisa?",
+"a": [
+"Leonardo da Vinci",
+"Michelangelo",
+"Van Gogh",
+"Picasso"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Quantas casas tem um tabuleiro de xadrez?",
+"a": [
+"64",
+"36",
+"81",
+"100"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Qual instrumento tem 88 teclas?",
+"a": [
+"Piano",
+"Órgão",
+"Acordeão",
+"Teclado de 61"
+]
+},
+{
+"cat": "Brasil",
+"d": 1,
+"q": "Qual é o prato típico brasileiro feito com feijão preto e carnes?",
+"a": [
+"Feijoada",
+"Acarajé",
+"Moqueca",
+"Vatapá"
+]
+},
+{
+"cat": "Brasil",
+"d": 1,
+"q": "Qual é a festa mais famosa do Brasil em fevereiro?",
+"a": [
+"Carnaval",
+"Festa Junina",
+"Réveillon",
+"Oktoberfest"
+]
+},
+{
+"cat": "Brasil",
+"d": 1,
+"q": "Qual é a moeda do Brasil?",
+"a": [
+"Real",
+"Peso",
+"Cruzeiro",
+"Dólar"
+]
+},
+{
+"cat": "Brasil",
+"d": 1,
+"q": "Qual estátua famosa fica no morro do Corcovado?",
+"a": [
+"Cristo Redentor",
+"Estátua da Liberdade",
+"Padre Cícero",
+"Iemanjá"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual é o maior bioma do Brasil?",
+"a": [
+"Amazônia",
+"Cerrado",
+"Caatinga",
+"Pantanal"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual é a ave símbolo do Brasil?",
+"a": [
+"Sabiá-laranjeira",
+"Arara",
+"Tucano",
+"Bem-te-vi"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual é a maior cidade do Brasil em população?",
+"a": [
+"São Paulo",
+"Rio de Janeiro",
+"Brasília",
+"Salvador"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "O acarajé é um prato típico de qual estado?",
+"a": [
+"Bahia",
+"Pernambuco",
+"Ceará",
+"Maranhão"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Em qual estado fica a cidade de Gramado?",
+"a": [
+"Rio Grande do Sul",
+"Santa Catarina",
+"Paraná",
+"Minas Gerais"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual é a fruta usada para fazer o açaí na tigela?",
+"a": [
+"Açaí",
+"Cupuaçu",
+"Graviola",
+"Jabuticaba"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Qual é a capital de Tocantins?",
+"a": [
+"Palmas",
+"Araguaína",
+"Gurupi",
+"Porto Nacional"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Quem compôs o Hino Nacional Brasileiro (música)?",
+"a": [
+"Francisco Manuel da Silva",
+"Carlos Gomes",
+"Villa-Lobos",
+"Osório Duque-Estrada"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Qual é a capital de Roraima?",
+"a": [
+"Boa Vista",
+"Macapá",
+"Rio Branco",
+"Porto Velho"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Qual rio passa pela cidade de São Paulo e é famoso pela poluição?",
+"a": [
+"Tietê",
+"São Francisco",
+"Paraná",
+"Doce"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Qual festa nordestina homenageia São João?",
+"a": [
+"Festa Junina",
+"Bumba meu boi",
+"Círio de Nazaré",
+"Maracatu"
+]
+},
+{
+"cat": "Comida",
+"d": 1,
+"q": "De qual fruta é feito o guacamole?",
+"a": [
+"Abacate",
+"Limão",
+"Manga",
+"Pepino"
+]
+},
+{
+"cat": "Comida",
+"d": 1,
+"q": "Qual é o ingrediente principal da pipoca?",
+"a": [
+"Milho",
+"Arroz",
+"Trigo",
+"Feijão"
+]
+},
+{
+"cat": "Comida",
+"d": 1,
+"q": "O sushi é uma comida típica de qual país?",
+"a": [
+"Japão",
+"China",
+"Coreia",
+"Tailândia"
+]
+},
+{
+"cat": "Comida",
+"d": 1,
+"q": "Qual fruta é amarela e curvada?",
+"a": [
+"Banana",
+"Manga",
+"Pera",
+"Limão"
+]
+},
+{
+"cat": "Comida",
+"d": 2,
+"q": "De qual país vem a pizza margherita?",
+"a": [
+"Itália",
+"Estados Unidos",
+"França",
+"Grécia"
+]
+},
+{
+"cat": "Comida",
+"d": 2,
+"q": "Qual é o ingrediente principal do pão de queijo?",
+"a": [
+"Polvilho",
+"Farinha de trigo",
+"Fubá",
+"Aveia"
+]
+},
+{
+"cat": "Comida",
+"d": 2,
+"q": "O chocolate é feito a partir de qual fruto?",
+"a": [
+"Cacau",
+"Café",
+"Castanha",
+"Coco"
+]
+},
+{
+"cat": "Comida",
+"d": 3,
+"q": "Qual é o queijo usado no tradicional tiramisù?",
+"a": [
+"Mascarpone",
+"Muçarela",
+"Parmesão",
+"Ricota"
+]
+},
+{
+"cat": "Comida",
+"d": 3,
+"q": "De qual país é originário o croissant como conhecemos hoje?",
+"a": [
+"França",
+"Áustria",
+"Bélgica",
+"Suíça"
+]
+},
+{
+"cat": "Comida",
+"d": 3,
+"q": "O que é wasabi?",
+"a": [
+"Raiz picante",
+"Molho de soja",
+"Alga",
+"Peixe cru"
+]
+},
+{
+"cat": "Animais",
+"d": 1,
+"q": "Qual é o maior animal do mundo?",
+"a": [
+"Baleia-azul",
+"Elefante",
+"Tubarão-baleia",
+"Girafa"
+]
+},
+{
+"cat": "Animais",
+"d": 1,
+"q": "Qual animal é conhecido como rei da selva?",
+"a": [
+"Leão",
+"Tigre",
+"Elefante",
+"Gorila"
+]
+},
+{
+"cat": "Animais",
+"d": 1,
+"q": "Quantas pernas tem um inseto?",
+"a": [
+"6",
+"8",
+"4",
+"10"
+]
+},
+{
+"cat": "Animais",
+"d": 1,
+"q": "Qual animal muda de cor para se camuflar?",
+"a": [
+"Camaleão",
+"Sapo",
+"Coruja",
+"Coelho"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "Qual é a ave que não voa e vive na Antártida?",
+"a": [
+"Pinguim",
+"Avestruz",
+"Emu",
+"Kiwi"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "Qual mamífero voa?",
+"a": [
+"Morcego",
+"Esquilo-voador",
+"Pinguim",
+"Coruja"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "Quantos dentes tem um adulto humano normalmente?",
+"a": [
+"32",
+"28",
+"30",
+"36"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "Qual animal tem o pescoço mais longo?",
+"a": [
+"Girafa",
+"Avestruz",
+"Camelo",
+"Lhama"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "O boto-cor-de-rosa vive em qual rio?",
+"a": [
+"Amazonas",
+"São Francisco",
+"Paraná",
+"Tietê"
+]
+},
+{
+"cat": "Animais",
+"d": 3,
+"q": "Qual é o único mamífero que bota ovos além da equidna?",
+"a": [
+"Ornitorrinco",
+"Morcego",
+"Canguru",
+"Coala"
+]
+},
+{
+"cat": "Animais",
+"d": 3,
+"q": "Quantos estômagos tem uma vaca?",
+"a": [
+"4",
+"1",
+"2",
+"3"
+]
+},
+{
+"cat": "Animais",
+"d": 3,
+"q": "Qual animal dorme até 22 horas por dia?",
+"a": [
+"Coala",
+"Preguiça",
+"Gato",
+"Leão"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 1,
+"q": "Qual empresa criou o iPhone?",
+"a": [
+"Apple",
+"Samsung",
+"Google",
+"Microsoft"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 1,
+"q": "O que significa a sigla \"Wi-Fi\" na prática?",
+"a": [
+"Internet sem fio",
+"Computador portátil",
+"Vídeo ao vivo",
+"Rede de TV"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"q": "Qual rede social tem como símbolo uma nota musical?",
+"a": [
+"TikTok",
+"Instagram",
+"Twitter",
+"Facebook"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"q": "Quem fundou a Microsoft com Paul Allen?",
+"a": [
+"Bill Gates",
+"Steve Jobs",
+"Mark Zuckerberg",
+"Elon Musk"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"q": "Quantos bits tem um byte?",
+"a": [
+"8",
+"4",
+"16",
+"10"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"q": "Qual empresa é dona do YouTube?",
+"a": [
+"Google",
+"Meta",
+"Amazon",
+"Apple"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"q": "Em que ano foi lançado o primeiro iPhone?",
+"a": [
+"2007",
+"2005",
+"2009",
+"2010"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"q": "O que significa \"URL\"?",
+"a": [
+"Endereço de uma página",
+"Tipo de vírus",
+"Placa de vídeo",
+"Linguagem de programação"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"q": "Qual linguagem é usada para dar estilo às páginas da internet?",
+"a": [
+"CSS",
+"SQL",
+"Python",
+"C++"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 1,
+"q": "Quantos dias tem um ano bissexto?",
+"a": [
+"366",
+"365",
+"364",
+"360"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 1,
+"q": "Quantos minutos tem uma hora?",
+"a": [
+"60",
+"100",
+"30",
+"90"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 1,
+"q": "Qual é a cor resultante da mistura de azul e amarelo?",
+"a": [
+"Verde",
+"Roxo",
+"Laranja",
+"Marrom"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 1,
+"q": "Quantos lados tem um triângulo?",
+"a": [
+"3",
+"4",
+"5",
+"6"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 1,
+"q": "Qual é o contrário de \"quente\"?",
+"a": [
+"Frio",
+"Morno",
+"Seco",
+"Molhado"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Quantos segundos tem um minuto?",
+"a": [
+"60",
+"100",
+"30",
+"120"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Quanto é 7 vezes 8?",
+"a": [
+"56",
+"54",
+"64",
+"48"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Qual é o número romano para 10?",
+"a": [
+"X",
+"V",
+"L",
+"C"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Quantos zeros tem um milhão?",
+"a": [
+"6",
+"5",
+"7",
+"9"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Qual é o plural de \"pão\"?",
+"a": [
+"Pães",
+"Pãos",
+"Pões",
+"Pãs"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Quantas horas tem uma semana?",
+"a": [
+"168",
+"144",
+"172",
+"120"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 3,
+"q": "Qual é o número romano para 50?",
+"a": [
+"L",
+"C",
+"D",
+"X"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 3,
+"q": "Qual é a raiz quadrada de 144?",
+"a": [
+"12",
+"14",
+"11",
+"16"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 3,
+"q": "Quantos lados tem um hexágono?",
+"a": [
+"6",
+"8",
+"5",
+"7"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 3,
+"q": "Qual é o idioma mais falado do mundo como língua nativa?",
+"a": [
+"Mandarim",
+"Inglês",
+"Espanhol",
+"Hindi"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 3,
+"q": "Quantos graus tem a soma dos ângulos de um triângulo?",
+"a": [
+"180",
+"360",
+"90",
+"270"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual país é famoso pela Torre Eiffel?",
+"a": [
+"França",
+"Itália",
+"Bélgica",
+"Inglaterra"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Qual é a capital dos Estados Unidos?",
+"a": [
+"Washington",
+"Nova York",
+"Los Angeles",
+"Chicago"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Em qual país fica a Grande Muralha?",
+"a": [
+"China",
+"Japão",
+"Índia",
+"Mongólia"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual é a capital da Islândia?",
+"a": [
+"Reykjavík",
+"Oslo",
+"Helsinque",
+"Copenhague"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual país é conhecido como Terra do Sol Nascente?",
+"a": [
+"Japão",
+"China",
+"Coreia do Sul",
+"Tailândia"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual país tem o formato mais comprido e estreito da América do Sul?",
+"a": [
+"Chile",
+"Peru",
+"Argentina",
+"Equador"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "Qual é o satélite natural da Terra?",
+"a": [
+"Lua",
+"Sol",
+"Marte",
+"Vênus"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "O que mede um termômetro?",
+"a": [
+"Temperatura",
+"Pressão",
+"Peso",
+"Velocidade"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Qual é o planeta mais próximo do Sol?",
+"a": [
+"Mercúrio",
+"Vênus",
+"Marte",
+"Terra"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Quantos cromossomos tem uma célula humana comum?",
+"a": [
+"46",
+"23",
+"48",
+"44"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"q": "Qual é a cor do Hulk?",
+"a": [
+"Verde",
+"Azul",
+"Vermelho",
+"Roxo"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Qual herói usa um escudo com uma estrela?",
+"a": [
+"Capitão América",
+"Homem de Ferro",
+"Thor",
+"Pantera Negra"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Em qual desenho o personagem diz \"Ao infinito e além\"?",
+"a": [
+"Toy Story",
+"Carros",
+"Procurando Nemo",
+"Up"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Qual o nome verdadeiro do Homem-Aranha?",
+"a": [
+"Peter Parker",
+"Bruce Wayne",
+"Clark Kent",
+"Tony Stark"
+]
+},
+{
+"cat": "Esportes",
+"d": 1,
+"q": "Qual é o esporte mais popular do Brasil?",
+"a": [
+"Futebol",
+"Vôlei",
+"Basquete",
+"Tênis"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Em qual esporte o Brasil tem Rayssa Leal como estrela?",
+"a": [
+"Skate",
+"Surfe",
+"Ginástica",
+"Judô"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Qual surfista brasileiro foi o primeiro campeão mundial do país?",
+"a": [
+"Gabriel Medina",
+"Ítalo Ferreira",
+"Adriano de Souza",
+"Filipe Toledo"
+]
+},
+{
+"cat": "Comida",
+"d": 2,
+"q": "Qual bebida é feita com cachaça, limão, açúcar e gelo?",
+"a": [
+"Caipirinha",
+"Mojito",
+"Margarita",
+"Batida"
+]
+},
+{
+"cat": "Comida",
+"d": 1,
+"q": "Qual é a cor de dentro da melancia?",
+"a": [
+"Vermelha",
+"Verde",
+"Amarela",
+"Branca"
+]
+},
+{
+"cat": "Animais",
+"d": 1,
+"q": "Qual animal faz \"muu\"?",
+"a": [
+"Vaca",
+"Cabra",
+"Ovelha",
+"Porco"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "Qual é o animal símbolo da Austrália?",
+"a": [
+"Canguru",
+"Coala",
+"Ornitorrinco",
+"Emu"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 1,
+"q": "Qual tecla apaga o caractere à esquerda do cursor?",
+"a": [
+"Backspace",
+"Enter",
+"Shift",
+"Tab"
+]
+},
+{
+"cat": "Brasil",
+"d": 1,
+"q": "Em qual cidade fica o Pão de Açúcar?",
+"a": [
+"Rio de Janeiro",
+"São Paulo",
+"Salvador",
+"Fortaleza"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual é o maior estádio do Brasil?",
+"a": [
+"Maracanã",
+"Mineirão",
+"Morumbi",
+"Arena Corinthians"
+]
+},
+{
+"cat": "História",
+"d": 1,
+"q": "Quem foi o primeiro homem a pisar na Lua?",
+"a": [
+"Neil Armstrong",
+"Buzz Aldrin",
+"Yuri Gagarin",
+"Michael Collins"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Qual povo construiu a cidade de Machu Picchu?",
+"a": [
+"Incas",
+"Maias",
+"Astecas",
+"Olmecas"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 1,
+"q": "Qual é o primeiro mês do ano?",
+"a": [
+"Janeiro",
+"Fevereiro",
+"Dezembro",
+"Março"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Quantas semanas tem um ano?",
+"a": [
+"52",
+"48",
+"50",
+"54"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Qual é o maior oceano do planeta?",
+"a": [
+"Pacífico",
+"Atlântico",
+"Índico",
+"Ártico"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Qual país tem formato de bota no mapa?",
+"a": [
+"Itália",
+"Espanha",
+"Grécia",
+"Portugal"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual é o maior deserto quente do mundo?",
+"a": [
+"Saara",
+"Atacama",
+"Gobi",
+"Kalahari"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual rio passa por Paris?",
+"a": [
+"Sena",
+"Tâmisa",
+"Danúbio",
+"Reno"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Em que país fica a cidade de Machu Picchu?",
+"a": [
+"Peru",
+"Bolívia",
+"Chile",
+"Equador"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual é o país com mais ilhas no mundo?",
+"a": [
+"Suécia",
+"Indonésia",
+"Filipinas",
+"Japão"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual é a capital do Cazaquistão?",
+"a": [
+"Astana",
+"Almaty",
+"Tashkent",
+"Bishkek"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual estreito separa a Europa da África?",
+"a": [
+"Gibraltar",
+"Bósforo",
+"Magalhães",
+"Ormuz"
+]
+},
+{
+"cat": "História",
+"d": 1,
+"q": "Quem descobriu o caminho marítimo para as Índias em 1498?",
+"a": [
+"Vasco da Gama",
+"Cristóvão Colombo",
+"Pedro Álvares Cabral",
+"Fernão de Magalhães"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Qual muro caiu em 1989?",
+"a": [
+"Muro de Berlim",
+"Muralha da China",
+"Muro de Adriano",
+"Muro das Lamentações"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Quem foi o líder da Revolução Russa de 1917?",
+"a": [
+"Lênin",
+"Stálin",
+"Trótski",
+"Gorbachev"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Qual império tinha Roma como capital?",
+"a": [
+"Império Romano",
+"Império Bizantino",
+"Império Otomano",
+"Império Persa"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Qual tratado dividiu as terras descobertas entre Portugal e Espanha em 1494?",
+"a": [
+"Tordesilhas",
+"Versalhes",
+"Madri",
+"Utrecht"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Quem foi o último faraó do Egito antigo?",
+"a": [
+"Cleópatra VII",
+"Ramsés II",
+"Tutancâmon",
+"Nefertiti"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Em que cidade foi assinada a independência dos Estados Unidos?",
+"a": [
+"Filadélfia",
+"Washington",
+"Boston",
+"Nova York"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Qual imperador francês foi derrotado em Waterloo?",
+"a": [
+"Napoleão Bonaparte",
+"Luís XIV",
+"Carlos Magno",
+"Napoleão III"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Em que ano caiu Constantinopla para os otomanos?",
+"a": [
+"1453",
+"1492",
+"1204",
+"1517"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "Qual gás as plantas absorvem do ar?",
+"a": [
+"Gás carbônico",
+"Oxigênio",
+"Hidrogênio",
+"Nitrogênio"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "Quantos estados físicos principais a água tem?",
+"a": [
+"3",
+"2",
+"4",
+"5"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "Qual órgão bombeia o sangue no corpo?",
+"a": [
+"Coração",
+"Pulmão",
+"Fígado",
+"Rim"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "A que temperatura a água ferve ao nível do mar?",
+"a": [
+"100 °C",
+"90 °C",
+"80 °C",
+"120 °C"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Qual é a menor unidade de um ser vivo?",
+"a": [
+"Célula",
+"Átomo",
+"Tecido",
+"Órgão"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual é o elemento químico mais abundante no universo?",
+"a": [
+"Hidrogênio",
+"Hélio",
+"Oxigênio",
+"Carbono"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual é a velocidade aproximada da luz no vácuo?",
+"a": [
+"300 mil km/s",
+"30 mil km/s",
+"3 milhões km/s",
+"3 mil km/s"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual partícula tem carga elétrica negativa?",
+"a": [
+"Elétron",
+"Próton",
+"Nêutron",
+"Fóton"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Quem propôs a teoria da evolução por seleção natural?",
+"a": [
+"Charles Darwin",
+"Gregor Mendel",
+"Louis Pasteur",
+"Lamarck"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual é o número atômico do carbono?",
+"a": [
+"6",
+"8",
+"12",
+"14"
+]
+},
+{
+"cat": "Esportes",
+"d": 1,
+"q": "De quantos em quantos anos acontece a Copa do Mundo de futebol?",
+"a": [
+"4",
+"2",
+"3",
+"5"
+]
+},
+{
+"cat": "Esportes",
+"d": 1,
+"q": "Qual é o esporte de Ayrton Senna?",
+"a": [
+"Fórmula 1",
+"Futebol",
+"Tênis",
+"Vôlei"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Quantas vezes o Brasil ganhou a Copa do Mundo de futebol masculino?",
+"a": [
+"5",
+"4",
+"6",
+"3"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Em que país nasceram os Jogos Olímpicos?",
+"a": [
+"Grécia",
+"Itália",
+"França",
+"Egito"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Quantos pontos vale uma cesta de fora do garrafão no basquete?",
+"a": [
+"3",
+"2",
+"1",
+"4"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Qual nadador tem mais medalhas olímpicas de ouro?",
+"a": [
+"Michael Phelps",
+"Mark Spitz",
+"Cesar Cielo",
+"Ian Thorpe"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Em qual esporte existe o golpe chamado \"ippon\"?",
+"a": [
+"Judô",
+"Boxe",
+"Esgrima",
+"Karatê"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Em que ano o Brasil ganhou sua primeira Copa do Mundo?",
+"a": [
+"1958",
+"1962",
+"1950",
+"1970"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Qual país sediou a Copa do Mundo de 2010?",
+"a": [
+"África do Sul",
+"Alemanha",
+"Brasil",
+"Japão"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Quantos sets são necessários para vencer uma partida de vôlei?",
+"a": [
+"3",
+"2",
+"4",
+"5"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Qual é a distância oficial de uma maratona?",
+"a": [
+"42,195 km",
+"40 km",
+"45 km",
+"21,1 km"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Quem é o maior artilheiro da história das Copas do Mundo?",
+"a": [
+"Miroslav Klose",
+"Ronaldo Fenômeno",
+"Pelé",
+"Gerd Müller"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"q": "Em qual desenho aparece o personagem Bob Esponja?",
+"a": [
+"Bob Esponja Calça Quadrada",
+"Os Simpsons",
+"Hora de Aventura",
+"Padrinhos Mágicos"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"q": "Qual é o nome do boneco de neve de Frozen?",
+"a": [
+"Olaf",
+"Sven",
+"Kristoff",
+"Hans"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"q": "Que super-herói tem o escudo com uma estrela?",
+"a": [
+"Capitão América",
+"Homem de Ferro",
+"Thor",
+"Hulk"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Em que filme aparece o navio que afunda após bater num iceberg?",
+"a": [
+"Titanic",
+"Poseidon",
+"Piratas do Caribe",
+"Moby Dick"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Qual banda britânica cantou \"Hey Jude\"?",
+"a": [
+"The Beatles",
+"Rolling Stones",
+"Queen",
+"Oasis"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Qual é o nome do vilão de \"O Rei Leão\"?",
+"a": [
+"Scar",
+"Jafar",
+"Hades",
+"Úrsula"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Qual personagem diz \"Ao infinito e além\"?",
+"a": [
+"Buzz Lightyear",
+"Woody",
+"Wall-E",
+"Nemo"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Quem dirigiu o filme \"Pulp Fiction\"?",
+"a": [
+"Quentin Tarantino",
+"Martin Scorsese",
+"Steven Spielberg",
+"Christopher Nolan"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Qual filme ganhou o Oscar de melhor filme em 2020 (Parasita)?",
+"a": [
+"Parasita",
+"Coringa",
+"1917",
+"Era uma Vez em Hollywood"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Qual é o nome do planeta natal do Superman?",
+"a": [
+"Krypton",
+"Asgard",
+"Tatooine",
+"Vulcano"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Em que série aparece a família Stark?",
+"a": [
+"Game of Thrones",
+"Vikings",
+"The Witcher",
+"Breaking Bad"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Qual cantor é conhecido como o \"Rei do Pop\"?",
+"a": [
+"Michael Jackson",
+"Elvis Presley",
+"Prince",
+"Freddie Mercury"
+]
+},
+{
+"cat": "Brasil",
+"d": 1,
+"q": "Qual é a moeda oficial do Brasil?",
+"a": [
+"Real",
+"Cruzeiro",
+"Peso",
+"Dólar"
+]
+},
+{
+"cat": "Brasil",
+"d": 1,
+"q": "Qual é o maior estado do Brasil em área?",
+"a": [
+"Amazonas",
+"Pará",
+"Mato Grosso",
+"Minas Gerais"
+]
+},
+{
+"cat": "Brasil",
+"d": 1,
+"q": "Em que cidade fica o Cristo Redentor?",
+"a": [
+"Rio de Janeiro",
+"São Paulo",
+"Salvador",
+"Belo Horizonte"
+]
+},
+{
+"cat": "Brasil",
+"d": 1,
+"q": "Quais são as cores da bandeira do Brasil?",
+"a": [
+"Verde, amarelo, azul e branco",
+"Verde e amarelo",
+"Azul e branco",
+"Verde, amarelo e vermelho"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual é a capital do Rio Grande do Norte?",
+"a": [
+"Natal",
+"Mossoró",
+"João Pessoa",
+"Maceió"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual rio forma as Cataratas do Iguaçu?",
+"a": [
+"Rio Iguaçu",
+"Rio Paraná",
+"Rio São Francisco",
+"Rio Tietê"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual estado brasileiro tem a capital Palmas?",
+"a": [
+"Tocantins",
+"Goiás",
+"Maranhão",
+"Piauí"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Qual foi a primeira capital do Brasil?",
+"a": [
+"Salvador",
+"Rio de Janeiro",
+"São Vicente",
+"Olinda"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Em que ano a capital mudou para Brasília?",
+"a": [
+"1960",
+"1950",
+"1964",
+"1955"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Quantos estados o Brasil tem (sem contar o Distrito Federal)?",
+"a": [
+"26",
+"27",
+"25",
+"24"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Qual lei aboliu a escravidão no Brasil?",
+"a": [
+"Lei Áurea",
+"Lei do Ventre Livre",
+"Lei Eusébio de Queirós",
+"Lei dos Sexagenários"
+]
+},
+{
+"cat": "Comida",
+"d": 1,
+"q": "Qual país é famoso pela pizza?",
+"a": [
+"Itália",
+"França",
+"Grécia",
+"Espanha"
+]
+},
+{
+"cat": "Comida",
+"d": 2,
+"q": "Qual prato é feito com feijão-preto e carnes de porco?",
+"a": [
+"Feijoada",
+"Acarajé",
+"Moqueca",
+"Vatapá"
+]
+},
+{
+"cat": "Comida",
+"d": 2,
+"q": "De que país vem o sushi?",
+"a": [
+"Japão",
+"China",
+"Coreia do Sul",
+"Tailândia"
+]
+},
+{
+"cat": "Comida",
+"d": 2,
+"q": "Qual tempero dá a cor amarela ao arroz da paella?",
+"a": [
+"Açafrão",
+"Cúrcuma",
+"Páprica",
+"Cominho"
+]
+},
+{
+"cat": "Comida",
+"d": 2,
+"q": "De qual planta vem o chocolate?",
+"a": [
+"Cacau",
+"Café",
+"Baunilha",
+"Coco"
+]
+},
+{
+"cat": "Comida",
+"d": 3,
+"q": "Qual queijo é tradicional na pizza margherita?",
+"a": [
+"Muçarela",
+"Parmesão",
+"Gorgonzola",
+"Provolone"
+]
+},
+{
+"cat": "Comida",
+"d": 3,
+"q": "O tucupi é extraído de qual alimento?",
+"a": [
+"Mandioca",
+"Açaí",
+"Milho",
+"Cupuaçu"
+]
+},
+{
+"cat": "Comida",
+"d": 3,
+"q": "Qual país criou o croissant como conhecemos hoje?",
+"a": [
+"França",
+"Áustria",
+"Bélgica",
+"Suíça"
+]
+},
+{
+"cat": "Comida",
+"d": 3,
+"q": "Qual é o principal ingrediente do homus?",
+"a": [
+"Grão-de-bico",
+"Lentilha",
+"Ervilha",
+"Feijão-branco"
+]
+},
+{
+"cat": "Animais",
+"d": 1,
+"q": "Qual animal é conhecido como o rei da selva?",
+"a": [
+"Leão",
+"Tigre",
+"Elefante",
+"Gorila"
+]
+},
+{
+"cat": "Animais",
+"d": 1,
+"q": "Qual ave é símbolo da paz?",
+"a": [
+"Pomba",
+"Águia",
+"Coruja",
+"Cisne"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "Os golfinhos são peixes ou mamíferos?",
+"a": [
+"Mamíferos",
+"Peixes",
+"Anfíbios",
+"Répteis"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "Qual é o maior felino do mundo?",
+"a": [
+"Tigre",
+"Leão",
+"Onça-pintada",
+"Leopardo"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "Qual mamífero consegue voar?",
+"a": [
+"Morcego",
+"Esquilo-voador",
+"Pinguim",
+"Avestruz"
+]
+},
+{
+"cat": "Animais",
+"d": 3,
+"q": "Qual é o único mamífero que bota ovos e tem bico de pato?",
+"a": [
+"Ornitorrinco",
+"Equidna",
+"Lontra",
+"Castor"
+]
+},
+{
+"cat": "Animais",
+"d": 3,
+"q": "Qual ave não voa e vive na Nova Zelândia?",
+"a": [
+"Kiwi",
+"Pinguim",
+"Emu",
+"Dodô"
+]
+},
+{
+"cat": "Animais",
+"d": 3,
+"q": "Qual é o maior réptil do mundo?",
+"a": [
+"Crocodilo-de-água-salgada",
+"Sucuri",
+"Dragão-de-komodo",
+"Jacaré-açu"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 1,
+"q": "O que significa a sigla \"Wi-Fi\" no dia a dia?",
+"a": [
+"Internet sem fio",
+"Cabo de rede",
+"Bateria",
+"Bluetooth"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 1,
+"q": "Qual é a rede social de vídeos curtos com a nota musical como logo?",
+"a": [
+"TikTok",
+"Instagram",
+"Facebook",
+"Twitter"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"q": "Quem fundou a Microsoft junto com Paul Allen?",
+"a": [
+"Bill Gates",
+"Steve Jobs",
+"Mark Zuckerberg",
+"Elon Musk"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"q": "O que significa \"CPU\"?",
+"a": [
+"Unidade central de processamento",
+"Computador pessoal único",
+"Central de usuários",
+"Placa de vídeo"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"q": "Qual empresa desenvolve o sistema Android?",
+"a": [
+"Google",
+"Apple",
+"Microsoft",
+"Samsung"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"q": "Qual site é a maior enciclopédia colaborativa online?",
+"a": [
+"Wikipédia",
+"Google",
+"Yahoo",
+"Britannica"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"q": "Qual linguagem de programação tem o nome de uma cobra?",
+"a": [
+"Python",
+"Java",
+"Ruby",
+"Swift"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"q": "Quem é considerado o pai da computação moderna?",
+"a": [
+"Alan Turing",
+"Charles Babbage",
+"John von Neumann",
+"Ada Lovelace"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"q": "O que significa a sigla \"HTML\"?",
+"a": [
+"Linguagem de marcação de hipertexto",
+"Programa de e-mail",
+"Protocolo de internet",
+"Formato de imagem"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 1,
+"q": "Quantas horas tem um dia?",
+"a": [
+"24",
+"12",
+"20",
+"48"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 1,
+"q": "Quantos meses têm 31 dias?",
+"a": [
+"7",
+"6",
+"5",
+"8"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Qual é o idioma mais falado no mundo como língua nativa?",
+"a": [
+"Mandarim",
+"Inglês",
+"Espanhol",
+"Hindi"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Qual instrumento mede a pressão atmosférica?",
+"a": [
+"Barômetro",
+"Termômetro",
+"Higrômetro",
+"Anemômetro"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Qual é o número romano que representa 50?",
+"a": [
+"L",
+"C",
+"X",
+"D"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 3,
+"q": "Qual é o livro mais vendido da história?",
+"a": [
+"Bíblia",
+"Dom Quixote",
+"O Pequeno Príncipe",
+"Harry Potter"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 3,
+"q": "Qual é a pedra preciosa mais dura?",
+"a": [
+"Diamante",
+"Rubi",
+"Safira",
+"Esmeralda"
+]
+},
+{
+"cat": "Matemática",
+"d": 1,
+"q": "Quanto é 7 × 8?",
+"a": [
+"56",
+"54",
+"48",
+"64"
+]
+},
+{
+"cat": "Matemática",
+"d": 1,
+"q": "Quanto é a metade de 50?",
+"a": [
+"25",
+"20",
+"30",
+"15"
+]
+},
+{
+"cat": "Matemática",
+"d": 1,
+"q": "Quanto é 12 + 15?",
+"a": [
+"27",
+"26",
+"28",
+"25"
+]
+},
+{
+"cat": "Matemática",
+"d": 1,
+"q": "Quantos centímetros tem um metro?",
+"a": [
+"100",
+"10",
+"1000",
+"50"
+]
+},
+{
+"cat": "Matemática",
+"d": 1,
+"q": "Qual é o dobro de 35?",
+"a": [
+"70",
+"65",
+"75",
+"60"
+]
+},
+{
+"cat": "Matemática",
+"d": 1,
+"q": "Quanto é 9 × 9?",
+"a": [
+"81",
+"72",
+"99",
+"89"
+]
+},
+{
+"cat": "Matemática",
+"d": 2,
+"q": "Quanto é 15% de 200?",
+"a": [
+"30",
+"15",
+"20",
+"25"
+]
+},
+{
+"cat": "Matemática",
+"d": 2,
+"q": "Quanto é 2 elevado a 5?",
+"a": [
+"32",
+"25",
+"10",
+"64"
+]
+},
+{
+"cat": "Matemática",
+"d": 2,
+"q": "Quantos graus tem a soma dos ângulos internos de um triângulo?",
+"a": [
+"180",
+"360",
+"90",
+"270"
+]
+},
+{
+"cat": "Matemática",
+"d": 2,
+"q": "Qual é o próximo número primo depois de 7?",
+"a": [
+"11",
+"9",
+"13",
+"10"
+]
+},
+{
+"cat": "Matemática",
+"d": 2,
+"q": "Quanto é 3/4 escrito em porcentagem?",
+"a": [
+"75%",
+"34%",
+"43%",
+"70%"
+]
+},
+{
+"cat": "Matemática",
+"d": 2,
+"q": "Quanto vale x em 2x + 6 = 20?",
+"a": [
+"7",
+"8",
+"6",
+"13"
+]
+},
+{
+"cat": "Matemática",
+"d": 2,
+"q": "Qual é o MMC de 4 e 6?",
+"a": [
+"12",
+"24",
+"2",
+"10"
+]
+},
+{
+"cat": "Matemática",
+"d": 2,
+"q": "Quantos segundos tem um minuto e meio?",
+"a": [
+"90",
+"60",
+"150",
+"120"
+]
+},
+{
+"cat": "Matemática",
+"d": 3,
+"q": "Qual é o valor aproximado de π (pi)?",
+"a": [
+"3,14",
+"3,41",
+"2,71",
+"1,61"
+]
+},
+{
+"cat": "Matemática",
+"d": 3,
+"q": "Quanto é log de 1000 na base 10?",
+"a": [
+"3",
+"10",
+"100",
+"4"
+]
+},
+{
+"cat": "Matemática",
+"d": 3,
+"q": "Qual é a soma dos ângulos internos de um hexágono?",
+"a": [
+"720°",
+"540°",
+"900°",
+"360°"
+]
+},
+{
+"cat": "Matemática",
+"d": 3,
+"q": "Quanto é 0! (zero fatorial)?",
+"a": [
+"1",
+"0",
+"Não existe",
+"10"
+]
+},
+{
+"cat": "Matemática",
+"d": 3,
+"q": "Quantas diagonais tem um pentágono?",
+"a": [
+"5",
+"10",
+"3",
+"7"
+]
+},
+{
+"cat": "Matemática",
+"d": 3,
+"q": "Qual é a área de um círculo de raio 2 (use π = 3)?",
+"a": [
+"12",
+"6",
+"24",
+"9"
+]
+},
+{
+"cat": "Matemática",
+"d": 3,
+"q": "Qual é o 10º termo da PA 2, 5, 8, 11...?",
+"a": [
+"29",
+"32",
+"30",
+"27"
+]
+},
+{
+"cat": "Matemática",
+"d": 3,
+"q": "Quanto é 1/3 + 1/6?",
+"a": [
+"1/2",
+"2/9",
+"1/9",
+"2/3"
+]
+},
+{
+"cat": "Português",
+"d": 1,
+"q": "Qual é o antônimo de \"alto\"?",
+"a": [
+"Baixo",
+"Grande",
+"Largo",
+"Comprido"
+]
+},
+{
+"cat": "Português",
+"d": 1,
+"q": "Quantas vogais tem o alfabeto?",
+"a": [
+"5",
+"6",
+"4",
+"7"
+]
+},
+{
+"cat": "Português",
+"d": 1,
+"q": "Qual palavra está escrita corretamente?",
+"a": [
+"Exceção",
+"Excessão",
+"Esceção",
+"Exessão"
+]
+},
+{
+"cat": "Português",
+"d": 1,
+"q": "Qual é o sinônimo de \"feliz\"?",
+"a": [
+"Alegre",
+"Triste",
+"Bravo",
+"Cansado"
+]
+},
+{
+"cat": "Português",
+"d": 2,
+"q": "Qual é o plural de \"cidadão\"?",
+"a": [
+"Cidadãos",
+"Cidadões",
+"Cidadães",
+"Cidadans"
+]
+},
+{
+"cat": "Português",
+"d": 2,
+"q": "Em \"O gato dormiu\", qual é o sujeito?",
+"a": [
+"O gato",
+"Dormiu",
+"Gato dormiu",
+"Não há sujeito"
+]
+},
+{
+"cat": "Português",
+"d": 2,
+"q": "Qual palavra é um verbo?",
+"a": [
+"Correr",
+"Rápido",
+"Mesa",
+"Feliz"
+]
+},
+{
+"cat": "Português",
+"d": 2,
+"q": "Qual é o coletivo de lobos?",
+"a": [
+"Alcateia",
+"Matilha",
+"Cardume",
+"Manada"
+]
+},
+{
+"cat": "Português",
+"d": 2,
+"q": "Qual é o coletivo de peixes?",
+"a": [
+"Cardume",
+"Enxame",
+"Bando",
+"Rebanho"
+]
+},
+{
+"cat": "Português",
+"d": 2,
+"q": "Qual palavra é oxítona?",
+"a": [
+"Café",
+"Mesa",
+"Lâmpada",
+"Árvore"
+]
+},
+{
+"cat": "Português",
+"d": 2,
+"q": "Qual é o feminino de \"ator\"?",
+"a": [
+"Atriz",
+"Atora",
+"Atôra",
+"Atoa"
+]
+},
+{
+"cat": "Português",
+"d": 3,
+"q": "Qual palavra é proparoxítona?",
+"a": [
+"Pássaro",
+"Caju",
+"Livro",
+"Janela"
+]
+},
+{
+"cat": "Português",
+"d": 3,
+"q": "Quem escreveu \"Os Lusíadas\"?",
+"a": [
+"Luís de Camões",
+"Fernando Pessoa",
+"Eça de Queirós",
+"Machado de Assis"
+]
+},
+{
+"cat": "Português",
+"d": 3,
+"q": "\"Mal\" é o contrário de...?",
+"a": [
+"Bem",
+"Mau",
+"Bom",
+"Bonito"
+]
+},
+{
+"cat": "Português",
+"d": 3,
+"q": "Qual figura de linguagem há em \"Choveu um rio de lágrimas\"?",
+"a": [
+"Hipérbole",
+"Metáfora",
+"Ironia",
+"Eufemismo"
+]
+},
+{
+"cat": "Português",
+"d": 3,
+"q": "Qual é a forma correta?",
+"a": [
+"Haja vista",
+"Haja visto",
+"Aja vista",
+"Aja visto"
+]
+},
+{
+"cat": "Português",
+"d": 3,
+"q": "Qual é o coletivo de abelhas?",
+"a": [
+"Enxame",
+"Colmeia",
+"Bando",
+"Cáfila"
+]
+},
+{
+"cat": "Português",
+"d": 3,
+"q": "Quem escreveu \"Vidas Secas\"?",
+"a": [
+"Graciliano Ramos",
+"Rachel de Queiroz",
+"Jorge Amado",
+"Clarice Lispector"
+]
+},
+{
+"cat": "Música",
+"d": 1,
+"q": "Quantas notas musicais básicas existem (dó, ré, mi...)?",
+"a": [
+"7",
+"5",
+"8",
+"12"
+]
+},
+{
+"cat": "Música",
+"d": 1,
+"q": "Qual instrumento tem teclas brancas e pretas?",
+"a": [
+"Piano",
+"Violão",
+"Flauta",
+"Bateria"
+]
+},
+{
+"cat": "Música",
+"d": 1,
+"q": "Qual instrumento tem seis cordas e é muito usado no samba e na MPB?",
+"a": [
+"Violão",
+"Cavaquinho",
+"Bandolim",
+"Viola caipira"
+]
+},
+{
+"cat": "Música",
+"d": 1,
+"q": "Qual é o ritmo brasileiro famoso no carnaval do Rio?",
+"a": [
+"Samba",
+"Forró",
+"Frevo",
+"Axé"
+]
+},
+{
+"cat": "Música",
+"d": 2,
+"q": "Qual cantor é conhecido como o \"Rei\" da música brasileira?",
+"a": [
+"Roberto Carlos",
+"Caetano Veloso",
+"Gilberto Gil",
+"Chico Buarque"
+]
+},
+{
+"cat": "Música",
+"d": 2,
+"q": "De qual estado vem o frevo?",
+"a": [
+"Pernambuco",
+"Bahia",
+"Rio de Janeiro",
+"Ceará"
+]
+},
+{
+"cat": "Música",
+"d": 2,
+"q": "Qual instrumento Luiz Gonzaga tocava?",
+"a": [
+"Sanfona",
+"Violão",
+"Pandeiro",
+"Triângulo"
+]
+},
+{
+"cat": "Música",
+"d": 2,
+"q": "Qual banda tinha Freddie Mercury como vocalista?",
+"a": [
+"Queen",
+"The Beatles",
+"U2",
+"Led Zeppelin"
+]
+},
+{
+"cat": "Música",
+"d": 2,
+"q": "Qual cantora é chamada de \"Rainha do Pop\"?",
+"a": [
+"Madonna",
+"Beyoncé",
+"Lady Gaga",
+"Britney Spears"
+]
+},
+{
+"cat": "Música",
+"d": 2,
+"q": "Quem compôs \"Garota de Ipanema\" com Vinicius de Moraes?",
+"a": [
+"Tom Jobim",
+"João Gilberto",
+"Chico Buarque",
+"Toquinho"
+]
+},
+{
+"cat": "Música",
+"d": 3,
+"q": "Qual compositor ficou surdo e mesmo assim compôs a 9ª Sinfonia?",
+"a": [
+"Beethoven",
+"Mozart",
+"Bach",
+"Chopin"
+]
+},
+{
+"cat": "Música",
+"d": 3,
+"q": "Quantas linhas tem uma pauta musical?",
+"a": [
+"5",
+"4",
+"6",
+"7"
+]
+},
+{
+"cat": "Música",
+"d": 3,
+"q": "De qual país é o gênero musical reggae?",
+"a": [
+"Jamaica",
+"Cuba",
+"Brasil",
+"Estados Unidos"
+]
+},
+{
+"cat": "Música",
+"d": 3,
+"q": "Qual instrumento Heitor Villa-Lobos tocava muito bem e usava em obras?",
+"a": [
+"Violoncelo",
+"Trompete",
+"Harpa",
+"Oboé"
+]
+},
+{
+"cat": "Música",
+"d": 3,
+"q": "Qual cantora gravou \"Águas de Março\" com Tom Jobim em 1974?",
+"a": [
+"Elis Regina",
+"Gal Costa",
+"Maria Bethânia",
+"Rita Lee"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 1,
+"q": "Quantos dentes tem um adulto, normalmente?",
+"a": [
+"32",
+"28",
+"36",
+"24"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 1,
+"q": "Com qual órgão nós respiramos?",
+"a": [
+"Pulmões",
+"Coração",
+"Estômago",
+"Rins"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 1,
+"q": "Quantos sentidos básicos o ser humano tem?",
+"a": [
+"5",
+"4",
+"6",
+"7"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"q": "Qual é o maior osso do corpo humano?",
+"a": [
+"Fêmur",
+"Tíbia",
+"Úmero",
+"Coluna"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"q": "Que tipo sanguíneo é chamado de doador universal?",
+"a": [
+"O negativo",
+"AB positivo",
+"A positivo",
+"B negativo"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"q": "Qual órgão produz a insulina?",
+"a": [
+"Pâncreas",
+"Fígado",
+"Estômago",
+"Rim"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"q": "Qual é o menor osso do corpo humano?",
+"a": [
+"Estribo",
+"Martelo",
+"Falange",
+"Bigorna"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"q": "Qual vitamina o corpo produz com a luz do sol?",
+"a": [
+"Vitamina D",
+"Vitamina C",
+"Vitamina A",
+"Vitamina B12"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 3,
+"q": "Quantos litros de sangue um adulto tem, mais ou menos?",
+"a": [
+"5",
+"2",
+"10",
+"8"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 3,
+"q": "Qual parte do cérebro controla o equilíbrio?",
+"a": [
+"Cerebelo",
+"Córtex",
+"Hipotálamo",
+"Bulbo"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 3,
+"q": "Quantas câmaras tem o coração humano?",
+"a": [
+"4",
+"2",
+"3",
+"6"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 3,
+"q": "Qual é o nome da proteína que dá cor vermelha ao sangue?",
+"a": [
+"Hemoglobina",
+"Melanina",
+"Queratina",
+"Colágeno"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 3,
+"q": "Onde ficam as cordas vocais?",
+"a": [
+"Laringe",
+"Faringe",
+"Traqueia",
+"Esôfago"
+]
+},
+{
+"cat": "Espaço",
+"d": 1,
+"q": "Qual é o planeta conhecido como \"planeta vermelho\"?",
+"a": [
+"Marte",
+"Júpiter",
+"Vênus",
+"Saturno"
+]
+},
+{
+"cat": "Espaço",
+"d": 1,
+"q": "Qual planeta é famoso pelos seus anéis?",
+"a": [
+"Saturno",
+"Marte",
+"Mercúrio",
+"Vênus"
+]
+},
+{
+"cat": "Espaço",
+"d": 2,
+"q": "Quem foi o primeiro ser humano a ir ao espaço?",
+"a": [
+"Yuri Gagarin",
+"Neil Armstrong",
+"Buzz Aldrin",
+"Marcos Pontes"
+]
+},
+{
+"cat": "Espaço",
+"d": 2,
+"q": "Qual foi o primeiro brasileiro a ir ao espaço?",
+"a": [
+"Marcos Pontes",
+"Ayrton Senna",
+"Santos Dumont",
+"César Lattes"
+]
+},
+{
+"cat": "Espaço",
+"d": 2,
+"q": "Como se chama a nossa galáxia?",
+"a": [
+"Via Láctea",
+"Andrômeda",
+"Sombrero",
+"Triângulo"
+]
+},
+{
+"cat": "Espaço",
+"d": 2,
+"q": "Qual planeta é o mais quente do Sistema Solar?",
+"a": [
+"Vênus",
+"Mercúrio",
+"Marte",
+"Júpiter"
+]
+},
+{
+"cat": "Espaço",
+"d": 2,
+"q": "Plutão hoje é classificado como...?",
+"a": [
+"Planeta anão",
+"Planeta",
+"Estrela",
+"Cometa"
+]
+},
+{
+"cat": "Espaço",
+"d": 3,
+"q": "Quanto tempo a luz do Sol leva para chegar à Terra, mais ou menos?",
+"a": [
+"8 minutos",
+"8 segundos",
+"1 hora",
+"1 dia"
+]
+},
+{
+"cat": "Espaço",
+"d": 3,
+"q": "Qual é a lua mais famosa de Júpiter com oceano sob o gelo?",
+"a": [
+"Europa",
+"Titã",
+"Tritão",
+"Fobos"
+]
+},
+{
+"cat": "Espaço",
+"d": 3,
+"q": "Qual sonda foi a primeira a sair do Sistema Solar?",
+"a": [
+"Voyager 1",
+"Apollo 11",
+"Sputnik",
+"Hubble"
+]
+},
+{
+"cat": "Espaço",
+"d": 3,
+"q": "Como se chama o ponto de não retorno de um buraco negro?",
+"a": [
+"Horizonte de eventos",
+"Singularidade",
+"Nebulosa",
+"Supernova"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 1,
+"q": "Quem pintou \"A Noite Estrelada\"?",
+"a": [
+"Van Gogh",
+"Picasso",
+"Monet",
+"Da Vinci"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 1,
+"q": "Em que cidade fica o Museu do Louvre?",
+"a": [
+"Paris",
+"Londres",
+"Roma",
+"Madri"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 1,
+"q": "Qual é a festa brasileira com quadrilha e fogueira?",
+"a": [
+"Festa Junina",
+"Carnaval",
+"Réveillon",
+"Círio de Nazaré"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 1,
+"q": "Qual personagem do folclore tem os pés virados para trás?",
+"a": [
+"Curupira",
+"Saci",
+"Boitatá",
+"Iara"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 2,
+"q": "Qual personagem do folclore tem uma perna só e usa gorro vermelho?",
+"a": [
+"Saci-Pererê",
+"Curupira",
+"Boto",
+"Cuca"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 2,
+"q": "Quem pintou \"Abaporu\"?",
+"a": [
+"Tarsila do Amaral",
+"Anita Malfatti",
+"Di Cavalcanti",
+"Portinari"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 2,
+"q": "Qual escultor brasileiro fez os profetas de Congonhas?",
+"a": [
+"Aleijadinho",
+"Victor Brecheret",
+"Mestre Valentim",
+"Portinari"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 2,
+"q": "Em que cidade acontece o Festival de Parintins?",
+"a": [
+"Parintins",
+"Manaus",
+"Belém",
+"São Luís"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 2,
+"q": "Quem escreveu \"Romeu e Julieta\"?",
+"a": [
+"William Shakespeare",
+"Charles Dickens",
+"Victor Hugo",
+"Cervantes"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 3,
+"q": "Qual movimento artístico teve a Semana de Arte Moderna de 1922?",
+"a": [
+"Modernismo",
+"Barroco",
+"Romantismo",
+"Realismo"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 3,
+"q": "Quem pintou \"Guernica\"?",
+"a": [
+"Pablo Picasso",
+"Salvador Dalí",
+"Joan Miró",
+"Goya"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 3,
+"q": "Quem escreveu \"Dom Quixote\"?",
+"a": [
+"Miguel de Cervantes",
+"Gabriel García Márquez",
+"Jorge Luis Borges",
+"Camões"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 3,
+"q": "Quem pintou \"O Grito\"?",
+"a": [
+"Edvard Munch",
+"Gustav Klimt",
+"Van Gogh",
+"Matisse"
+]
+},
+{
+"cat": "Arte e Cultura",
+"d": 3,
+"q": "Qual é o nome da famosa escultura de Michelangelo de um jovem nu?",
+"a": [
+"Davi",
+"Moisés",
+"O Pensador",
+"Vênus de Milo"
+]
+},
+{
+"cat": "Mitologia",
+"d": 1,
+"q": "Quem é o deus dos mares na mitologia grega?",
+"a": [
+"Poseidon",
+"Zeus",
+"Hades",
+"Apolo"
+]
+},
+{
+"cat": "Mitologia",
+"d": 1,
+"q": "Qual deus nórdico usa um martelo?",
+"a": [
+"Thor",
+"Odin",
+"Loki",
+"Freyr"
+]
+},
+{
+"cat": "Mitologia",
+"d": 2,
+"q": "Quem é o rei dos deuses na mitologia grega?",
+"a": [
+"Zeus",
+"Cronos",
+"Ares",
+"Hermes"
+]
+},
+{
+"cat": "Mitologia",
+"d": 2,
+"q": "Qual criatura tem cabelos de serpente e transforma pessoas em pedra?",
+"a": [
+"Medusa",
+"Hidra",
+"Quimera",
+"Esfinge"
+]
+},
+{
+"cat": "Mitologia",
+"d": 2,
+"q": "Qual herói grego tinha o calcanhar como ponto fraco?",
+"a": [
+"Aquiles",
+"Hércules",
+"Ulisses",
+"Perseu"
+]
+},
+{
+"cat": "Mitologia",
+"d": 2,
+"q": "Quem é o deus egípcio com cabeça de chacal?",
+"a": [
+"Anúbis",
+"Rá",
+"Hórus",
+"Osíris"
+]
+},
+{
+"cat": "Mitologia",
+"d": 2,
+"q": "Qual é a deusa grega da sabedoria?",
+"a": [
+"Atena",
+"Afrodite",
+"Hera",
+"Ártemis"
+]
+},
+{
+"cat": "Mitologia",
+"d": 3,
+"q": "Qual é o nome romano do deus grego Zeus?",
+"a": [
+"Júpiter",
+"Marte",
+"Netuno",
+"Mercúrio"
+]
+},
+{
+"cat": "Mitologia",
+"d": 3,
+"q": "Quem roubou o fogo dos deuses para dar aos humanos?",
+"a": [
+"Prometeu",
+"Ícaro",
+"Hermes",
+"Atlas"
+]
+},
+{
+"cat": "Mitologia",
+"d": 3,
+"q": "Como se chama o cão de três cabeças que guarda o mundo dos mortos?",
+"a": [
+"Cérbero",
+"Fenrir",
+"Ortros",
+"Hidra"
+]
+},
+{
+"cat": "Mitologia",
+"d": 3,
+"q": "Qual é o salão dos guerreiros mortos na mitologia nórdica?",
+"a": [
+"Valhalla",
+"Olimpo",
+"Asgard",
+"Midgard"
+]
+},
+{
+"cat": "Mitologia",
+"d": 3,
+"q": "Quem voou perto demais do Sol com asas de cera?",
+"a": [
+"Ícaro",
+"Dédalo",
+"Perseu",
+"Teseu"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 1,
+"q": "Qual é o nome do ogro verde da DreamWorks?",
+"a": [
+"Shrek",
+"Hulk",
+"Grinch",
+"Fiona"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 1,
+"q": "Em qual filme os brinquedos ganham vida quando ninguém está vendo?",
+"a": [
+"Toy Story",
+"Carros",
+"Up",
+"Divertida Mente"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 1,
+"q": "Qual é o nome do peixe-palhaço que se perde no oceano?",
+"a": [
+"Nemo",
+"Dory",
+"Marlin",
+"Gill"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 2,
+"q": "Qual ator interpretou o Homem de Ferro nos filmes da Marvel?",
+"a": [
+"Robert Downey Jr.",
+"Chris Evans",
+"Chris Hemsworth",
+"Mark Ruffalo"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 2,
+"q": "Em qual série crianças enfrentam o \"Mundo Invertido\"?",
+"a": [
+"Stranger Things",
+"Dark",
+"Wandinha",
+"The Umbrella Academy"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 2,
+"q": "Qual filme brasileiro de 2002 mostra a vida na favela pelos olhos de Buscapé?",
+"a": [
+"Cidade de Deus",
+"Tropa de Elite",
+"Central do Brasil",
+"Carandiru"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 2,
+"q": "Qual é a escola de magia de Harry Potter?",
+"a": [
+"Hogwarts",
+"Beauxbatons",
+"Durmstrang",
+"Ilvermorny"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 2,
+"q": "Qual é o nome da filha da família Addams que ganhou série própria?",
+"a": [
+"Wandinha",
+"Mortícia",
+"Feioso",
+"Tropeço"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 3,
+"q": "Quem dirigiu \"Titanic\" e \"Avatar\"?",
+"a": [
+"James Cameron",
+"Steven Spielberg",
+"George Lucas",
+"Ridley Scott"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 3,
+"q": "Qual filme brasileiro foi indicado ao Oscar de melhor filme estrangeiro em 1999?",
+"a": [
+"Central do Brasil",
+"O Auto da Compadecida",
+"Cidade de Deus",
+"O Quatrilho"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 3,
+"q": "Em que ano foi lançado o primeiro filme de \"Star Wars\"?",
+"a": [
+"1977",
+"1983",
+"1969",
+"1990"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 3,
+"q": "Qual série espanhola mostra um assalto à Casa da Moeda?",
+"a": [
+"La Casa de Papel",
+"Elite",
+"Narcos",
+"Vis a Vis"
+]
+},
+{
+"cat": "Cinema e séries",
+"d": 3,
+"q": "Qual atriz brasileira foi indicada ao Oscar por \"Central do Brasil\"?",
+"a": [
+"Fernanda Montenegro",
+"Fernanda Torres",
+"Sônia Braga",
+"Glória Pires"
+]
+},
+{
+"cat": "Futebol",
+"d": 1,
+"q": "Qual seleção usa camisa amarela e é pentacampeã mundial?",
+"a": [
+"Brasil",
+"Argentina",
+"Alemanha",
+"Itália"
+]
+},
+{
+"cat": "Futebol",
+"d": 1,
+"q": "Quanto tempo dura um jogo de futebol, sem acréscimos?",
+"a": [
+"90 minutos",
+"60 minutos",
+"80 minutos",
+"100 minutos"
+]
+},
+{
+"cat": "Futebol",
+"d": 1,
+"q": "Qual cartão expulsa o jogador de campo?",
+"a": [
+"Vermelho",
+"Amarelo",
+"Verde",
+"Azul"
+]
+},
+{
+"cat": "Futebol",
+"d": 1,
+"q": "Quem é conhecido como o \"Rei do Futebol\"?",
+"a": [
+"Pelé",
+"Maradona",
+"Zico",
+"Garrincha"
+]
+},
+{
+"cat": "Futebol",
+"d": 2,
+"q": "Em qual clube Pelé jogou a maior parte da carreira?",
+"a": [
+"Santos",
+"Corinthians",
+"Flamengo",
+"São Paulo"
+]
+},
+{
+"cat": "Futebol",
+"d": 2,
+"q": "Qual jogador argentino tem o apelido de \"La Pulga\"?",
+"a": [
+"Lionel Messi",
+"Di María",
+"Agüero",
+"Maradona"
+]
+},
+{
+"cat": "Futebol",
+"d": 2,
+"q": "Qual país ganhou a Copa do Mundo de 2014?",
+"a": [
+"Alemanha",
+"Argentina",
+"Holanda",
+"Espanha"
+]
+},
+{
+"cat": "Futebol",
+"d": 2,
+"q": "Em que estádio aconteceu a final da Copa de 1950?",
+"a": [
+"Maracanã",
+"Mineirão",
+"Pacaembu",
+"Morumbi"
+]
+},
+{
+"cat": "Futebol",
+"d": 3,
+"q": "Qual seleção venceu o Brasil por 7 a 1 em 2014?",
+"a": [
+"Alemanha",
+"Holanda",
+"Argentina",
+"Itália"
+]
+},
+{
+"cat": "Futebol",
+"d": 3,
+"q": "Quem foi o técnico do Brasil no penta em 2002?",
+"a": [
+"Luiz Felipe Scolari",
+"Carlos Alberto Parreira",
+"Tite",
+"Zagallo"
+]
+},
+{
+"cat": "Futebol",
+"d": 3,
+"q": "Qual país sediou a primeira Copa do Mundo, em 1930?",
+"a": [
+"Uruguai",
+"Brasil",
+"Itália",
+"França"
+]
+},
+{
+"cat": "Futebol",
+"d": 3,
+"q": "Qual jogador brasileiro ganhou a Bola de Ouro em 2007?",
+"a": [
+"Kaká",
+"Ronaldinho",
+"Ronaldo",
+"Rivaldo"
+]
+},
+{
+"cat": "Futebol",
+"d": 3,
+"q": "Quantos gols Pelé disse ter marcado na carreira, aproximadamente?",
+"a": [
+"Mais de 1.000",
+"500",
+"750",
+"2.000"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual é o rio mais longo da América do Sul?",
+"a": [
+"Amazonas",
+"Paraná",
+"São Francisco",
+"Orinoco"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual cordilheira atravessa a América do Sul de norte a sul?",
+"a": [
+"Andes",
+"Alpes",
+"Himalaia",
+"Rochosas"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual país é chamado de \"Terra do Sol Nascente\"?",
+"a": [
+"Japão",
+"China",
+"Coreia do Sul",
+"Tailândia"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual país faz fronteira com o Brasil e tem o francês como língua oficial?",
+"a": [
+"Guiana Francesa (França)",
+"Suriname",
+"Guiana",
+"Venezuela"
+]
+},
+{
+"cat": "Brasil",
+"d": 1,
+"q": "Qual é a capital de Pernambuco?",
+"a": [
+"Recife",
+"Olinda",
+"Caruaru",
+"Petrolina"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual é o bioma brasileiro que é a maior planície alagável do mundo?",
+"a": [
+"Pantanal",
+"Cerrado",
+"Caatinga",
+"Pampa"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual inventor brasileiro voou no 14-Bis?",
+"a": [
+"Santos Dumont",
+"Bartolomeu de Gusmão",
+"Oswaldo Cruz",
+"Carlos Chagas"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Em que ano foi promulgada a atual Constituição do Brasil?",
+"a": [
+"1988",
+"1985",
+"1990",
+"1967"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Qual estado brasileiro tem mais municípios?",
+"a": [
+"Minas Gerais",
+"São Paulo",
+"Bahia",
+"Rio Grande do Sul"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Qual cientista brasileiro descobriu a doença de Chagas?",
+"a": [
+"Carlos Chagas",
+"Oswaldo Cruz",
+"Vital Brazil",
+"Adolfo Lutz"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Qual navegador é considerado o primeiro a dar a volta ao mundo (expedição)?",
+"a": [
+"Fernão de Magalhães",
+"Cristóvão Colombo",
+"Américo Vespúcio",
+"Bartolomeu Dias"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Quem foi Tiradentes?",
+"a": [
+"Líder da Inconfidência Mineira",
+"Primeiro rei do Brasil",
+"Bandeirante",
+"Presidente da República"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Qual foi a primeira mulher a ganhar um Prêmio Nobel?",
+"a": [
+"Marie Curie",
+"Rosalind Franklin",
+"Ada Lovelace",
+"Florence Nightingale"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Quem foi o primeiro presidente dos Estados Unidos?",
+"a": [
+"George Washington",
+"Abraham Lincoln",
+"Thomas Jefferson",
+"John Adams"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "O que a abelha produz?",
+"a": [
+"Mel",
+"Leite",
+"Seda",
+"Cera de carnaúba"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Qual é o planeta com o dia mais longo que o seu ano?",
+"a": [
+"Vênus",
+"Mercúrio",
+"Marte",
+"Netuno"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Como se chama a mudança do estado sólido para o líquido?",
+"a": [
+"Fusão",
+"Evaporação",
+"Condensação",
+"Solidificação"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual cientista descobriu a penicilina?",
+"a": [
+"Alexander Fleming",
+"Louis Pasteur",
+"Robert Koch",
+"Edward Jenner"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual é o pH da água pura?",
+"a": [
+"7",
+"0",
+"14",
+"5"
+]
+},
+{
+"cat": "Esportes",
+"d": 1,
+"q": "Em qual esporte se faz \"cesta\"?",
+"a": [
+"Basquete",
+"Vôlei",
+"Handebol",
+"Futsal"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Qual tenista suíço ganhou 20 Grand Slams?",
+"a": [
+"Roger Federer",
+"Rafael Nadal",
+"Novak Djokovic",
+"Andy Murray"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Qual ginasta brasileira ganhou ouro olímpico no salto em Tóquio?",
+"a": [
+"Rebeca Andrade",
+"Daiane dos Santos",
+"Jade Barbosa",
+"Flávia Saraiva"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Qual skatista brasileira foi medalhista olímpica aos 13 anos em Tóquio?",
+"a": [
+"Rayssa Leal",
+"Pâmela Rosa",
+"Letícia Bufoni",
+"Karen Jonz"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Qual atleta jamaicano é recordista mundial dos 100 metros rasos?",
+"a": [
+"Usain Bolt",
+"Carl Lewis",
+"Tyson Gay",
+"Yohan Blake"
+]
+},
+{
+"cat": "Comida",
+"d": 1,
+"q": "Qual fruta é amarela e os macacos adoram?",
+"a": [
+"Banana",
+"Manga",
+"Abacaxi",
+"Maracujá"
+]
+},
+{
+"cat": "Comida",
+"d": 2,
+"q": "De onde vem o açaí?",
+"a": [
+"Região Norte do Brasil",
+"Sul do Brasil",
+"Argentina",
+"México"
+]
+},
+{
+"cat": "Comida",
+"d": 2,
+"q": "Qual é o ingrediente principal do brigadeiro?",
+"a": [
+"Leite condensado",
+"Doce de leite",
+"Creme de leite",
+"Leite em pó"
+]
+},
+{
+"cat": "Comida",
+"d": 3,
+"q": "Qual país é o maior produtor de café do mundo?",
+"a": [
+"Brasil",
+"Colômbia",
+"Vietnã",
+"Etiópia"
+]
+},
+{
+"cat": "Animais",
+"d": 1,
+"q": "Qual animal faz \"muuu\"?",
+"a": [
+"Vaca",
+"Cavalo",
+"Ovelha",
+"Porco"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "Qual é o maior animal terrestre?",
+"a": [
+"Elefante-africano",
+"Rinoceronte",
+"Hipopótamo",
+"Girafa"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "Qual animal brasileiro é símbolo da cédula de 200 reais?",
+"a": [
+"Lobo-guará",
+"Onça-pintada",
+"Mico-leão-dourado",
+"Arara-azul"
+]
+},
+{
+"cat": "Animais",
+"d": 3,
+"q": "Qual peixe da Amazônia é um dos maiores de água doce do mundo?",
+"a": [
+"Pirarucu",
+"Tambaqui",
+"Tucunaré",
+"Piranha"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"q": "Quem fundou o Google?",
+"a": [
+"Larry Page e Sergey Brin",
+"Bill Gates e Paul Allen",
+"Steve Jobs e Steve Wozniak",
+"Mark Zuckerberg e Eduardo Saverin"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"q": "Qual aplicativo de mensagens tem um telefone verde como ícone?",
+"a": [
+"WhatsApp",
+"Telegram",
+"Messenger",
+"Signal"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"q": "O que significa a sigla \"IA\"?",
+"a": [
+"Inteligência artificial",
+"Internet avançada",
+"Informação automática",
+"Imagem animada"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Qual é o maior continente do mundo?",
+"a": [
+"Ásia",
+"África",
+"América",
+"Europa"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 3,
+"q": "Qual país deu a Estátua da Liberdade aos Estados Unidos?",
+"a": [
+"França",
+"Inglaterra",
+"Espanha",
+"Holanda"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Qual é a capital da Itália?",
+"a": [
+"Roma",
+"Milão",
+"Veneza",
+"Nápoles"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Qual é a capital da Espanha?",
+"a": [
+"Madri",
+"Barcelona",
+"Sevilha",
+"Valência"
+]
+},
+{
+"cat": "Geografia",
+"d": 1,
+"q": "Em que continente fica o Brasil?",
+"a": [
+"América do Sul",
+"América do Norte",
+"África",
+"Europa"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual é a capital da Alemanha?",
+"a": [
+"Berlim",
+"Munique",
+"Frankfurt",
+"Hamburgo"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual é a capital do México?",
+"a": [
+"Cidade do México",
+"Cancún",
+"Guadalajara",
+"Monterrey"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual país tem a maior população do mundo hoje?",
+"a": [
+"Índia",
+"China",
+"Estados Unidos",
+"Indonésia"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Em que país fica a Torre de Pisa?",
+"a": [
+"Itália",
+"França",
+"Espanha",
+"Grécia"
+]
+},
+{
+"cat": "Geografia",
+"d": 2,
+"q": "Qual é a capital da Rússia?",
+"a": [
+"Moscou",
+"São Petersburgo",
+"Kiev",
+"Minsk"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual país tem como capital Nairóbi?",
+"a": [
+"Quênia",
+"Etiópia",
+"Tanzânia",
+"Uganda"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual é o país mais populoso da África?",
+"a": [
+"Nigéria",
+"Egito",
+"Etiópia",
+"África do Sul"
+]
+},
+{
+"cat": "Geografia",
+"d": 3,
+"q": "Qual é a capital da Coreia do Sul?",
+"a": [
+"Seul",
+"Busan",
+"Pyongyang",
+"Incheon"
+]
+},
+{
+"cat": "História",
+"d": 1,
+"q": "Quem era o rei de Portugal quando a família real veio ao Brasil em 1808?",
+"a": [
+"Dom João VI",
+"Dom Pedro I",
+"Dom Manuel",
+"Dom Sebastião"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Qual foi o primeiro presidente negro dos Estados Unidos?",
+"a": [
+"Barack Obama",
+"Martin Luther King",
+"Nelson Mandela",
+"Colin Powell"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Qual líder sul-africano ficou 27 anos preso e virou presidente?",
+"a": [
+"Nelson Mandela",
+"Desmond Tutu",
+"Steve Biko",
+"Jacob Zuma"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Quem foi o presidente que criou Brasília?",
+"a": [
+"Juscelino Kubitschek",
+"Getúlio Vargas",
+"Jânio Quadros",
+"João Goulart"
+]
+},
+{
+"cat": "História",
+"d": 2,
+"q": "Que povo construiu Machu Picchu?",
+"a": [
+"Incas",
+"Maias",
+"Astecas",
+"Olmecas"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Qual navio trouxe os primeiros imigrantes japoneses ao Brasil em 1908?",
+"a": [
+"Kasato Maru",
+"Titanic",
+"Mayflower",
+"Santa Maria"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Qual era o nome da primeira mulher a ser presidente do Brasil?",
+"a": [
+"Dilma Rousseff",
+"Marina Silva",
+"Benedita da Silva",
+"Zélia Cardoso"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Em que ano o Brasil virou Reino Unido a Portugal e Algarves?",
+"a": [
+"1815",
+"1808",
+"1822",
+"1831"
+]
+},
+{
+"cat": "História",
+"d": 3,
+"q": "Quem foi o criador do Partido Nazista alemão no poder em 1933?",
+"a": [
+"Adolf Hitler",
+"Otto von Bismarck",
+"Kaiser Guilherme II",
+"Heinrich Himmler"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "Qual é o planeta onde vivemos?",
+"a": [
+"Terra",
+"Marte",
+"Vênus",
+"Júpiter"
+]
+},
+{
+"cat": "Ciências",
+"d": 1,
+"q": "Qual sentido usamos com o nariz?",
+"a": [
+"Olfato",
+"Paladar",
+"Tato",
+"Audição"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Como se chama o processo em que a planta produz o próprio alimento com luz?",
+"a": [
+"Fotossíntese",
+"Respiração",
+"Digestão",
+"Transpiração"
+]
+},
+{
+"cat": "Ciências",
+"d": 2,
+"q": "Qual é a principal fonte de energia da Terra?",
+"a": [
+"Sol",
+"Lua",
+"Petróleo",
+"Vento"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual é o gás mais abundante na atmosfera da Terra?",
+"a": [
+"Nitrogênio",
+"Oxigênio",
+"Gás carbônico",
+"Argônio"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual é a unidade de medida da força?",
+"a": [
+"Newton",
+"Joule",
+"Watt",
+"Pascal"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Quem criou a tabela periódica dos elementos?",
+"a": [
+"Dmitri Mendeleiev",
+"Antoine Lavoisier",
+"John Dalton",
+"Niels Bohr"
+]
+},
+{
+"cat": "Ciências",
+"d": 3,
+"q": "Qual é o osso que protege o cérebro?",
+"a": [
+"Crânio",
+"Esterno",
+"Fêmur",
+"Escápula"
+]
+},
+{
+"cat": "Esportes",
+"d": 1,
+"q": "Quantos jogadores tem um time de vôlei em quadra?",
+"a": [
+"6",
+"5",
+"7",
+"11"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Em qual esporte o Brasil tem o apelido de \"Geração de Prata\" dos anos 80?",
+"a": [
+"Vôlei masculino",
+"Basquete",
+"Futebol",
+"Handebol"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Qual esporte é jogado em Wimbledon?",
+"a": [
+"Tênis",
+"Golfe",
+"Críquete",
+"Polo"
+]
+},
+{
+"cat": "Esportes",
+"d": 2,
+"q": "Quantos jogadores tem um time de basquete em quadra?",
+"a": [
+"5",
+"6",
+"7",
+"4"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Qual piloto alemão ganhou 7 títulos de Fórmula 1?",
+"a": [
+"Michael Schumacher",
+"Sebastian Vettel",
+"Nico Rosberg",
+"Niki Lauda"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Qual nadador brasileiro foi recordista mundial dos 50 m livre?",
+"a": [
+"Cesar Cielo",
+"Gustavo Borges",
+"Thiago Pereira",
+"Bruno Fratus"
+]
+},
+{
+"cat": "Esportes",
+"d": 3,
+"q": "Em qual cidade foram os Jogos Olímpicos de 2021 (de 2020)?",
+"a": [
+"Tóquio",
+"Pequim",
+"Paris",
+"Londres"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"q": "Qual é o nome do cachorro do Mickey?",
+"a": [
+"Pluto",
+"Pateta",
+"Bidu",
+"Scooby"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 1,
+"q": "Que personagem tem um martelo e é o deus do trovão na Marvel?",
+"a": [
+"Thor",
+"Loki",
+"Hulk",
+"Odin"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Qual é o nome da turma criada por Mauricio de Sousa?",
+"a": [
+"Turma da Mônica",
+"Turma do Pererê",
+"Sítio do Picapau",
+"Os Trapalhões"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Quem criou o Sítio do Picapau Amarelo?",
+"a": [
+"Monteiro Lobato",
+"Ziraldo",
+"Mauricio de Sousa",
+"Ruth Rocha"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 2,
+"q": "Qual personagem de Ziraldo usa uma panela na cabeça?",
+"a": [
+"O Menino Maluquinho",
+"Cascão",
+"Chico Bento",
+"Pererê"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Qual é o videogame em que um encanador italiano salva a princesa Peach?",
+"a": [
+"Super Mario",
+"Sonic",
+"Zelda",
+"Pac-Man"
+]
+},
+{
+"cat": "Entretenimento",
+"d": 3,
+"q": "Qual é o nome do robô que limpa o lixo na Terra em um filme da Pixar?",
+"a": [
+"Wall-E",
+"EVA",
+"Baymax",
+"R2-D2"
+]
+},
+{
+"cat": "Brasil",
+"d": 1,
+"q": "Qual é a capital de Minas Gerais?",
+"a": [
+"Belo Horizonte",
+"Ouro Preto",
+"Uberlândia",
+"Juiz de Fora"
+]
+},
+{
+"cat": "Brasil",
+"d": 1,
+"q": "Qual é a capital do Ceará?",
+"a": [
+"Fortaleza",
+"Juazeiro do Norte",
+"Sobral",
+"Natal"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual é a capital do Pará?",
+"a": [
+"Belém",
+"Santarém",
+"Marabá",
+"Macapá"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual estado brasileiro é conhecido pelo chimarrão e pelo churrasco gaúcho?",
+"a": [
+"Rio Grande do Sul",
+"Santa Catarina",
+"Paraná",
+"Mato Grosso do Sul"
+]
+},
+{
+"cat": "Brasil",
+"d": 2,
+"q": "Qual é a capital de Santa Catarina?",
+"a": [
+"Florianópolis",
+"Joinville",
+"Blumenau",
+"Chapecó"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Qual é a capital do Amapá?",
+"a": [
+"Macapá",
+"Santana",
+"Oiapoque",
+"Boa Vista"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Qual é o rio que corta o sertão nordestino e é chamado de \"Velho Chico\"?",
+"a": [
+"São Francisco",
+"Parnaíba",
+"Jaguaribe",
+"Tocantins"
+]
+},
+{
+"cat": "Brasil",
+"d": 3,
+"q": "Qual cidade brasileira é a capital mais ao sul do país?",
+"a": [
+"Porto Alegre",
+"Florianópolis",
+"Curitiba",
+"Pelotas"
+]
+},
+{
+"cat": "Comida",
+"d": 1,
+"q": "Qual bebida é feita com limão, açúcar, gelo e cachaça?",
+"a": [
+"Caipirinha",
+"Batida",
+"Quentão",
+"Mojito"
+]
+},
+{
+"cat": "Comida",
+"d": 2,
+"q": "Qual doce de festa junina é feito com amendoim?",
+"a": [
+"Paçoca",
+"Cocada",
+"Quindim",
+"Pé de moleque de coco"
+]
+},
+{
+"cat": "Comida",
+"d": 2,
+"q": "Qual prato do Pará leva tucupi e jambu?",
+"a": [
+"Tacacá",
+"Moqueca",
+"Baião de dois",
+"Arrumadinho"
+]
+},
+{
+"cat": "Comida",
+"d": 3,
+"q": "Qual é o prato mineiro feito com feijão, farinha, torresmo e couve?",
+"a": [
+"Feijão tropeiro",
+"Tutu à mineira",
+"Arroz carreteiro",
+"Virado à paulista"
+]
+},
+{
+"cat": "Comida",
+"d": 3,
+"q": "Qual país é a origem do prato chamado \"paella\"?",
+"a": [
+"Espanha",
+"Portugal",
+"México",
+"Itália"
+]
+},
+{
+"cat": "Animais",
+"d": 1,
+"q": "Qual animal é conhecido por carregar a casa nas costas?",
+"a": [
+"Caracol",
+"Tartaruga-marinha",
+"Caranguejo",
+"Lagarta"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "Qual animal brasileiro está na nota de 20 reais?",
+"a": [
+"Mico-leão-dourado",
+"Onça-pintada",
+"Garoupa",
+"Arara"
+]
+},
+{
+"cat": "Animais",
+"d": 2,
+"q": "Qual é o único mamífero coberto de escamas, que se enrola como bola?",
+"a": [
+"Pangolim",
+"Tatu",
+"Ouriço",
+"Porco-espinho"
+]
+},
+{
+"cat": "Animais",
+"d": 3,
+"q": "Quantas câmaras tem o estômago de uma vaca?",
+"a": [
+"4",
+"2",
+"3",
+"1"
+]
+},
+{
+"cat": "Animais",
+"d": 3,
+"q": "Qual é a ave que consegue voar para trás?",
+"a": [
+"Beija-flor",
+"Andorinha",
+"Gavião",
+"Pardal"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 1,
+"q": "O que usamos para mover a seta na tela do computador?",
+"a": [
+"Mouse",
+"Teclado",
+"Monitor",
+"Impressora"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"q": "Qual empresa fabrica o console PlayStation?",
+"a": [
+"Sony",
+"Microsoft",
+"Nintendo",
+"Sega"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 2,
+"q": "Qual empresa fabrica o console Xbox?",
+"a": [
+"Microsoft",
+"Sony",
+"Nintendo",
+"Apple"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"q": "Qual era o nome do primeiro computador eletrônico de uso geral?",
+"a": [
+"ENIAC",
+"IBM PC",
+"Apple I",
+"UNIVAC"
+]
+},
+{
+"cat": "Tecnologia",
+"d": 3,
+"q": "Qual rede social foi criada por Mark Zuckerberg?",
+"a": [
+"Facebook",
+"Twitter",
+"Instagram",
+"Orkut"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 1,
+"q": "Quantos dias tem uma semana?",
+"a": [
+"7",
+"5",
+"6",
+"8"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Qual é o maior planeta rochoso do Sistema Solar?",
+"a": [
+"Terra",
+"Marte",
+"Vênus",
+"Mercúrio"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 2,
+"q": "Qual é a língua oficial do Brasil?",
+"a": [
+"Português",
+"Espanhol",
+"Inglês",
+"Tupi"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 3,
+"q": "Qual país tem o maior número de pirâmides do mundo?",
+"a": [
+"Sudão",
+"Egito",
+"México",
+"Peru"
+]
+},
+{
+"cat": "Conhecimentos gerais",
+"d": 3,
+"q": "Qual é o metal usado nos fios elétricos por conduzir bem a eletricidade?",
+"a": [
+"Cobre",
+"Ferro",
+"Ouro",
+"Chumbo"
+]
+},
+{
+"cat": "Música",
+"d": 1,
+"q": "Qual instrumento se toca batendo com baquetas?",
+"a": [
+"Bateria",
+"Violino",
+"Flauta",
+"Piano"
+]
+},
+{
+"cat": "Música",
+"d": 2,
+"q": "Qual cantora brasileira é chamada de \"Rainha dos Baixinhos\"?",
+"a": [
+"Xuxa",
+"Angélica",
+"Eliana",
+"Mara Maravilha"
+]
+},
+{
+"cat": "Música",
+"d": 2,
+"q": "Qual ritmo nordestino tem sanfona, zabumba e triângulo?",
+"a": [
+"Forró",
+"Samba",
+"Pagode",
+"Funk"
+]
+},
+{
+"cat": "Música",
+"d": 3,
+"q": "Qual cantor baiano gravou \"Tropicália\" e \"Alegria, Alegria\"?",
+"a": [
+"Caetano Veloso",
+"Gilberto Gil",
+"Raul Seixas",
+"Moraes Moreira"
+]
+},
+{
+"cat": "Espaço",
+"d": 1,
+"q": "O que a Terra leva cerca de 365 dias para completar?",
+"a": [
+"Uma volta ao redor do Sol",
+"Uma volta em torno de si",
+"Uma volta da Lua",
+"Um eclipse"
+]
+},
+{
+"cat": "Espaço",
+"d": 2,
+"q": "Como se chama o movimento da Terra girando em torno de si mesma?",
+"a": [
+"Rotação",
+"Translação",
+"Revolução",
+"Precessão"
+]
+},
+{
+"cat": "Espaço",
+"d": 3,
+"q": "Qual é o planeta mais distante do Sol?",
+"a": [
+"Netuno",
+"Urano",
+"Plutão",
+"Saturno"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 1,
+"q": "Onde fica o cérebro?",
+"a": [
+"Na cabeça",
+"No peito",
+"Na barriga",
+"Nas costas"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 2,
+"q": "Qual órgão filtra o sangue e produz a urina?",
+"a": [
+"Rins",
+"Fígado",
+"Bexiga",
+"Pâncreas"
+]
+},
+{
+"cat": "Corpo humano",
+"d": 3,
+"q": "Qual é o músculo mais forte em relação ao tamanho?",
+"a": [
+"Masseter (mandíbula)",
+"Bíceps",
+"Coração",
+"Glúteo"
+]
+},
+{
+"cat": "Português",
+"d": 2,
+"q": "Qual é o aumentativo de \"casa\"?",
+"a": [
+"Casarão",
+"Casinha",
+"Casebre",
+"Casario"
+]
+},
+{
+"cat": "Português",
+"d": 3,
+"q": "Qual é o diminutivo de \"pão\"?",
+"a": [
+"Pãozinho",
+"Pãozão",
+"Pãozito",
+"Paninho"
+]
+},
+{
+"cat": "Matemática",
+"d": 1,
+"q": "Quanto é 100 − 37?",
+"a": [
+"63",
+"73",
+"67",
+"53"
+]
+},
+{
+"cat": "Matemática",
+"d": 2,
+"q": "Quanto é 25% de 80?",
+"a": [
+"20",
+"25",
+"40",
+"16"
+]
+},
+{
+"cat": "Matemática",
+"d": 3,
+"q": "Qual é o valor de x em x² = 49 (x positivo)?",
+"a": [
+"7",
+"49",
+"14",
+"9"
+]
+}
+]
+}

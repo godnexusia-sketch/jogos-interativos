@@ -1,0 +1,70 @@
+Tecnologia|1|V|A internet conecta computadores do mundo inteiro.|É uma rede de redes espalhada por todo o planeta.
+Tecnologia|1|F|O celular foi inventado antes da roda.|A roda tem uns 5.500 anos; o celular surgiu nos anos 1970.
+Tecnologia|2|V|O primeiro iPhone foi lançado em 2007.|Foi apresentado por Steve Jobs em janeiro de 2007.
+Tecnologia|2|F|Um byte tem 10 bits.|Um byte tem 8 bits.
+Tecnologia|2|V|O e-mail surgiu antes das redes sociais.|O primeiro e-mail foi enviado em 1971.
+Tecnologia|2|F|O Android foi criado pela Apple.|O Android é do Google; a Apple faz o iOS.
+Tecnologia|3|V|O primeiro computador eletrônico pesava cerca de 27 toneladas.|O ENIAC, de 1946, ocupava uma sala inteira.
+Tecnologia|3|F|O Bluetooth tem esse nome por causa de um dente azul de verdade.|O nome homenageia o rei viking Harald "Dente Azul".
+Tecnologia|3|V|O primeiro domínio ".com" foi registrado em 1985.|Foi o symbolics.com.
+Entretenimento|1|V|O Mickey Mouse foi criado por Walt Disney.|Junto com o desenhista Ub Iwerks, em 1928.
+Entretenimento|1|F|A Mônica, da Turma da Mônica, tem cabelo azul.|A Mônica tem cabelo preto e usa vestido vermelho.
+Entretenimento|1|V|O Bob Esponja mora num abacaxi.|O abacaxi fica no fundo do mar, na Fenda do Biquíni.
+Entretenimento|2|V|O Homem-Aranha é Peter Parker.|É a identidade secreta do herói da Marvel.
+Entretenimento|2|F|O Batman tem superpoderes.|Bruce Wayne não tem poderes: usa treino, inteligência e tecnologia.
+Entretenimento|2|V|O desenho "Os Simpsons" estreou como série em 1989.|É uma das séries mais longas da TV.
+Entretenimento|2|F|O Shrek é um dragão.|O Shrek é um ogro; o dragão é a parceira do Burro.
+Entretenimento|3|V|"Toy Story" foi o primeiro longa feito todo em computação gráfica.|Foi lançado em 1995 pela Pixar.
+Entretenimento|3|F|A Pixar foi criada pelo Mauricio de Sousa.|A Pixar nasceu de um grupo da Lucasfilm e teve Steve Jobs como investidor.
+Entretenimento|3|V|O Pokémon Pikachu é do tipo elétrico.|Ele solta choques pelas bochechas.
+Música|1|V|O violão tem cordas.|O violão comum tem seis cordas.
+Música|1|F|A flauta é um instrumento de cordas.|A flauta é um instrumento de sopro.
+Música|2|V|Roberto Carlos é conhecido como o Rei.|Ele é um dos cantores que mais vendeu discos no Brasil.
+Música|2|F|O samba nasceu nos Estados Unidos.|O samba nasceu no Brasil, com raízes africanas.
+Música|2|V|Mozart começou a compor música quando era criança.|Ele compunha desde os 5 anos.
+Música|3|V|A bossa nova surgiu no Rio de Janeiro no fim dos anos 1950.|Com nomes como João Gilberto, Tom Jobim e Vinicius de Moraes.
+Música|3|F|Beethoven nasceu no Brasil.|Beethoven nasceu em Bonn, na Alemanha, em 1770.
+Música|3|V|O piano tem 88 teclas.|São 52 brancas e 36 pretas.
+Matemática|1|V|Todo número par é divisível por 2.|É a definição de número par.
+Matemática|1|F|Dez é um número ímpar.|Dez é par, porque divide por 2 sem sobrar.
+Matemática|1|V|Um quadrado tem quatro lados iguais.|E quatro ângulos retos de 90 graus.
+Matemática|2|V|O número 7 é primo.|Ele só é divisível por 1 e por ele mesmo.
+Matemática|2|F|O número 1 é primo.|Para ser primo é preciso ter exatamente dois divisores; o 1 só tem um.
+Matemática|2|V|A soma dos ângulos internos de um triângulo é 180 graus.|Vale para qualquer triângulo no plano.
+Matemática|2|F|Metade de 100 é 25.|Metade de 100 é 50.
+Matemática|3|V|Qualquer número elevado a zero é igual a 1 (menos o zero).|Por exemplo, 5⁰ = 1.
+Matemática|3|F|O número pi é exatamente 3,14.|Pi é irracional: 3,14159... com infinitas casas sem padrão.
+Matemática|3|V|Existem infinitos números primos.|Euclides provou isso há mais de 2 mil anos.
+Português|1|V|"Gato" é um substantivo.|Substantivo é a palavra que dá nome a seres e coisas.
+Português|1|F|A palavra "feliz" é um verbo.|"Feliz" é um adjetivo; verbo é ação, como "correr".
+Português|2|V|O plural de "mão" é "mãos".|É uma das palavras em -ão que fazem plural em -ãos.
+Português|2|F|"Cachorro" se escreve com X: "caxorro".|O certo é "cachorro", com CH.
+Português|2|V|"Ovo" é um palíndromo.|Lido de trás para frente, continua "ovo".
+Português|3|V|"Paralelepípedo" é uma palavra proparoxítona.|A sílaba mais forte é a antepenúltima: "pí".
+Português|3|F|O português é a língua oficial só de Portugal e do Brasil.|Também é oficial em Angola, Moçambique, Cabo Verde e outros países.
+Português|3|V|A letra K voltou oficialmente ao alfabeto português em 2009.|Junto com W e Y, pelo Acordo Ortográfico.
+Arte e Cultura|1|V|A Mona Lisa foi pintada por Leonardo da Vinci.|Ela fica no Museu do Louvre, em Paris.
+Arte e Cultura|1|F|O Saci-Pererê tem duas pernas.|No folclore, o Saci tem uma perna só.
+Arte e Cultura|2|V|A Festa Junina tem origem em festas europeias levadas pelos portugueses.|No Brasil ganhou quadrilha, comidas de milho e fogueira.
+Arte e Cultura|2|F|Van Gogh vendeu centenas de quadros em vida.|Ele vendeu pouquíssimos quadros enquanto estava vivo.
+Arte e Cultura|2|V|Tarsila do Amaral pintou o Abaporu.|É um dos quadros mais famosos do modernismo brasileiro.
+Arte e Cultura|3|V|A Semana de Arte Moderna aconteceu em São Paulo em 1922.|Foi no Theatro Municipal.
+Arte e Cultura|3|F|Aleijadinho era um pintor francês.|Aleijadinho foi um escultor e arquiteto brasileiro de Minas Gerais.
+Arte e Cultura|3|V|Shakespeare escreveu "Hamlet".|É uma das peças de teatro mais encenadas do mundo.
+Mitologia|1|V|Thor é o deus do trovão na mitologia nórdica.|Ele carrega o martelo Mjölnir.
+Mitologia|2|V|Na mitologia grega, Zeus é o rei dos deuses.|Ele vivia no Monte Olimpo.
+Mitologia|2|F|Poseidon é o deus grego do fogo.|Poseidon é o deus dos mares; o do fogo e da forja é Hefesto.
+Mitologia|3|V|Hércules é o nome romano do herói grego Héracles.|Ele é famoso pelos doze trabalhos.
+Mitologia|3|F|A Medusa transformava pessoas em ouro.|O olhar dela transformava pessoas em pedra.
+Futebol|1|V|Pelé jogou pelo Santos.|Ele fez a maior parte da carreira no Santos.
+Futebol|1|F|No futebol, o time que faz menos gols vence.|Vence quem faz mais gols.
+Futebol|2|V|O Maracanã fica no Rio de Janeiro.|Foi inaugurado para a Copa de 1950.
+Futebol|2|F|A Argentina nunca ganhou uma Copa do Mundo.|A Argentina ganhou em 1978, 1986 e 2022.
+Futebol|3|V|O Uruguai venceu a primeira Copa do Mundo, em 1930.|Ganhou a final contra a Argentina em Montevidéu.
+Futebol|3|F|O "Maracanaço" foi uma vitória do Brasil.|Foi a derrota do Brasil para o Uruguai na final de 1950.
+Conhecimentos gerais|1|V|Uma hora tem 60 minutos.|E cada minuto tem 60 segundos.
+Conhecimentos gerais|1|F|O ano tem 13 meses.|O ano tem 12 meses.
+Conhecimentos gerais|2|V|O semáforo amarelo significa atenção.|Indica que o sinal vai fechar.
+Conhecimentos gerais|2|F|O dia 25 de dezembro é o Dia da Independência do Brasil.|A Independência é 7 de setembro; 25 de dezembro é Natal.
+Conhecimentos gerais|3|V|O Dia do Trabalhador é comemorado em 1º de maio.|É feriado em muitos países, incluindo o Brasil.
+Conhecimentos gerais|3|F|A ONU foi criada antes da Primeira Guerra Mundial.|A ONU foi criada em 1945, depois da Segunda Guerra.

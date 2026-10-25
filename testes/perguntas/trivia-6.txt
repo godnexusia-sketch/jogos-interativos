@@ -1,0 +1,87 @@
+Geografia|1|Qual é a capital da Itália?|Roma|Milão|Veneza|Nápoles
+Geografia|1|Qual é a capital da Espanha?|Madri|Barcelona|Sevilha|Valência
+Geografia|1|Em que continente fica o Brasil?|América do Sul|América do Norte|África|Europa
+Geografia|2|Qual é a capital da Alemanha?|Berlim|Munique|Frankfurt|Hamburgo
+Geografia|2|Qual é a capital do México?|Cidade do México|Cancún|Guadalajara|Monterrey
+Geografia|2|Qual país tem a maior população do mundo hoje?|Índia|China|Estados Unidos|Indonésia
+Geografia|2|Em que país fica a Torre de Pisa?|Itália|França|Espanha|Grécia
+Geografia|2|Qual é a capital da Rússia?|Moscou|São Petersburgo|Kiev|Minsk
+Geografia|3|Qual é a capital da Islândia?|Reykjavík|Oslo|Helsinque|Copenhague
+Geografia|3|Qual país tem como capital Nairóbi?|Quênia|Etiópia|Tanzânia|Uganda
+Geografia|3|Qual é o país mais populoso da África?|Nigéria|Egito|Etiópia|África do Sul
+Geografia|3|Qual é a capital da Coreia do Sul?|Seul|Busan|Pyongyang|Incheon
+História|1|Quem era o rei de Portugal quando a família real veio ao Brasil em 1808?|Dom João VI|Dom Pedro I|Dom Manuel|Dom Sebastião
+História|2|Qual foi o primeiro presidente negro dos Estados Unidos?|Barack Obama|Martin Luther King|Nelson Mandela|Colin Powell
+História|2|Qual líder sul-africano ficou 27 anos preso e virou presidente?|Nelson Mandela|Desmond Tutu|Steve Biko|Jacob Zuma
+História|2|Quem foi o presidente que criou Brasília?|Juscelino Kubitschek|Getúlio Vargas|Jânio Quadros|João Goulart
+História|2|Que povo construiu Machu Picchu?|Incas|Maias|Astecas|Olmecas
+História|3|Qual navio trouxe os primeiros imigrantes japoneses ao Brasil em 1908?|Kasato Maru|Titanic|Mayflower|Santa Maria
+História|3|Qual era o nome da primeira mulher a ser presidente do Brasil?|Dilma Rousseff|Marina Silva|Benedita da Silva|Zélia Cardoso
+História|3|Em que ano o Brasil virou Reino Unido a Portugal e Algarves?|1815|1808|1822|1831
+História|3|Quem foi o criador do Partido Nazista alemão no poder em 1933?|Adolf Hitler|Otto von Bismarck|Kaiser Guilherme II|Heinrich Himmler
+Ciências|1|Qual é o planeta onde vivemos?|Terra|Marte|Vênus|Júpiter
+Ciências|1|Qual sentido usamos com o nariz?|Olfato|Paladar|Tato|Audição
+Ciências|2|O que mede um termômetro?|Temperatura|Pressão|Umidade|Velocidade
+Ciências|2|Como se chama o processo em que a planta produz o próprio alimento com luz?|Fotossíntese|Respiração|Digestão|Transpiração
+Ciências|2|Qual é a principal fonte de energia da Terra?|Sol|Lua|Petróleo|Vento
+Ciências|3|Qual é o gás mais abundante na atmosfera da Terra?|Nitrogênio|Oxigênio|Gás carbônico|Argônio
+Ciências|3|Qual é a unidade de medida da força?|Newton|Joule|Watt|Pascal
+Ciências|3|Quem criou a tabela periódica dos elementos?|Dmitri Mendeleiev|Antoine Lavoisier|John Dalton|Niels Bohr
+Ciências|3|Qual é o osso que protege o cérebro?|Crânio|Esterno|Fêmur|Escápula
+Esportes|1|Quantos jogadores tem um time de vôlei em quadra?|6|5|7|11
+Esportes|2|Em qual esporte o Brasil tem o apelido de "Geração de Prata" dos anos 80?|Vôlei masculino|Basquete|Futebol|Handebol
+Esportes|2|Qual esporte é jogado em Wimbledon?|Tênis|Golfe|Críquete|Polo
+Esportes|2|Quantos jogadores tem um time de basquete em quadra?|5|6|7|4
+Esportes|3|Qual piloto alemão ganhou 7 títulos de Fórmula 1?|Michael Schumacher|Sebastian Vettel|Nico Rosberg|Niki Lauda
+Esportes|3|Qual nadador brasileiro foi recordista mundial dos 50 m livre?|Cesar Cielo|Gustavo Borges|Thiago Pereira|Bruno Fratus
+Esportes|3|Em qual cidade foram os Jogos Olímpicos de 2021 (de 2020)?|Tóquio|Pequim|Paris|Londres
+Entretenimento|1|Qual é o nome do cachorro do Mickey?|Pluto|Pateta|Bidu|Scooby
+Entretenimento|1|Que personagem tem um martelo e é o deus do trovão na Marvel?|Thor|Loki|Hulk|Odin
+Entretenimento|2|Qual é o nome da turma criada por Mauricio de Sousa?|Turma da Mônica|Turma do Pererê|Sítio do Picapau|Os Trapalhões
+Entretenimento|2|Quem criou o Sítio do Picapau Amarelo?|Monteiro Lobato|Ziraldo|Mauricio de Sousa|Ruth Rocha
+Entretenimento|2|Qual personagem de Ziraldo usa uma panela na cabeça?|O Menino Maluquinho|Cascão|Chico Bento|Pererê
+Entretenimento|3|Qual é o videogame em que um encanador italiano salva a princesa Peach?|Super Mario|Sonic|Zelda|Pac-Man
+Entretenimento|3|Qual é o nome do robô que limpa o lixo na Terra em um filme da Pixar?|Wall-E|EVA|Baymax|R2-D2
+Brasil|1|Qual é a capital de Minas Gerais?|Belo Horizonte|Ouro Preto|Uberlândia|Juiz de Fora
+Brasil|1|Qual é a capital do Ceará?|Fortaleza|Juazeiro do Norte|Sobral|Natal
+Brasil|2|Qual é a capital do Pará?|Belém|Santarém|Marabá|Macapá
+Brasil|2|Qual estado brasileiro é conhecido pelo chimarrão e pelo churrasco gaúcho?|Rio Grande do Sul|Santa Catarina|Paraná|Mato Grosso do Sul
+Brasil|2|Qual é a capital de Santa Catarina?|Florianópolis|Joinville|Blumenau|Chapecó
+Brasil|3|Qual é a capital do Amapá?|Macapá|Santana|Oiapoque|Boa Vista
+Brasil|3|Qual é o rio que corta o sertão nordestino e é chamado de "Velho Chico"?|São Francisco|Parnaíba|Jaguaribe|Tocantins
+Brasil|3|Qual cidade brasileira é a capital mais ao sul do país?|Porto Alegre|Florianópolis|Curitiba|Pelotas
+Comida|1|Qual bebida é feita com limão, açúcar, gelo e cachaça?|Caipirinha|Batida|Quentão|Mojito
+Comida|2|Qual doce de festa junina é feito com amendoim?|Paçoca|Cocada|Quindim|Pé de moleque de coco
+Comida|2|Qual prato do Pará leva tucupi e jambu?|Tacacá|Moqueca|Baião de dois|Arrumadinho
+Comida|3|Qual é o prato mineiro feito com feijão, farinha, torresmo e couve?|Feijão tropeiro|Tutu à mineira|Arroz carreteiro|Virado à paulista
+Comida|3|Qual país é a origem do prato chamado "paella"?|Espanha|Portugal|México|Itália
+Animais|1|Qual animal é conhecido por carregar a casa nas costas?|Caracol|Tartaruga-marinha|Caranguejo|Lagarta
+Animais|2|Qual animal brasileiro está na nota de 20 reais?|Mico-leão-dourado|Onça-pintada|Garoupa|Arara
+Animais|2|Qual é o único mamífero coberto de escamas, que se enrola como bola?|Pangolim|Tatu|Ouriço|Porco-espinho
+Animais|3|Quantas câmaras tem o estômago de uma vaca?|4|2|3|1
+Animais|3|Qual é a ave que consegue voar para trás?|Beija-flor|Andorinha|Gavião|Pardal
+Tecnologia|1|O que usamos para mover a seta na tela do computador?|Mouse|Teclado|Monitor|Impressora
+Tecnologia|2|Qual empresa fabrica o console PlayStation?|Sony|Microsoft|Nintendo|Sega
+Tecnologia|2|Qual empresa fabrica o console Xbox?|Microsoft|Sony|Nintendo|Apple
+Tecnologia|3|Qual era o nome do primeiro computador eletrônico de uso geral?|ENIAC|IBM PC|Apple I|UNIVAC
+Tecnologia|3|Qual rede social foi criada por Mark Zuckerberg?|Facebook|Twitter|Instagram|Orkut
+Conhecimentos gerais|1|Quantos dias tem uma semana?|7|5|6|8
+Conhecimentos gerais|2|Qual é o maior planeta rochoso do Sistema Solar?|Terra|Marte|Vênus|Mercúrio
+Conhecimentos gerais|2|Qual é a língua oficial do Brasil?|Português|Espanhol|Inglês|Tupi
+Conhecimentos gerais|3|Qual país tem o maior número de pirâmides do mundo?|Sudão|Egito|México|Peru
+Conhecimentos gerais|3|Qual é o metal usado nos fios elétricos por conduzir bem a eletricidade?|Cobre|Ferro|Ouro|Chumbo
+Música|1|Qual instrumento se toca batendo com baquetas?|Bateria|Violino|Flauta|Piano
+Música|2|Qual cantora brasileira é chamada de "Rainha dos Baixinhos"?|Xuxa|Angélica|Eliana|Mara Maravilha
+Música|2|Qual ritmo nordestino tem sanfona, zabumba e triângulo?|Forró|Samba|Pagode|Funk
+Música|3|Qual cantor baiano gravou "Tropicália" e "Alegria, Alegria"?|Caetano Veloso|Gilberto Gil|Raul Seixas|Moraes Moreira
+Espaço|1|O que a Terra leva cerca de 365 dias para completar?|Uma volta ao redor do Sol|Uma volta em torno de si|Uma volta da Lua|Um eclipse
+Espaço|2|Como se chama o movimento da Terra girando em torno de si mesma?|Rotação|Translação|Revolução|Precessão
+Espaço|3|Qual é o planeta mais distante do Sol?|Netuno|Urano|Plutão|Saturno
+Corpo humano|1|Onde fica o cérebro?|Na cabeça|No peito|Na barriga|Nas costas
+Corpo humano|2|Qual órgão filtra o sangue e produz a urina?|Rins|Fígado|Bexiga|Pâncreas
+Corpo humano|3|Qual é o músculo mais forte em relação ao tamanho?|Masseter (mandíbula)|Bíceps|Coração|Glúteo
+Português|2|Qual é o aumentativo de "casa"?|Casarão|Casinha|Casebre|Casario
+Português|3|Qual é o diminutivo de "pão"?|Pãozinho|Pãozão|Pãozito|Paninho
+Matemática|1|Quanto é 100 − 37?|63|73|67|53
+Matemática|2|Quanto é 25% de 80?|20|25|40|16
+Matemática|3|Qual é o valor de x em x² = 49 (x positivo)?|7|49|14|9

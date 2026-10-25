@@ -1,0 +1,52 @@
+Algo que você faz quando está triste|chora:36:chorar|come chocolate:18:comer|dorme:18:dormir|ouve música:16:musica|liga para alguém:12:conversa
+Uma coisa que tem no zoológico|leão:30:leao|macaco:24|elefante:20|girafa:16|zebra:10
+Algo que você compra na padaria|pão:52:pao,pao frances|leite:14|bolo:12|presunto:12:frios|sonho:10
+Uma comida feita com milho|pipoca:30|pamonha:24|curau:18:canjica|polenta:16|cuscuz:12
+Algo que você coloca na salada|tomate:32|alface:26|cebola:16|azeite:14|sal:12
+Um herói brasileiro de verdade|bombeiro:30|médico:24:medico|professor:22|policial:14|enfermeira:10:enfermeiro
+Uma coisa que tem no circo|palhaço:46:palhaco|mágico:18:magico|trapezista:14|malabarista:12|lona:10
+Algo que tem na mesa do jantar|prato:30|talher:22:garfo,faca|copo:20|guardanapo:16|toalha:12
+Algo que você faz no fim do mês|paga contas:44:pagar contas|recebe salário:24:salario|economiza:14|faz compras:12:mercado|chora:6
+Uma coisa que tem cordas|violão:38:violao,guitarra|tênis (raquete):18:raquete|varal:16|harpa:16|marionete:12
+Um lugar para ir num encontro romântico|restaurante:38:jantar|cinema:28|praia:14|parque:12|sorveteria:8
+Algo que se compra na feira|frutas:34:fruta|verduras:24:verdura|pastel:18|legumes:14|peixe:10
+Uma coisa que o bebê usa|fralda:38|chupeta:24|mamadeira:20|babador:10|carrinho:8
+Algo que tem na bandeira de vários países|estrela:38|faixa:22:listras|cruz:16|sol:14|lua:10
+Uma coisa que acontece quando esquenta muito|suor:36:suar|ventilador ligado:20:ventilador,ar condicionado|sede:18|praia lotada:14:praia|queimadura:12
+Algo que se usa para limpar a casa|vassoura:36|pano:22|rodo:16|sabão:14:detergente,sabao|aspirador:12
+Uma coisa que fica no bolso|celular:36|carteira:26|chave:20|dinheiro:12:moeda|fone:6
+Uma brincadeira de criança|esconde-esconde:34:esconde esconde|pega-pega:28:pega pega|amarelinha:16|pular corda:12|queimada:10
+Algo que você encontra no fundo do mar|peixe:30|coral:24:corais|navio afundado:16:navio|concha:16|polvo:14
+Algo que você faz na cozinha|cozinhar:44|lavar louça:24:lavar|comer:14|cortar:10|abrir a geladeira:8
+Uma coisa que tem em toda casa|televisão:30:tv|geladeira:26|cama:20|fogão:14:fogao|sofá:10:sofa
+Algo que você vê na televisão|novela:34|jornal:28:noticias|futebol:16:jogo|desenho:12|propaganda:10:comercial
+Um sentimento|amor:40|raiva:20|saudade:18|alegria:12:felicidade|tristeza:10
+Algo que tem na Copa do Mundo|futebol:30:bola|torcida:24|seleção:18:selecao|gol:16|bandeira:12
+Uma coisa que é proibida na escola|celular:36|boné:20:bone|chiclete:18|briga:16|correr no corredor:10:correr
+Algo que você faz quando ganha dinheiro|compra algo:36:comprar|guarda:24:economiza,poupar|paga dívida:18:pagar contas|viaja:12:viajar|comemora:10
+Um animal que pula|canguru:44|sapo:26|coelho:16|gafanhoto:8:pulga|macaco:6
+Algo que se usa no cabelo|xampu:34:shampoo|pente:24|escova:18|elástico:14:elastico,chuxinha|creme:10:condicionador
+Um lugar onde se dorme|cama:52|sofá:20:sofa|rede:16|hotel:8|barraca:4
+Algo que você faz no trânsito|buzina:30:buzinar|ouve rádio:24:radio,musica|reclama:20:xinga|mexe no celular:16:celular|canta:10
+Uma coisa que tem asa e não voa|pinguim:40|avestruz:28|galinha:16|ema:10|frango assado:6:frango
+Algo que se coloca na parede|quadro:38|relógio:22:relogio|espelho:18|televisão:12:tv|prateleira:10
+Uma coisa que as pessoas fazem na fila|mexe no celular:46:celular|reclama:20|conversa:16|espera:12|fura a fila:6:furar
+Algo que você usa no banho|sabonete:40|xampu:28:shampoo|toalha:16|bucha:10|esponja:6
+Uma comida que você come no Natal|peru:34:chester|panetone:26|rabanada:16|farofa:12|uva-passa:12:passas,uva passa
+Algo que a mãe sempre fala|leva casaco:30:casaco|já comeu?:24:ja comeu,comeu|arruma o quarto:20:arrumar|olha a hora:16:hora|vai estudar:10:estudar
+Um lugar onde se compra roupa|loja:34|shopping:30|internet:18:online|feira:10|brechó:8:brecho
+Algo que você faz quando chega em casa|tira o sapato:34:tirar sapato|toma banho:24:banho|come:18:comer|deita:14:descansar|liga a TV:10:tv
+Uma coisa que tem no posto de gasolina|gasolina:36:combustivel|bomba:22|frentista:18|loja de conveniência:14:conveniencia|calibrador:10
+Um animal da floresta|onça:30:onca|macaco:26|cobra:18|tucano:14:arara|preguiça:12:preguica
+Algo que se faz com papel|desenho:28:desenhar|avião de papel:24:aviao|carta:18|origami:16|dobradura:14
+Uma coisa que você esquece o nome|nome de alguém:40:pessoas|senha:24|filme:16|música:12:musica|rua:8
+Algo que se usa para cortar|tesoura:42|faca:34|serra:12|navalha:6:lamina|cortador de unha:6:cortador
+Uma coisa que é doce|açúcar:30:acucar|mel:24|chocolate:22|bala:14:doce|bolo:10
+Algo que tem no aniversário de criança|bolo:30|balão:24:bexiga|brigadeiro:20|palhaço:14:palhaco|presente:12
+Uma coisa que tem na rua|carro:30|árvore:22:arvore|poste:18|semáforo:16:sinal|buraco:14
+Algo que você usa para ver as horas|celular:40|relógio:38:relogio|computador:12|micro-ondas:6:microondas|sol:4
+Uma profissão que trabalha à noite|segurança:32:vigia|médico de plantão:22:medico|motorista:18:taxista|garçom:14:garcom|DJ:14:dj
+Algo que você faz no computador|trabalhar:34|jogar:24|ver vídeo:18:youtube|estudar:14|mandar e-mail:10:email
+Uma coisa que tem no mercado|carrinho:30|caixa:24|fila:18|promoção:16:promocao|comida:12
+Algo que se ganha de presente|roupa:28|perfume:22|chocolate:18|brinquedo:18|livro:14
+Um apelido carinhoso|amor:40|meu bem:18|gatinho:16:gata,gato|fofo:14:fofinho|bebê:12:bebe

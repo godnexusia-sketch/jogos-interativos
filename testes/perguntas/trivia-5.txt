@@ -1,0 +1,59 @@
+Futebol|1|Qual seleção usa camisa amarela e é pentacampeã mundial?|Brasil|Argentina|Alemanha|Itália
+Futebol|1|Quanto tempo dura um jogo de futebol, sem acréscimos?|90 minutos|60 minutos|80 minutos|100 minutos
+Futebol|1|Qual cartão expulsa o jogador de campo?|Vermelho|Amarelo|Verde|Azul
+Futebol|1|Quem é conhecido como o "Rei do Futebol"?|Pelé|Maradona|Zico|Garrincha
+Futebol|2|Em qual clube Pelé jogou a maior parte da carreira?|Santos|Corinthians|Flamengo|São Paulo
+Futebol|2|Qual país ganhou a Copa do Mundo de 2022?|Argentina|França|Brasil|Croácia
+Futebol|2|Qual jogador argentino tem o apelido de "La Pulga"?|Lionel Messi|Di María|Agüero|Maradona
+Futebol|2|Qual país ganhou a Copa do Mundo de 2014?|Alemanha|Argentina|Holanda|Espanha
+Futebol|2|Em que estádio aconteceu a final da Copa de 1950?|Maracanã|Mineirão|Pacaembu|Morumbi
+Futebol|3|Qual seleção venceu o Brasil por 7 a 1 em 2014?|Alemanha|Holanda|Argentina|Itália
+Futebol|3|Quem foi o técnico do Brasil no penta em 2002?|Luiz Felipe Scolari|Carlos Alberto Parreira|Tite|Zagallo
+Futebol|3|Qual país sediou a primeira Copa do Mundo, em 1930?|Uruguai|Brasil|Itália|França
+Futebol|3|Qual jogador brasileiro ganhou a Bola de Ouro em 2007?|Kaká|Ronaldinho|Ronaldo|Rivaldo
+Futebol|3|Quantos gols Pelé disse ter marcado na carreira, aproximadamente?|Mais de 1.000|500|750|2.000
+Geografia|1|Qual é o maior país do mundo em área?|Rússia|Canadá|China|Estados Unidos
+Geografia|1|Qual é a capital do Japão?|Tóquio|Quioto|Osaka|Pequim
+Geografia|2|Qual é o rio mais longo da América do Sul?|Amazonas|Paraná|São Francisco|Orinoco
+Geografia|2|Qual cordilheira atravessa a América do Sul de norte a sul?|Andes|Alpes|Himalaia|Rochosas
+Geografia|2|Qual país é chamado de "Terra do Sol Nascente"?|Japão|China|Coreia do Sul|Tailândia
+Geografia|3|Qual é o menor país do mundo?|Vaticano|Mônaco|San Marino|Liechtenstein
+Geografia|3|Qual é a capital da Turquia?|Ancara|Istambul|Esmirna|Antália
+Geografia|3|Qual país faz fronteira com o Brasil e tem o francês como língua oficial?|Guiana Francesa (França)|Suriname|Guiana|Venezuela
+Brasil|1|Qual é a capital de Pernambuco?|Recife|Olinda|Caruaru|Petrolina
+Brasil|2|Qual é o bioma brasileiro que é a maior planície alagável do mundo?|Pantanal|Cerrado|Caatinga|Pampa
+Brasil|2|Qual é o maior bioma do Brasil?|Amazônia|Cerrado|Mata Atlântica|Caatinga
+Brasil|2|Qual inventor brasileiro voou no 14-Bis?|Santos Dumont|Bartolomeu de Gusmão|Oswaldo Cruz|Carlos Chagas
+Brasil|3|Em que ano foi promulgada a atual Constituição do Brasil?|1988|1985|1990|1967
+Brasil|3|Qual estado brasileiro tem mais municípios?|Minas Gerais|São Paulo|Bahia|Rio Grande do Sul
+Brasil|3|Qual cientista brasileiro descobriu a doença de Chagas?|Carlos Chagas|Oswaldo Cruz|Vital Brazil|Adolfo Lutz
+História|1|Quem proclamou a independência do Brasil?|Dom Pedro I|Dom João VI|Tiradentes|Dom Pedro II
+História|2|Qual navegador é considerado o primeiro a dar a volta ao mundo (expedição)?|Fernão de Magalhães|Cristóvão Colombo|Américo Vespúcio|Bartolomeu Dias
+História|2|Quem foi Tiradentes?|Líder da Inconfidência Mineira|Primeiro rei do Brasil|Bandeirante|Presidente da República
+História|3|Qual foi a primeira mulher a ganhar um Prêmio Nobel?|Marie Curie|Rosalind Franklin|Ada Lovelace|Florence Nightingale
+História|3|Quem foi o primeiro presidente dos Estados Unidos?|George Washington|Abraham Lincoln|Thomas Jefferson|John Adams
+Ciências|1|O que a abelha produz?|Mel|Leite|Seda|Cera de carnaúba
+Ciências|2|Qual é o planeta com o dia mais longo que o seu ano?|Vênus|Mercúrio|Marte|Netuno
+Ciências|2|Como se chama a mudança do estado sólido para o líquido?|Fusão|Evaporação|Condensação|Solidificação
+Ciências|3|Qual cientista descobriu a penicilina?|Alexander Fleming|Louis Pasteur|Robert Koch|Edward Jenner
+Ciências|3|Qual é o pH da água pura?|7|0|14|5
+Esportes|1|Em qual esporte se faz "cesta"?|Basquete|Vôlei|Handebol|Futsal
+Esportes|2|Qual tenista suíço ganhou 20 Grand Slams?|Roger Federer|Rafael Nadal|Novak Djokovic|Andy Murray
+Esportes|2|Qual ginasta brasileira ganhou ouro olímpico no salto em Tóquio?|Rebeca Andrade|Daiane dos Santos|Jade Barbosa|Flávia Saraiva
+Esportes|3|Qual skatista brasileira foi medalhista olímpica aos 13 anos em Tóquio?|Rayssa Leal|Pâmela Rosa|Letícia Bufoni|Karen Jonz
+Esportes|3|Qual atleta jamaicano é recordista mundial dos 100 metros rasos?|Usain Bolt|Carl Lewis|Tyson Gay|Yohan Blake
+Comida|1|Qual fruta é amarela e os macacos adoram?|Banana|Manga|Abacaxi|Maracujá
+Comida|2|De onde vem o açaí?|Região Norte do Brasil|Sul do Brasil|Argentina|México
+Comida|2|Qual é o ingrediente principal do brigadeiro?|Leite condensado|Doce de leite|Creme de leite|Leite em pó
+Comida|3|Qual país é o maior produtor de café do mundo?|Brasil|Colômbia|Vietnã|Etiópia
+Animais|1|Qual animal faz "muuu"?|Vaca|Cavalo|Ovelha|Porco
+Animais|2|Qual é o maior animal terrestre?|Elefante-africano|Rinoceronte|Hipopótamo|Girafa
+Animais|2|Qual animal brasileiro é símbolo da cédula de 200 reais?|Lobo-guará|Onça-pintada|Mico-leão-dourado|Arara-azul
+Animais|3|Qual peixe da Amazônia é um dos maiores de água doce do mundo?|Pirarucu|Tambaqui|Tucunaré|Piranha
+Tecnologia|2|Quem fundou o Google?|Larry Page e Sergey Brin|Bill Gates e Paul Allen|Steve Jobs e Steve Wozniak|Mark Zuckerberg e Eduardo Saverin
+Tecnologia|2|Qual aplicativo de mensagens tem um telefone verde como ícone?|WhatsApp|Telegram|Messenger|Signal
+Tecnologia|3|O que significa a sigla "IA"?|Inteligência artificial|Internet avançada|Informação automática|Imagem animada
+Conhecimentos gerais|1|Quantas cores tem o arco-íris?|7|6|5|8
+Conhecimentos gerais|2|Qual é o maior continente do mundo?|Ásia|África|América|Europa
+Conhecimentos gerais|2|Quantos zeros tem um milhão?|6|5|7|9
+Conhecimentos gerais|3|Qual país deu a Estátua da Liberdade aos Estados Unidos?|França|Inglaterra|Espanha|Holanda

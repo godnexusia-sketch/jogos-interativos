@@ -1,0 +1,73 @@
+Geografia|1|Qual é o maior oceano do planeta?|Pacífico|Atlântico|Índico|Ártico
+Geografia|1|Em que continente fica o Egito?|África|Ásia|Europa|Oceania
+Geografia|1|Qual é a capital da Argentina?|Buenos Aires|Montevidéu|Santiago|Lima
+Geografia|1|Qual país tem formato de bota no mapa?|Itália|Espanha|Grécia|Portugal
+Geografia|1|Qual é a capital de Portugal?|Lisboa|Porto|Madri|Coimbra
+Geografia|2|Qual é o maior deserto quente do mundo?|Saara|Atacama|Gobi|Kalahari
+Geografia|2|Qual rio passa por Paris?|Sena|Tâmisa|Danúbio|Reno
+Geografia|2|Qual é a capital da Austrália?|Camberra|Sydney|Melbourne|Perth
+Geografia|2|Qual país tem mais habitantes na América do Sul?|Brasil|Argentina|Colômbia|Peru
+Geografia|2|Em que país fica a cidade de Machu Picchu?|Peru|Bolívia|Chile|Equador
+Geografia|2|Qual é a capital do Canadá?|Ottawa|Toronto|Vancouver|Montreal
+Geografia|3|Qual é o país com mais ilhas no mundo?|Suécia|Indonésia|Filipinas|Japão
+Geografia|3|Qual é a capital do Cazaquistão?|Astana|Almaty|Tashkent|Bishkek
+Geografia|3|Qual é o lago mais profundo do mundo?|Baikal|Tanganica|Superior|Titicaca
+Geografia|3|Qual estreito separa a Europa da África?|Gibraltar|Bósforo|Magalhães|Ormuz
+História|1|Quem foi o primeiro presidente do Brasil?|Deodoro da Fonseca|Getúlio Vargas|Floriano Peixoto|Dom Pedro II
+História|1|Em que ano o homem pisou na Lua pela primeira vez?|1969|1959|1975|1981
+História|1|Qual civilização construiu as pirâmides de Gizé?|Egípcia|Romana|Grega|Asteca
+História|1|Quem descobriu o caminho marítimo para as Índias em 1498?|Vasco da Gama|Cristóvão Colombo|Pedro Álvares Cabral|Fernão de Magalhães
+História|2|Em que ano começou a Segunda Guerra Mundial?|1939|1914|1945|1929
+História|2|Qual muro caiu em 1989?|Muro de Berlim|Muralha da China|Muro de Adriano|Muro das Lamentações
+História|2|Quem foi o líder da Revolução Russa de 1917?|Lênin|Stálin|Trótski|Gorbachev
+História|2|Qual império tinha Roma como capital?|Império Romano|Império Bizantino|Império Otomano|Império Persa
+História|2|Em que ano terminou a Primeira Guerra Mundial?|1918|1914|1923|1939
+História|2|Quem pintou o teto da Capela Sistina?|Michelangelo|Leonardo da Vinci|Rafael|Donatello
+História|3|Qual tratado dividiu as terras descobertas entre Portugal e Espanha em 1494?|Tordesilhas|Versalhes|Madri|Utrecht
+História|3|Quem foi o último faraó do Egito antigo?|Cleópatra VII|Ramsés II|Tutancâmon|Nefertiti
+História|3|Em que cidade foi assinada a independência dos Estados Unidos?|Filadélfia|Washington|Boston|Nova York
+História|3|Qual imperador francês foi derrotado em Waterloo?|Napoleão Bonaparte|Luís XIV|Carlos Magno|Napoleão III
+História|3|Em que ano caiu Constantinopla para os otomanos?|1453|1492|1204|1517
+Ciências|1|Qual é o planeta mais próximo do Sol?|Mercúrio|Vênus|Terra|Marte
+Ciências|1|Qual gás as plantas absorvem do ar?|Gás carbônico|Oxigênio|Hidrogênio|Nitrogênio
+Ciências|1|Quantos estados físicos principais a água tem?|3|2|4|5
+Ciências|1|Qual é o símbolo químico do ouro?|Au|Ag|Ou|Go
+Ciências|1|Qual órgão bombeia o sangue no corpo?|Coração|Pulmão|Fígado|Rim
+Ciências|2|Qual é a fórmula química da água?|H₂O|CO₂|O₂|H₂O₂
+Ciências|2|Qual cientista formulou a teoria da relatividade?|Albert Einstein|Isaac Newton|Galileu Galilei|Nikola Tesla
+Ciências|2|Qual é o metal líquido em temperatura ambiente?|Mercúrio|Chumbo|Alumínio|Estanho
+Ciências|2|A que temperatura a água ferve ao nível do mar?|100 °C|90 °C|80 °C|120 °C
+Ciências|2|Qual é a menor unidade de um ser vivo?|Célula|Átomo|Tecido|Órgão
+Ciências|3|Qual é o elemento químico mais abundante no universo?|Hidrogênio|Hélio|Oxigênio|Carbono
+Ciências|3|Qual é a velocidade aproximada da luz no vácuo?|300 mil km/s|30 mil km/s|3 milhões km/s|3 mil km/s
+Ciências|3|Qual partícula tem carga elétrica negativa?|Elétron|Próton|Nêutron|Fóton
+Ciências|3|Quem propôs a teoria da evolução por seleção natural?|Charles Darwin|Gregor Mendel|Louis Pasteur|Lamarck
+Ciências|3|Qual é o número atômico do carbono?|6|8|12|14
+Esportes|1|Quantos jogadores um time de futebol tem em campo?|11|10|9|12
+Esportes|1|Em qual esporte se usa uma raquete e uma peteca?|Badminton|Tênis|Squash|Pingue-pongue
+Esportes|1|De quantos em quantos anos acontece a Copa do Mundo de futebol?|4|2|3|5
+Esportes|1|Qual é o esporte de Ayrton Senna?|Fórmula 1|Futebol|Tênis|Vôlei
+Esportes|2|Quantas vezes o Brasil ganhou a Copa do Mundo de futebol masculino?|5|4|6|3
+Esportes|2|Em que país nasceram os Jogos Olímpicos?|Grécia|Itália|França|Egito
+Esportes|2|Quantos pontos vale uma cesta de fora do garrafão no basquete?|3|2|1|4
+Esportes|2|Qual nadador tem mais medalhas olímpicas de ouro?|Michael Phelps|Mark Spitz|Cesar Cielo|Ian Thorpe
+Esportes|2|Em qual esporte existe o golpe chamado "ippon"?|Judô|Boxe|Esgrima|Karatê
+Esportes|3|Em que ano o Brasil ganhou sua primeira Copa do Mundo?|1958|1962|1950|1970
+Esportes|3|Qual país sediou a Copa do Mundo de 2010?|África do Sul|Alemanha|Brasil|Japão
+Esportes|3|Quantos sets são necessários para vencer uma partida de vôlei?|3|2|4|5
+Esportes|3|Qual é a distância oficial de uma maratona?|42,195 km|40 km|45 km|21,1 km
+Esportes|3|Quem é o maior artilheiro da história das Copas do Mundo?|Miroslav Klose|Ronaldo Fenômeno|Pelé|Gerd Müller
+Entretenimento|1|Qual é o nome do rato mais famoso da Disney?|Mickey|Jerry|Ligeirinho|Remy
+Entretenimento|1|Em qual desenho aparece o personagem Bob Esponja?|Bob Esponja Calça Quadrada|Os Simpsons|Hora de Aventura|Padrinhos Mágicos
+Entretenimento|1|Qual é o nome do boneco de neve de Frozen?|Olaf|Sven|Kristoff|Hans
+Entretenimento|1|Que super-herói tem o escudo com uma estrela?|Capitão América|Homem de Ferro|Thor|Hulk
+Entretenimento|2|Qual é o nome do bruxo protagonista criado por J.K. Rowling?|Harry Potter|Gandalf|Merlin|Dumbledore
+Entretenimento|2|Em que filme aparece o navio que afunda após bater num iceberg?|Titanic|Poseidon|Piratas do Caribe|Moby Dick
+Entretenimento|2|Qual banda britânica cantou "Hey Jude"?|The Beatles|Rolling Stones|Queen|Oasis
+Entretenimento|2|Qual é o nome do vilão de "O Rei Leão"?|Scar|Jafar|Hades|Úrsula
+Entretenimento|2|Qual personagem diz "Ao infinito e além"?|Buzz Lightyear|Woody|Wall-E|Nemo
+Entretenimento|3|Quem dirigiu o filme "Pulp Fiction"?|Quentin Tarantino|Martin Scorsese|Steven Spielberg|Christopher Nolan
+Entretenimento|3|Qual filme ganhou o Oscar de melhor filme em 2020 (Parasita)?|Parasita|Coringa|1917|Era uma Vez em Hollywood
+Entretenimento|3|Qual é o nome do planeta natal do Superman?|Krypton|Asgard|Tatooine|Vulcano
+Entretenimento|3|Em que série aparece a família Stark?|Game of Thrones|Vikings|The Witcher|Breaking Bad
+Entretenimento|3|Qual cantor é conhecido como o "Rei do Pop"?|Michael Jackson|Elvis Presley|Prince|Freddie Mercury

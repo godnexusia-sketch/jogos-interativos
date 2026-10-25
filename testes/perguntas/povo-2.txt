@@ -1,0 +1,54 @@
+Algo que você usa para se maquiar|batom:34|rímel:22:rimel|base:18|pó:14:po|sombra:10
+Uma coisa que tem no churrasco|carne:40:picanha|linguiça:22:linguica|pão de alho:14:pao de alho|farofa:12|cerveja:10:bebida
+Algo que você faz no celular|mandar mensagem:34:whatsapp,mensagem|ver vídeo:24:video,tiktok|tirar foto:18:foto|ligar:14:ligacao|jogar:10
+Um sabor de pizza|calabresa:34|muçarela:26:mussarela,queijo|frango com catupiry:18:frango|portuguesa:14|marguerita:8:margherita
+Algo que fica na geladeira|leite:28|água:22:agua|ovo:18:ovos|refrigerante:16:refri|queijo:14
+Uma desculpa para faltar no trabalho|doente:40:doenca,dor de barriga|médico:20:medico,consulta|trânsito:16:transito|filho doente:14:filho|morreu a avó:8:avo
+Um lugar onde se usa uniforme|escola:40|hospital:22|exército:16:exercito,quartel|fábrica:12:fabrica|restaurante:8
+Algo que brilha|estrela:34|sol:24|diamante:18|ouro:14|glitter:8:purpurina
+Uma coisa que você faz numa viagem de carro|ouvir música:34:musica|parar para comer:22:comer|dormir:18|cantar:14|perguntar "já chegou?":10:ja chegou
+Uma comida típica do Nordeste|baião de dois:24:baiao de dois|tapioca:22|acarajé:20:acaraje|cuscuz:18|carne de sol:14
+Um bicho que vive no mar|peixe:28|tubarão:24:tubarao|baleia:18|golfinho:16|polvo:12
+Algo que você encontra num hospital|médico:32:medico|maca:22|remédio:18:remedio|enfermeira:14:enfermeiro|seringa:12
+Uma coisa que o professor usa|quadro:32:lousa|giz:22:pincel|livro:18|caneta:16|apagador:10
+Algo que tem espinho|rosa:42:roseira|cacto:32|ouriço:12:ourico|peixe:8|abacaxi:4
+Um motivo para brigar com o vizinho|barulho:52:som alto|cachorro:18:cachorro latindo|lixo:12|garagem:10:vaga,carro|árvore:6:arvore
+Algo que você faz no recreio|lanchar:36:comer|brincar:30|conversar:16|jogar bola:12:futebol|ir ao banheiro:4:banheiro
+Um eletrodoméstico|geladeira:32|fogão:24:fogao|micro-ondas:18:microondas|máquina de lavar:14:maquina de lavar|liquidificador:10
+Uma comida de domingo|lasanha:28|churrasco:26|macarronada:20:macarrao|frango assado:16:frango|feijoada:8
+Algo que as pessoas colecionam|figurinha:30:figurinhas,album|selo:22:selos|moeda:18:moedas|carrinho:16:carrinhos|chaveiro:10
+Uma coisa que você abre|porta:36|janela:24|garrafa:16|presente:14|livro:8
+Algo que se usa no pé|tênis:34:tenis|chinelo:26|sandália:16:sandalia|meia:14|bota:8
+Uma coisa que é azul|céu:44:ceu|mar:30|jeans:10:calca jeans|caneta azul:8:caneta|água:6:agua
+Algo que tem na festa de casamento|bolo:30|noiva:24|vestido:16|aliança:16:alianca,anel|buquê:12:buque
+Algo que você faz na praia|nadar:30:entrar no mar,mar|tomar sol:26:bronzear|jogar bola:16:futebol,volei|castelo de areia:14:castelo|caminhar:12
+Um personagem da Turma da Mônica|Mônica:32:monica|Cebolinha:26|Cascão:20:cascao|Magali:14|Chico Bento:8
+Algo que você pede no restaurante|prato do dia:22:pf,prato feito|cardápio:22:cardapio|conta:20|água:18:agua,bebida|sobremesa:14
+Uma coisa que tem cheiro bom|perfume:32|flor:22:rosa|bolo assando:18:bolo|café:16:cafe|pão quentinho:10:pao
+Uma fruta que se come no verão|melancia:38|manga:20|abacaxi:16|uva:14|melão:10:melao
+Algo que tem asas e não é ave|avião:40:aviao|borboleta:26|morcego:16|abelha:10|anjo:6
+Um lugar onde se toma banho|banheiro:44:chuveiro|piscina:20|praia:16:mar|rio:12|cachoeira:8
+Algo que você faz antes de sair de casa|trancar a porta:30:fechar a porta,trancar|pegar a chave:24:chave|se arrumar:18:arrumar|pegar o celular:16:celular|desligar a luz:12:luz
+Uma coisa que é quadrada|caixa:30|janela:22|quadro:18|tela:14|dado:14
+Algo que tem pilha|controle remoto:44:controle|relógio:20:relogio|brinquedo:16|lanterna:12|rádio:6:radio
+Uma comida que criança não gosta|verdura:34:salada,legume|jiló:20:jilo|fígado:18:figado|chuchu:16|beterraba:10
+Uma coisa que se faz no carnaval|dançar:34:pular,dancar|fantasia:24:se fantasiar|bloco:18:sair no bloco|desfile:14:escola de samba|viajar:8
+Algo que tem dentro da bolsa de uma mulher|carteira:28|celular:24|maquiagem:18:batom|chave:16:chaves|lenço:12:lenco
+Um bicho que é lento|tartaruga:42:jabuti|bicho-preguiça:28:preguica,bicho preguica|lesma:16|caracol:10|caramujo:4
+Algo que você faz quando está com fome|come:40:comer|abre a geladeira:24:geladeira|pede delivery:18:pede comida,ifood|cozinha:12:cozinhar|fica de mau humor:6:mau humor
+Uma coisa que acontece no inverno|frio:46|chuva:18|gripe:14:resfriado|neblina:12|geada:10
+Um lugar com muita gente|show:30|estádio:24:estadio|metrô:18:metro,onibus|shopping:16|praia:12
+Algo que você usa para escrever|caneta:46|lápis:30:lapis|teclado:12:computador|giz:8|celular:4
+Uma coisa que tem tampa|panela:32|garrafa:28|caixa:18|pote:14|vaso sanitário:8:privada
+Algo que você faz quando acorda tarde|corre:36:correr|pula o café:24:sem cafe|se atrasa:18:atrasar|toma banho rápido:14:banho rapido|chama um carro:8:uber
+Uma comida que tem no café da tarde|bolo:36|pão:24:pao|biscoito:18:bolacha|café:14:cafe|tapioca:8
+Algo que se acende|luz:32:lampada|vela:28|fogo:18:fogueira|fogão:12:fogao|cigarro:10
+Um meio de transporte|carro:34|ônibus:28:onibus|bicicleta:16:bike|metrô:12:metro|avião:10:aviao
+Algo que você não empresta para ninguém|escova de dente:40:escova|celular:24|cueca:14:roupa intima|carro:12|toalha:10
+Uma coisa que tem na pracinha|balanço:30:balanco|escorregador:24|banco:20|gangorra:14|pipoqueiro:12:pipoca
+Algo que as pessoas têm medo de perder|celular:38|emprego:22:trabalho|documento:16:carteira|chave:14|dinheiro:10
+Um tipo de música|sertanejo:30|funk:24|pagode:18:samba|rock:16|forró:12:forro
+Algo que você coloca no cachorro-quente|salsicha:38|batata palha:22|ketchup:16:catchup|molho:14|purê:10:pure
+Uma coisa que você faz no ônibus|olha a janela:28:olhar a janela|mexe no celular:28:celular|dorme:18|ouve música:16:musica|fica em pé:10:em pe
+Algo que tem na farmácia|remédio:48:remedio|vitamina:14|curativo:14:band-aid|fralda:12|perfume:12
+Um animal que tem chifre|boi:34:touro,vaca|rinoceronte:24|bode:16:cabra|veado:14:alce|carneiro:12

@@ -20,7 +20,7 @@ const QUIZ_CUSTOM = [
   { key: 'custom', type: 'textarea', label: 'Suas perguntas (uma por linha: pergunta | certa | errada | errada | errada)', default: '', group: 'Perguntas', rows: 5 },
   { key: 'onlyCustom', type: 'toggle', label: 'Usar só as minhas perguntas', default: false, group: 'Perguntas' },
 ];
-const CAT_OPTIONS = [['all', 'Todas'], ['Geografia', 'Geografia'], ['História', 'História'], ['Ciências', 'Ciências'], ['Esportes', 'Esportes'], ['Entretenimento', 'Entretenimento'], ['Brasil', 'Brasil'], ['Comida', 'Comida'], ['Animais', 'Animais'], ['Tecnologia', 'Tecnologia'], ['Conhecimentos gerais', 'Conhecimentos gerais']];
+const CAT_OPTIONS = [['all', 'Todas'], ...['Geografia', 'História', 'Ciências', 'Esportes', 'Futebol', 'Entretenimento', 'Cinema e séries', 'Música', 'Brasil', 'Comida', 'Animais', 'Tecnologia', 'Espaço', 'Corpo humano', 'Matemática', 'Português', 'Arte e Cultura', 'Mitologia', 'Conhecimentos gerais'].map((c) => [c, c])];
 
 // ---------------- Quiz Relâmpago (Trivia Time) ----------------
 defineGame({
@@ -29,7 +29,7 @@ defineGame({
   help: '<p>Comente <b>A, B, C ou D</b>. Vale a primeira resposta de cada pessoa. Quem acerta mais rápido ganha mais pontos.</p><p>🎁 Presentes: <b>50/50</b> (tira duas erradas) e <b>pular</b>. Configure as categorias, a dificuldade e coloque suas próprias perguntas.</p>',
   settings: [
     { key: 'category', type: 'select', label: 'Categoria', options: CAT_OPTIONS, default: 'all' },
-    { key: 'difficulty', type: 'select', label: 'Dificuldade', options: [['mix', 'Misturada'], ['1', 'Fácil'], ['2', 'Média'], ['3', 'Difícil']], default: 'mix' },
+    { key: 'difficulty', type: 'select', label: 'Dificuldade', options: [['mix', 'Aleatória (fácil, média e difícil misturadas)'], ['1', 'Fácil'], ['2', 'Média'], ['3', 'Difícil']], default: 'mix' },
     { key: 'questionSeconds', type: 'number', label: 'Segundos para responder', min: 5, max: 60, default: 15 },
     { key: 'revealSeconds', type: 'number', label: 'Segundos mostrando a resposta', min: 2, max: 15, default: 5 },
     { key: 'breakSeconds', type: 'number', label: 'Intervalo entre perguntas', min: 1, max: 15, default: 3 },
@@ -151,7 +151,7 @@ defineGame({
   help: '<p>A live joga junta: comente <b>A, B, C ou D</b>. A resposta mais votada vale. Acertou, sobe um degrau; errou, volta ao começo.</p><p>🎁 Presentes ativam as ajudas <b>50/50</b> e <b>Pular</b> (limite por partida).</p>',
   settings: [
     { key: 'category', type: 'select', label: 'Categoria', options: CAT_OPTIONS, default: 'all' },
-    { key: 'difficulty', type: 'select', label: 'Dificuldade', options: [['mix', 'Sobe com a escada'], ['1', 'Fácil'], ['2', 'Média'], ['3', 'Difícil']], default: 'mix' },
+    { key: 'difficulty', type: 'select', label: 'Dificuldade', options: [['mix', 'Sobe com a escada'], ['rand', 'Aleatória (fácil, média e difícil misturadas)'], ['1', 'Fácil'], ['2', 'Média'], ['3', 'Difícil']], default: 'mix' },
     { key: 'prizeUnit', type: 'select', label: 'Prêmio', options: [['mil', 'R$ mil'], ['pts', 'Pontos'], ['moedas', 'Moedas']], default: 'mil' },
     { key: 'votingDuration', type: 'slider', label: 'Segundos de votação', min: 8, max: 60, default: 20 },
     { key: 'finaleDuration', type: 'slider', label: 'Segundos da revelação', min: 3, max: 12, default: 5 },
@@ -176,7 +176,7 @@ defineGame({
   },
   sample() { return pick(['a', 'b', 'c', 'd']); },
   pickQuestion() {
-    const level = this.s.difficulty === 'mix' ? (this.step < 5 ? 1 : this.step < 10 ? 2 : 3) : Number(this.s.difficulty);
+    const level = this.s.difficulty === 'mix' ? (this.step < 5 ? 1 : this.step < 10 ? 2 : 3) : this.s.difficulty === 'rand' ? 1 + Math.floor(this.rng() * 3) : Number(this.s.difficulty);
     const own = lines(this.s.custom).map((l) => l.split('|').map((x) => x.trim())).filter((p) => p.length >= 3).map((p, i) => ({ q: p[0], a: p.slice(1, 5), cat: 'Suas perguntas', d: level, id: 'c' + i }));
     let pool = this.s.onlyCustom && own.length ? own : [...own, ...this.data.q.filter((q) => q.d === level && (this.s.category === 'all' || q.cat === this.s.category))];
     pool = pool.filter((q) => !this.used.has(q.q));
@@ -302,6 +302,7 @@ defineGame({
   help: '<p>Comente <b>V</b> (verdadeiro) ou <b>F</b> (falso). Acertou, pontua; mais rápido vale mais e sequências de acertos dão bônus.</p><p>🎁 Presentes: <b>+tempo</b>, <b>pular</b> e <b>holofote</b> (a foto de quem mandou aparece grande).</p>',
   settings: [
     { key: 'category', type: 'select', label: 'Categoria', options: CAT_OPTIONS, default: 'all' },
+    { key: 'difficulty', type: 'select', label: 'Dificuldade', options: [['mix', 'Aleatória (fácil, média e difícil misturadas)'], ['1', 'Fácil'], ['2', 'Média'], ['3', 'Difícil']], default: 'mix' },
     { key: 'statementSeconds', type: 'number', label: 'Segundos para responder', min: 5, max: 60, default: 14 },
     { key: 'revealSeconds', type: 'number', label: 'Segundos da explicação', min: 3, max: 15, default: 6 },
     { key: 'breakSeconds', type: 'number', label: 'Intervalo', min: 1, max: 10, default: 2 },
@@ -322,7 +323,10 @@ defineGame({
   reset() {
     this.rng = makeRng('tf');
     const own = lines(this.s.customTF).map((l) => l.split('|').map((x) => x.trim())).filter((p) => p.length >= 2).map((p) => ({ s: p[0], t: /^v/i.test(p[1]), e: p[2] || '', cat: 'Suas' }));
-    this.pool = this.data ? this.rng.shuffle([...own, ...this.data.q.filter((q) => this.s.category === 'all' || q.cat === this.s.category)]) : [];
+    const nivel = (q) => this.s.difficulty === 'mix' || !this.s.difficulty || String(q.d ?? 2) === String(this.s.difficulty);
+    let base = this.data ? this.data.q.filter((q) => (this.s.category === 'all' || q.cat === this.s.category) && nivel(q)) : [];
+    if (this.data && !base.length) base = this.data.q.filter(nivel);
+    this.pool = this.data ? this.rng.shuffle([...own, ...base]) : [];
     this.idx = 0; this.round = 0;
     this.points = new Points(this.id); this.streak = new Map();
     this.feed = new Feed(3); this.ph = new Phases(); this.spot = null;

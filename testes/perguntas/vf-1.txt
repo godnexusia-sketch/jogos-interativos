@@ -1,0 +1,60 @@
+Animais|1|V|A baleia-azul é o maior animal que já existiu.|Ela pode passar de 30 metros e 150 toneladas, mais que qualquer dinossauro conhecido.
+Animais|1|F|A aranha é um inseto.|Aranhas são aracnídeos: têm 8 patas, os insetos têm 6.
+Animais|1|V|O pinguim é uma ave.|Ele não voa, mas tem penas, bico e bota ovos como toda ave.
+Animais|1|F|O morcego é uma ave.|Morcego é mamífero: mama quando filhote e tem pelos.
+Animais|1|V|A tartaruga existe desde a época dos dinossauros.|Os primeiros quelônios surgiram há mais de 200 milhões de anos.
+Animais|1|F|A baleia é um peixe.|Baleia é mamífera: respira ar e amamenta os filhotes.
+Animais|2|V|O guepardo pode passar de 100 km/h em uma corrida curta.|Ele é o animal terrestre mais rápido, mas cansa em poucos segundos.
+Animais|2|F|Todas as cobras são venenosas.|A maioria das espécies de cobras não tem veneno perigoso para humanos.
+Animais|2|V|O ornitorrinco é um mamífero que bota ovos.|Ele e a equidna são os únicos mamíferos que botam ovos.
+Animais|2|V|O cavalo-marinho macho é quem carrega os filhotes.|A fêmea coloca os ovos numa bolsa do macho, que dá à luz.
+Animais|2|F|A coruja consegue girar a cabeça 360 graus.|Ela gira cerca de 270 graus, não uma volta completa.
+Animais|2|V|O tubarão existe há mais tempo que as árvores.|Tubarões surgiram há uns 400 milhões de anos; as primeiras árvores, há uns 385.
+Animais|2|F|O avestruz é a menor ave do mundo.|O avestruz é a maior ave; a menor é o beija-flor-abelha.
+Animais|3|V|O polvo tem sangue azul.|O sangue dele usa cobre (hemocianina) e não ferro para levar oxigênio.
+Animais|3|V|A água-viva não tem cérebro.|Ela tem uma rede de nervos espalhada, mas nenhum cérebro central.
+Animais|3|F|O elefante é o único animal que não consegue pular.|Outros animais também não pulam, como o bicho-preguiça e o hipopótamo adulto.
+Animais|3|V|As abelhas se comunicam dançando.|A "dança do requebrado" mostra às outras a direção e a distância das flores.
+Animais|3|F|O tamanduá tem dentes enormes.|O tamanduá não tem dentes: usa a língua comprida e pegajosa.
+Ciências|1|V|A Terra gira em torno do Sol.|Uma volta completa leva cerca de 365 dias.
+Ciências|1|F|O Sol gira em torno da Terra.|É a Terra que gira em torno do Sol, desde Copérnico sabemos disso.
+Ciências|1|V|A água congela a 0 °C ao nível do mar.|Abaixo de zero grau Celsius a água pura vira gelo.
+Ciências|1|F|O gelo afunda na água.|O gelo é menos denso que a água líquida, por isso boia.
+Ciências|1|V|As plantas soltam oxigênio na fotossíntese.|Elas usam luz, água e gás carbônico e liberam oxigênio.
+Ciências|1|F|A Lua tem luz própria.|A Lua só reflete a luz do Sol.
+Ciências|2|V|O som viaja mais rápido na água do que no ar.|Na água o som anda cerca de quatro vezes mais rápido.
+Ciências|2|F|O raio é mais lento que o trovão.|A luz do raio chega antes; o som do trovão é bem mais lento.
+Ciências|2|V|O diamante é feito de carbono.|O mesmo carbono do grafite do lápis, só que organizado de outro jeito.
+Ciências|2|F|O vidro é feito de plástico.|O vidro comum é feito principalmente de areia (sílica) derretida.
+Ciências|2|V|Um eclipse solar acontece quando a Lua fica entre o Sol e a Terra.|A sombra da Lua cobre parte da Terra.
+Ciências|2|F|O oxigênio é o gás mais abundante do ar.|O mais abundante é o nitrogênio, quase 78% do ar.
+Ciências|2|V|A luz branca é a mistura de várias cores.|Um prisma separa a luz branca nas cores do arco-íris.
+Ciências|3|V|Existem mais estrelas no universo do que grãos de areia em todas as praias da Terra.|As estimativas de estrelas passam de bilhões de trilhões.
+Ciências|3|F|Os átomos são a menor coisa que existe.|Os átomos têm prótons, nêutrons e elétrons, e os prótons têm quarks.
+Ciências|3|V|Um ano-luz é uma medida de distância, não de tempo.|É a distância que a luz percorre em um ano: uns 9,5 trilhões de km.
+Ciências|3|F|O ferro é o metal mais abundante na crosta terrestre.|O mais abundante é o alumínio.
+Ciências|3|V|Uma colher de chá de uma estrela de nêutrons pesaria bilhões de toneladas.|Essas estrelas são incrivelmente densas.
+Ciências|3|F|O vírus é um tipo de bactéria.|Vírus são bem menores e não têm células; bactérias são células vivas.
+Espaço|1|V|Júpiter é o maior planeta do Sistema Solar.|Caberiam mais de mil Terras dentro dele.
+Espaço|1|F|Marte é conhecido como planeta azul.|Marte é o planeta vermelho; o planeta azul é a Terra.
+Espaço|1|V|O Sol é uma estrela.|É a estrela mais próxima da Terra.
+Espaço|2|V|Plutão deixou de ser considerado planeta em 2006.|Hoje ele é classificado como planeta anão.
+Espaço|2|F|No espaço o céu é azul.|Sem atmosfera para espalhar a luz, o céu do espaço é preto.
+Espaço|2|V|Saturno é tão leve que boiaria numa banheira gigante.|A densidade dele é menor que a da água.
+Espaço|2|F|Existe som no espaço como na Terra.|O som precisa de ar ou outro meio; no vácuo ele não se propaga.
+Espaço|3|V|Um dia em Mercúrio dura mais que o seu ano.|Mercúrio gira muito devagar: um dia solar lá dura uns 176 dias terrestres.
+Espaço|3|F|A Estação Espacial Internacional fica parada no céu.|Ela dá uma volta na Terra a cada 90 minutos, a 28 mil km/h.
+Espaço|3|V|Há montanhas em Marte maiores que o Everest.|O Monte Olimpo de Marte tem uns 22 km de altura.
+Espaço|3|V|A Via Láctea vai colidir com a galáxia de Andrômeda.|Isso deve acontecer daqui a uns 4 a 5 bilhões de anos.
+Corpo humano|1|V|O coração é um músculo.|Ele é um músculo que bate a vida toda sem parar.
+Corpo humano|1|F|Os adultos têm mais ossos que os bebês.|Bebês nascem com uns 300 ossos; vários se juntam e o adulto fica com 206.
+Corpo humano|1|V|A pele é o maior órgão do corpo.|Num adulto ela pode pesar uns 4 kg.
+Corpo humano|2|V|As unhas das mãos crescem mais rápido que as dos pés.|As das mãos crescem cerca de 3 mm por mês.
+Corpo humano|2|F|O cabelo e as unhas continuam crescendo depois da morte.|É a pele que seca e se retrai, dando essa impressão.
+Corpo humano|2|V|Cada pessoa tem uma impressão digital única.|Nem gêmeos idênticos têm digitais iguais.
+Corpo humano|2|F|Engolir chiclete faz ele ficar 7 anos no estômago.|O corpo elimina o chiclete em poucos dias, como outros alimentos.
+Corpo humano|2|V|O osso mais forte do corpo é o fêmur.|Ele fica na coxa e aguenta muito peso.
+Corpo humano|3|V|O ser humano pisca cerca de 15 a 20 vezes por minuto.|Piscar limpa e umedece os olhos.
+Corpo humano|3|F|Temos apenas cinco sentidos.|Além dos cinco clássicos, temos equilíbrio, noção da posição do corpo, temperatura e dor.
+Corpo humano|3|V|O estômago troca a camada interna a cada poucos dias.|Isso protege o estômago do próprio ácido.
+Corpo humano|3|F|O lado esquerdo do cérebro controla o lado esquerdo do corpo.|É o contrário: o lado esquerdo do cérebro controla o lado direito do corpo.

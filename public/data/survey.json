@@ -1,1 +1,8442 @@
-[{"q":"Algo que você leva para a praia","a":[{"a":"protetor solar","p":35,"alt":["protetor","filtro solar","filtro"]},{"a":"toalha","p":25,"alt":["canga"]},{"a":"guarda-sol","p":15,"alt":["guarda sol","sombrinha"]},{"a":"óculos de sol","p":12,"alt":["oculos"]},{"a":"cadeira","p":8,"alt":["cadeira de praia"]}]},{"q":"Uma fruta vermelha","a":[{"a":"morango","p":38,"alt":[]},{"a":"maçã","p":24,"alt":["maca"]},{"a":"cereja","p":16,"alt":[]},{"a":"melancia","p":12,"alt":[]},{"a":"framboesa","p":7,"alt":["amora"]}]},{"q":"Algo que tem no quarto","a":[{"a":"cama","p":40,"alt":[]},{"a":"guarda-roupa","p":22,"alt":["armario","roupeiro"]},{"a":"travesseiro","p":14,"alt":["almofada"]},{"a":"televisão","p":12,"alt":["tv"]},{"a":"abajur","p":7,"alt":["luminaria"]}]},{"q":"Um animal que vive na fazenda","a":[{"a":"vaca","p":36,"alt":["boi"]},{"a":"galinha","p":24,"alt":["galo"]},{"a":"porco","p":16,"alt":[]},{"a":"cavalo","p":14,"alt":[]},{"a":"ovelha","p":7,"alt":["cabra","bode"]}]},{"q":"Algo que você faz assim que acorda","a":[{"a":"escovar os dentes","p":30,"alt":["escovar","escovo os dentes"]},{"a":"olhar o celular","p":28,"alt":["celular","ver celular"]},{"a":"ir ao banheiro","p":18,"alt":["banheiro","xixi"]},{"a":"tomar café","p":14,"alt":["cafe","cafe da manha"]},{"a":"tomar banho","p":7,"alt":["banho"]}]},{"q":"Um esporte com bola","a":[{"a":"futebol","p":42,"alt":[]},{"a":"vôlei","p":22,"alt":["volei","voleibol"]},{"a":"basquete","p":18,"alt":["basquetebol"]},{"a":"tênis","p":10,"alt":["tenis"]},{"a":"handebol","p":6,"alt":[]}]},{"q":"Uma comida de festa de aniversário","a":[{"a":"bolo","p":40,"alt":[]},{"a":"brigadeiro","p":28,"alt":[]},{"a":"coxinha","p":14,"alt":[]},{"a":"salgadinho","p":10,"alt":["salgado"]},{"a":"pizza","p":5,"alt":[]}]},{"q":"Algo que fica na cozinha","a":[{"a":"geladeira","p":35,"alt":[]},{"a":"fogão","p":28,"alt":["fogao"]},{"a":"pia","p":14,"alt":[]},{"a":"micro-ondas","p":12,"alt":["microondas"]},{"a":"panela","p":8,"alt":[]}]},{"q":"Uma cor da bandeira do Brasil","a":[{"a":"verde","p":40,"alt":[]},{"a":"amarelo","p":32,"alt":[]},{"a":"azul","p":20,"alt":[]},{"a":"branco","p":8,"alt":[]}]},{"q":"Um lugar para ir nas férias","a":[{"a":"praia","p":40,"alt":[]},{"a":"montanha","p":18,"alt":["serra"]},{"a":"Disney","p":16,"alt":["disney"]},{"a":"interior","p":12,"alt":["sitio","fazenda"]},{"a":"exterior","p":10,"alt":["outro pais","europa"]}]},{"q":"Algo que as pessoas perdem com frequência","a":[{"a":"chave","p":38,"alt":["chaves"]},{"a":"celular","p":22,"alt":[]},{"a":"óculos","p":14,"alt":["oculos"]},{"a":"controle remoto","p":12,"alt":["controle"]},{"a":"carteira","p":9,"alt":[]}]},{"q":"Um super-herói famoso","a":[{"a":"Homem-Aranha","p":32,"alt":["homem aranha","spider man"]},{"a":"Batman","p":28,"alt":[]},{"a":"Superman","p":20,"alt":["super homem"]},{"a":"Mulher-Maravilha","p":10,"alt":["mulher maravilha"]},{"a":"Hulk","p":7,"alt":[]}]},{"q":"Algo que tem asas","a":[{"a":"pássaro","p":36,"alt":["passaro","ave"]},{"a":"avião","p":28,"alt":["aviao"]},{"a":"borboleta","p":16,"alt":[]},{"a":"anjo","p":10,"alt":[]},{"a":"morcego","p":6,"alt":[]}]},{"q":"Um instrumento musical","a":[{"a":"violão","p":34,"alt":["violao"]},{"a":"guitarra","p":22,"alt":[]},{"a":"piano","p":20,"alt":[]},{"a":"bateria","p":14,"alt":[]},{"a":"flauta","p":7,"alt":[]}]},{"q":"Uma coisa que é gelada","a":[{"a":"sorvete","p":36,"alt":[]},{"a":"gelo","p":28,"alt":[]},{"a":"geladeira","p":14,"alt":[]},{"a":"água","p":10,"alt":["agua","agua gelada"]},{"a":"neve","p":8,"alt":[]}]},{"q":"Uma profissão que usa uniforme","a":[{"a":"policial","p":32,"alt":["policia"]},{"a":"bombeiro","p":25,"alt":[]},{"a":"médico","p":16,"alt":["medico","enfermeiro"]},{"a":"piloto","p":12,"alt":[]},{"a":"soldado","p":10,"alt":["militar"]}]},{"q":"Algo que você encontra no céu","a":[{"a":"sol","p":34,"alt":[]},{"a":"nuvem","p":26,"alt":["nuvens"]},{"a":"estrela","p":18,"alt":["estrelas"]},{"a":"lua","p":14,"alt":[]},{"a":"avião","p":6,"alt":["aviao","passaro"]}]},{"q":"Uma comida que leva queijo","a":[{"a":"pizza","p":40,"alt":[]},{"a":"lasanha","p":22,"alt":[]},{"a":"pão de queijo","p":16,"alt":["pao de queijo"]},{"a":"misto quente","p":12,"alt":["misto","sanduiche"]},{"a":"macarrão","p":7,"alt":["macarrao"]}]},{"q":"Um animal que vive na água","a":[{"a":"peixe","p":40,"alt":[]},{"a":"tubarão","p":20,"alt":["tubarao"]},{"a":"baleia","p":18,"alt":[]},{"a":"golfinho","p":12,"alt":[]},{"a":"polvo","p":6,"alt":[]}]},{"q":"Algo que tem rodas","a":[{"a":"carro","p":40,"alt":[]},{"a":"bicicleta","p":22,"alt":["bike"]},{"a":"ônibus","p":16,"alt":["onibus"]},{"a":"moto","p":12,"alt":["motocicleta"]},{"a":"skate","p":7,"alt":[]}]},{"q":"Um aplicativo que todo mundo tem no celular","a":[{"a":"WhatsApp","p":42,"alt":["whatsapp","zap"]},{"a":"Instagram","p":24,"alt":["insta"]},{"a":"TikTok","p":16,"alt":["tiktok"]},{"a":"YouTube","p":10,"alt":["youtube"]},{"a":"Facebook","p":6,"alt":[]}]},{"q":"Algo que você leva numa viagem","a":[{"a":"mala","p":34,"alt":[]},{"a":"roupa","p":24,"alt":["roupas"]},{"a":"documento","p":16,"alt":["passaporte","documentos"]},{"a":"celular","p":14,"alt":[]},{"a":"carregador","p":9,"alt":[]}]},{"q":"Uma coisa que faz barulho","a":[{"a":"despertador","p":28,"alt":["alarme"]},{"a":"cachorro","p":22,"alt":[]},{"a":"buzina","p":18,"alt":[]},{"a":"sirene","p":14,"alt":[]},{"a":"trovão","p":12,"alt":["trovao"]}]},{"q":"Um doce brasileiro","a":[{"a":"brigadeiro","p":44,"alt":[]},{"a":"beijinho","p":18,"alt":[]},{"a":"paçoca","p":16,"alt":["pacoca"]},{"a":"pudim","p":12,"alt":[]},{"a":"cocada","p":8,"alt":[]}]},{"q":"Algo que tem na escola","a":[{"a":"caderno","p":30,"alt":[]},{"a":"lousa","p":24,"alt":["quadro","quadro negro"]},{"a":"professor","p":20,"alt":[]},{"a":"mesa","p":14,"alt":["carteira"]},{"a":"lápis","p":9,"alt":["lapis","caneta"]}]},{"q":"Um motivo para chegar atrasado","a":[{"a":"trânsito","p":40,"alt":["transito"]},{"a":"perdi a hora","p":28,"alt":["dormi demais","acordei tarde"]},{"a":"ônibus atrasou","p":16,"alt":["onibus"]},{"a":"chuva","p":10,"alt":[]},{"a":"esqueci algo","p":5,"alt":[]}]},{"q":"Algo que você faz no fim de semana","a":[{"a":"dormir","p":32,"alt":[]},{"a":"sair","p":22,"alt":["passear"]},{"a":"ver filme","p":18,"alt":["filme","serie"]},{"a":"jogar","p":14,"alt":["videogame"]},{"a":"churrasco","p":10,"alt":[]}]},{"q":"Uma fruta tropical","a":[{"a":"manga","p":30,"alt":[]},{"a":"abacaxi","p":26,"alt":[]},{"a":"banana","p":18,"alt":[]},{"a":"maracujá","p":14,"alt":["maracuja"]},{"a":"coco","p":10,"alt":[]}]},{"q":"Algo que tem dentes","a":[{"a":"boca","p":30,"alt":["pessoa"]},{"a":"pente","p":24,"alt":[]},{"a":"serra","p":18,"alt":[]},{"a":"zíper","p":14,"alt":["ziper"]},{"a":"tubarão","p":12,"alt":["tubarao"]}]},{"q":"Um personagem de conto de fadas","a":[{"a":"Cinderela","p":30,"alt":[]},{"a":"Branca de Neve","p":24,"alt":["branca de neve"]},{"a":"Chapeuzinho Vermelho","p":20,"alt":["chapeuzinho"]},{"a":"Rapunzel","p":14,"alt":[]},{"a":"lobo mau","p":10,"alt":[]}]},{"q":"Uma comida de café da manhã","a":[{"a":"pão","p":42,"alt":["pao"]},{"a":"café","p":22,"alt":["cafe"]},{"a":"ovo","p":14,"alt":["ovos"]},{"a":"leite","p":12,"alt":[]},{"a":"frutas","p":8,"alt":["fruta"]}]},{"q":"Algo que voa sem asas","a":[{"a":"balão","p":32,"alt":["balao"]},{"a":"helicóptero","p":24,"alt":["helicoptero"]},{"a":"pipa","p":20,"alt":[]},{"a":"foguete","p":14,"alt":[]},{"a":"drone","p":8,"alt":[]}]},{"q":"Uma palavra que rima com \"coração\"","a":[{"a":"paixão","p":28,"alt":["paixao"]},{"a":"canção","p":22,"alt":["cancao"]},{"a":"emoção","p":18,"alt":["emocao"]},{"a":"mão","p":14,"alt":["mao"]},{"a":"limão","p":10,"alt":["limao"]}]},{"q":"Algo que é redondo","a":[{"a":"bola","p":38,"alt":[]},{"a":"roda","p":22,"alt":[]},{"a":"pizza","p":16,"alt":[]},{"a":"sol","p":12,"alt":["lua"]},{"a":"relógio","p":8,"alt":["relogio"]}]},{"q":"Um país que fala espanhol","a":[{"a":"Espanha","p":28,"alt":[]},{"a":"Argentina","p":26,"alt":[]},{"a":"México","p":20,"alt":["mexico"]},{"a":"Colômbia","p":12,"alt":["colombia"]},{"a":"Chile","p":8,"alt":[]}]},{"q":"Algo que fica no banheiro","a":[{"a":"vaso","p":30,"alt":["privada"]},{"a":"chuveiro","p":26,"alt":[]},{"a":"pia","p":18,"alt":[]},{"a":"espelho","p":14,"alt":[]},{"a":"toalha","p":9,"alt":[]}]},{"q":"Uma coisa que tem tela","a":[{"a":"celular","p":40,"alt":[]},{"a":"televisão","p":24,"alt":["tv","televisao"]},{"a":"computador","p":20,"alt":["notebook"]},{"a":"tablet","p":10,"alt":[]},{"a":"relógio","p":5,"alt":["relogio"]}]}]
+[
+{
+"q": "Algo que você leva para a praia",
+"a": [
+{
+"a": "protetor solar",
+"p": 35,
+"alt": [
+"protetor",
+"filtro solar",
+"filtro"
+]
+},
+{
+"a": "toalha",
+"p": 25,
+"alt": [
+"canga"
+]
+},
+{
+"a": "guarda-sol",
+"p": 15,
+"alt": [
+"guarda sol",
+"sombrinha"
+]
+},
+{
+"a": "óculos de sol",
+"p": 12,
+"alt": [
+"oculos"
+]
+},
+{
+"a": "cadeira",
+"p": 8,
+"alt": [
+"cadeira de praia"
+]
+}
+]
+},
+{
+"q": "Uma fruta vermelha",
+"a": [
+{
+"a": "morango",
+"p": 38,
+"alt": []
+},
+{
+"a": "maçã",
+"p": 24,
+"alt": [
+"maca"
+]
+},
+{
+"a": "cereja",
+"p": 16,
+"alt": []
+},
+{
+"a": "melancia",
+"p": 12,
+"alt": []
+},
+{
+"a": "framboesa",
+"p": 7,
+"alt": [
+"amora"
+]
+}
+]
+},
+{
+"q": "Algo que tem no quarto",
+"a": [
+{
+"a": "cama",
+"p": 40,
+"alt": []
+},
+{
+"a": "guarda-roupa",
+"p": 22,
+"alt": [
+"armario",
+"roupeiro"
+]
+},
+{
+"a": "travesseiro",
+"p": 14,
+"alt": [
+"almofada"
+]
+},
+{
+"a": "televisão",
+"p": 12,
+"alt": [
+"tv"
+]
+},
+{
+"a": "abajur",
+"p": 7,
+"alt": [
+"luminaria"
+]
+}
+]
+},
+{
+"q": "Um animal que vive na fazenda",
+"a": [
+{
+"a": "vaca",
+"p": 36,
+"alt": [
+"boi"
+]
+},
+{
+"a": "galinha",
+"p": 24,
+"alt": [
+"galo"
+]
+},
+{
+"a": "porco",
+"p": 16,
+"alt": []
+},
+{
+"a": "cavalo",
+"p": 14,
+"alt": []
+},
+{
+"a": "ovelha",
+"p": 7,
+"alt": [
+"cabra",
+"bode"
+]
+}
+]
+},
+{
+"q": "Algo que você faz assim que acorda",
+"a": [
+{
+"a": "escovar os dentes",
+"p": 30,
+"alt": [
+"escovar",
+"escovo os dentes"
+]
+},
+{
+"a": "olhar o celular",
+"p": 28,
+"alt": [
+"celular",
+"ver celular"
+]
+},
+{
+"a": "ir ao banheiro",
+"p": 18,
+"alt": [
+"banheiro",
+"xixi"
+]
+},
+{
+"a": "tomar café",
+"p": 14,
+"alt": [
+"cafe",
+"cafe da manha"
+]
+},
+{
+"a": "tomar banho",
+"p": 7,
+"alt": [
+"banho"
+]
+}
+]
+},
+{
+"q": "Um esporte com bola",
+"a": [
+{
+"a": "futebol",
+"p": 42,
+"alt": []
+},
+{
+"a": "vôlei",
+"p": 22,
+"alt": [
+"volei",
+"voleibol"
+]
+},
+{
+"a": "basquete",
+"p": 18,
+"alt": [
+"basquetebol"
+]
+},
+{
+"a": "tênis",
+"p": 10,
+"alt": [
+"tenis"
+]
+},
+{
+"a": "handebol",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Uma comida de festa de aniversário",
+"a": [
+{
+"a": "bolo",
+"p": 40,
+"alt": []
+},
+{
+"a": "brigadeiro",
+"p": 28,
+"alt": []
+},
+{
+"a": "coxinha",
+"p": 14,
+"alt": []
+},
+{
+"a": "salgadinho",
+"p": 10,
+"alt": [
+"salgado"
+]
+},
+{
+"a": "pizza",
+"p": 5,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que fica na cozinha",
+"a": [
+{
+"a": "geladeira",
+"p": 35,
+"alt": []
+},
+{
+"a": "fogão",
+"p": 28,
+"alt": [
+"fogao"
+]
+},
+{
+"a": "pia",
+"p": 14,
+"alt": []
+},
+{
+"a": "micro-ondas",
+"p": 12,
+"alt": [
+"microondas"
+]
+},
+{
+"a": "panela",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Uma cor da bandeira do Brasil",
+"a": [
+{
+"a": "verde",
+"p": 40,
+"alt": []
+},
+{
+"a": "amarelo",
+"p": 32,
+"alt": []
+},
+{
+"a": "azul",
+"p": 20,
+"alt": []
+},
+{
+"a": "branco",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Um lugar para ir nas férias",
+"a": [
+{
+"a": "praia",
+"p": 40,
+"alt": []
+},
+{
+"a": "montanha",
+"p": 18,
+"alt": [
+"serra"
+]
+},
+{
+"a": "Disney",
+"p": 16,
+"alt": [
+"disney"
+]
+},
+{
+"a": "interior",
+"p": 12,
+"alt": [
+"sitio",
+"fazenda"
+]
+},
+{
+"a": "exterior",
+"p": 10,
+"alt": [
+"outro pais",
+"europa"
+]
+}
+]
+},
+{
+"q": "Algo que as pessoas perdem com frequência",
+"a": [
+{
+"a": "chave",
+"p": 38,
+"alt": [
+"chaves"
+]
+},
+{
+"a": "celular",
+"p": 22,
+"alt": []
+},
+{
+"a": "óculos",
+"p": 14,
+"alt": [
+"oculos"
+]
+},
+{
+"a": "controle remoto",
+"p": 12,
+"alt": [
+"controle"
+]
+},
+{
+"a": "carteira",
+"p": 9,
+"alt": []
+}
+]
+},
+{
+"q": "Um super-herói famoso",
+"a": [
+{
+"a": "Homem-Aranha",
+"p": 32,
+"alt": [
+"homem aranha",
+"spider man"
+]
+},
+{
+"a": "Batman",
+"p": 28,
+"alt": []
+},
+{
+"a": "Superman",
+"p": 20,
+"alt": [
+"super homem"
+]
+},
+{
+"a": "Mulher-Maravilha",
+"p": 10,
+"alt": [
+"mulher maravilha"
+]
+},
+{
+"a": "Hulk",
+"p": 7,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem asas",
+"a": [
+{
+"a": "pássaro",
+"p": 36,
+"alt": [
+"passaro",
+"ave"
+]
+},
+{
+"a": "avião",
+"p": 28,
+"alt": [
+"aviao"
+]
+},
+{
+"a": "borboleta",
+"p": 16,
+"alt": []
+},
+{
+"a": "anjo",
+"p": 10,
+"alt": []
+},
+{
+"a": "morcego",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Um instrumento musical",
+"a": [
+{
+"a": "violão",
+"p": 34,
+"alt": [
+"violao"
+]
+},
+{
+"a": "guitarra",
+"p": 22,
+"alt": []
+},
+{
+"a": "piano",
+"p": 20,
+"alt": []
+},
+{
+"a": "bateria",
+"p": 14,
+"alt": []
+},
+{
+"a": "flauta",
+"p": 7,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que é gelada",
+"a": [
+{
+"a": "sorvete",
+"p": 36,
+"alt": []
+},
+{
+"a": "gelo",
+"p": 28,
+"alt": []
+},
+{
+"a": "geladeira",
+"p": 14,
+"alt": []
+},
+{
+"a": "água",
+"p": 10,
+"alt": [
+"agua",
+"agua gelada"
+]
+},
+{
+"a": "neve",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Uma profissão que usa uniforme",
+"a": [
+{
+"a": "policial",
+"p": 32,
+"alt": [
+"policia"
+]
+},
+{
+"a": "bombeiro",
+"p": 25,
+"alt": []
+},
+{
+"a": "médico",
+"p": 16,
+"alt": [
+"medico",
+"enfermeiro"
+]
+},
+{
+"a": "piloto",
+"p": 12,
+"alt": []
+},
+{
+"a": "soldado",
+"p": 10,
+"alt": [
+"militar"
+]
+}
+]
+},
+{
+"q": "Algo que você encontra no céu",
+"a": [
+{
+"a": "sol",
+"p": 34,
+"alt": []
+},
+{
+"a": "nuvem",
+"p": 26,
+"alt": [
+"nuvens"
+]
+},
+{
+"a": "estrela",
+"p": 18,
+"alt": [
+"estrelas"
+]
+},
+{
+"a": "lua",
+"p": 14,
+"alt": []
+},
+{
+"a": "avião",
+"p": 6,
+"alt": [
+"aviao",
+"passaro"
+]
+}
+]
+},
+{
+"q": "Uma comida que leva queijo",
+"a": [
+{
+"a": "pizza",
+"p": 40,
+"alt": []
+},
+{
+"a": "lasanha",
+"p": 22,
+"alt": []
+},
+{
+"a": "pão de queijo",
+"p": 16,
+"alt": [
+"pao de queijo"
+]
+},
+{
+"a": "misto quente",
+"p": 12,
+"alt": [
+"misto",
+"sanduiche"
+]
+},
+{
+"a": "macarrão",
+"p": 7,
+"alt": [
+"macarrao"
+]
+}
+]
+},
+{
+"q": "Um animal que vive na água",
+"a": [
+{
+"a": "peixe",
+"p": 40,
+"alt": []
+},
+{
+"a": "tubarão",
+"p": 20,
+"alt": [
+"tubarao"
+]
+},
+{
+"a": "baleia",
+"p": 18,
+"alt": []
+},
+{
+"a": "golfinho",
+"p": 12,
+"alt": []
+},
+{
+"a": "polvo",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem rodas",
+"a": [
+{
+"a": "carro",
+"p": 40,
+"alt": []
+},
+{
+"a": "bicicleta",
+"p": 22,
+"alt": [
+"bike"
+]
+},
+{
+"a": "ônibus",
+"p": 16,
+"alt": [
+"onibus"
+]
+},
+{
+"a": "moto",
+"p": 12,
+"alt": [
+"motocicleta"
+]
+},
+{
+"a": "skate",
+"p": 7,
+"alt": []
+}
+]
+},
+{
+"q": "Um aplicativo que todo mundo tem no celular",
+"a": [
+{
+"a": "WhatsApp",
+"p": 42,
+"alt": [
+"whatsapp",
+"zap"
+]
+},
+{
+"a": "Instagram",
+"p": 24,
+"alt": [
+"insta"
+]
+},
+{
+"a": "TikTok",
+"p": 16,
+"alt": [
+"tiktok"
+]
+},
+{
+"a": "YouTube",
+"p": 10,
+"alt": [
+"youtube"
+]
+},
+{
+"a": "Facebook",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você leva numa viagem",
+"a": [
+{
+"a": "mala",
+"p": 34,
+"alt": []
+},
+{
+"a": "roupa",
+"p": 24,
+"alt": [
+"roupas"
+]
+},
+{
+"a": "documento",
+"p": 16,
+"alt": [
+"passaporte",
+"documentos"
+]
+},
+{
+"a": "celular",
+"p": 14,
+"alt": []
+},
+{
+"a": "carregador",
+"p": 9,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que faz barulho",
+"a": [
+{
+"a": "despertador",
+"p": 28,
+"alt": [
+"alarme"
+]
+},
+{
+"a": "cachorro",
+"p": 22,
+"alt": []
+},
+{
+"a": "buzina",
+"p": 18,
+"alt": []
+},
+{
+"a": "sirene",
+"p": 14,
+"alt": []
+},
+{
+"a": "trovão",
+"p": 12,
+"alt": [
+"trovao"
+]
+}
+]
+},
+{
+"q": "Um doce brasileiro",
+"a": [
+{
+"a": "brigadeiro",
+"p": 44,
+"alt": []
+},
+{
+"a": "beijinho",
+"p": 18,
+"alt": []
+},
+{
+"a": "paçoca",
+"p": 16,
+"alt": [
+"pacoca"
+]
+},
+{
+"a": "pudim",
+"p": 12,
+"alt": []
+},
+{
+"a": "cocada",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem na escola",
+"a": [
+{
+"a": "caderno",
+"p": 30,
+"alt": []
+},
+{
+"a": "lousa",
+"p": 24,
+"alt": [
+"quadro",
+"quadro negro"
+]
+},
+{
+"a": "professor",
+"p": 20,
+"alt": []
+},
+{
+"a": "mesa",
+"p": 14,
+"alt": [
+"carteira"
+]
+},
+{
+"a": "lápis",
+"p": 9,
+"alt": [
+"lapis",
+"caneta"
+]
+}
+]
+},
+{
+"q": "Um motivo para chegar atrasado",
+"a": [
+{
+"a": "trânsito",
+"p": 40,
+"alt": [
+"transito"
+]
+},
+{
+"a": "perdi a hora",
+"p": 28,
+"alt": [
+"dormi demais",
+"acordei tarde"
+]
+},
+{
+"a": "ônibus atrasou",
+"p": 16,
+"alt": [
+"onibus"
+]
+},
+{
+"a": "chuva",
+"p": 10,
+"alt": []
+},
+{
+"a": "esqueci algo",
+"p": 5,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você faz no fim de semana",
+"a": [
+{
+"a": "dormir",
+"p": 32,
+"alt": []
+},
+{
+"a": "sair",
+"p": 22,
+"alt": [
+"passear"
+]
+},
+{
+"a": "ver filme",
+"p": 18,
+"alt": [
+"filme",
+"serie"
+]
+},
+{
+"a": "jogar",
+"p": 14,
+"alt": [
+"videogame"
+]
+},
+{
+"a": "churrasco",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma fruta tropical",
+"a": [
+{
+"a": "manga",
+"p": 30,
+"alt": []
+},
+{
+"a": "abacaxi",
+"p": 26,
+"alt": []
+},
+{
+"a": "banana",
+"p": 18,
+"alt": []
+},
+{
+"a": "maracujá",
+"p": 14,
+"alt": [
+"maracuja"
+]
+},
+{
+"a": "coco",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem dentes",
+"a": [
+{
+"a": "boca",
+"p": 30,
+"alt": [
+"pessoa"
+]
+},
+{
+"a": "pente",
+"p": 24,
+"alt": []
+},
+{
+"a": "serra",
+"p": 18,
+"alt": []
+},
+{
+"a": "zíper",
+"p": 14,
+"alt": [
+"ziper"
+]
+},
+{
+"a": "tubarão",
+"p": 12,
+"alt": [
+"tubarao"
+]
+}
+]
+},
+{
+"q": "Um personagem de conto de fadas",
+"a": [
+{
+"a": "Cinderela",
+"p": 30,
+"alt": []
+},
+{
+"a": "Branca de Neve",
+"p": 24,
+"alt": [
+"branca de neve"
+]
+},
+{
+"a": "Chapeuzinho Vermelho",
+"p": 20,
+"alt": [
+"chapeuzinho"
+]
+},
+{
+"a": "Rapunzel",
+"p": 14,
+"alt": []
+},
+{
+"a": "lobo mau",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma comida de café da manhã",
+"a": [
+{
+"a": "pão",
+"p": 42,
+"alt": [
+"pao"
+]
+},
+{
+"a": "café",
+"p": 22,
+"alt": [
+"cafe"
+]
+},
+{
+"a": "ovo",
+"p": 14,
+"alt": [
+"ovos"
+]
+},
+{
+"a": "leite",
+"p": 12,
+"alt": []
+},
+{
+"a": "frutas",
+"p": 8,
+"alt": [
+"fruta"
+]
+}
+]
+},
+{
+"q": "Algo que voa sem asas",
+"a": [
+{
+"a": "balão",
+"p": 32,
+"alt": [
+"balao"
+]
+},
+{
+"a": "helicóptero",
+"p": 24,
+"alt": [
+"helicoptero"
+]
+},
+{
+"a": "pipa",
+"p": 20,
+"alt": []
+},
+{
+"a": "foguete",
+"p": 14,
+"alt": []
+},
+{
+"a": "drone",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Uma palavra que rima com \"coração\"",
+"a": [
+{
+"a": "paixão",
+"p": 28,
+"alt": [
+"paixao"
+]
+},
+{
+"a": "canção",
+"p": 22,
+"alt": [
+"cancao"
+]
+},
+{
+"a": "emoção",
+"p": 18,
+"alt": [
+"emocao"
+]
+},
+{
+"a": "mão",
+"p": 14,
+"alt": [
+"mao"
+]
+},
+{
+"a": "limão",
+"p": 10,
+"alt": [
+"limao"
+]
+}
+]
+},
+{
+"q": "Algo que é redondo",
+"a": [
+{
+"a": "bola",
+"p": 38,
+"alt": []
+},
+{
+"a": "roda",
+"p": 22,
+"alt": []
+},
+{
+"a": "pizza",
+"p": 16,
+"alt": []
+},
+{
+"a": "sol",
+"p": 12,
+"alt": [
+"lua"
+]
+},
+{
+"a": "relógio",
+"p": 8,
+"alt": [
+"relogio"
+]
+}
+]
+},
+{
+"q": "Um país que fala espanhol",
+"a": [
+{
+"a": "Espanha",
+"p": 28,
+"alt": []
+},
+{
+"a": "Argentina",
+"p": 26,
+"alt": []
+},
+{
+"a": "México",
+"p": 20,
+"alt": [
+"mexico"
+]
+},
+{
+"a": "Colômbia",
+"p": 12,
+"alt": [
+"colombia"
+]
+},
+{
+"a": "Chile",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que fica no banheiro",
+"a": [
+{
+"a": "vaso",
+"p": 30,
+"alt": [
+"privada"
+]
+},
+{
+"a": "chuveiro",
+"p": 26,
+"alt": []
+},
+{
+"a": "pia",
+"p": 18,
+"alt": []
+},
+{
+"a": "espelho",
+"p": 14,
+"alt": []
+},
+{
+"a": "toalha",
+"p": 9,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem tela",
+"a": [
+{
+"a": "celular",
+"p": 40,
+"alt": []
+},
+{
+"a": "televisão",
+"p": 24,
+"alt": [
+"tv",
+"televisao"
+]
+},
+{
+"a": "computador",
+"p": 20,
+"alt": [
+"notebook"
+]
+},
+{
+"a": "tablet",
+"p": 10,
+"alt": []
+},
+{
+"a": "relógio",
+"p": 5,
+"alt": [
+"relogio"
+]
+}
+]
+},
+{
+"q": "Algo que você come no cinema",
+"a": [
+{
+"a": "pipoca",
+"p": 52,
+"alt": []
+},
+{
+"a": "refrigerante",
+"p": 16,
+"alt": [
+"refri",
+"coca"
+]
+},
+{
+"a": "chocolate",
+"p": 12,
+"alt": []
+},
+{
+"a": "bala",
+"p": 9,
+"alt": [
+"jujuba"
+]
+},
+{
+"a": "nachos",
+"p": 7,
+"alt": [
+"salgadinho"
+]
+}
+]
+},
+{
+"q": "Um animal que tem listras",
+"a": [
+{
+"a": "zebra",
+"p": 48,
+"alt": []
+},
+{
+"a": "tigre",
+"p": 28,
+"alt": []
+},
+{
+"a": "abelha",
+"p": 10,
+"alt": []
+},
+{
+"a": "gato",
+"p": 7,
+"alt": []
+},
+{
+"a": "peixe-palhaço",
+"p": 4,
+"alt": [
+"peixe palhaco"
+]
+}
+]
+},
+{
+"q": "Uma coisa que você faz antes de dormir",
+"a": [
+{
+"a": "escovar os dentes",
+"p": 40,
+"alt": [
+"escovar dentes",
+"escovar"
+]
+},
+{
+"a": "mexer no celular",
+"p": 25,
+"alt": [
+"celular"
+]
+},
+{
+"a": "tomar banho",
+"p": 15,
+"alt": [
+"banho"
+]
+},
+{
+"a": "rezar",
+"p": 10,
+"alt": [
+"orar"
+]
+},
+{
+"a": "ler",
+"p": 6,
+"alt": [
+"ler um livro"
+]
+}
+]
+},
+{
+"q": "Um nome de cachorro muito comum",
+"a": [
+{
+"a": "rex",
+"p": 30,
+"alt": []
+},
+{
+"a": "bob",
+"p": 22,
+"alt": []
+},
+{
+"a": "thor",
+"p": 18,
+"alt": []
+},
+{
+"a": "mel",
+"p": 14,
+"alt": []
+},
+{
+"a": "luna",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem botões",
+"a": [
+{
+"a": "controle remoto",
+"p": 32,
+"alt": [
+"controle"
+]
+},
+{
+"a": "celular",
+"p": 24,
+"alt": []
+},
+{
+"a": "camisa",
+"p": 18,
+"alt": [
+"roupa"
+]
+},
+{
+"a": "elevador",
+"p": 12,
+"alt": []
+},
+{
+"a": "teclado",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma comida que leva ovo",
+"a": [
+{
+"a": "bolo",
+"p": 34,
+"alt": []
+},
+{
+"a": "omelete",
+"p": 26,
+"alt": []
+},
+{
+"a": "maionese",
+"p": 14,
+"alt": []
+},
+{
+"a": "pudim",
+"p": 12,
+"alt": []
+},
+{
+"a": "panqueca",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Um lugar onde as pessoas ficam em fila",
+"a": [
+{
+"a": "banco",
+"p": 36,
+"alt": []
+},
+{
+"a": "supermercado",
+"p": 24,
+"alt": [
+"mercado"
+]
+},
+{
+"a": "cinema",
+"p": 14,
+"alt": []
+},
+{
+"a": "hospital",
+"p": 12,
+"alt": []
+},
+{
+"a": "show",
+"p": 8,
+"alt": [
+"balada"
+]
+}
+]
+},
+{
+"q": "Uma coisa que tem cheiro forte",
+"a": [
+{
+"a": "alho",
+"p": 30,
+"alt": []
+},
+{
+"a": "perfume",
+"p": 26,
+"alt": []
+},
+{
+"a": "cebola",
+"p": 18,
+"alt": []
+},
+{
+"a": "peixe",
+"p": 14,
+"alt": []
+},
+{
+"a": "gasolina",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você usa quando chove",
+"a": [
+{
+"a": "guarda-chuva",
+"p": 58,
+"alt": [
+"guarda chuva",
+"sombrinha"
+]
+},
+{
+"a": "capa de chuva",
+"p": 18,
+"alt": [
+"capa"
+]
+},
+{
+"a": "bota",
+"p": 12,
+"alt": [
+"galocha"
+]
+},
+{
+"a": "casaco",
+"p": 6,
+"alt": [
+"jaqueta"
+]
+},
+{
+"a": "toalha",
+"p": 3,
+"alt": []
+}
+]
+},
+{
+"q": "Um esporte que se joga na praia",
+"a": [
+{
+"a": "vôlei de praia",
+"p": 40,
+"alt": [
+"volei",
+"volei de praia"
+]
+},
+{
+"a": "futevôlei",
+"p": 24,
+"alt": [
+"futevolei"
+]
+},
+{
+"a": "frescobol",
+"p": 16,
+"alt": []
+},
+{
+"a": "beach tennis",
+"p": 12,
+"alt": []
+},
+{
+"a": "surfe",
+"p": 6,
+"alt": [
+"surf"
+]
+}
+]
+},
+{
+"q": "Uma coisa que você encontra numa mochila de escola",
+"a": [
+{
+"a": "caderno",
+"p": 36,
+"alt": []
+},
+{
+"a": "estojo",
+"p": 22,
+"alt": []
+},
+{
+"a": "lápis",
+"p": 16,
+"alt": [
+"lapis",
+"caneta"
+]
+},
+{
+"a": "livro",
+"p": 12,
+"alt": []
+},
+{
+"a": "lanche",
+"p": 10,
+"alt": [
+"merenda"
+]
+}
+]
+},
+{
+"q": "Uma fruta que tem caroço",
+"a": [
+{
+"a": "manga",
+"p": 32,
+"alt": []
+},
+{
+"a": "abacate",
+"p": 24,
+"alt": []
+},
+{
+"a": "pêssego",
+"p": 16,
+"alt": [
+"pessego"
+]
+},
+{
+"a": "azeitona",
+"p": 12,
+"alt": []
+},
+{
+"a": "ameixa",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Um bicho que dá medo",
+"a": [
+{
+"a": "aranha",
+"p": 34,
+"alt": []
+},
+{
+"a": "cobra",
+"p": 30,
+"alt": []
+},
+{
+"a": "barata",
+"p": 16,
+"alt": []
+},
+{
+"a": "tubarão",
+"p": 10,
+"alt": [
+"tubarao"
+]
+},
+{
+"a": "rato",
+"p": 7,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem na festa junina",
+"a": [
+{
+"a": "quentão",
+"p": 24,
+"alt": [
+"quentao"
+]
+},
+{
+"a": "pipoca",
+"p": 22,
+"alt": []
+},
+{
+"a": "quadrilha",
+"p": 20,
+"alt": []
+},
+{
+"a": "fogueira",
+"p": 18,
+"alt": []
+},
+{
+"a": "milho",
+"p": 12,
+"alt": [
+"pamonha"
+]
+}
+]
+},
+{
+"q": "Uma coisa que as crianças pedem no Natal",
+"a": [
+{
+"a": "brinquedo",
+"p": 40,
+"alt": []
+},
+{
+"a": "videogame",
+"p": 22,
+"alt": [
+"video game"
+]
+},
+{
+"a": "bicicleta",
+"p": 16,
+"alt": [
+"bike"
+]
+},
+{
+"a": "celular",
+"p": 12,
+"alt": []
+},
+{
+"a": "boneca",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Um lugar quente",
+"a": [
+{
+"a": "praia",
+"p": 32,
+"alt": []
+},
+{
+"a": "deserto",
+"p": 28,
+"alt": []
+},
+{
+"a": "sauna",
+"p": 16,
+"alt": []
+},
+{
+"a": "nordeste",
+"p": 12,
+"alt": [
+"sertao"
+]
+},
+{
+"a": "vulcão",
+"p": 8,
+"alt": [
+"vulcao"
+]
+}
+]
+},
+{
+"q": "Algo que você coloca no café",
+"a": [
+{
+"a": "açúcar",
+"p": 48,
+"alt": [
+"acucar"
+]
+},
+{
+"a": "leite",
+"p": 30,
+"alt": []
+},
+{
+"a": "adoçante",
+"p": 12,
+"alt": [
+"adocante"
+]
+},
+{
+"a": "canela",
+"p": 5,
+"alt": []
+},
+{
+"a": "chantilly",
+"p": 3,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que é amarela",
+"a": [
+{
+"a": "sol",
+"p": 34,
+"alt": []
+},
+{
+"a": "banana",
+"p": 28,
+"alt": []
+},
+{
+"a": "ovo (gema)",
+"p": 14,
+"alt": [
+"gema"
+]
+},
+{
+"a": "canário",
+"p": 10,
+"alt": [
+"canario"
+]
+},
+{
+"a": "queijo",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma cor de carro muito comum",
+"a": [
+{
+"a": "branco",
+"p": 36,
+"alt": []
+},
+{
+"a": "preto",
+"p": 26,
+"alt": []
+},
+{
+"a": "prata",
+"p": 20,
+"alt": [
+"cinza"
+]
+},
+{
+"a": "vermelho",
+"p": 12,
+"alt": []
+},
+{
+"a": "azul",
+"p": 4,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você faz quando está entediado",
+"a": [
+{
+"a": "mexe no celular",
+"p": 42,
+"alt": [
+"celular",
+"mexer no celular"
+]
+},
+{
+"a": "dorme",
+"p": 20,
+"alt": [
+"dormir"
+]
+},
+{
+"a": "come",
+"p": 14,
+"alt": [
+"comer"
+]
+},
+{
+"a": "assiste tv",
+"p": 12,
+"alt": [
+"televisao",
+"tv"
+]
+},
+{
+"a": "joga",
+"p": 8,
+"alt": [
+"jogar videogame"
+]
+}
+]
+},
+{
+"q": "Um país famoso por futebol",
+"a": [
+{
+"a": "Brasil",
+"p": 44,
+"alt": []
+},
+{
+"a": "Argentina",
+"p": 24,
+"alt": []
+},
+{
+"a": "Alemanha",
+"p": 12,
+"alt": []
+},
+{
+"a": "Itália",
+"p": 10,
+"alt": [
+"italia"
+]
+},
+{
+"a": "Espanha",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem no carro",
+"a": [
+{
+"a": "volante",
+"p": 30,
+"alt": []
+},
+{
+"a": "cinto de segurança",
+"p": 22,
+"alt": [
+"cinto"
+]
+},
+{
+"a": "rádio",
+"p": 16,
+"alt": [
+"radio"
+]
+},
+{
+"a": "pneu",
+"p": 16,
+"alt": [
+"roda"
+]
+},
+{
+"a": "banco",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Um animal que é rápido",
+"a": [
+{
+"a": "guepardo",
+"p": 36,
+"alt": [
+"chita"
+]
+},
+{
+"a": "cavalo",
+"p": 24,
+"alt": []
+},
+{
+"a": "leopardo",
+"p": 14,
+"alt": [
+"leao"
+]
+},
+{
+"a": "coelho",
+"p": 12,
+"alt": []
+},
+{
+"a": "gazela",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você precisa para fazer um bolo",
+"a": [
+{
+"a": "farinha",
+"p": 34,
+"alt": [
+"trigo"
+]
+},
+{
+"a": "ovo",
+"p": 26,
+"alt": [
+"ovos"
+]
+},
+{
+"a": "açúcar",
+"p": 20,
+"alt": [
+"acucar"
+]
+},
+{
+"a": "leite",
+"p": 12,
+"alt": []
+},
+{
+"a": "fermento",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que você faz na academia",
+"a": [
+{
+"a": "musculação",
+"p": 40,
+"alt": [
+"malhar",
+"musculacao"
+]
+},
+{
+"a": "esteira",
+"p": 24,
+"alt": [
+"correr"
+]
+},
+{
+"a": "abdominal",
+"p": 16,
+"alt": []
+},
+{
+"a": "bicicleta",
+"p": 10,
+"alt": []
+},
+{
+"a": "alongamento",
+"p": 8,
+"alt": [
+"alongar"
+]
+}
+]
+},
+{
+"q": "Um nome de gato muito comum",
+"a": [
+{
+"a": "mingau",
+"p": 28,
+"alt": []
+},
+{
+"a": "frajola",
+"p": 20,
+"alt": []
+},
+{
+"a": "nina",
+"p": 18,
+"alt": []
+},
+{
+"a": "tom",
+"p": 16,
+"alt": []
+},
+{
+"a": "garfield",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você lava",
+"a": [
+{
+"a": "louça",
+"p": 32,
+"alt": [
+"louca",
+"prato"
+]
+},
+{
+"a": "roupa",
+"p": 30,
+"alt": []
+},
+{
+"a": "carro",
+"p": 16,
+"alt": []
+},
+{
+"a": "cabelo",
+"p": 12,
+"alt": []
+},
+{
+"a": "mão",
+"p": 8,
+"alt": [
+"maos",
+"mao"
+]
+}
+]
+},
+{
+"q": "Uma coisa que se encontra num parque",
+"a": [
+{
+"a": "árvore",
+"p": 32,
+"alt": [
+"arvore"
+]
+},
+{
+"a": "banco",
+"p": 22,
+"alt": []
+},
+{
+"a": "balanço",
+"p": 18,
+"alt": [
+"balanco",
+"escorregador"
+]
+},
+{
+"a": "lago",
+"p": 14,
+"alt": []
+},
+{
+"a": "pipoca",
+"p": 10,
+"alt": [
+"pipoqueiro"
+]
+}
+]
+},
+{
+"q": "Um sabor de sorvete",
+"a": [
+{
+"a": "chocolate",
+"p": 42,
+"alt": []
+},
+{
+"a": "morango",
+"p": 22,
+"alt": []
+},
+{
+"a": "creme",
+"p": 14,
+"alt": [
+"baunilha"
+]
+},
+{
+"a": "flocos",
+"p": 12,
+"alt": []
+},
+{
+"a": "limão",
+"p": 8,
+"alt": [
+"limao"
+]
+}
+]
+},
+{
+"q": "Algo que é pesado",
+"a": [
+{
+"a": "elefante",
+"p": 30,
+"alt": []
+},
+{
+"a": "caminhão",
+"p": 24,
+"alt": [
+"caminhao"
+]
+},
+{
+"a": "pedra",
+"p": 20,
+"alt": []
+},
+{
+"a": "piano",
+"p": 14,
+"alt": []
+},
+{
+"a": "geladeira",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem chave",
+"a": [
+{
+"a": "porta",
+"p": 46,
+"alt": []
+},
+{
+"a": "carro",
+"p": 30,
+"alt": []
+},
+{
+"a": "cadeado",
+"p": 12,
+"alt": []
+},
+{
+"a": "cofre",
+"p": 8,
+"alt": []
+},
+{
+"a": "gaveta",
+"p": 4,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você faz no aniversário",
+"a": [
+{
+"a": "cantar parabéns",
+"p": 38,
+"alt": [
+"parabens",
+"cantar"
+]
+},
+{
+"a": "soprar a vela",
+"p": 28,
+"alt": [
+"vela",
+"velas"
+]
+},
+{
+"a": "comer bolo",
+"p": 16,
+"alt": [
+"bolo"
+]
+},
+{
+"a": "abrir presente",
+"p": 12,
+"alt": [
+"presente"
+]
+},
+{
+"a": "festa",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que se vê na fazenda",
+"a": [
+{
+"a": "vaca",
+"p": 32,
+"alt": []
+},
+{
+"a": "cavalo",
+"p": 22,
+"alt": []
+},
+{
+"a": "trator",
+"p": 18,
+"alt": []
+},
+{
+"a": "galinha",
+"p": 16,
+"alt": []
+},
+{
+"a": "porco",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Um personagem de desenho animado",
+"a": [
+{
+"a": "Bob Esponja",
+"p": 30,
+"alt": [
+"bob esponja"
+]
+},
+{
+"a": "Mickey",
+"p": 24,
+"alt": []
+},
+{
+"a": "Pernalonga",
+"p": 16,
+"alt": []
+},
+{
+"a": "Pica-Pau",
+"p": 14,
+"alt": [
+"pica pau"
+]
+},
+{
+"a": "Scooby-Doo",
+"p": 12,
+"alt": [
+"scooby"
+]
+}
+]
+},
+{
+"q": "Algo que você usa no inverno",
+"a": [
+{
+"a": "casaco",
+"p": 44,
+"alt": [
+"jaqueta",
+"blusa"
+]
+},
+{
+"a": "cachecol",
+"p": 18,
+"alt": []
+},
+{
+"a": "luva",
+"p": 14,
+"alt": [
+"luvas"
+]
+},
+{
+"a": "gorro",
+"p": 12,
+"alt": [
+"touca"
+]
+},
+{
+"a": "meia",
+"p": 10,
+"alt": [
+"meias"
+]
+}
+]
+},
+{
+"q": "Uma comida de rua brasileira",
+"a": [
+{
+"a": "pastel",
+"p": 30,
+"alt": []
+},
+{
+"a": "cachorro-quente",
+"p": 26,
+"alt": [
+"cachorro quente",
+"hot dog"
+]
+},
+{
+"a": "espetinho",
+"p": 18,
+"alt": [
+"churrasquinho"
+]
+},
+{
+"a": "acarajé",
+"p": 14,
+"alt": [
+"acaraje"
+]
+},
+{
+"a": "tapioca",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você encontra na praia",
+"a": [
+{
+"a": "areia",
+"p": 34,
+"alt": []
+},
+{
+"a": "mar",
+"p": 24,
+"alt": [
+"agua"
+]
+},
+{
+"a": "concha",
+"p": 16,
+"alt": []
+},
+{
+"a": "guarda-sol",
+"p": 14,
+"alt": [
+"guarda sol"
+]
+},
+{
+"a": "caranguejo",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem números",
+"a": [
+{
+"a": "relógio",
+"p": 32,
+"alt": [
+"relogio"
+]
+},
+{
+"a": "calendário",
+"p": 22,
+"alt": [
+"calendario"
+]
+},
+{
+"a": "celular",
+"p": 18,
+"alt": [
+"telefone"
+]
+},
+{
+"a": "calculadora",
+"p": 16,
+"alt": []
+},
+{
+"a": "dinheiro",
+"p": 10,
+"alt": [
+"nota"
+]
+}
+]
+},
+{
+"q": "Algo que voa",
+"a": [
+{
+"a": "avião",
+"p": 36,
+"alt": [
+"aviao"
+]
+},
+{
+"a": "pássaro",
+"p": 30,
+"alt": [
+"passaro",
+"ave"
+]
+},
+{
+"a": "helicóptero",
+"p": 14,
+"alt": [
+"helicoptero"
+]
+},
+{
+"a": "borboleta",
+"p": 10,
+"alt": []
+},
+{
+"a": "pipa",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Uma profissão que trabalha em hospital",
+"a": [
+{
+"a": "médico",
+"p": 42,
+"alt": [
+"medico"
+]
+},
+{
+"a": "enfermeiro",
+"p": 30,
+"alt": [
+"enfermeira"
+]
+},
+{
+"a": "recepcionista",
+"p": 10,
+"alt": []
+},
+{
+"a": "cirurgião",
+"p": 10,
+"alt": [
+"cirurgiao"
+]
+},
+{
+"a": "faxineiro",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Um lugar para levar as crianças no domingo",
+"a": [
+{
+"a": "parque",
+"p": 36,
+"alt": []
+},
+{
+"a": "shopping",
+"p": 24,
+"alt": []
+},
+{
+"a": "praia",
+"p": 16,
+"alt": []
+},
+{
+"a": "zoológico",
+"p": 14,
+"alt": [
+"zoologico",
+"zoo"
+]
+},
+{
+"a": "cinema",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você toma quando está doente",
+"a": [
+{
+"a": "remédio",
+"p": 44,
+"alt": [
+"remedio"
+]
+},
+{
+"a": "chá",
+"p": 24,
+"alt": [
+"cha"
+]
+},
+{
+"a": "sopa",
+"p": 14,
+"alt": [
+"canja"
+]
+},
+{
+"a": "água",
+"p": 10,
+"alt": [
+"agua"
+]
+},
+{
+"a": "vitamina",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que faz você rir",
+"a": [
+{
+"a": "piada",
+"p": 36,
+"alt": []
+},
+{
+"a": "meme",
+"p": 24,
+"alt": [
+"memes"
+]
+},
+{
+"a": "cócegas",
+"p": 18,
+"alt": [
+"cocegas"
+]
+},
+{
+"a": "comédia",
+"p": 12,
+"alt": [
+"filme de comedia"
+]
+},
+{
+"a": "amigos",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem na sala de estar",
+"a": [
+{
+"a": "sofá",
+"p": 42,
+"alt": [
+"sofa"
+]
+},
+{
+"a": "televisão",
+"p": 30,
+"alt": [
+"tv",
+"televisao"
+]
+},
+{
+"a": "tapete",
+"p": 12,
+"alt": []
+},
+{
+"a": "mesa de centro",
+"p": 8,
+"alt": [
+"mesa"
+]
+},
+{
+"a": "quadro",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Um bicho que vive na Amazônia",
+"a": [
+{
+"a": "onça",
+"p": 30,
+"alt": [
+"onca",
+"onca-pintada"
+]
+},
+{
+"a": "arara",
+"p": 22,
+"alt": []
+},
+{
+"a": "macaco",
+"p": 18,
+"alt": []
+},
+{
+"a": "boto",
+"p": 14,
+"alt": []
+},
+{
+"a": "sucuri",
+"p": 12,
+"alt": [
+"cobra"
+]
+}
+]
+},
+{
+"q": "Uma comida que se come com a mão",
+"a": [
+{
+"a": "pizza",
+"p": 28,
+"alt": []
+},
+{
+"a": "hambúrguer",
+"p": 26,
+"alt": [
+"hamburguer",
+"lanche"
+]
+},
+{
+"a": "coxinha",
+"p": 20,
+"alt": []
+},
+{
+"a": "sanduíche",
+"p": 14,
+"alt": [
+"sanduiche"
+]
+},
+{
+"a": "pipoca",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você faz quando acaba a luz",
+"a": [
+{
+"a": "acende vela",
+"p": 44,
+"alt": [
+"vela",
+"velas"
+]
+},
+{
+"a": "lanterna do celular",
+"p": 24,
+"alt": [
+"lanterna"
+]
+},
+{
+"a": "dorme",
+"p": 16,
+"alt": [
+"dormir"
+]
+},
+{
+"a": "reclama",
+"p": 8,
+"alt": []
+},
+{
+"a": "conversa",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Um time de futebol brasileiro",
+"a": [
+{
+"a": "Flamengo",
+"p": 30,
+"alt": []
+},
+{
+"a": "Corinthians",
+"p": 24,
+"alt": []
+},
+{
+"a": "Palmeiras",
+"p": 18,
+"alt": []
+},
+{
+"a": "São Paulo",
+"p": 14,
+"alt": [
+"sao paulo"
+]
+},
+{
+"a": "Vasco",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você encontra num aeroporto",
+"a": [
+{
+"a": "avião",
+"p": 34,
+"alt": [
+"aviao"
+]
+},
+{
+"a": "mala",
+"p": 22,
+"alt": [
+"bagagem"
+]
+},
+{
+"a": "passaporte",
+"p": 16,
+"alt": []
+},
+{
+"a": "esteira",
+"p": 14,
+"alt": []
+},
+{
+"a": "segurança",
+"p": 12,
+"alt": [
+"seguranca"
+]
+}
+]
+},
+{
+"q": "Uma coisa que é gostosa quando está quente",
+"a": [
+{
+"a": "café",
+"p": 34,
+"alt": [
+"cafe"
+]
+},
+{
+"a": "pão",
+"p": 22,
+"alt": [
+"pao"
+]
+},
+{
+"a": "pizza",
+"p": 20,
+"alt": []
+},
+{
+"a": "sopa",
+"p": 14,
+"alt": []
+},
+{
+"a": "chocolate quente",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem cauda",
+"a": [
+{
+"a": "cachorro",
+"p": 32,
+"alt": []
+},
+{
+"a": "gato",
+"p": 26,
+"alt": []
+},
+{
+"a": "peixe",
+"p": 14,
+"alt": []
+},
+{
+"a": "cometa",
+"p": 14,
+"alt": []
+},
+{
+"a": "macaco",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem muitas cores",
+"a": [
+{
+"a": "arco-íris",
+"p": 44,
+"alt": [
+"arco iris",
+"arcoiris"
+]
+},
+{
+"a": "borboleta",
+"p": 16,
+"alt": []
+},
+{
+"a": "lápis de cor",
+"p": 16,
+"alt": [
+"lapis de cor"
+]
+},
+{
+"a": "papagaio",
+"p": 12,
+"alt": [
+"arara"
+]
+},
+{
+"a": "bandeira",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Um lugar onde é proibido fazer barulho",
+"a": [
+{
+"a": "biblioteca",
+"p": 46,
+"alt": []
+},
+{
+"a": "hospital",
+"p": 30,
+"alt": []
+},
+{
+"a": "cinema",
+"p": 12,
+"alt": []
+},
+{
+"a": "igreja",
+"p": 8,
+"alt": []
+},
+{
+"a": "sala de aula",
+"p": 4,
+"alt": [
+"escola"
+]
+}
+]
+},
+{
+"q": "Algo que você esquece de levar quando viaja",
+"a": [
+{
+"a": "carregador",
+"p": 38,
+"alt": []
+},
+{
+"a": "escova de dente",
+"p": 24,
+"alt": [
+"escova"
+]
+},
+{
+"a": "documento",
+"p": 16,
+"alt": [
+"rg"
+]
+},
+{
+"a": "toalha",
+"p": 12,
+"alt": []
+},
+{
+"a": "chinelo",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que é macia",
+"a": [
+{
+"a": "travesseiro",
+"p": 34,
+"alt": []
+},
+{
+"a": "algodão",
+"p": 22,
+"alt": [
+"algodao"
+]
+},
+{
+"a": "ursinho de pelúcia",
+"p": 16,
+"alt": [
+"pelucia",
+"ursinho"
+]
+},
+{
+"a": "cama",
+"p": 14,
+"alt": []
+},
+{
+"a": "nuvem",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem rodas e não é carro",
+"a": [
+{
+"a": "bicicleta",
+"p": 40,
+"alt": [
+"bike"
+]
+},
+{
+"a": "moto",
+"p": 24,
+"alt": []
+},
+{
+"a": "skate",
+"p": 16,
+"alt": []
+},
+{
+"a": "patins",
+"p": 12,
+"alt": []
+},
+{
+"a": "carrinho de mercado",
+"p": 6,
+"alt": [
+"carrinho"
+]
+}
+]
+},
+{
+"q": "Uma coisa que as pessoas fazem no Ano-Novo",
+"a": [
+{
+"a": "pular sete ondas",
+"p": 30,
+"alt": [
+"pular ondas"
+]
+},
+{
+"a": "ver fogos",
+"p": 26,
+"alt": [
+"fogos"
+]
+},
+{
+"a": "fazer promessa",
+"p": 18,
+"alt": [
+"promessa"
+]
+},
+{
+"a": "usar branco",
+"p": 16,
+"alt": [
+"roupa branca"
+]
+},
+{
+"a": "abraçar",
+"p": 8,
+"alt": [
+"abracar"
+]
+}
+]
+},
+{
+"q": "Algo que você ouve de manhã",
+"a": [
+{
+"a": "despertador",
+"p": 42,
+"alt": [
+"alarme"
+]
+},
+{
+"a": "passarinho",
+"p": 24,
+"alt": [
+"passaros"
+]
+},
+{
+"a": "galo",
+"p": 16,
+"alt": []
+},
+{
+"a": "buzina",
+"p": 10,
+"alt": [
+"transito"
+]
+},
+{
+"a": "rádio",
+"p": 6,
+"alt": [
+"radio"
+]
+}
+]
+},
+{
+"q": "Um animal de estimação",
+"a": [
+{
+"a": "cachorro",
+"p": 48,
+"alt": [
+"cao"
+]
+},
+{
+"a": "gato",
+"p": 34,
+"alt": []
+},
+{
+"a": "peixe",
+"p": 8,
+"alt": []
+},
+{
+"a": "pássaro",
+"p": 6,
+"alt": [
+"passaro",
+"calopsita"
+]
+},
+{
+"a": "hamster",
+"p": 4,
+"alt": []
+}
+]
+},
+{
+"q": "Uma comida que é verde",
+"a": [
+{
+"a": "alface",
+"p": 30,
+"alt": []
+},
+{
+"a": "brócolis",
+"p": 22,
+"alt": [
+"brocolis"
+]
+},
+{
+"a": "couve",
+"p": 16,
+"alt": []
+},
+{
+"a": "abacate",
+"p": 16,
+"alt": []
+},
+{
+"a": "pepino",
+"p": 14,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você faz no domingo",
+"a": [
+{
+"a": "almoço em família",
+"p": 30,
+"alt": [
+"almoco",
+"almocar"
+]
+},
+{
+"a": "descansar",
+"p": 26,
+"alt": [
+"dormir"
+]
+},
+{
+"a": "ver futebol",
+"p": 18,
+"alt": [
+"futebol"
+]
+},
+{
+"a": "passear",
+"p": 14,
+"alt": []
+},
+{
+"a": "igreja",
+"p": 10,
+"alt": [
+"missa"
+]
+}
+]
+},
+{
+"q": "Algo que você usa para se maquiar",
+"a": [
+{
+"a": "batom",
+"p": 34,
+"alt": []
+},
+{
+"a": "rímel",
+"p": 22,
+"alt": [
+"rimel"
+]
+},
+{
+"a": "base",
+"p": 18,
+"alt": []
+},
+{
+"a": "pó",
+"p": 14,
+"alt": [
+"po"
+]
+},
+{
+"a": "sombra",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem no churrasco",
+"a": [
+{
+"a": "carne",
+"p": 40,
+"alt": [
+"picanha"
+]
+},
+{
+"a": "linguiça",
+"p": 22,
+"alt": [
+"linguica"
+]
+},
+{
+"a": "pão de alho",
+"p": 14,
+"alt": [
+"pao de alho"
+]
+},
+{
+"a": "farofa",
+"p": 12,
+"alt": []
+},
+{
+"a": "cerveja",
+"p": 10,
+"alt": [
+"bebida"
+]
+}
+]
+},
+{
+"q": "Algo que você faz no celular",
+"a": [
+{
+"a": "mandar mensagem",
+"p": 34,
+"alt": [
+"whatsapp",
+"mensagem"
+]
+},
+{
+"a": "ver vídeo",
+"p": 24,
+"alt": [
+"video",
+"tiktok"
+]
+},
+{
+"a": "tirar foto",
+"p": 18,
+"alt": [
+"foto"
+]
+},
+{
+"a": "ligar",
+"p": 14,
+"alt": [
+"ligacao"
+]
+},
+{
+"a": "jogar",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Um sabor de pizza",
+"a": [
+{
+"a": "calabresa",
+"p": 34,
+"alt": []
+},
+{
+"a": "muçarela",
+"p": 26,
+"alt": [
+"mussarela",
+"queijo"
+]
+},
+{
+"a": "frango com catupiry",
+"p": 18,
+"alt": [
+"frango"
+]
+},
+{
+"a": "portuguesa",
+"p": 14,
+"alt": []
+},
+{
+"a": "marguerita",
+"p": 8,
+"alt": [
+"margherita"
+]
+}
+]
+},
+{
+"q": "Algo que fica na geladeira",
+"a": [
+{
+"a": "leite",
+"p": 28,
+"alt": []
+},
+{
+"a": "água",
+"p": 22,
+"alt": [
+"agua"
+]
+},
+{
+"a": "ovo",
+"p": 18,
+"alt": [
+"ovos"
+]
+},
+{
+"a": "refrigerante",
+"p": 16,
+"alt": [
+"refri"
+]
+},
+{
+"a": "queijo",
+"p": 14,
+"alt": []
+}
+]
+},
+{
+"q": "Uma desculpa para faltar no trabalho",
+"a": [
+{
+"a": "doente",
+"p": 40,
+"alt": [
+"doenca",
+"dor de barriga"
+]
+},
+{
+"a": "médico",
+"p": 20,
+"alt": [
+"medico",
+"consulta"
+]
+},
+{
+"a": "trânsito",
+"p": 16,
+"alt": [
+"transito"
+]
+},
+{
+"a": "filho doente",
+"p": 14,
+"alt": [
+"filho"
+]
+},
+{
+"a": "morreu a avó",
+"p": 8,
+"alt": [
+"avo"
+]
+}
+]
+},
+{
+"q": "Um lugar onde se usa uniforme",
+"a": [
+{
+"a": "escola",
+"p": 40,
+"alt": []
+},
+{
+"a": "hospital",
+"p": 22,
+"alt": []
+},
+{
+"a": "exército",
+"p": 16,
+"alt": [
+"exercito",
+"quartel"
+]
+},
+{
+"a": "fábrica",
+"p": 12,
+"alt": [
+"fabrica"
+]
+},
+{
+"a": "restaurante",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que brilha",
+"a": [
+{
+"a": "estrela",
+"p": 34,
+"alt": []
+},
+{
+"a": "sol",
+"p": 24,
+"alt": []
+},
+{
+"a": "diamante",
+"p": 18,
+"alt": []
+},
+{
+"a": "ouro",
+"p": 14,
+"alt": []
+},
+{
+"a": "glitter",
+"p": 8,
+"alt": [
+"purpurina"
+]
+}
+]
+},
+{
+"q": "Uma coisa que você faz numa viagem de carro",
+"a": [
+{
+"a": "ouvir música",
+"p": 34,
+"alt": [
+"musica"
+]
+},
+{
+"a": "parar para comer",
+"p": 22,
+"alt": [
+"comer"
+]
+},
+{
+"a": "dormir",
+"p": 18,
+"alt": []
+},
+{
+"a": "cantar",
+"p": 14,
+"alt": []
+},
+{
+"a": "perguntar \"já chegou?\"",
+"p": 10,
+"alt": [
+"ja chegou"
+]
+}
+]
+},
+{
+"q": "Uma comida típica do Nordeste",
+"a": [
+{
+"a": "baião de dois",
+"p": 24,
+"alt": [
+"baiao de dois"
+]
+},
+{
+"a": "tapioca",
+"p": 22,
+"alt": []
+},
+{
+"a": "acarajé",
+"p": 20,
+"alt": [
+"acaraje"
+]
+},
+{
+"a": "cuscuz",
+"p": 18,
+"alt": []
+},
+{
+"a": "carne de sol",
+"p": 14,
+"alt": []
+}
+]
+},
+{
+"q": "Um bicho que vive no mar",
+"a": [
+{
+"a": "peixe",
+"p": 28,
+"alt": []
+},
+{
+"a": "tubarão",
+"p": 24,
+"alt": [
+"tubarao"
+]
+},
+{
+"a": "baleia",
+"p": 18,
+"alt": []
+},
+{
+"a": "golfinho",
+"p": 16,
+"alt": []
+},
+{
+"a": "polvo",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você encontra num hospital",
+"a": [
+{
+"a": "médico",
+"p": 32,
+"alt": [
+"medico"
+]
+},
+{
+"a": "maca",
+"p": 22,
+"alt": []
+},
+{
+"a": "remédio",
+"p": 18,
+"alt": [
+"remedio"
+]
+},
+{
+"a": "enfermeira",
+"p": 14,
+"alt": [
+"enfermeiro"
+]
+},
+{
+"a": "seringa",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que o professor usa",
+"a": [
+{
+"a": "quadro",
+"p": 32,
+"alt": [
+"lousa"
+]
+},
+{
+"a": "giz",
+"p": 22,
+"alt": [
+"pincel"
+]
+},
+{
+"a": "livro",
+"p": 18,
+"alt": []
+},
+{
+"a": "caneta",
+"p": 16,
+"alt": []
+},
+{
+"a": "apagador",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem espinho",
+"a": [
+{
+"a": "rosa",
+"p": 42,
+"alt": [
+"roseira"
+]
+},
+{
+"a": "cacto",
+"p": 32,
+"alt": []
+},
+{
+"a": "ouriço",
+"p": 12,
+"alt": [
+"ourico"
+]
+},
+{
+"a": "peixe",
+"p": 8,
+"alt": []
+},
+{
+"a": "abacaxi",
+"p": 4,
+"alt": []
+}
+]
+},
+{
+"q": "Um motivo para brigar com o vizinho",
+"a": [
+{
+"a": "barulho",
+"p": 52,
+"alt": [
+"som alto"
+]
+},
+{
+"a": "cachorro",
+"p": 18,
+"alt": [
+"cachorro latindo"
+]
+},
+{
+"a": "lixo",
+"p": 12,
+"alt": []
+},
+{
+"a": "garagem",
+"p": 10,
+"alt": [
+"vaga",
+"carro"
+]
+},
+{
+"a": "árvore",
+"p": 6,
+"alt": [
+"arvore"
+]
+}
+]
+},
+{
+"q": "Algo que você faz no recreio",
+"a": [
+{
+"a": "lanchar",
+"p": 36,
+"alt": [
+"comer"
+]
+},
+{
+"a": "brincar",
+"p": 30,
+"alt": []
+},
+{
+"a": "conversar",
+"p": 16,
+"alt": []
+},
+{
+"a": "jogar bola",
+"p": 12,
+"alt": [
+"futebol"
+]
+},
+{
+"a": "ir ao banheiro",
+"p": 4,
+"alt": [
+"banheiro"
+]
+}
+]
+},
+{
+"q": "Um eletrodoméstico",
+"a": [
+{
+"a": "geladeira",
+"p": 32,
+"alt": []
+},
+{
+"a": "fogão",
+"p": 24,
+"alt": [
+"fogao"
+]
+},
+{
+"a": "micro-ondas",
+"p": 18,
+"alt": [
+"microondas"
+]
+},
+{
+"a": "máquina de lavar",
+"p": 14,
+"alt": [
+"maquina de lavar"
+]
+},
+{
+"a": "liquidificador",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma comida de domingo",
+"a": [
+{
+"a": "lasanha",
+"p": 28,
+"alt": []
+},
+{
+"a": "churrasco",
+"p": 26,
+"alt": []
+},
+{
+"a": "macarronada",
+"p": 20,
+"alt": [
+"macarrao"
+]
+},
+{
+"a": "frango assado",
+"p": 16,
+"alt": [
+"frango"
+]
+},
+{
+"a": "feijoada",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que as pessoas colecionam",
+"a": [
+{
+"a": "figurinha",
+"p": 30,
+"alt": [
+"figurinhas",
+"album"
+]
+},
+{
+"a": "selo",
+"p": 22,
+"alt": [
+"selos"
+]
+},
+{
+"a": "moeda",
+"p": 18,
+"alt": [
+"moedas"
+]
+},
+{
+"a": "carrinho",
+"p": 16,
+"alt": [
+"carrinhos"
+]
+},
+{
+"a": "chaveiro",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que você abre",
+"a": [
+{
+"a": "porta",
+"p": 36,
+"alt": []
+},
+{
+"a": "janela",
+"p": 24,
+"alt": []
+},
+{
+"a": "garrafa",
+"p": 16,
+"alt": []
+},
+{
+"a": "presente",
+"p": 14,
+"alt": []
+},
+{
+"a": "livro",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que se usa no pé",
+"a": [
+{
+"a": "tênis",
+"p": 34,
+"alt": [
+"tenis"
+]
+},
+{
+"a": "chinelo",
+"p": 26,
+"alt": []
+},
+{
+"a": "sandália",
+"p": 16,
+"alt": [
+"sandalia"
+]
+},
+{
+"a": "meia",
+"p": 14,
+"alt": []
+},
+{
+"a": "bota",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que é azul",
+"a": [
+{
+"a": "céu",
+"p": 44,
+"alt": [
+"ceu"
+]
+},
+{
+"a": "mar",
+"p": 30,
+"alt": []
+},
+{
+"a": "jeans",
+"p": 10,
+"alt": [
+"calca jeans"
+]
+},
+{
+"a": "caneta azul",
+"p": 8,
+"alt": [
+"caneta"
+]
+},
+{
+"a": "água",
+"p": 6,
+"alt": [
+"agua"
+]
+}
+]
+},
+{
+"q": "Algo que tem na festa de casamento",
+"a": [
+{
+"a": "bolo",
+"p": 30,
+"alt": []
+},
+{
+"a": "noiva",
+"p": 24,
+"alt": []
+},
+{
+"a": "vestido",
+"p": 16,
+"alt": []
+},
+{
+"a": "aliança",
+"p": 16,
+"alt": [
+"alianca",
+"anel"
+]
+},
+{
+"a": "buquê",
+"p": 12,
+"alt": [
+"buque"
+]
+}
+]
+},
+{
+"q": "Algo que você faz na praia",
+"a": [
+{
+"a": "nadar",
+"p": 30,
+"alt": [
+"entrar no mar",
+"mar"
+]
+},
+{
+"a": "tomar sol",
+"p": 26,
+"alt": [
+"bronzear"
+]
+},
+{
+"a": "jogar bola",
+"p": 16,
+"alt": [
+"futebol",
+"volei"
+]
+},
+{
+"a": "castelo de areia",
+"p": 14,
+"alt": [
+"castelo"
+]
+},
+{
+"a": "caminhar",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Um personagem da Turma da Mônica",
+"a": [
+{
+"a": "Mônica",
+"p": 32,
+"alt": [
+"monica"
+]
+},
+{
+"a": "Cebolinha",
+"p": 26,
+"alt": []
+},
+{
+"a": "Cascão",
+"p": 20,
+"alt": [
+"cascao"
+]
+},
+{
+"a": "Magali",
+"p": 14,
+"alt": []
+},
+{
+"a": "Chico Bento",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você pede no restaurante",
+"a": [
+{
+"a": "prato do dia",
+"p": 22,
+"alt": [
+"pf",
+"prato feito"
+]
+},
+{
+"a": "cardápio",
+"p": 22,
+"alt": [
+"cardapio"
+]
+},
+{
+"a": "conta",
+"p": 20,
+"alt": []
+},
+{
+"a": "água",
+"p": 18,
+"alt": [
+"agua",
+"bebida"
+]
+},
+{
+"a": "sobremesa",
+"p": 14,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem cheiro bom",
+"a": [
+{
+"a": "perfume",
+"p": 32,
+"alt": []
+},
+{
+"a": "flor",
+"p": 22,
+"alt": [
+"rosa"
+]
+},
+{
+"a": "bolo assando",
+"p": 18,
+"alt": [
+"bolo"
+]
+},
+{
+"a": "café",
+"p": 16,
+"alt": [
+"cafe"
+]
+},
+{
+"a": "pão quentinho",
+"p": 10,
+"alt": [
+"pao"
+]
+}
+]
+},
+{
+"q": "Uma fruta que se come no verão",
+"a": [
+{
+"a": "melancia",
+"p": 38,
+"alt": []
+},
+{
+"a": "manga",
+"p": 20,
+"alt": []
+},
+{
+"a": "abacaxi",
+"p": 16,
+"alt": []
+},
+{
+"a": "uva",
+"p": 14,
+"alt": []
+},
+{
+"a": "melão",
+"p": 10,
+"alt": [
+"melao"
+]
+}
+]
+},
+{
+"q": "Algo que tem asas e não é ave",
+"a": [
+{
+"a": "avião",
+"p": 40,
+"alt": [
+"aviao"
+]
+},
+{
+"a": "borboleta",
+"p": 26,
+"alt": []
+},
+{
+"a": "morcego",
+"p": 16,
+"alt": []
+},
+{
+"a": "abelha",
+"p": 10,
+"alt": []
+},
+{
+"a": "anjo",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Um lugar onde se toma banho",
+"a": [
+{
+"a": "banheiro",
+"p": 44,
+"alt": [
+"chuveiro"
+]
+},
+{
+"a": "piscina",
+"p": 20,
+"alt": []
+},
+{
+"a": "praia",
+"p": 16,
+"alt": [
+"mar"
+]
+},
+{
+"a": "rio",
+"p": 12,
+"alt": []
+},
+{
+"a": "cachoeira",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você faz antes de sair de casa",
+"a": [
+{
+"a": "trancar a porta",
+"p": 30,
+"alt": [
+"fechar a porta",
+"trancar"
+]
+},
+{
+"a": "pegar a chave",
+"p": 24,
+"alt": [
+"chave"
+]
+},
+{
+"a": "se arrumar",
+"p": 18,
+"alt": [
+"arrumar"
+]
+},
+{
+"a": "pegar o celular",
+"p": 16,
+"alt": [
+"celular"
+]
+},
+{
+"a": "desligar a luz",
+"p": 12,
+"alt": [
+"luz"
+]
+}
+]
+},
+{
+"q": "Uma coisa que é quadrada",
+"a": [
+{
+"a": "caixa",
+"p": 30,
+"alt": []
+},
+{
+"a": "janela",
+"p": 22,
+"alt": []
+},
+{
+"a": "quadro",
+"p": 18,
+"alt": []
+},
+{
+"a": "tela",
+"p": 14,
+"alt": []
+},
+{
+"a": "dado",
+"p": 14,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem pilha",
+"a": [
+{
+"a": "controle remoto",
+"p": 44,
+"alt": [
+"controle"
+]
+},
+{
+"a": "relógio",
+"p": 20,
+"alt": [
+"relogio"
+]
+},
+{
+"a": "brinquedo",
+"p": 16,
+"alt": []
+},
+{
+"a": "lanterna",
+"p": 12,
+"alt": []
+},
+{
+"a": "rádio",
+"p": 6,
+"alt": [
+"radio"
+]
+}
+]
+},
+{
+"q": "Uma comida que criança não gosta",
+"a": [
+{
+"a": "verdura",
+"p": 34,
+"alt": [
+"salada",
+"legume"
+]
+},
+{
+"a": "jiló",
+"p": 20,
+"alt": [
+"jilo"
+]
+},
+{
+"a": "fígado",
+"p": 18,
+"alt": [
+"figado"
+]
+},
+{
+"a": "chuchu",
+"p": 16,
+"alt": []
+},
+{
+"a": "beterraba",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que se faz no carnaval",
+"a": [
+{
+"a": "dançar",
+"p": 34,
+"alt": [
+"pular",
+"dancar"
+]
+},
+{
+"a": "fantasia",
+"p": 24,
+"alt": [
+"se fantasiar"
+]
+},
+{
+"a": "bloco",
+"p": 18,
+"alt": [
+"sair no bloco"
+]
+},
+{
+"a": "desfile",
+"p": 14,
+"alt": [
+"escola de samba"
+]
+},
+{
+"a": "viajar",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem dentro da bolsa de uma mulher",
+"a": [
+{
+"a": "carteira",
+"p": 28,
+"alt": []
+},
+{
+"a": "celular",
+"p": 24,
+"alt": []
+},
+{
+"a": "maquiagem",
+"p": 18,
+"alt": [
+"batom"
+]
+},
+{
+"a": "chave",
+"p": 16,
+"alt": [
+"chaves"
+]
+},
+{
+"a": "lenço",
+"p": 12,
+"alt": [
+"lenco"
+]
+}
+]
+},
+{
+"q": "Um bicho que é lento",
+"a": [
+{
+"a": "tartaruga",
+"p": 42,
+"alt": [
+"jabuti"
+]
+},
+{
+"a": "bicho-preguiça",
+"p": 28,
+"alt": [
+"preguica",
+"bicho preguica"
+]
+},
+{
+"a": "lesma",
+"p": 16,
+"alt": []
+},
+{
+"a": "caracol",
+"p": 10,
+"alt": []
+},
+{
+"a": "caramujo",
+"p": 4,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você faz quando está com fome",
+"a": [
+{
+"a": "come",
+"p": 40,
+"alt": [
+"comer"
+]
+},
+{
+"a": "abre a geladeira",
+"p": 24,
+"alt": [
+"geladeira"
+]
+},
+{
+"a": "pede delivery",
+"p": 18,
+"alt": [
+"pede comida",
+"ifood"
+]
+},
+{
+"a": "cozinha",
+"p": 12,
+"alt": [
+"cozinhar"
+]
+},
+{
+"a": "fica de mau humor",
+"p": 6,
+"alt": [
+"mau humor"
+]
+}
+]
+},
+{
+"q": "Uma coisa que acontece no inverno",
+"a": [
+{
+"a": "frio",
+"p": 46,
+"alt": []
+},
+{
+"a": "chuva",
+"p": 18,
+"alt": []
+},
+{
+"a": "gripe",
+"p": 14,
+"alt": [
+"resfriado"
+]
+},
+{
+"a": "neblina",
+"p": 12,
+"alt": []
+},
+{
+"a": "geada",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Um lugar com muita gente",
+"a": [
+{
+"a": "show",
+"p": 30,
+"alt": []
+},
+{
+"a": "estádio",
+"p": 24,
+"alt": [
+"estadio"
+]
+},
+{
+"a": "metrô",
+"p": 18,
+"alt": [
+"metro",
+"onibus"
+]
+},
+{
+"a": "shopping",
+"p": 16,
+"alt": []
+},
+{
+"a": "praia",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você usa para escrever",
+"a": [
+{
+"a": "caneta",
+"p": 46,
+"alt": []
+},
+{
+"a": "lápis",
+"p": 30,
+"alt": [
+"lapis"
+]
+},
+{
+"a": "teclado",
+"p": 12,
+"alt": [
+"computador"
+]
+},
+{
+"a": "giz",
+"p": 8,
+"alt": []
+},
+{
+"a": "celular",
+"p": 4,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem tampa",
+"a": [
+{
+"a": "panela",
+"p": 32,
+"alt": []
+},
+{
+"a": "garrafa",
+"p": 28,
+"alt": []
+},
+{
+"a": "caixa",
+"p": 18,
+"alt": []
+},
+{
+"a": "pote",
+"p": 14,
+"alt": []
+},
+{
+"a": "vaso sanitário",
+"p": 8,
+"alt": [
+"privada"
+]
+}
+]
+},
+{
+"q": "Algo que você faz quando acorda tarde",
+"a": [
+{
+"a": "corre",
+"p": 36,
+"alt": [
+"correr"
+]
+},
+{
+"a": "pula o café",
+"p": 24,
+"alt": [
+"sem cafe"
+]
+},
+{
+"a": "se atrasa",
+"p": 18,
+"alt": [
+"atrasar"
+]
+},
+{
+"a": "toma banho rápido",
+"p": 14,
+"alt": [
+"banho rapido"
+]
+},
+{
+"a": "chama um carro",
+"p": 8,
+"alt": [
+"uber"
+]
+}
+]
+},
+{
+"q": "Uma comida que tem no café da tarde",
+"a": [
+{
+"a": "bolo",
+"p": 36,
+"alt": []
+},
+{
+"a": "pão",
+"p": 24,
+"alt": [
+"pao"
+]
+},
+{
+"a": "biscoito",
+"p": 18,
+"alt": [
+"bolacha"
+]
+},
+{
+"a": "café",
+"p": 14,
+"alt": [
+"cafe"
+]
+},
+{
+"a": "tapioca",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que se acende",
+"a": [
+{
+"a": "luz",
+"p": 32,
+"alt": [
+"lampada"
+]
+},
+{
+"a": "vela",
+"p": 28,
+"alt": []
+},
+{
+"a": "fogo",
+"p": 18,
+"alt": [
+"fogueira"
+]
+},
+{
+"a": "fogão",
+"p": 12,
+"alt": [
+"fogao"
+]
+},
+{
+"a": "cigarro",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Um meio de transporte",
+"a": [
+{
+"a": "carro",
+"p": 34,
+"alt": []
+},
+{
+"a": "ônibus",
+"p": 28,
+"alt": [
+"onibus"
+]
+},
+{
+"a": "bicicleta",
+"p": 16,
+"alt": [
+"bike"
+]
+},
+{
+"a": "metrô",
+"p": 12,
+"alt": [
+"metro"
+]
+},
+{
+"a": "avião",
+"p": 10,
+"alt": [
+"aviao"
+]
+}
+]
+},
+{
+"q": "Algo que você não empresta para ninguém",
+"a": [
+{
+"a": "escova de dente",
+"p": 40,
+"alt": [
+"escova"
+]
+},
+{
+"a": "celular",
+"p": 24,
+"alt": []
+},
+{
+"a": "cueca",
+"p": 14,
+"alt": [
+"roupa intima"
+]
+},
+{
+"a": "carro",
+"p": 12,
+"alt": []
+},
+{
+"a": "toalha",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem na pracinha",
+"a": [
+{
+"a": "balanço",
+"p": 30,
+"alt": [
+"balanco"
+]
+},
+{
+"a": "escorregador",
+"p": 24,
+"alt": []
+},
+{
+"a": "banco",
+"p": 20,
+"alt": []
+},
+{
+"a": "gangorra",
+"p": 14,
+"alt": []
+},
+{
+"a": "pipoqueiro",
+"p": 12,
+"alt": [
+"pipoca"
+]
+}
+]
+},
+{
+"q": "Algo que as pessoas têm medo de perder",
+"a": [
+{
+"a": "celular",
+"p": 38,
+"alt": []
+},
+{
+"a": "emprego",
+"p": 22,
+"alt": [
+"trabalho"
+]
+},
+{
+"a": "documento",
+"p": 16,
+"alt": [
+"carteira"
+]
+},
+{
+"a": "chave",
+"p": 14,
+"alt": []
+},
+{
+"a": "dinheiro",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Um tipo de música",
+"a": [
+{
+"a": "sertanejo",
+"p": 30,
+"alt": []
+},
+{
+"a": "funk",
+"p": 24,
+"alt": []
+},
+{
+"a": "pagode",
+"p": 18,
+"alt": [
+"samba"
+]
+},
+{
+"a": "rock",
+"p": 16,
+"alt": []
+},
+{
+"a": "forró",
+"p": 12,
+"alt": [
+"forro"
+]
+}
+]
+},
+{
+"q": "Algo que você coloca no cachorro-quente",
+"a": [
+{
+"a": "salsicha",
+"p": 38,
+"alt": []
+},
+{
+"a": "batata palha",
+"p": 22,
+"alt": []
+},
+{
+"a": "ketchup",
+"p": 16,
+"alt": [
+"catchup"
+]
+},
+{
+"a": "molho",
+"p": 14,
+"alt": []
+},
+{
+"a": "purê",
+"p": 10,
+"alt": [
+"pure"
+]
+}
+]
+},
+{
+"q": "Uma coisa que você faz no ônibus",
+"a": [
+{
+"a": "olha a janela",
+"p": 28,
+"alt": [
+"olhar a janela"
+]
+},
+{
+"a": "mexe no celular",
+"p": 28,
+"alt": [
+"celular"
+]
+},
+{
+"a": "dorme",
+"p": 18,
+"alt": []
+},
+{
+"a": "ouve música",
+"p": 16,
+"alt": [
+"musica"
+]
+},
+{
+"a": "fica em pé",
+"p": 10,
+"alt": [
+"em pe"
+]
+}
+]
+},
+{
+"q": "Algo que tem na farmácia",
+"a": [
+{
+"a": "remédio",
+"p": 48,
+"alt": [
+"remedio"
+]
+},
+{
+"a": "vitamina",
+"p": 14,
+"alt": []
+},
+{
+"a": "curativo",
+"p": 14,
+"alt": [
+"band-aid"
+]
+},
+{
+"a": "fralda",
+"p": 12,
+"alt": []
+},
+{
+"a": "perfume",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Um animal que tem chifre",
+"a": [
+{
+"a": "boi",
+"p": 34,
+"alt": [
+"touro",
+"vaca"
+]
+},
+{
+"a": "rinoceronte",
+"p": 24,
+"alt": []
+},
+{
+"a": "bode",
+"p": 16,
+"alt": [
+"cabra"
+]
+},
+{
+"a": "veado",
+"p": 14,
+"alt": [
+"alce"
+]
+},
+{
+"a": "carneiro",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você faz quando está triste",
+"a": [
+{
+"a": "chora",
+"p": 36,
+"alt": [
+"chorar"
+]
+},
+{
+"a": "come chocolate",
+"p": 18,
+"alt": [
+"comer"
+]
+},
+{
+"a": "dorme",
+"p": 18,
+"alt": [
+"dormir"
+]
+},
+{
+"a": "ouve música",
+"p": 16,
+"alt": [
+"musica"
+]
+},
+{
+"a": "liga para alguém",
+"p": 12,
+"alt": [
+"conversa"
+]
+}
+]
+},
+{
+"q": "Uma coisa que tem no zoológico",
+"a": [
+{
+"a": "leão",
+"p": 30,
+"alt": [
+"leao"
+]
+},
+{
+"a": "macaco",
+"p": 24,
+"alt": []
+},
+{
+"a": "elefante",
+"p": 20,
+"alt": []
+},
+{
+"a": "girafa",
+"p": 16,
+"alt": []
+},
+{
+"a": "zebra",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você compra na padaria",
+"a": [
+{
+"a": "pão",
+"p": 52,
+"alt": [
+"pao",
+"pao frances"
+]
+},
+{
+"a": "leite",
+"p": 14,
+"alt": []
+},
+{
+"a": "bolo",
+"p": 12,
+"alt": []
+},
+{
+"a": "presunto",
+"p": 12,
+"alt": [
+"frios"
+]
+},
+{
+"a": "sonho",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma comida feita com milho",
+"a": [
+{
+"a": "pipoca",
+"p": 30,
+"alt": []
+},
+{
+"a": "pamonha",
+"p": 24,
+"alt": []
+},
+{
+"a": "curau",
+"p": 18,
+"alt": [
+"canjica"
+]
+},
+{
+"a": "polenta",
+"p": 16,
+"alt": []
+},
+{
+"a": "cuscuz",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você coloca na salada",
+"a": [
+{
+"a": "tomate",
+"p": 32,
+"alt": []
+},
+{
+"a": "alface",
+"p": 26,
+"alt": []
+},
+{
+"a": "cebola",
+"p": 16,
+"alt": []
+},
+{
+"a": "azeite",
+"p": 14,
+"alt": []
+},
+{
+"a": "sal",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Um herói brasileiro de verdade",
+"a": [
+{
+"a": "bombeiro",
+"p": 30,
+"alt": []
+},
+{
+"a": "médico",
+"p": 24,
+"alt": [
+"medico"
+]
+},
+{
+"a": "professor",
+"p": 22,
+"alt": []
+},
+{
+"a": "policial",
+"p": 14,
+"alt": []
+},
+{
+"a": "enfermeira",
+"p": 10,
+"alt": [
+"enfermeiro"
+]
+}
+]
+},
+{
+"q": "Uma coisa que tem no circo",
+"a": [
+{
+"a": "palhaço",
+"p": 46,
+"alt": [
+"palhaco"
+]
+},
+{
+"a": "mágico",
+"p": 18,
+"alt": [
+"magico"
+]
+},
+{
+"a": "trapezista",
+"p": 14,
+"alt": []
+},
+{
+"a": "malabarista",
+"p": 12,
+"alt": []
+},
+{
+"a": "lona",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem na mesa do jantar",
+"a": [
+{
+"a": "prato",
+"p": 30,
+"alt": []
+},
+{
+"a": "talher",
+"p": 22,
+"alt": [
+"garfo",
+"faca"
+]
+},
+{
+"a": "copo",
+"p": 20,
+"alt": []
+},
+{
+"a": "guardanapo",
+"p": 16,
+"alt": []
+},
+{
+"a": "toalha",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você faz no fim do mês",
+"a": [
+{
+"a": "paga contas",
+"p": 44,
+"alt": [
+"pagar contas"
+]
+},
+{
+"a": "recebe salário",
+"p": 24,
+"alt": [
+"salario"
+]
+},
+{
+"a": "economiza",
+"p": 14,
+"alt": []
+},
+{
+"a": "faz compras",
+"p": 12,
+"alt": [
+"mercado"
+]
+},
+{
+"a": "chora",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem cordas",
+"a": [
+{
+"a": "violão",
+"p": 38,
+"alt": [
+"violao",
+"guitarra"
+]
+},
+{
+"a": "tênis (raquete)",
+"p": 18,
+"alt": [
+"raquete"
+]
+},
+{
+"a": "varal",
+"p": 16,
+"alt": []
+},
+{
+"a": "harpa",
+"p": 16,
+"alt": []
+},
+{
+"a": "marionete",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Um lugar para ir num encontro romântico",
+"a": [
+{
+"a": "restaurante",
+"p": 38,
+"alt": [
+"jantar"
+]
+},
+{
+"a": "cinema",
+"p": 28,
+"alt": []
+},
+{
+"a": "praia",
+"p": 14,
+"alt": []
+},
+{
+"a": "parque",
+"p": 12,
+"alt": []
+},
+{
+"a": "sorveteria",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que se compra na feira",
+"a": [
+{
+"a": "frutas",
+"p": 34,
+"alt": [
+"fruta"
+]
+},
+{
+"a": "verduras",
+"p": 24,
+"alt": [
+"verdura"
+]
+},
+{
+"a": "pastel",
+"p": 18,
+"alt": []
+},
+{
+"a": "legumes",
+"p": 14,
+"alt": []
+},
+{
+"a": "peixe",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que o bebê usa",
+"a": [
+{
+"a": "fralda",
+"p": 38,
+"alt": []
+},
+{
+"a": "chupeta",
+"p": 24,
+"alt": []
+},
+{
+"a": "mamadeira",
+"p": 20,
+"alt": []
+},
+{
+"a": "babador",
+"p": 10,
+"alt": []
+},
+{
+"a": "carrinho",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem na bandeira de vários países",
+"a": [
+{
+"a": "estrela",
+"p": 38,
+"alt": []
+},
+{
+"a": "faixa",
+"p": 22,
+"alt": [
+"listras"
+]
+},
+{
+"a": "cruz",
+"p": 16,
+"alt": []
+},
+{
+"a": "sol",
+"p": 14,
+"alt": []
+},
+{
+"a": "lua",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que acontece quando esquenta muito",
+"a": [
+{
+"a": "suor",
+"p": 36,
+"alt": [
+"suar"
+]
+},
+{
+"a": "ventilador ligado",
+"p": 20,
+"alt": [
+"ventilador",
+"ar condicionado"
+]
+},
+{
+"a": "sede",
+"p": 18,
+"alt": []
+},
+{
+"a": "praia lotada",
+"p": 14,
+"alt": [
+"praia"
+]
+},
+{
+"a": "queimadura",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que se usa para limpar a casa",
+"a": [
+{
+"a": "vassoura",
+"p": 36,
+"alt": []
+},
+{
+"a": "pano",
+"p": 22,
+"alt": []
+},
+{
+"a": "rodo",
+"p": 16,
+"alt": []
+},
+{
+"a": "sabão",
+"p": 14,
+"alt": [
+"detergente",
+"sabao"
+]
+},
+{
+"a": "aspirador",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que fica no bolso",
+"a": [
+{
+"a": "celular",
+"p": 36,
+"alt": []
+},
+{
+"a": "carteira",
+"p": 26,
+"alt": []
+},
+{
+"a": "chave",
+"p": 20,
+"alt": []
+},
+{
+"a": "dinheiro",
+"p": 12,
+"alt": [
+"moeda"
+]
+},
+{
+"a": "fone",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Uma brincadeira de criança",
+"a": [
+{
+"a": "esconde-esconde",
+"p": 34,
+"alt": [
+"esconde esconde"
+]
+},
+{
+"a": "pega-pega",
+"p": 28,
+"alt": [
+"pega pega"
+]
+},
+{
+"a": "amarelinha",
+"p": 16,
+"alt": []
+},
+{
+"a": "pular corda",
+"p": 12,
+"alt": []
+},
+{
+"a": "queimada",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você encontra no fundo do mar",
+"a": [
+{
+"a": "peixe",
+"p": 30,
+"alt": []
+},
+{
+"a": "coral",
+"p": 24,
+"alt": [
+"corais"
+]
+},
+{
+"a": "navio afundado",
+"p": 16,
+"alt": [
+"navio"
+]
+},
+{
+"a": "concha",
+"p": 16,
+"alt": []
+},
+{
+"a": "polvo",
+"p": 14,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você faz na cozinha",
+"a": [
+{
+"a": "cozinhar",
+"p": 44,
+"alt": []
+},
+{
+"a": "lavar louça",
+"p": 24,
+"alt": [
+"lavar"
+]
+},
+{
+"a": "comer",
+"p": 14,
+"alt": []
+},
+{
+"a": "cortar",
+"p": 10,
+"alt": []
+},
+{
+"a": "abrir a geladeira",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem em toda casa",
+"a": [
+{
+"a": "televisão",
+"p": 30,
+"alt": [
+"tv"
+]
+},
+{
+"a": "geladeira",
+"p": 26,
+"alt": []
+},
+{
+"a": "cama",
+"p": 20,
+"alt": []
+},
+{
+"a": "fogão",
+"p": 14,
+"alt": [
+"fogao"
+]
+},
+{
+"a": "sofá",
+"p": 10,
+"alt": [
+"sofa"
+]
+}
+]
+},
+{
+"q": "Algo que você vê na televisão",
+"a": [
+{
+"a": "novela",
+"p": 34,
+"alt": []
+},
+{
+"a": "jornal",
+"p": 28,
+"alt": [
+"noticias"
+]
+},
+{
+"a": "futebol",
+"p": 16,
+"alt": [
+"jogo"
+]
+},
+{
+"a": "desenho",
+"p": 12,
+"alt": []
+},
+{
+"a": "propaganda",
+"p": 10,
+"alt": [
+"comercial"
+]
+}
+]
+},
+{
+"q": "Um sentimento",
+"a": [
+{
+"a": "amor",
+"p": 40,
+"alt": []
+},
+{
+"a": "raiva",
+"p": 20,
+"alt": []
+},
+{
+"a": "saudade",
+"p": 18,
+"alt": []
+},
+{
+"a": "alegria",
+"p": 12,
+"alt": [
+"felicidade"
+]
+},
+{
+"a": "tristeza",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem na Copa do Mundo",
+"a": [
+{
+"a": "futebol",
+"p": 30,
+"alt": [
+"bola"
+]
+},
+{
+"a": "torcida",
+"p": 24,
+"alt": []
+},
+{
+"a": "seleção",
+"p": 18,
+"alt": [
+"selecao"
+]
+},
+{
+"a": "gol",
+"p": 16,
+"alt": []
+},
+{
+"a": "bandeira",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que é proibida na escola",
+"a": [
+{
+"a": "celular",
+"p": 36,
+"alt": []
+},
+{
+"a": "boné",
+"p": 20,
+"alt": [
+"bone"
+]
+},
+{
+"a": "chiclete",
+"p": 18,
+"alt": []
+},
+{
+"a": "briga",
+"p": 16,
+"alt": []
+},
+{
+"a": "correr no corredor",
+"p": 10,
+"alt": [
+"correr"
+]
+}
+]
+},
+{
+"q": "Algo que você faz quando ganha dinheiro",
+"a": [
+{
+"a": "compra algo",
+"p": 36,
+"alt": [
+"comprar"
+]
+},
+{
+"a": "guarda",
+"p": 24,
+"alt": [
+"economiza",
+"poupar"
+]
+},
+{
+"a": "paga dívida",
+"p": 18,
+"alt": [
+"pagar contas"
+]
+},
+{
+"a": "viaja",
+"p": 12,
+"alt": [
+"viajar"
+]
+},
+{
+"a": "comemora",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Um animal que pula",
+"a": [
+{
+"a": "canguru",
+"p": 44,
+"alt": []
+},
+{
+"a": "sapo",
+"p": 26,
+"alt": []
+},
+{
+"a": "coelho",
+"p": 16,
+"alt": []
+},
+{
+"a": "gafanhoto",
+"p": 8,
+"alt": [
+"pulga"
+]
+},
+{
+"a": "macaco",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que se usa no cabelo",
+"a": [
+{
+"a": "xampu",
+"p": 34,
+"alt": [
+"shampoo"
+]
+},
+{
+"a": "pente",
+"p": 24,
+"alt": []
+},
+{
+"a": "escova",
+"p": 18,
+"alt": []
+},
+{
+"a": "elástico",
+"p": 14,
+"alt": [
+"elastico",
+"chuxinha"
+]
+},
+{
+"a": "creme",
+"p": 10,
+"alt": [
+"condicionador"
+]
+}
+]
+},
+{
+"q": "Um lugar onde se dorme",
+"a": [
+{
+"a": "cama",
+"p": 52,
+"alt": []
+},
+{
+"a": "sofá",
+"p": 20,
+"alt": [
+"sofa"
+]
+},
+{
+"a": "rede",
+"p": 16,
+"alt": []
+},
+{
+"a": "hotel",
+"p": 8,
+"alt": []
+},
+{
+"a": "barraca",
+"p": 4,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você faz no trânsito",
+"a": [
+{
+"a": "buzina",
+"p": 30,
+"alt": [
+"buzinar"
+]
+},
+{
+"a": "ouve rádio",
+"p": 24,
+"alt": [
+"radio",
+"musica"
+]
+},
+{
+"a": "reclama",
+"p": 20,
+"alt": [
+"xinga"
+]
+},
+{
+"a": "mexe no celular",
+"p": 16,
+"alt": [
+"celular"
+]
+},
+{
+"a": "canta",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem asa e não voa",
+"a": [
+{
+"a": "pinguim",
+"p": 40,
+"alt": []
+},
+{
+"a": "avestruz",
+"p": 28,
+"alt": []
+},
+{
+"a": "galinha",
+"p": 16,
+"alt": []
+},
+{
+"a": "ema",
+"p": 10,
+"alt": []
+},
+{
+"a": "frango assado",
+"p": 6,
+"alt": [
+"frango"
+]
+}
+]
+},
+{
+"q": "Algo que se coloca na parede",
+"a": [
+{
+"a": "quadro",
+"p": 38,
+"alt": []
+},
+{
+"a": "relógio",
+"p": 22,
+"alt": [
+"relogio"
+]
+},
+{
+"a": "espelho",
+"p": 18,
+"alt": []
+},
+{
+"a": "televisão",
+"p": 12,
+"alt": [
+"tv"
+]
+},
+{
+"a": "prateleira",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que as pessoas fazem na fila",
+"a": [
+{
+"a": "mexe no celular",
+"p": 46,
+"alt": [
+"celular"
+]
+},
+{
+"a": "reclama",
+"p": 20,
+"alt": []
+},
+{
+"a": "conversa",
+"p": 16,
+"alt": []
+},
+{
+"a": "espera",
+"p": 12,
+"alt": []
+},
+{
+"a": "fura a fila",
+"p": 6,
+"alt": [
+"furar"
+]
+}
+]
+},
+{
+"q": "Algo que você usa no banho",
+"a": [
+{
+"a": "sabonete",
+"p": 40,
+"alt": []
+},
+{
+"a": "xampu",
+"p": 28,
+"alt": [
+"shampoo"
+]
+},
+{
+"a": "toalha",
+"p": 16,
+"alt": []
+},
+{
+"a": "bucha",
+"p": 10,
+"alt": []
+},
+{
+"a": "esponja",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Uma comida que você come no Natal",
+"a": [
+{
+"a": "peru",
+"p": 34,
+"alt": [
+"chester"
+]
+},
+{
+"a": "panetone",
+"p": 26,
+"alt": []
+},
+{
+"a": "rabanada",
+"p": 16,
+"alt": []
+},
+{
+"a": "farofa",
+"p": 12,
+"alt": []
+},
+{
+"a": "uva-passa",
+"p": 12,
+"alt": [
+"passas",
+"uva passa"
+]
+}
+]
+},
+{
+"q": "Algo que a mãe sempre fala",
+"a": [
+{
+"a": "leva casaco",
+"p": 30,
+"alt": [
+"casaco"
+]
+},
+{
+"a": "já comeu?",
+"p": 24,
+"alt": [
+"ja comeu",
+"comeu"
+]
+},
+{
+"a": "arruma o quarto",
+"p": 20,
+"alt": [
+"arrumar"
+]
+},
+{
+"a": "olha a hora",
+"p": 16,
+"alt": [
+"hora"
+]
+},
+{
+"a": "vai estudar",
+"p": 10,
+"alt": [
+"estudar"
+]
+}
+]
+},
+{
+"q": "Um lugar onde se compra roupa",
+"a": [
+{
+"a": "loja",
+"p": 34,
+"alt": []
+},
+{
+"a": "shopping",
+"p": 30,
+"alt": []
+},
+{
+"a": "internet",
+"p": 18,
+"alt": [
+"online"
+]
+},
+{
+"a": "feira",
+"p": 10,
+"alt": []
+},
+{
+"a": "brechó",
+"p": 8,
+"alt": [
+"brecho"
+]
+}
+]
+},
+{
+"q": "Algo que você faz quando chega em casa",
+"a": [
+{
+"a": "tira o sapato",
+"p": 34,
+"alt": [
+"tirar sapato"
+]
+},
+{
+"a": "toma banho",
+"p": 24,
+"alt": [
+"banho"
+]
+},
+{
+"a": "come",
+"p": 18,
+"alt": [
+"comer"
+]
+},
+{
+"a": "deita",
+"p": 14,
+"alt": [
+"descansar"
+]
+},
+{
+"a": "liga a TV",
+"p": 10,
+"alt": [
+"tv"
+]
+}
+]
+},
+{
+"q": "Uma coisa que tem no posto de gasolina",
+"a": [
+{
+"a": "gasolina",
+"p": 36,
+"alt": [
+"combustivel"
+]
+},
+{
+"a": "bomba",
+"p": 22,
+"alt": []
+},
+{
+"a": "frentista",
+"p": 18,
+"alt": []
+},
+{
+"a": "loja de conveniência",
+"p": 14,
+"alt": [
+"conveniencia"
+]
+},
+{
+"a": "calibrador",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Um animal da floresta",
+"a": [
+{
+"a": "onça",
+"p": 30,
+"alt": [
+"onca"
+]
+},
+{
+"a": "macaco",
+"p": 26,
+"alt": []
+},
+{
+"a": "cobra",
+"p": 18,
+"alt": []
+},
+{
+"a": "tucano",
+"p": 14,
+"alt": [
+"arara"
+]
+},
+{
+"a": "preguiça",
+"p": 12,
+"alt": [
+"preguica"
+]
+}
+]
+},
+{
+"q": "Algo que se faz com papel",
+"a": [
+{
+"a": "desenho",
+"p": 28,
+"alt": [
+"desenhar"
+]
+},
+{
+"a": "avião de papel",
+"p": 24,
+"alt": [
+"aviao"
+]
+},
+{
+"a": "carta",
+"p": 18,
+"alt": []
+},
+{
+"a": "origami",
+"p": 16,
+"alt": []
+},
+{
+"a": "dobradura",
+"p": 14,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que você esquece o nome",
+"a": [
+{
+"a": "nome de alguém",
+"p": 40,
+"alt": [
+"pessoas"
+]
+},
+{
+"a": "senha",
+"p": 24,
+"alt": []
+},
+{
+"a": "filme",
+"p": 16,
+"alt": []
+},
+{
+"a": "música",
+"p": 12,
+"alt": [
+"musica"
+]
+},
+{
+"a": "rua",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que se usa para cortar",
+"a": [
+{
+"a": "tesoura",
+"p": 42,
+"alt": []
+},
+{
+"a": "faca",
+"p": 34,
+"alt": []
+},
+{
+"a": "serra",
+"p": 12,
+"alt": []
+},
+{
+"a": "navalha",
+"p": 6,
+"alt": [
+"lamina"
+]
+},
+{
+"a": "cortador de unha",
+"p": 6,
+"alt": [
+"cortador"
+]
+}
+]
+},
+{
+"q": "Uma coisa que é doce",
+"a": [
+{
+"a": "açúcar",
+"p": 30,
+"alt": [
+"acucar"
+]
+},
+{
+"a": "mel",
+"p": 24,
+"alt": []
+},
+{
+"a": "chocolate",
+"p": 22,
+"alt": []
+},
+{
+"a": "bala",
+"p": 14,
+"alt": [
+"doce"
+]
+},
+{
+"a": "bolo",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem no aniversário de criança",
+"a": [
+{
+"a": "bolo",
+"p": 30,
+"alt": []
+},
+{
+"a": "balão",
+"p": 24,
+"alt": [
+"bexiga"
+]
+},
+{
+"a": "brigadeiro",
+"p": 20,
+"alt": []
+},
+{
+"a": "palhaço",
+"p": 14,
+"alt": [
+"palhaco"
+]
+},
+{
+"a": "presente",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem na rua",
+"a": [
+{
+"a": "carro",
+"p": 30,
+"alt": []
+},
+{
+"a": "árvore",
+"p": 22,
+"alt": [
+"arvore"
+]
+},
+{
+"a": "poste",
+"p": 18,
+"alt": []
+},
+{
+"a": "semáforo",
+"p": 16,
+"alt": [
+"sinal"
+]
+},
+{
+"a": "buraco",
+"p": 14,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você usa para ver as horas",
+"a": [
+{
+"a": "celular",
+"p": 40,
+"alt": []
+},
+{
+"a": "relógio",
+"p": 38,
+"alt": [
+"relogio"
+]
+},
+{
+"a": "computador",
+"p": 12,
+"alt": []
+},
+{
+"a": "micro-ondas",
+"p": 6,
+"alt": [
+"microondas"
+]
+},
+{
+"a": "sol",
+"p": 4,
+"alt": []
+}
+]
+},
+{
+"q": "Uma profissão que trabalha à noite",
+"a": [
+{
+"a": "segurança",
+"p": 32,
+"alt": [
+"vigia"
+]
+},
+{
+"a": "médico de plantão",
+"p": 22,
+"alt": [
+"medico"
+]
+},
+{
+"a": "motorista",
+"p": 18,
+"alt": [
+"taxista"
+]
+},
+{
+"a": "garçom",
+"p": 14,
+"alt": [
+"garcom"
+]
+},
+{
+"a": "DJ",
+"p": 14,
+"alt": [
+"dj"
+]
+}
+]
+},
+{
+"q": "Algo que você faz no computador",
+"a": [
+{
+"a": "trabalhar",
+"p": 34,
+"alt": []
+},
+{
+"a": "jogar",
+"p": 24,
+"alt": []
+},
+{
+"a": "ver vídeo",
+"p": 18,
+"alt": [
+"youtube"
+]
+},
+{
+"a": "estudar",
+"p": 14,
+"alt": []
+},
+{
+"a": "mandar e-mail",
+"p": 10,
+"alt": [
+"email"
+]
+}
+]
+},
+{
+"q": "Uma coisa que tem no mercado",
+"a": [
+{
+"a": "carrinho",
+"p": 30,
+"alt": []
+},
+{
+"a": "caixa",
+"p": 24,
+"alt": []
+},
+{
+"a": "fila",
+"p": 18,
+"alt": []
+},
+{
+"a": "promoção",
+"p": 16,
+"alt": [
+"promocao"
+]
+},
+{
+"a": "comida",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que se ganha de presente",
+"a": [
+{
+"a": "roupa",
+"p": 28,
+"alt": []
+},
+{
+"a": "perfume",
+"p": 22,
+"alt": []
+},
+{
+"a": "chocolate",
+"p": 18,
+"alt": []
+},
+{
+"a": "brinquedo",
+"p": 18,
+"alt": []
+},
+{
+"a": "livro",
+"p": 14,
+"alt": []
+}
+]
+},
+{
+"q": "Um apelido carinhoso",
+"a": [
+{
+"a": "amor",
+"p": 40,
+"alt": []
+},
+{
+"a": "meu bem",
+"p": 18,
+"alt": []
+},
+{
+"a": "gatinho",
+"p": 16,
+"alt": [
+"gata",
+"gato"
+]
+},
+{
+"a": "fofo",
+"p": 14,
+"alt": [
+"fofinho"
+]
+},
+{
+"a": "bebê",
+"p": 12,
+"alt": [
+"bebe"
+]
+}
+]
+},
+{
+"q": "Algo que tem no fundo do armário",
+"a": [
+{
+"a": "roupa velha",
+"p": 38,
+"alt": [
+"roupa"
+]
+},
+{
+"a": "caixa",
+"p": 20,
+"alt": []
+},
+{
+"a": "sapato",
+"p": 18,
+"alt": []
+},
+{
+"a": "mala",
+"p": 14,
+"alt": []
+},
+{
+"a": "presente esquecido",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que você faz em dia de chuva",
+"a": [
+{
+"a": "dorme",
+"p": 30,
+"alt": [
+"dormir"
+]
+},
+{
+"a": "vê filme",
+"p": 28,
+"alt": [
+"filme"
+]
+},
+{
+"a": "toma chocolate quente",
+"p": 16,
+"alt": [
+"chocolate quente"
+]
+},
+{
+"a": "fica em casa",
+"p": 16,
+"alt": []
+},
+{
+"a": "come pipoca",
+"p": 10,
+"alt": [
+"pipoca"
+]
+}
+]
+},
+{
+"q": "Uma coisa que você encontra na sala de aula",
+"a": [
+{
+"a": "carteira",
+"p": 30,
+"alt": [
+"mesa"
+]
+},
+{
+"a": "quadro",
+"p": 26,
+"alt": [
+"lousa"
+]
+},
+{
+"a": "professor",
+"p": 20,
+"alt": []
+},
+{
+"a": "aluno",
+"p": 14,
+"alt": []
+},
+{
+"a": "mochila",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem na igreja",
+"a": [
+{
+"a": "banco",
+"p": 30,
+"alt": []
+},
+{
+"a": "cruz",
+"p": 26,
+"alt": []
+},
+{
+"a": "padre",
+"p": 20,
+"alt": [
+"pastor"
+]
+},
+{
+"a": "vela",
+"p": 14,
+"alt": []
+},
+{
+"a": "santo",
+"p": 10,
+"alt": [
+"imagem"
+]
+}
+]
+},
+{
+"q": "Um aplicativo de transporte",
+"a": [
+{
+"a": "Uber",
+"p": 52,
+"alt": []
+},
+{
+"a": "99",
+"p": 28,
+"alt": []
+},
+{
+"a": "Waze",
+"p": 10,
+"alt": []
+},
+{
+"a": "Google Maps",
+"p": 6,
+"alt": [
+"maps"
+]
+},
+{
+"a": "Moovit",
+"p": 4,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que se faz no shopping",
+"a": [
+{
+"a": "compras",
+"p": 42,
+"alt": [
+"comprar"
+]
+},
+{
+"a": "comer",
+"p": 22,
+"alt": [
+"praca de alimentacao"
+]
+},
+{
+"a": "cinema",
+"p": 18,
+"alt": []
+},
+{
+"a": "passear",
+"p": 12,
+"alt": []
+},
+{
+"a": "ver vitrine",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem no quintal",
+"a": [
+{
+"a": "cachorro",
+"p": 30,
+"alt": []
+},
+{
+"a": "planta",
+"p": 24,
+"alt": [
+"arvore"
+]
+},
+{
+"a": "varal",
+"p": 20,
+"alt": []
+},
+{
+"a": "piscina",
+"p": 14,
+"alt": []
+},
+{
+"a": "churrasqueira",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que se joga",
+"a": [
+{
+"a": "bola",
+"p": 38,
+"alt": []
+},
+{
+"a": "dado",
+"p": 22,
+"alt": []
+},
+{
+"a": "videogame",
+"p": 18,
+"alt": []
+},
+{
+"a": "cartas",
+"p": 12,
+"alt": [
+"baralho"
+]
+},
+{
+"a": "xadrez",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que fica embaixo da cama",
+"a": [
+{
+"a": "chinelo",
+"p": 32,
+"alt": []
+},
+{
+"a": "poeira",
+"p": 26,
+"alt": [
+"sujeira"
+]
+},
+{
+"a": "caixa",
+"p": 18,
+"alt": []
+},
+{
+"a": "monstro",
+"p": 14,
+"alt": []
+},
+{
+"a": "meia",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você faz quando ganha um presente",
+"a": [
+{
+"a": "abre",
+"p": 38,
+"alt": [
+"abrir"
+]
+},
+{
+"a": "agradece",
+"p": 28,
+"alt": [
+"agradecer",
+"obrigado"
+]
+},
+{
+"a": "sorri",
+"p": 16,
+"alt": []
+},
+{
+"a": "abraça",
+"p": 12,
+"alt": [
+"abraco"
+]
+},
+{
+"a": "tira foto",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Um lugar onde se vê muito verde",
+"a": [
+{
+"a": "floresta",
+"p": 34,
+"alt": [
+"mata"
+]
+},
+{
+"a": "parque",
+"p": 24,
+"alt": []
+},
+{
+"a": "campo",
+"p": 18,
+"alt": [
+"fazenda"
+]
+},
+{
+"a": "jardim",
+"p": 14,
+"alt": []
+},
+{
+"a": "praça",
+"p": 10,
+"alt": [
+"praca"
+]
+}
+]
+},
+{
+"q": "Uma comida que leva chocolate",
+"a": [
+{
+"a": "bolo",
+"p": 36,
+"alt": []
+},
+{
+"a": "brigadeiro",
+"p": 28,
+"alt": []
+},
+{
+"a": "sorvete",
+"p": 16,
+"alt": []
+},
+{
+"a": "mousse",
+"p": 12,
+"alt": []
+},
+{
+"a": "cookie",
+"p": 8,
+"alt": [
+"biscoito"
+]
+}
+]
+},
+{
+"q": "Algo que tem no salão de beleza",
+"a": [
+{
+"a": "secador",
+"p": 28,
+"alt": []
+},
+{
+"a": "tesoura",
+"p": 24,
+"alt": []
+},
+{
+"a": "cabeleireiro",
+"p": 20,
+"alt": []
+},
+{
+"a": "esmalte",
+"p": 16,
+"alt": [
+"manicure"
+]
+},
+{
+"a": "espelho",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que é difícil de acordar cedo para fazer",
+"a": [
+{
+"a": "trabalhar",
+"p": 40,
+"alt": [
+"trabalho"
+]
+},
+{
+"a": "estudar",
+"p": 28,
+"alt": [
+"escola"
+]
+},
+{
+"a": "academia",
+"p": 16,
+"alt": [
+"malhar"
+]
+},
+{
+"a": "missa",
+"p": 10,
+"alt": [
+"igreja"
+]
+},
+{
+"a": "viajar",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que você vê no céu à noite",
+"a": [
+{
+"a": "lua",
+"p": 44,
+"alt": []
+},
+{
+"a": "estrelas",
+"p": 36,
+"alt": [
+"estrela"
+]
+},
+{
+"a": "avião",
+"p": 10,
+"alt": [
+"aviao"
+]
+},
+{
+"a": "satélite",
+"p": 6,
+"alt": [
+"satelite"
+]
+},
+{
+"a": "nuvem",
+"p": 4,
+"alt": []
+}
+]
+},
+{
+"q": "Um bicho que faz barulho à noite",
+"a": [
+{
+"a": "grilo",
+"p": 38,
+"alt": []
+},
+{
+"a": "sapo",
+"p": 24,
+"alt": []
+},
+{
+"a": "coruja",
+"p": 16,
+"alt": []
+},
+{
+"a": "cachorro",
+"p": 12,
+"alt": []
+},
+{
+"a": "gato",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que se faz no feriado",
+"a": [
+{
+"a": "viajar",
+"p": 36,
+"alt": []
+},
+{
+"a": "descansar",
+"p": 30,
+"alt": [
+"dormir"
+]
+},
+{
+"a": "churrasco",
+"p": 16,
+"alt": []
+},
+{
+"a": "praia",
+"p": 12,
+"alt": []
+},
+{
+"a": "maratona de série",
+"p": 6,
+"alt": [
+"serie"
+]
+}
+]
+},
+{
+"q": "Uma coisa que tem ponta",
+"a": [
+{
+"a": "lápis",
+"p": 30,
+"alt": [
+"lapis"
+]
+},
+{
+"a": "faca",
+"p": 24,
+"alt": []
+},
+{
+"a": "agulha",
+"p": 20,
+"alt": []
+},
+{
+"a": "caneta",
+"p": 14,
+"alt": []
+},
+{
+"a": "prego",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que se usa na cozinha",
+"a": [
+{
+"a": "panela",
+"p": 34,
+"alt": []
+},
+{
+"a": "faca",
+"p": 22,
+"alt": []
+},
+{
+"a": "colher",
+"p": 20,
+"alt": []
+},
+{
+"a": "fogão",
+"p": 14,
+"alt": [
+"fogao"
+]
+},
+{
+"a": "tábua",
+"p": 10,
+"alt": [
+"tabua"
+]
+}
+]
+},
+{
+"q": "Uma coisa que o cachorro faz",
+"a": [
+{
+"a": "late",
+"p": 40,
+"alt": [
+"latir"
+]
+},
+{
+"a": "abana o rabo",
+"p": 24,
+"alt": [
+"rabo"
+]
+},
+{
+"a": "morde",
+"p": 14,
+"alt": [
+"morder"
+]
+},
+{
+"a": "dorme",
+"p": 12,
+"alt": []
+},
+{
+"a": "pede comida",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que tem na loja de brinquedos",
+"a": [
+{
+"a": "boneca",
+"p": 30,
+"alt": []
+},
+{
+"a": "carrinho",
+"p": 26,
+"alt": []
+},
+{
+"a": "bola",
+"p": 18,
+"alt": []
+},
+{
+"a": "videogame",
+"p": 14,
+"alt": [
+"jogo"
+]
+},
+{
+"a": "quebra-cabeça",
+"p": 12,
+"alt": [
+"quebra cabeca"
+]
+}
+]
+},
+{
+"q": "Algo que tem gosto azedo",
+"a": [
+{
+"a": "limão",
+"p": 56,
+"alt": [
+"limao"
+]
+},
+{
+"a": "vinagre",
+"p": 16,
+"alt": []
+},
+{
+"a": "maracujá",
+"p": 12,
+"alt": [
+"maracuja"
+]
+},
+{
+"a": "iogurte",
+"p": 8,
+"alt": []
+},
+{
+"a": "tamarindo",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que acontece no ano novo",
+"a": [
+{
+"a": "fogos",
+"p": 40,
+"alt": []
+},
+{
+"a": "festa",
+"p": 22,
+"alt": []
+},
+{
+"a": "champanhe",
+"p": 16,
+"alt": [
+"espumante"
+]
+},
+{
+"a": "contagem regressiva",
+"p": 14,
+"alt": [
+"contagem"
+]
+},
+{
+"a": "abraços",
+"p": 8,
+"alt": [
+"abraco"
+]
+}
+]
+},
+{
+"q": "Algo que você faz numa festa",
+"a": [
+{
+"a": "dança",
+"p": 38,
+"alt": [
+"dancar"
+]
+},
+{
+"a": "come",
+"p": 24,
+"alt": [
+"comer"
+]
+},
+{
+"a": "conversa",
+"p": 18,
+"alt": [
+"conversar"
+]
+},
+{
+"a": "bebe",
+"p": 12,
+"alt": [
+"beber"
+]
+},
+{
+"a": "tira foto",
+"p": 8,
+"alt": [
+"foto"
+]
+}
+]
+},
+{
+"q": "Um bicho pequeno",
+"a": [
+{
+"a": "formiga",
+"p": 36,
+"alt": []
+},
+{
+"a": "mosquito",
+"p": 20,
+"alt": []
+},
+{
+"a": "abelha",
+"p": 16,
+"alt": []
+},
+{
+"a": "pulga",
+"p": 16,
+"alt": []
+},
+{
+"a": "joaninha",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem no campo de futebol",
+"a": [
+{
+"a": "bola",
+"p": 30,
+"alt": []
+},
+{
+"a": "gol",
+"p": 24,
+"alt": [
+"trave"
+]
+},
+{
+"a": "grama",
+"p": 18,
+"alt": []
+},
+{
+"a": "juiz",
+"p": 16,
+"alt": [
+"arbitro"
+]
+},
+{
+"a": "torcida",
+"p": 12,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que se coloca na pizza",
+"a": [
+{
+"a": "queijo",
+"p": 40,
+"alt": [
+"mucarela"
+]
+},
+{
+"a": "tomate",
+"p": 20,
+"alt": [
+"molho"
+]
+},
+{
+"a": "orégano",
+"p": 16,
+"alt": [
+"oregano"
+]
+},
+{
+"a": "calabresa",
+"p": 14,
+"alt": []
+},
+{
+"a": "azeitona",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que faz você suar",
+"a": [
+{
+"a": "calor",
+"p": 36,
+"alt": []
+},
+{
+"a": "exercício",
+"p": 26,
+"alt": [
+"exercicio",
+"academia"
+]
+},
+{
+"a": "correr",
+"p": 18,
+"alt": []
+},
+{
+"a": "nervoso",
+"p": 12,
+"alt": [
+"nervosismo"
+]
+},
+{
+"a": "comida apimentada",
+"p": 8,
+"alt": [
+"pimenta"
+]
+}
+]
+},
+{
+"q": "Algo que se usa para ir à praia",
+"a": [
+{
+"a": "biquíni",
+"p": 30,
+"alt": [
+"biquini",
+"sunga"
+]
+},
+{
+"a": "chinelo",
+"p": 24,
+"alt": []
+},
+{
+"a": "protetor solar",
+"p": 20,
+"alt": [
+"protetor"
+]
+},
+{
+"a": "óculos de sol",
+"p": 14,
+"alt": [
+"oculos"
+]
+},
+{
+"a": "boné",
+"p": 12,
+"alt": [
+"bone"
+]
+}
+]
+},
+{
+"q": "Um lugar onde se toca música alta",
+"a": [
+{
+"a": "balada",
+"p": 40,
+"alt": [
+"boate"
+]
+},
+{
+"a": "show",
+"p": 28,
+"alt": []
+},
+{
+"a": "festa",
+"p": 18,
+"alt": []
+},
+{
+"a": "carro",
+"p": 8,
+"alt": []
+},
+{
+"a": "academia",
+"p": 6,
+"alt": []
+}
+]
+},
+{
+"q": "Uma coisa que tem no laboratório",
+"a": [
+{
+"a": "microscópio",
+"p": 36,
+"alt": [
+"microscopio"
+]
+},
+{
+"a": "tubo de ensaio",
+"p": 24,
+"alt": [
+"tubo"
+]
+},
+{
+"a": "jaleco",
+"p": 16,
+"alt": []
+},
+{
+"a": "cientista",
+"p": 14,
+"alt": []
+},
+{
+"a": "óculos de proteção",
+"p": 10,
+"alt": [
+"oculos"
+]
+}
+]
+},
+{
+"q": "Algo que tem no quarto de criança",
+"a": [
+{
+"a": "brinquedo",
+"p": 40,
+"alt": []
+},
+{
+"a": "cama",
+"p": 22,
+"alt": []
+},
+{
+"a": "ursinho",
+"p": 16,
+"alt": [
+"pelucia"
+]
+},
+{
+"a": "berço",
+"p": 12,
+"alt": [
+"berco"
+]
+},
+{
+"a": "abajur",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Algo que se faz com o celular na live",
+"a": [
+{
+"a": "comentar",
+"p": 36,
+"alt": [
+"comentario"
+]
+},
+{
+"a": "mandar presente",
+"p": 24,
+"alt": [
+"presente"
+]
+},
+{
+"a": "curtir",
+"p": 20,
+"alt": [
+"like"
+]
+},
+{
+"a": "compartilhar",
+"p": 12,
+"alt": []
+},
+{
+"a": "seguir",
+"p": 8,
+"alt": []
+}
+]
+},
+{
+"q": "Um lugar onde tem eco",
+"a": [
+{
+"a": "caverna",
+"p": 44,
+"alt": []
+},
+{
+"a": "igreja",
+"p": 20,
+"alt": []
+},
+{
+"a": "túnel",
+"p": 18,
+"alt": [
+"tunel"
+]
+},
+{
+"a": "banheiro",
+"p": 10,
+"alt": []
+},
+{
+"a": "ginásio vazio",
+"p": 8,
+"alt": [
+"ginasio"
+]
+}
+]
+},
+{
+"q": "Algo que você faz no primeiro dia de aula",
+"a": [
+{
+"a": "conhece colegas",
+"p": 36,
+"alt": [
+"fazer amigos",
+"conhecer"
+]
+},
+{
+"a": "se apresenta",
+"p": 22,
+"alt": [
+"apresentar"
+]
+},
+{
+"a": "fica nervoso",
+"p": 18,
+"alt": [
+"nervoso"
+]
+},
+{
+"a": "ganha material",
+"p": 14,
+"alt": [
+"material"
+]
+},
+{
+"a": "escolhe lugar",
+"p": 10,
+"alt": []
+}
+]
+},
+{
+"q": "Um personagem do folclore brasileiro",
+"a": [
+{
+"a": "Saci",
+"p": 42,
+"alt": [
+"saci-perere"
+]
+},
+{
+"a": "Curupira",
+"p": 22,
+"alt": []
+},
+{
+"a": "Iara",
+"p": 16,
+"alt": [
+"sereia"
+]
+},
+{
+"a": "Boitatá",
+"p": 12,
+"alt": [
+"boitata"
+]
+},
+{
+"a": "Mula sem cabeça",
+"p": 8,
+"alt": [
+"mula"
+]
+}
+]
+},
+{
+"q": "Algo que tem no baile funk",
+"a": [
+{
+"a": "música alta",
+"p": 38,
+"alt": [
+"som"
+]
+},
+{
+"a": "dança",
+"p": 26,
+"alt": [
+"dancar"
+]
+},
+{
+"a": "DJ",
+"p": 18,
+"alt": [
+"dj"
+]
+},
+{
+"a": "luz",
+"p": 10,
+"alt": []
+},
+{
+"a": "fumaça",
+"p": 8,
+"alt": []
+}
+]
+}
+]
