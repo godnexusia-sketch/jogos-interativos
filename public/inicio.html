@@ -64,7 +64,7 @@
     .hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 40px; align-items: center; }
     .onair { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; border-radius: 999px; background: rgba(255,45,85,.12); border: 1px solid rgba(255,45,85,.4); font-weight: 800; font-size: 14px; color: #ffd0da; }
     .onair b { background: var(--acc); color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 12px; letter-spacing: .06em; }
-    h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(40px, 6.6vw, 84px); line-height: .98; margin: 18px 0 18px; letter-spacing: -.01em; }
+    h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(34px, 5.4vw, 76px); overflow-wrap: break-word; line-height: .98; margin: 18px 0 18px; letter-spacing: -.01em; }
     h1 .swap { display: grid; height: 1.04em; overflow: hidden; color: var(--gold); }
     h1 .swap i { grid-area: 1 / 1; font-style: normal; transform: translateY(105%); transition: transform .6s var(--ease-io); white-space: nowrap; }
     h1 .swap i.on { transform: translateY(0); } h1 .swap i.out { transform: translateY(-105%); }
@@ -278,7 +278,10 @@
     .switch { text-align: center; margin-top: 12px; font-size: 14px; color: var(--mut); }
     .switch a { color: var(--acc2); font-weight: 800; cursor: pointer; }
     .or { text-align: center; color: var(--mut); font-size: 13px; margin: 14px 0 8px; }
-    #gBtn { display: flex; justify-content: center; }
+    .gbtn { display: flex; justify-content: center; min-height: 44px; }
+    .gfake { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; max-width: 320px; margin: 0 auto; padding: 11px 16px; border-radius: 999px; background: #fff; color: #1f1f1f; font-weight: 700; font-size: 15px; border: 0; }
+    .gfake svg { width: 20px; height: 20px; flex: none; }
+    .gnote { text-align: center; font-size: 13px; color: var(--mut); margin-top: 8px; }
 
     /* ---------- Celular e telas menores ---------- */
     @media (max-width: 960px) {
@@ -503,7 +506,7 @@
       <label for="lu">Usuário ou e-mail</label><input id="lu" autocomplete="username" required>
       <label for="lp">Senha</label><input id="lp" type="password" autocomplete="current-password" required>
       <button class="btn pri">Entrar</button>
-      <div id="gWrap" hidden><div class="or">ou</div><div id="gBtn"></div></div>
+      <div class="gwrap"><div class="or">ou</div><div class="gbtn" data-gmodo="login"></div></div>
       <div class="err" id="lErr"></div>
       <div class="switch">Ainda não tem acesso? <a data-open="signup">Criar cadastro</a></div></form>
     <form class="form" id="fSetup" hidden><h3>Primeiro acesso</h3><p>Crie a conta do administrador (acesso total).</p>
@@ -514,15 +517,16 @@
   </div></dialog>
   <!-- Criar cadastro -->
   <dialog id="dSignup"><div class="box"><button class="x" data-close aria-label="Fechar">✕</button>
-    <form class="form" id="fSignup"><h3>Criar cadastro</h3><p>Preencha e envie. O administrador aprova o seu acesso e libera os jogos.</p>
-      <label for="rn">Seu nome</label><input id="rn" required maxlength="60">
+    <form class="form" id="fSignup"><h3>Criar cadastro</h3><p>Preencha e envie, ou use a sua conta do Google. O administrador aprova o seu acesso e libera os jogos.</p>
+      <div class="gbtn" data-gmodo="signup"></div><div class="or">ou preencha</div>
+      <label for="rn">Seu nome</label><input id="rn" required maxlength="60" autocomplete="name">
       <label for="re">E-mail (vai ser o seu login)</label><input id="re" type="email" required maxlength="60" autocomplete="email">
       <label for="rp">Senha (6 ou mais)</label><input id="rp" type="password" required minlength="6" autocomplete="new-password">
       <label for="rt">Seu @ no TikTok</label><input id="rt" maxlength="40" placeholder="@seuusuario">
       <label for="rm">Mensagem para o administrador (opcional)</label><textarea id="rm" maxlength="300" placeholder="Que jogos você quer usar?"></textarea>
       <button class="btn pri">Enviar pedido</button><div class="err" id="rErr"></div>
       <div class="switch">Já tem acesso? <a data-open="login">Entrar</a></div></form>
-    <div class="form" id="rOk" hidden><h3>Pedido enviado! ✅</h3><div class="okmsg">Agora é só aguardar: quando o administrador aprovar, você entra com o seu e-mail e a senha que criou.</div><button class="btn pri" data-open="login">Ir para Entrar</button></div>
+    <div class="form" id="rOk" hidden><h3>Pedido enviado! ✅</h3><div class="okmsg" id="rOkMsg">Agora é só aguardar: quando o administrador aprovar, você entra com o seu e-mail e a senha que criou.</div><button class="btn pri" data-open="login">Ir para Entrar</button></div>
   </div></dialog>
 
   <script>
@@ -554,6 +558,32 @@
     form($('#fLogin'), '#lErr', async () => { await post('/api/login', { username: $('#lu').value.trim(), password: $('#lp').value }); location.replace('/'); });
     form($('#fSetup'), '#sErr', async () => { await post('/api/setup', { code: $('#sc').value.trim(), username: $('#su').value.trim(), password: $('#sp').value }); location.replace('/'); });
     form($('#fSignup'), '#rErr', async () => { await post('/api/signup', { name: $('#rn').value.trim(), username: $('#re').value.trim(), password: $('#rp').value, tiktok: $('#rt').value.trim(), message: $('#rm').value.trim() }); $('#fSignup').hidden = true; $('#rOk').hidden = false; });
+    // ---------- Google: o mesmo botão entra (se já tem conta) ou pede o cadastro (se ainda não tem) ----------
+    const G_SVG = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v9h12.4c-.5 2.9-2.1 5.3-4.6 7l7.2 5.6c4.2-3.9 7.1-9.6 7.1-17z"/><path fill="#FBBC05" d="M10.6 28.6A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.6l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.2-5.6c-2 1.4-4.7 2.3-8.7 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>';
+    const googleOk = async (r) => {
+      const signup = dlg.signup.open, errEl = signup ? '#rErr' : '#lErr';
+      $(errEl).textContent = '';
+      try {
+        const j = await post('/api/google', { credential: r.credential, name: $('#rn').value.trim(), tiktok: $('#rt').value.trim(), message: $('#rm').value.trim() });
+        if (j.pendente) { open('signup'); $('#fSignup').hidden = true; $('#rOk').hidden = false; $('#rOkMsg').textContent = `Pedido enviado com o Google (${j.email}). Quando o administrador aprovar, é só clicar em "Continuar com o Google" no Entrar.`; return; }
+        location.replace('/');
+      } catch (x) { $(errEl).textContent = x.message; }
+    };
+    function googleSetup(a) {
+      const boxes = $$('.gbtn');
+      if (a.setup) { $$('.gwrap, .gbtn, .gbtn + .or').forEach((e) => (e.hidden = true)); return; }
+      if (!a.google) {
+        // Ainda sem o ID do Google no servidor: o botão aparece, mas avisa que falta ativar
+        boxes.forEach((b) => { b.innerHTML = `<button type="button" class="gfake">${G_SVG}Continuar com o Google</button>`; b.firstChild.addEventListener('click', () => { const e = b.closest('form').querySelector('.err'); e.textContent = 'O acesso com o Google ainda está sendo ativado. Por enquanto, use e-mail e senha.'; }); });
+        return;
+      }
+      const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
+      s.onload = () => {
+        google.accounts.id.initialize({ client_id: a.google, callback: googleOk, ux_mode: 'popup' });
+        boxes.forEach((b) => google.accounts.id.renderButton(b, { theme: 'filled_black', size: 'large', shape: 'pill', text: b.dataset.gmodo === 'signup' ? 'signup_with' : 'continue_with', locale: 'pt-BR', width: 300 }));
+      };
+      document.head.appendChild(s);
+    }
     $('#sairBtn').addEventListener('click', async () => { await fetch('/api/logout', { method: 'POST' }).catch(() => {}); location.replace('/'); });
     fetch('/api/auth').then((r) => r.json()).then((a) => {
       AUTH = a;
@@ -565,12 +595,7 @@
         return;
       }
       if (a.setup) { $('#fLogin').hidden = true; $('#fSetup').hidden = false; if (a.adminEmail) { $('#su').value = a.adminEmail; $('#su').readOnly = true; } }
-      if (a.google && !a.setup) {
-        $('#gWrap').hidden = false;
-        const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
-        s.onload = () => { google.accounts.id.initialize({ client_id: a.google, callback: async (r) => { $('#lErr').textContent = ''; try { await post('/api/google', { credential: r.credential }); location.replace('/'); } catch (x) { $('#lErr').textContent = x.message; } } }); google.accounts.id.renderButton($('#gBtn'), { theme: 'filled_black', size: 'large', shape: 'pill', text: 'signin_with', locale: 'pt-BR', width: 300 }); };
-        document.head.appendChild(s);
-      }
+      googleSetup(a);
       const p = new URLSearchParams(location.search); if (p.get('login') !== null || a.setup) open('login');
     }).catch(() => {});
 
@@ -608,6 +633,16 @@
       $('#top').classList.toggle('scrolled', scrollY > 30);
     };
     addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+    // ---------- Título: a palavra mais comprida sempre cabe (nada cortado) ----------
+    function fitH1() {
+      const h = $('h1'); h.style.fontSize = '';
+      const rg = document.createRange();
+      const wide = Math.max(...$$('#swap i').map((i) => { rg.selectNodeContents(i); return rg.getBoundingClientRect().width; }));
+      const avail = h.clientWidth;
+      if (wide > avail) h.style.fontSize = `${parseFloat(getComputedStyle(h).fontSize) * (avail / wide) * 0.97}px`;
+    }
+    fitH1(); document.fonts?.ready.then(fitH1); addEventListener('resize', fitH1);
 
     // ---------- Palavra que troca no título ----------
     (() => {

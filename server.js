@@ -272,7 +272,15 @@ const server = http.createServer(async (req, res) => {
     // Primeiro acesso do dono: o e-mail do admin (ADMIN_EMAIL) vira o admin direto pelo Google
     if (!c && email === ADMIN_EMAIL && (await contas.quantas()) === 0) c = await contas.porId((await contas.criar({ username: email, senha: crypto.randomBytes(24).toString('hex'), role: 'admin' })).id);
     if (c?.status === 'pendente') return sendJson(res, 403, { error: ESPERA });
-    if (!c || c.disabled) return sendJson(res, 403, { error: `o e-mail ${email} ainda não tem acesso — clique em "Criar cadastro" e peça acesso` });
+    if (!c) {
+      // Sem conta: o Google vira um pedido de cadastro (o admin aprova na aba Usuários)
+      if ((await contas.quantas()) === 0) return sendJson(res, 403, { error: 'o sistema ainda está sendo instalado, tente mais tarde' });
+      if ((await contas.listar()).filter((u) => u.status === 'pendente').length >= 200) return sendJson(res, 429, { error: 'muitos pedidos na fila, tente mais tarde' });
+      const nome = String(b.name || info.name || email.split('@')[0]).trim().slice(0, 60);
+      await contas.criar({ username: email, senha: crypto.randomBytes(24).toString('hex'), status: 'pendente', info: { nome, tiktok: String(b.tiktok || '').trim().replace(/^@/, '').slice(0, 40), recado: String(b.message || '').trim().slice(0, 500), google: true } });
+      return sendJson(res, 200, { pendente: true, email });
+    }
+    if (c.disabled) return sendJson(res, 403, { error: 'seu acesso está desativado — fale com o administrador' });
     const { token } = await contas.novaSessao(c.id); setSess(req, res, token, 2592000);
     return sendJson(res, 200, { ok: true });
   }
