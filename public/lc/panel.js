@@ -759,7 +759,12 @@ if (!isClean) (() => {
           <div class="row"><button data-act="games" class="primary">✅ Aprovar…</button><button data-act="del" class="danger">✖ Recusar</button></div>
           <div class="uedit" hidden><p class="small">Jogos: <button type="button" data-act="all">marcar todos</button> <button type="button" data-act="none">desmarcar</button></p>${gamePick([])}<p class="small">Funções:</p>${funcPick(['musica'])}<div class="row"><button class="primary" data-act="approve">Aprovar acesso</button></div></div></div>`).join('')}</div></div>` : ''}
       <div class="panel"><h3>➕ Novo usuário</h3>
-        <div class="grid2"><label class="f"><span>Usuário ou e-mail</span><input id="nuName" placeholder="ex.: maria ou maria@gmail.com"></label>
+        <p class="small">Contas criadas aqui pelo admin <b>não pagam</b>. Quem se cadastra pelo site só entra depois de pagar.</p>
+        <div class="grid2"><label class="f"><span>Nome completo</span><input id="nuNome" placeholder="ex.: Maria da Silva"></label>
+          <label class="f"><span>Celular com DDD</span><input id="nuCel" inputmode="tel" placeholder="(11) 90000-0000"></label></div>
+        <div class="grid2"><label class="f"><span>@ no TikTok</span><input id="nuTk" placeholder="@usuario"></label>
+          <label class="f"><span>Observação</span><input id="nuObs" placeholder="ex.: parceira, cortesia até dezembro"></label></div>
+        <div class="grid2"><label class="f"><span>Usuário ou e-mail (login)</span><input id="nuName" placeholder="ex.: maria ou maria@gmail.com"></label>
           <label class="f"><span>Senha</span><div class="sl"><input id="nuPass"><button id="nuGen" type="button">🎲</button></div></label></div>
         <label class="f"><span>Tipo</span><select id="nuRole"><option value="user">Usuário (só os jogos liberados)</option><option value="admin">Admin (acesso total)</option></select></label>
         <p class="small">Jogos que este usuário vai ver: <button id="nuAll" type="button">marcar todos</button> <button id="nuNone" type="button">desmarcar</button></p>
@@ -769,7 +774,7 @@ if (!isClean) (() => {
         <div class="row"><button class="primary" id="nuAdd">Criar acesso</button></div>
         <p class="small">Com o e-mail do Google como usuário, a pessoa também pode usar "Entrar com o Google" (quando estiver configurado).</p></div>
       <div class="panel"><h3>Contas</h3><div class="ulist">${data.users.map((u) => `<div class="urow" data-u="${u.id}">
-        <div><b>${esc(u.username)}</b> ${u.role === 'admin' ? '<i class="bd b3d">ADMIN</i>' : ''} ${u.disabled ? '<i class="bd boff">DESATIVADO</i>' : ''} ${planoTag(u)}<br><small>${u.role === 'admin' ? 'acesso total' : `${(u.gamesConta || u.games).length} jogos · ${u.perms.length} funções`}${planoTxt(u)} · IA: ${esc(u.ai?.provider || 'sistema')}${u.id === ME.id ? ' · você' : ''}</small></div>
+        <div><b>${esc(u.info?.nome || u.username)}</b>${u.info?.nome ? ` <small>${esc(u.username)}</small>` : ''} ${u.role === 'admin' ? '<i class="bd b3d">ADMIN</i>' : !u.plano ? '<i class="bd">CORTESIA</i>' : ''} ${u.disabled ? '<i class="bd boff">DESATIVADO</i>' : ''} ${planoTag(u)}<br><small>${u.role === 'admin' ? 'acesso total' : `${(u.gamesConta || u.games).length} jogos · ${u.perms.length} funções`}${planoTxt(u)} · IA: ${esc(u.ai?.provider || 'sistema')}${u.id === ME.id ? ' · você' : ''}</small></div>
         <div class="row">${u.role === 'admin' ? '' : '<button data-act="games">🎮 Jogos e funções</button>'}<button data-act="pass">🔑 Senha</button>${u.id === ME.id ? '' : `<button data-act="toggle">${u.disabled ? '✅ Ativar' : '⏸ Desativar'}</button><button data-act="del" class="danger">🗑</button>`}</div>
         <div class="uedit" hidden><p class="small">Jogos:</p>${gamePick(u.gamesConta || u.games)}<p class="small">Funções:</p>${funcPick(u.perms || [])}<div class="row"><button class="primary" data-act="saveGames">Salvar</button></div></div></div>`).join('')}</div></div>`);
     const gen = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => 'abcdefghjkmnpqrstuvwxyz23456789'[b % 31]).join('');
@@ -781,7 +786,8 @@ if (!isClean) (() => {
     q('#nuAdd').addEventListener('click', async () => {
       const games = qa('#nuGames input:checked').map((i) => i.value), perms = qa('#nuFuncs input:checked').map((i) => i.value), role = q('#nuRole').value;
       if (role === 'user' && !games.length) return toastMsg('Marque pelo menos um jogo.');
-      try { await api('/api/users', 'POST', { username: q('#nuName').value.trim(), password: q('#nuPass').value, role, games, perms }); toastMsg(`✅ Acesso criado — usuário: ${q('#nuName').value.trim()} · senha: ${q('#nuPass').value}`); setTimeout(RENDER.usuarios, 2800); } catch (e) { toastMsg('⚠️ ' + e.message); }
+      if (q('#nuNome').value.trim().length < 3) return toastMsg('Coloque o nome completo.');
+      try { await api('/api/users', 'POST', { username: q('#nuName').value.trim(), password: q('#nuPass').value, role, games, perms, nome: q('#nuNome').value.trim(), celular: q('#nuCel').value, tiktok: q('#nuTk').value.trim(), obs: q('#nuObs').value.trim() }); toastMsg(`✅ Acesso criado — usuário: ${q('#nuName').value.trim()} · senha: ${q('#nuPass').value}`); setTimeout(RENDER.usuarios, 2800); } catch (e) { toastMsg('⚠️ ' + e.message); }
     });
     qa('.urow').forEach((row) => row.addEventListener('click', async (e) => {
       const b = e.target.closest('[data-act]'); if (!b) return;
@@ -904,8 +910,8 @@ if (!isClean) (() => {
   // Quem assinou: botão do plano no topo e aviso quando falta pagar ou venceu
   if (ME.plano) {
     const p = ME.plano, ate = new Date(p.ate).toLocaleDateString('pt-BR');
-    const b = document.createElement('a'); b.id = 'planBtn'; b.target = '_blank'; b.rel = 'noopener';
-    b.href = p.fatura || '/inicio#precos';
+    const b = document.createElement('a'); b.id = 'planBtn';
+    b.href = '/pagar'; b.removeAttribute('target');
     b.textContent = ME.vencido ? '⚠️ Plano vencido · pagar' : p.status === 'teste' ? `🎁 Teste grátis até ${ate}` : p.status === 'aguardando' ? '💳 Falta pagar' : p.status === 'atrasado' ? `⚠️ Pagamento atrasado · pagar` : `💳 Plano ativo até ${ate}`;
     if (ME.vencido || p.status === 'atrasado' || p.status === 'aguardando') b.classList.add('warn');
     document.querySelector('.topbtns')?.prepend(b);

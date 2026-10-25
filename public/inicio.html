@@ -305,6 +305,11 @@
     .pays input { position: absolute; opacity: 0; pointer-events: none; }
     .pays label:has(input:checked) { border-color: var(--acc2); background: rgba(34,227,238,.1); }
     .form select { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line2); background: #0b1022; color: var(--txt); font: inherit; font-size: 16px; }
+    .costeps { display: flex; align-items: center; gap: 8px; margin: 2px 0 12px; font-weight: 800; font-size: 14px; color: var(--mut); }
+    .costeps b { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,.08); margin-right: 6px; font-size: 12px; }
+    .costeps .on { color: var(--txt); } .costeps .on b { background: var(--acc2); color: #001218; } .costeps .done b { background: var(--ok); color: #052e12; }
+    .costeps i { flex: 1; max-width: 50px; border-top: 2px dashed var(--line2); }
+    .costxt { color: var(--mut) !important; margin: 0 0 4px !important; }
     .sumbox { margin: 4px 0 6px; padding: 12px 14px; border-radius: 14px; background: rgba(255,255,255,.04); border: 1px solid var(--line); font-size: 15px; }
     .sumbox b { color: var(--gold); }
     .grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 12px; }
@@ -457,7 +462,7 @@
       <div class="wrap">
         <div class="ph">
           <div><p class="kick">Planos e preços</p><h2>Pague só pelos jogos que vai usar</h2>
-            <p class="sub" id="pSub">Monte a sua sacola: um jogo sai por R$ 9,90 por mês e os pacotes deixam cada jogo mais barato. Assinatura mensal com 30 dias grátis para testar.</p></div>
+            <p class="sub" id="pSub">Monte a sua sacola: um jogo sai por R$ 9,90 por mês e os pacotes deixam cada jogo mais barato. Os jogos liberam assim que o pagamento é confirmado.</p></div>
           <div class="ciclo" id="ciclo" role="tablist" aria-label="Forma de cobrança"><i></i><button class="on" data-c="mensal" role="tab">Mensal</button><button data-c="anual" role="tab">Anual <small>-50%</small></button></div>
         </div>
         <div class="packs" id="packs"></div>
@@ -493,7 +498,7 @@
         <h2>Do cadastro à live jogando</h2>
         <div class="how">
           <div class="steps" id="steps">
-            <div class="step on" data-s="0"><span class="n">1</span><h3>Peça o seu acesso</h3><p>Clique em "Criar cadastro" e mande o seu e-mail e o seu @. O administrador aprova e escolhe os jogos que você vai usar.</p><div class="mini"><img src="/assets/capas/votacao.webp" alt="" loading="lazy"></div></div>
+            <div class="step on" data-s="0"><span class="n">1</span><h3>Escolha os jogos e assine</h3><p>Em "Preços", escolha os jogos, crie a sua conta e pague com Pix, cartão ou boleto. Assim que o pagamento é confirmado, os jogos liberam.</p><div class="mini"><img src="/assets/capas/votacao.webp" alt="" loading="lazy"></div></div>
             <div class="step" data-s="1"><span class="n">2</span><h3>Conecte o seu @ do TikTok</h3><p>Entre no painel, digite o seu usuário e coloque a tela do jogo no LIVE Studio (fonte Link) ou no OBS. Não precisa instalar nada.</p><div class="mini"><img src="/assets/capas/battle-arena.webp" alt="" loading="lazy"></div></div>
             <div class="step" data-s="2"><span class="n">3</span><h3>A live joga</h3><p>Presentes, comentários e likes viram ações no jogo, e a própria tela mostra ao público o que cada coisa faz.</p><div class="mini"><img src="/assets/capas/horse-race.webp" alt="" loading="lazy"></div></div>
           </div>
@@ -592,7 +597,7 @@
       <div class="ticker" id="ticker" aria-hidden="true"></div>
       <div class="wrap box2">
         <h2>Bora colocar a sua live para jogar?</h2>
-        <p>Peça o seu acesso agora. Quando o administrador aprovar, você já entra jogando.</p>
+        <p>Escolha os jogos, crie a sua conta e pague com Pix, cartão ou boleto. Confirmou, liberou.</p>
         <button class="btn pri big" data-open="signup" data-cta>Criar cadastro</button>
       </div>
     </section>
@@ -606,11 +611,17 @@
   <dialog id="dCheckout"><div class="box"><button class="x" data-close aria-label="Fechar">✕</button>
     <form class="form" id="fCheckout"><h3 id="coT">Assinar</h3>
       <div class="sumbox" id="coSum"></div>
+      <div class="costeps" id="coSteps"><span class="on" id="cs1"><b>1</b>Criar conta</span><i></i><span id="cs2"><b>2</b>Pagamento</span></div>
       <div id="coNovo">
+        <p class="costxt">Primeiro, crie a sua conta. Você vai usar este e-mail e esta senha para entrar no painel.</p>
         <label for="coNome">Nome completo</label><input id="coNome" required maxlength="80" autocomplete="name">
         <div class="grid2"><div><label for="coEmail">E-mail (vai ser o seu login)</label><input id="coEmail" type="email" maxlength="60" autocomplete="email"></div>
           <div><label for="coSenha">Crie uma senha (6 ou mais)</label><input id="coSenha" type="password" minlength="6" autocomplete="new-password"></div></div>
+        <button class="btn pri" type="button" id="coNext">Criar conta e continuar</button>
+        <div class="switch">Já tem conta? <a data-open="login">Entrar</a></div>
       </div>
+      <div id="coPay2">
+      <p class="costxt" id="coOla"></p>
       <div class="grid2"><div><label for="coCpf">CPF ou CNPJ</label><input id="coCpf" required inputmode="numeric" maxlength="18" placeholder="000.000.000-00" autocomplete="off"></div>
         <div><label for="coCel">Celular com DDD</label><input id="coCel" inputmode="tel" maxlength="16" placeholder="(11) 90000-0000" autocomplete="tel"></div></div>
       <label for="coTk">Seu @ no TikTok (opcional)</label><input id="coTk" maxlength="40" placeholder="@seuusuario">
@@ -622,8 +633,10 @@
       </div>
       <div id="coParc" hidden><label for="coParcSel">Parcelas no cartão</label><select id="coParcSel"></select></div>
       <button class="btn pri" id="coBtn">Continuar</button>
+      <div class="switch" id="coBack"><a>← Voltar e corrigir a conta</a></div>
+      </div>
       <div class="err" id="coErr"></div>
-      <p class="switch" id="coSafe">O pagamento é feito na página segura do Asaas. Não guardamos dados do seu cartão.</p>
+      <p class="switch" id="coSafe">🔒 No próximo passo você paga com Pix, cartão ou boleto, aqui mesmo no site.</p>
     </form>
     <div class="form" id="coOk" hidden><h3 id="coOkT">Pronto! ✅</h3><div class="okmsg" id="coOkMsg"></div>
       <a class="btn pri" id="coPay" target="_blank" rel="noopener" hidden>Abrir a página de pagamento</a>
@@ -633,13 +646,13 @@
   <dialog id="dGame"><div class="box"><button class="x" data-close aria-label="Fechar">✕</button><div id="gameBody"></div></div></dialog>
   <!-- Entrar -->
   <dialog id="dLogin"><div class="box"><button class="x" data-close aria-label="Fechar">✕</button>
-    <form class="form" id="fLogin"><h3>Entrar</h3><p>Para quem já tem o cadastro aprovado.</p>
+    <form class="form" id="fLogin"><h3>Entrar</h3><p>Para quem já tem conta (paga ou criada pelo administrador).</p>
       <label for="lu">Usuário ou e-mail</label><input id="lu" autocomplete="username" required>
       <label for="lp">Senha</label><input id="lp" type="password" autocomplete="current-password" required>
       <button class="btn pri">Entrar</button>
       <div class="gwrap"><div class="or">ou</div><div class="gbtn" data-gmodo="login"></div></div>
       <div class="err" id="lErr"></div>
-      <div class="switch">Ainda não tem acesso? <a data-open="signup">Criar cadastro</a></div></form>
+      <div class="switch">Ainda não tem conta? <a data-open="signup">Escolha os jogos e crie a sua</a></div></form>
     <form class="form" id="fSetup" hidden><h3>Primeiro acesso</h3><p>Crie a conta do administrador (acesso total).</p>
       <label for="sc">Código de instalação</label><input id="sc" required autocomplete="off">
       <label for="su">E-mail do admin</label><input id="su" required autocomplete="username">
@@ -675,18 +688,21 @@
 
     // ---------- Janelas ----------
     const dlg = { login: $('#dLogin'), signup: $('#dSignup'), game: $('#dGame') };
-    const open = (k) => {
-      if (AUTH.user && (k === 'signup' || k === 'login')) { location.href = '/'; return; } // já logado: vai para o painel
+    const open = (k, jogo) => {
+      // Cadastro pelo site = escolher os jogos e pagar (só o admin cria conta de graça, pelo painel)
+      if (k === 'signup' && window.abrirPrecos) { Object.values(dlg).forEach((d) => d.open && d.close()); window.abrirPrecos(jogo); return; }
+      if (AUTH.user && k === 'login') { location.href = '/'; return; } // já logado: vai para o painel
       Object.values(dlg).forEach((d) => d.open && d.close());
       if (k === 'signup') { $('#fSignup').hidden = false; $('#rOk').hidden = true; }
       dlg[k].showModal();
     };
-    document.addEventListener('click', (e) => { const o = e.target.closest('[data-open]'); if (o) { e.preventDefault(); open(o.dataset.open); } if (e.target.closest('[data-close]')) e.target.closest('dialog').close(); });
+    document.addEventListener('click', (e) => { const o = e.target.closest('[data-open]'); if (o) { e.preventDefault(); open(o.dataset.open, o.dataset.jogo); } if (e.target.closest('[data-close]')) e.target.closest('dialog').close(); });
     Object.values(dlg).forEach((d) => d.addEventListener('click', (e) => { if (e.target === d) d.close(); }));
     dlg.game.addEventListener('close', () => $$('video', dlg.game).forEach((v) => v.pause()));
     const post = async (url, body) => { const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || 'Não deu certo, tente de novo.'); return j; };
     const form = (f, errEl, fn) => f.addEventListener('submit', async (e) => { e.preventDefault(); $(errEl).textContent = ''; const b = f.querySelector('button'); b.disabled = true; try { await fn(); } catch (x) { $(errEl).textContent = x.message; } finally { b.disabled = false; } });
-    form($('#fLogin'), '#lErr', async () => { await post('/api/login', { username: $('#lu').value.trim(), password: $('#lp').value }); location.replace('/'); });
+    const vaiPagar = (j) => { if (!j.pagar) return false; $('#lErr').textContent = ''; dlg.login.querySelector('.form').innerHTML = `<h3>Pagamento pendente 💳</h3><div class="okmsg" style="background:rgba(255,200,61,.1);border-color:rgba(255,200,61,.4);color:#fde68a">${esc(j.aviso)}</div><a class="btn pri" href="${j.pagar}" style="width:100%;margin-top:16px">Fazer o pagamento agora</a>`; return true; };
+    form($('#fLogin'), '#lErr', async () => { const j = await post('/api/login', { username: $('#lu').value.trim(), password: $('#lp').value }); if (!vaiPagar(j)) location.replace('/'); });
     form($('#fSetup'), '#sErr', async () => { await post('/api/setup', { code: $('#sc').value.trim(), username: $('#su').value.trim(), password: $('#sp').value }); location.replace('/'); });
     form($('#fSignup'), '#rErr', async () => { await post('/api/signup', { name: $('#rn').value.trim(), username: $('#re').value.trim(), password: $('#rp').value, tiktok: $('#rt').value.trim(), message: $('#rm').value.trim() }); $('#fSignup').hidden = true; $('#rOk').hidden = false; });
     // ---------- Google: o mesmo botão entra (se já tem conta) ou pede o cadastro (se ainda não tem) ----------
@@ -696,6 +712,7 @@
       $(errEl).textContent = '';
       try {
         const j = await post('/api/google', { credential: r.credential, name: $('#rn').value.trim(), tiktok: $('#rt').value.trim(), message: $('#rm').value.trim() });
+        if (j.pagar) { open('login'); vaiPagar(j); return; }
         if (j.pendente) { open('signup'); $('#fSignup').hidden = true; $('#rOk').hidden = false; $('#rOkMsg').textContent = `Pedido enviado com o Google (${j.email}). Quando o administrador aprovar, é só clicar em "Continuar com o Google" no Entrar.`; return; }
         location.replace('/');
       } catch (x) { $(errEl).textContent = x.message; }
@@ -989,7 +1006,7 @@
       const vid = VIDS.includes(g.id);
       $('#gameBody').innerHTML = `<div class="det" style="--c:${esc(g.color || '#22e3ee')}">
         <div><div class="cover"><span>${g.icon}</span>${vid ? '<video muted playsinline loop autoplay></video>' : `<img src="${cover(g)}" alt="" onerror="this.remove()">`}<div class="badges">${badges(g)}</div></div>
-          <button class="btn pri" data-open="signup" style="width:100%;margin-top:12px">${AUTH.user ? 'Abrir no meu painel' : 'Quero usar este jogo'}</button></div>
+          <button class="btn pri" data-open="signup" data-jogo="${g.id}" style="width:100%;margin-top:12px">Quero usar este jogo</button></div>
         <div><small style="color:var(--mut);font-weight:800">${g.genreIcon} ${esc(g.genreName)}${g.classic ? ' · Clássico' : ''}</small><h3>${g.icon} ${esc(g.name)}</h3><p>${esc(g.desc)}</p>
           <h4>Como funciona</h4><p>${esc(g.help)}</p>
           ${rows ? `<h4>O que o público faz</h4><div class="legend"><span><i style="background:var(--ok)"></i>ajuda</span><span><i style="background:var(--bad)"></i>atrapalha</span><span><i style="background:var(--show)"></i>aparece/entra</span><span>Você escolhe que presente faz o quê.</span></div><div class="rows">${rows}</div>` : ''}
@@ -1025,6 +1042,7 @@
     const total = () => CAT.games.length;
 
     // Abrir a seção (fica escondida até a pessoa pedir)
+    window.abrirPrecos = (jogo) => { if (jogo && CAT.games.some((g) => g.id === jogo)) { bag.add(jogo); desenhaGrade(); conta(); } abrirPrecos(); };
     function abrirPrecos() {
       const s = $('#precos');
       if (s.hidden) { s.hidden = false; s.classList.add('abrindo'); document.body.classList.add('shopping'); }
@@ -1097,8 +1115,8 @@
       const tip = tipForce || (n && !p.todos && extra > 0 ? `🎁 Por esse mesmo preço você leva ${p.cabe} jogos: escolha mais ${extra} sem pagar nada a mais.` : '');
       $('#tip').hidden = !tip; $('#tip').textContent = tip;
       const btn = $('#buy'); btn.disabled = !n;
-      btn.textContent = !n ? 'Escolha os jogos' : ciclo === 'mensal' && !AUTH.user?.plano ? `Testar ${TESTE_DIAS} dias grátis` : ciclo === 'mensal' ? `Assinar por ${reais(p.mensal)}/mês` : `Assinar o anual por ${reais(p.anual)}`;
-      $('#fine').textContent = ciclo === 'mensal' ? (AUTH.user?.plano ? 'Cobrança todo mês · cancele quando quiser' : `Nada a pagar agora: a 1ª cobrança é daqui a ${TESTE_DIAS} dias · cancele quando quiser`) : 'Pix, boleto ou cartão em até 12x';
+      btn.textContent = !n ? 'Escolha os jogos' : ciclo === 'mensal' && TESTE_DIAS > 0 && !AUTH.user?.plano ? `Testar ${TESTE_DIAS} dias grátis` : ciclo === 'mensal' ? `Assinar por ${reais(p.mensal)}/mês` : `Assinar o anual por ${reais(p.anual)}`;
+      $('#fine').textContent = ciclo === 'mensal' ? 'Pix, cartão ou boleto · libera assim que o pagamento cair · cancele quando quiser' : 'Pix, boleto ou cartão em até 12x · libera assim que o pagamento cair';
       $('#mbN').textContent = `${n} jogo${n === 1 ? '' : 's'}`; $('#mbV').textContent = n ? (ciclo === 'anual' ? `${reais(p.anual)}/ano` : `${reais(p.mensal)}/mês`) : 'escolha os jogos';
       $('#mbGo').textContent = n ? 'Assinar' : 'Ver sacola';
     }
@@ -1112,37 +1130,51 @@
     $('#coCel').addEventListener('input', (e) => { const d = e.target.value.replace(/\D/g, '').slice(0, 11); e.target.value = d.length > 6 ? `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}` : d.length > 2 ? `(${d.slice(0, 2)}) ${d.slice(2)}` : d; });
     const forma = () => $('#coPays input:checked').value;
     function resumoCheckout() {
-      const p = preco(bag.size, total()), anual = ciclo === 'anual', teste = !anual && !AUTH.user?.plano;
+      const p = preco(bag.size, total()), anual = ciclo === 'anual', teste = TESTE_DIAS > 0 && !anual && !AUTH.user?.plano;
       const qual = p.todos ? 'Todos os jogos' : `${bag.size} jogo${bag.size > 1 ? 's' : ''}`;
       $('#coSum').innerHTML = `<b>${qual}</b> · plano ${anual ? 'anual' : 'mensal'}<br>${anual ? `${reais(p.anual)} por ano (sai ${reais(p.anualMes)}/mês)` : `${reais(p.mensal)} por mês`}${teste ? `<br>🎁 <b>${TESTE_DIAS} dias grátis</b>: a 1ª cobrança é só daqui a ${TESTE_DIAS} dias.` : ''}`;
       $('#coT').textContent = teste ? 'Começar teste grátis' : anual ? 'Assinar o plano anual' : 'Assinar o plano mensal';
       $('#coCardTxt').textContent = anual ? 'até 12x' : 'todo mês';
       const showParc = anual && forma() === 'CREDIT_CARD'; $('#coParc').hidden = !showParc;
       if (showParc) { const max = Math.max(1, Math.min(12, Math.floor(p.anual / 500))); const cur = $('#coParcSel').value; $('#coParcSel').innerHTML = Array.from({ length: max }, (_, i) => `<option value="${i + 1}">${i + 1}x de ${reais(Math.round(p.anual / (i + 1)))}${i ? ' sem juros' : ' à vista'}</option>`).join(''); if (cur && cur <= max) $('#coParcSel').value = cur; }
-      $('#coBtn').textContent = teste ? 'Começar meus 30 dias grátis' : 'Ir para o pagamento';
+      $('#coBtn').textContent = teste ? 'Começar meus 30 dias grátis' : 'Continuar para o pagamento';
     }
     $('#coPays').addEventListener('change', resumoCheckout);
     $('#buy').addEventListener('click', () => {
       if (!bag.size) return;
       if (AUTH.user?.role === 'admin') { $('#tip').hidden = false; $('#tip').textContent = 'Você é o admin: já tem todos os jogos. Teste a compra com outra conta.'; return; }
       const logado = Boolean(AUTH.user);
-      $('#coNovo').hidden = logado; $('#coEmail').required = !logado; $('#coSenha').required = !logado; $('#coNome').required = !logado;
+      passo(logado ? 2 : 1); $('#coSteps').hidden = logado;
       $('#fCheckout').hidden = false; $('#coOk').hidden = true; $('#coErr').textContent = '';
       if (!PL.pagamentos) $('#coErr').textContent = 'Os pagamentos ainda estão sendo ativados. Se quiser, use "Criar cadastro" e o administrador libera para você.';
       resumoCheckout(); open('checkout');
     });
+    // Passo 1 (criar conta) e passo 2 (dados do pagamento)
+    function passo(n) {
+      const um = n === 1;
+      $('#coNovo').hidden = !um; $('#coPay2').hidden = um;
+      ['coNome', 'coEmail', 'coSenha'].forEach((id) => ($('#' + id).required = um));
+      $('#coCpf').required = !um;
+      $('#cs1').className = um ? 'on' : 'done'; $('#cs1 b').textContent = um ? '1' : '✓'; $('#cs2').className = um ? '' : 'on';
+      $('#coBack').hidden = um || Boolean(AUTH.user);
+      if (!um) $('#coOla').textContent = AUTH.user ? 'Confira os dados para o pagamento.' : `Conta pronta para ${$('#coEmail').value.trim()}. Agora os dados para o pagamento:`;
+      $('#coErr').textContent = '';
+    }
+    $('#coNext').addEventListener('click', async () => {
+      const nome = $('#coNome').value.trim(), email = $('#coEmail').value.trim(), senha = $('#coSenha').value;
+      if (nome.length < 3) return ($('#coErr').textContent = 'Coloque o seu nome completo.');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return ($('#coErr').textContent = 'Coloque um e-mail válido.');
+      if (senha.length < 6) return ($('#coErr').textContent = 'A senha precisa de 6 ou mais caracteres.');
+      try { const r = await (await fetch('/api/email-livre?e=' + encodeURIComponent(email))).json(); if (r.livre === false) return ($('#coErr').innerHTML = 'Esse e-mail já tem conta. <a data-open="login" style="color:var(--acc2);font-weight:800;cursor:pointer">Entre</a> e depois assine.'); } catch {}
+      passo(2); $('#coCpf').focus();
+    });
+    $('#coBack').addEventListener('click', () => passo(1));
     $('#fCheckout').addEventListener('submit', async (e) => {
-      e.preventDefault(); $('#coErr').textContent = ''; const b = $('#coBtn'); b.disabled = true; const t0 = b.textContent; b.textContent = 'Criando…';
+      e.preventDefault(); if (!$('#coNovo').hidden) return $('#coNext').click(); $('#coErr').textContent = ''; const b = $('#coBtn'); b.disabled = true; const t0 = b.textContent; b.textContent = 'Criando…';
       try {
         const p = preco(bag.size, total());
         const j = await post('/api/checkout', { games: [...bag], todos: p.todos, ciclo, forma: forma(), parcelas: Number($('#coParcSel').value) || 1, nome: $('#coNome').value.trim(), email: $('#coEmail').value.trim(), senha: $('#coSenha').value, cpf: $('#coCpf').value, celular: $('#coCel').value, tiktok: $('#coTk').value.trim() });
-        $('#fCheckout').hidden = true; $('#coOk').hidden = false;
-        const ate = new Date(j.ate).toLocaleDateString('pt-BR');
-        $('#coOkT').textContent = j.teste ? 'Seu teste começou! 🎉' : 'Quase lá! 💳';
-        $('#coOkMsg').textContent = j.teste ? `Os seus jogos já estão liberados até ${ate}. A primeira cobrança de ${reais(j.valor)} vence nesse dia; você também pode deixar paga agora pela página do Asaas.` : 'Falta só pagar. Abra a página do Asaas e pague com a forma que escolheu: assim que o pagamento cair, os jogos liberam sozinhos no seu painel.';
-        const pay = $('#coPay'); pay.hidden = !j.fatura; if (j.fatura) pay.href = j.fatura;
-        AUTH.user = AUTH.user || { plano: true };
-        if (j.fatura && !j.teste) window.open(j.fatura, '_blank', 'noopener');
+        location.href = j.pagar || '/pagar'; // pagamento na página do próprio site
       } catch (x) { $('#coErr').textContent = x.message; } finally { b.disabled = false; b.textContent = t0; }
     });
 

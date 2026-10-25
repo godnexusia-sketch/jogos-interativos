@@ -9,7 +9,7 @@ export const PACOTES = [ // n jogos por mês
 ];
 export const TODOS = 9990; // pacote completo, todos os jogos
 export const DESCONTO_ANUAL = 0.5; // anual: metade do preço
-export const TESTE_DIAS = 30; // teste grátis da assinatura mensal
+export const TESTE_DIAS = 0; // teste grátis da assinatura mensal (0 = sem teste: só libera depois do pagamento confirmado)
 
 export const reais = (c) => (c / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 

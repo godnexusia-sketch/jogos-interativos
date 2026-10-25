@@ -200,12 +200,30 @@ const limpaPerms = (p) => (Array.isArray(p) ? p.filter((x) => PERMS.includes(x))
 let CAT_IDS = [];
 fs.readFile(path.join(PUBLIC_DIR, 'data', 'catalogo.json'), 'utf8').then((t) => { CAT_IDS = JSON.parse(t).games.map((g) => g.id); }).catch((e) => console.warn('catálogo:', e.message));
 // Plano pago: venceu (e não é admin) = fica sem jogos até pagar
-const planoVencido = (c) => c?.role !== 'admin' && c?.plano?.ciclo && Date.now() > Number(c.plano.ate || 0);
+// Plano pago: os jogos só ficam liberados depois que o Asaas confirma o pagamento (e até a data paga)
+const planoVencido = (c) => Boolean(c?.role !== 'admin' && c?.plano?.ciclo && (c.plano.status === 'aguardando' || c.plano.status === 'teste' || Date.now() > Number(c.plano.ate || 0)));
+const AVISO_PAGAR = 'O pagamento para acesso aos jogos ainda não foi confirmado. Faça o pagamento o quanto antes para liberar o seu acesso.';
+const avisoDe = (c) => (c?.plano?.pagos?.length ? `Aguardando renovação do pacote: o seu acesso venceu em ${new Date(Number(c.plano.ate)).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}. Faça a renovação para voltar a usar os jogos, com todas as suas configurações.` : AVISO_PAGAR);
 const jogosDe = (c) => (c?.plano?.ciclo && c.plano.todos && CAT_IDS.length ? CAT_IDS : c?.games || []);
 const planoPublico = (p) => p?.ciclo ? { ciclo: p.ciclo, n: p.todos ? CAT_IDS.length : (p.games || []).length, todos: Boolean(p.todos), valor: p.valor, forma: p.forma, parcelas: p.parcelas || 1, status: p.status, teste: Boolean(p.teste), ate: p.ate, fatura: p.fatura || '' } : null;
 const contaPublica = (c) => c && { id: c.id, username: c.username, role: c.role, games: jogosDe(c), perms: c.perms || [], plano: planoPublico(c.plano), vencido: Boolean(planoVencido(c)), ai: { provider: c.ai?.provider || 'sistema', model: c.ai?.model || '', ollamaUrl: c.ai?.ollamaUrl || '', temChave: Boolean(c.ai?.key), feito: Boolean(c.ai?.feito) } };
 const ASAAS_WEBHOOK_TOKEN = String(process.env.ASAAS_WEBHOOK_TOKEN || '').trim();
 const DIA = 86400e3;
+// Pagamento caiu: estende o acesso (mensal: até o próximo vencimento + folga; anual: 1 ano)
+// Regra do dono: mensal = 30 dias exatos a partir da liberação; anual = 1 ano. Pagou antes de vencer: soma ao que falta.
+async function liberar(u, pay) {
+  const pl = { ...u.plano };
+  const chave = pay.installment || pay.id; // parcelas do mesmo anual contam uma vez só
+  pl.pagos = Array.isArray(pl.pagos) ? pl.pagos : [];
+  if (chave && pl.pagos.includes(chave)) return; // já contado (aviso do Asaas e conferência da página chegam os dois)
+  const agora = Date.now(), aindaVale = pl.status === 'ativo' && Number(pl.ate || 0) > agora;
+  pl.ate = (aindaVale ? Number(pl.ate) : agora) + (pl.ciclo === 'anual' ? 365 : 30) * DIA;
+  pl.liberadoEm = agora;
+  pl.pagos = [...pl.pagos, chave].slice(-36);
+  pl.status = 'ativo';
+  await contas.alterar(u.id, { plano: pl }); contas.esqueceCache(u.id);
+  console.log(`asaas: pago conta ${u.id} → ativo até ${new Date(pl.ate).toISOString().slice(0, 10)}`);
+}
 const dataAsaas = (ms) => new Date(ms - 3 * 3600e3).toISOString().slice(0, 10); // dia no horário de Brasília
 const tentativas = new Map(); // ip -> { n, ate }: no máximo 10 tentativas de login por minuto
 const ipDe = (req) => String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
@@ -284,8 +302,8 @@ const server = http.createServer(async (req, res) => {
     // Primeiro acesso do dono: o e-mail do admin (ADMIN_EMAIL) vira o admin direto pelo Google
     if (!c && email === ADMIN_EMAIL && (await contas.quantas()) === 0) c = await contas.porId((await contas.criar({ username: email, senha: crypto.randomBytes(24).toString('hex'), role: 'admin' })).id);
     if (c?.status === 'pendente') return sendJson(res, 403, { error: ESPERA });
-    if (!c) {
-      // Sem conta: o Google vira um pedido de cadastro (o admin aprova na aba Usuários)
+    if (!c) return sendJson(res, 403, { error: `O e-mail ${email} ainda não tem conta. Clique em "Preços", escolha os jogos e crie a sua conta com este e-mail.` });
+    if (false) {
       if ((await contas.quantas()) === 0) return sendJson(res, 403, { error: 'o sistema ainda está sendo instalado, tente mais tarde' });
       if ((await contas.listar()).filter((u) => u.status === 'pendente').length >= 200) return sendJson(res, 429, { error: 'muitos pedidos na fila, tente mais tarde' });
       const nome = String(b.name || info.name || email.split('@')[0]).trim().slice(0, 60);
@@ -294,6 +312,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (c.disabled) return sendJson(res, 403, { error: 'seu acesso está desativado — fale com o administrador' });
     const { token } = await contas.novaSessao(c.id); setSess(req, res, token, 2592000);
+    if (planoVencido(c)) return sendJson(res, 200, { ok: true, pagar: '/pagar?aviso=1', aviso: avisoDe(c) });
     return sendJson(res, 200, { ok: true });
   }
   if (url.pathname === '/api/setup' && req.method === 'POST') {
@@ -316,9 +335,11 @@ const server = http.createServer(async (req, res) => {
     if (c.status === 'pendente') return sendJson(res, 403, { error: ESPERA });
     if (c.disabled) return sendJson(res, 403, { error: 'seu acesso está desativado — fale com o administrador' });
     const { token } = await contas.novaSessao(c.id); setSess(req, res, token, 2592000);
+    if (planoVencido(c)) return sendJson(res, 200, { ok: true, pagar: '/pagar?aviso=1', aviso: avisoDe(c) });
     return sendJson(res, 200, { ok: true, user: contaPublica(c) });
   }
-  if (url.pathname === '/api/signup' && req.method === 'POST') {
+  if (url.pathname === '/api/signup' && req.method === 'POST') return sendJson(res, 410, { error: 'Para criar a sua conta, clique em "Preços", escolha os jogos e faça o pagamento.' });
+  if (url.pathname === '/api/signup-antigo' && req.method === 'POST') {
     // Pedido de cadastro: a conta nasce "pendente" e só entra depois que o admin aprovar (aba Usuários)
     const b = await lerJson(req); if (!b) return sendJson(res, 400, { error: 'dados inválidos' });
     if (demais(req)) return sendJson(res, 429, { error: 'muitas tentativas, espere um minuto' });
@@ -335,7 +356,7 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, { ok: true });
   }
   if (url.pathname === '/api/logout' && req.method === 'POST') { const t = decodeURIComponent(cookieDe(req, 'sess')); if (t) await contas.fimSessao(t); setSess(req, res, '', 0); return sendJson(res, 200, { ok: true }); }
-  if (url.pathname === '/api/me') { const c = await contaDe(req); return c ? sendJson(res, 200, contaPublica(c)) : sendJson(res, 401, { error: 'faça login' }); }
+  if (url.pathname === '/api/me') { const c = await contaDe(req); if (c && planoVencido(c)) return sendJson(res, 402, { error: avisoDe(c), pagar: '/pagar?aviso=1' }); return c ? sendJson(res, 200, contaPublica(c)) : sendJson(res, 401, { error: 'faça login' }); }
   if (url.pathname === '/api/me/ai' && req.method === 'PUT') {
     const c = await contaDe(req); if (!c) return sendJson(res, 401, { error: 'faça login' });
     const b = await lerJson(req); if (!b || !AI_PROVS.includes(b.provider)) return sendJson(res, 400, { error: 'escolha uma opção' });
@@ -352,7 +373,8 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && !id) {
       const b = await lerJson(req); if (!b || !NOME_RE.test(b.username || '') || String(b.password || '').length < 6) return sendJson(res, 400, { error: 'usuário ou e-mail e senha (6+ caracteres)' });
       if (await contas.porNome(b.username)) return sendJson(res, 409, { error: 'esse usuário já existe' });
-      return sendJson(res, 200, contaPublica(await contas.criar({ username: String(b.username).trim().toLowerCase(), senha: b.password, role: b.role === 'admin' ? 'admin' : 'user', games: Array.isArray(b.games) ? b.games.slice(0, 200).map(String) : [], perms: limpaPerms(b.perms) || [] })));
+      const info = { nome: String(b.nome || '').trim().slice(0, 80), celular: String(b.celular || '').replace(/\D/g, '').slice(0, 13), tiktok: String(b.tiktok || '').trim().replace(/^@/, '').slice(0, 40), recado: String(b.obs || '').trim().slice(0, 300), origem: 'admin' };
+      return sendJson(res, 200, contaPublica(await contas.criar({ username: String(b.username).trim().toLowerCase(), senha: b.password, role: b.role === 'admin' ? 'admin' : 'user', games: Array.isArray(b.games) ? b.games.slice(0, 200).map(String) : [], perms: limpaPerms(b.perms) || [], info })));
     }
     if (req.method === 'PUT' && id) {
       const b = await lerJson(req) || {};
@@ -393,7 +415,7 @@ const server = http.createServer(async (req, res) => {
     }
     const todasContas = await contas.listar();
     // 30 dias grátis: só na primeira assinatura mensal (por conta e por CPF)
-    const teste = ciclo === 'mensal' && !conta?.plano?.ciclo && !todasContas.some((u) => u.plano?.cpf === cpf);
+    const teste = TESTE_DIAS > 0 && ciclo === 'mensal' && !conta?.plano?.ciclo && !todasContas.some((u) => u.plano?.cpf === cpf);
     let nova = false;
     if (!conta) { conta = await contas.porId((await contas.criar({ username: email, senha: b.senha, games, perms: PERMS.slice(), info: { nome, tiktok: String(b.tiktok || '').trim().replace(/^@/, '').slice(0, 40), origem: 'compra' } })).id); nova = true; }
     const desc = `${todos ? 'todos os jogos' : `${games.length} jogo${games.length > 1 ? 's' : ''}`} (${ciclo})`;
@@ -403,8 +425,9 @@ const server = http.createServer(async (req, res) => {
       const cli = await asaas.cliente({ nome, cpf, email, celular, ref });
       const vence = dataAsaas(teste ? agora + TESTE_DIAS * DIA : agora);
       r = ciclo === 'mensal'
-        ? await asaas.assinatura({ cliente: cli.id, valor, vence, forma, descricao: `Jogos Interativos: ${desc}`, ref })
-        : await asaas.cobranca({ cliente: cli.id, valor, vence, forma, parcelas, descricao: `Jogos Interativos: ${desc}`, ref });
+        ? await asaas.assinatura({ cliente: cli.id, valor, vence, forma: 'UNDEFINED', descricao: `Jogos Interativos: ${desc}`, ref })
+        : forma === 'CREDIT_CARD' ? { id: '', fatura: '' } // anual no cartão: a cobrança nasce já paga quando a pessoa digita o cartão
+        : await asaas.cobranca({ cliente: cli.id, valor, vence, forma: 'UNDEFINED', parcelas: 1, descricao: `Jogos Interativos: ${desc}`, ref });
       r.cliente = cli.id;
     } catch (e) {
       console.warn('asaas:', e.message);
@@ -413,11 +436,11 @@ const server = http.createServer(async (req, res) => {
     }
     // Trocou de plano: cancela a assinatura antiga
     if (conta.plano?.asaasSub && conta.plano.asaasSub !== r.id) asaas.cancelarAssinatura(conta.plano.asaasSub).catch((e) => console.warn('asaas cancelar:', e.message));
-    const plano = { ciclo, games, todos, valor, forma, parcelas, cpf, teste, cabe: pr.cabe, inicio: agora, ate: teste ? agora + TESTE_DIAS * DIA : Math.max(agora, Number(conta.plano?.ate || 0)), status: teste ? 'teste' : 'aguardando', asaasCliente: r.cliente, asaasSub: ciclo === 'mensal' ? r.id : '', asaasPag: ciclo === 'anual' ? r.id : '', parcelamento: r.parcelamento || '', fatura: r.fatura };
+    const plano = { ciclo, games, todos, valor, forma, parcelas, cpf, teste, cabe: pr.cabe, inicio: agora, ate: teste ? agora + TESTE_DIAS * DIA : Math.max(agora, Number(conta.plano?.ate || 0)), status: teste ? 'teste' : conta.plano?.status === 'ativo' && Number(conta.plano.ate || 0) > agora ? 'ativo' : 'aguardando', asaasCliente: r.cliente, asaasSub: ciclo === 'mensal' ? r.id : '', asaasPag: ciclo === 'anual' ? r.id : '', parcelamento: r.parcelamento || '', fatura: r.fatura, formaPref: forma, desc };
     await contas.alterar(conta.id, { games, plano, status: 'ok' }); contas.esqueceCache(conta.id);
     if (nova) { const { token } = await contas.novaSessao(conta.id); setSess(req, res, token, 2592000); }
     console.log(`assinatura: conta ${conta.id} ${desc} ${reais(valor)}${teste ? ' (teste grátis)' : ''}`);
-    return sendJson(res, 200, { ok: true, teste, fatura: r.fatura, valor, ciclo, ate: plano.ate });
+    return sendJson(res, 200, { ok: true, teste, pagar: '/pagar', valor, ciclo, ate: plano.ate });
   }
   if (url.pathname === '/api/asaas/webhook' && req.method === 'POST') {
     // Avisos do Asaas: pagamento confirmado libera os jogos; atrasado/cancelado marca o plano
@@ -431,9 +454,7 @@ const server = http.createServer(async (req, res) => {
     if (!u) return sendJson(res, 200, { ok: true, achou: false });
     const pl = { ...u.plano };
     if (ev === 'PAYMENT_CONFIRMED' || ev === 'PAYMENT_RECEIVED') {
-      const due = Date.parse((pay.dueDate || dataAsaas(Date.now())) + 'T12:00:00-03:00');
-      pl.ate = pl.ciclo === 'anual' ? Math.max(Number(pl.ate || 0), Number(pl.inicio || Date.now()) + 366 * DIA) : Math.max(Number(pl.ate || 0), Math.max(due, Date.now()) + 33 * DIA);
-      pl.status = 'ativo'; if (pay.invoiceUrl) pl.fatura = pay.invoiceUrl;
+      await liberar(u, pay); return sendJson(res, 200, { ok: true });
     } else if (ev === 'PAYMENT_OVERDUE') { pl.status = 'atrasado'; if (pay.invoiceUrl) pl.fatura = pay.invoiceUrl; }
     else if (ev === 'PAYMENT_CREATED' || ev === 'PAYMENT_UPDATED') { if (pay.invoiceUrl && pay.status === 'PENDING') pl.fatura = pay.invoiceUrl; }
     else if (ev === 'PAYMENT_REFUNDED' || ev === 'PAYMENT_CHARGEBACK_REQUESTED') { pl.status = 'cancelado'; pl.ate = Date.now(); }
@@ -443,9 +464,104 @@ const server = http.createServer(async (req, res) => {
     console.log(`asaas: ${ev} conta ${u.id} → ${pl.status} até ${new Date(pl.ate).toISOString().slice(0, 10)}`);
     return sendJson(res, 200, { ok: true });
   }
+  // ---------- Página de pagamento do próprio site (/pagar) ----------
+  if (url.pathname.startsWith('/api/pagamento')) {
+    const c = await contaDe(req); if (!c) return sendJson(res, 401, { error: 'faça login' });
+    const pl = c.plano || {};
+    if (!pl.ciclo) return sendJson(res, 404, { error: 'você ainda não tem plano' });
+    if (!asaas.ligado()) return sendJson(res, 503, { error: 'pagamentos desligados' });
+    const sub = url.pathname.slice('/api/pagamento'.length);
+    try {
+      // A cobrança em aberto agora (mensal: a mais antiga da assinatura; anual: a cobrança única)
+      const pendente = async () => {
+        if (pl.ciclo === 'mensal' && pl.asaasSub) return asaas.pendenteDaAssinatura(pl.asaasSub);
+        if (pl.asaasPag) {
+          const p = await asaas.cobrancaGet(pl.asaasPag);
+          if (p.status === 'PENDING' || p.status === 'OVERDUE') return p;
+          // Anual que já venceu: nova cobrança de renovação (1 ano)
+          if (pl.ciclo === 'anual' && planoVencido(c) && pl.pagos?.length) {
+            const r = await asaas.cobranca({ cliente: pl.asaasCliente, valor: pl.valor, vence: dataAsaas(Date.now()), forma: 'UNDEFINED', parcelas: 1, descricao: `Jogos Interativos: renovação ${pl.desc || 'plano anual'}`, ref: `conta:${c.id}` });
+            Object.assign(pl, { asaasPag: r.id, parcelamento: '' }); await contas.alterar(c.id, { plano: pl }); contas.esqueceCache(c.id);
+            return asaas.cobrancaGet(r.id);
+          }
+        }
+        return null;
+      };
+      if (sub === '' && req.method === 'GET') {
+        const p = await pendente();
+        const nomes = (pl.todos ? CAT_IDS : pl.games || []);
+        return sendJson(res, 200, { plano: planoPublico(pl), vencido: Boolean(planoVencido(c)), aviso: planoVencido(c) ? avisoDe(c) : '', jogos: nomes, desc: pl.desc || '', formaPref: pl.formaPref || 'PIX', cpf: pl.cpf || '', email: String(c.username).includes('@') ? c.username : '', precisaCartao: pl.ciclo === 'anual' && !pl.asaasPag && pl.status !== 'ativo',
+          pendente: p ? { id: p.id, valor: Math.round(p.value * 100), vence: p.dueDate, status: p.status } : null, maxParcelas: Math.max(1, Math.min(12, Math.floor(pl.valor / 500))) });
+      }
+      if (sub === '/pix' || sub === '/boleto') {
+        const p = await pendente(); if (!p) return sendJson(res, 404, { error: 'nada em aberto' });
+        if (sub === '/pix') { const q = await asaas.pix(p.id); return sendJson(res, 200, { img: q.encodedImage, payload: q.payload, expira: q.expirationDate }); }
+        const l = await asaas.linhaBoleto(p.id); return sendJson(res, 200, { linha: l.identificationField, pdf: p.bankSlipUrl || '' });
+      }
+      if (sub === '/status') {
+        // Confere direto no Asaas (não espera o aviso): se já caiu, libera na hora
+        const id = pl.ciclo === 'anual' ? pl.asaasPag : url.searchParams.get('id');
+        if (id && /^pay_\w+$/.test(id)) { const p = await asaas.cobrancaGet(id); if (['RECEIVED', 'CONFIRMED', 'RECEIVED_IN_CASH'].includes(p.status) && (p.subscription ? p.subscription === pl.asaasSub : p.id === pl.asaasPag || p.installment === pl.parcelamento)) await liberar(c, p); }
+        const atual = await contas.porId(c.id); contas.esqueceCache(c.id);
+        return sendJson(res, 200, { plano: planoPublico(atual.plano), vencido: Boolean(planoVencido(atual)) });
+      }
+      if (sub === '/cartao' && req.method === 'POST') {
+        if (demais(req)) return sendJson(res, 429, { error: 'muitas tentativas, espere um minuto' });
+        const b = await lerJson(req); if (!b) return sendJson(res, 400, { error: 'dados inválidos' });
+        const num = String(b.numero || '').replace(/\D/g, ''), cvv = String(b.cvv || '').replace(/\D/g, ''), mes = String(b.mes || '').padStart(2, '0'), ano = String(b.ano || '').length === 2 ? '20' + b.ano : String(b.ano || '');
+        const luhn = (n) => { let s = 0; for (let i = 0; i < n.length; i++) { let d = Number(n[n.length - 1 - i]); if (i % 2) { d *= 2; if (d > 9) d -= 9; } s += d; } return n.length >= 13 && s % 10 === 0; };
+        if (!luhn(num)) return sendJson(res, 400, { error: 'número do cartão inválido' });
+        if (!/^(0[1-9]|1[0-2])$/.test(mes) || !/^20\d\d$/.test(ano)) return sendJson(res, 400, { error: 'validade inválida (mês/ano)' });
+        if (cvv.length < 3) return sendJson(res, 400, { error: 'código de segurança inválido' });
+        const cartao = { nome: String(b.nome || '').trim().slice(0, 60), numero: num, mes, ano, cvv };
+        if (cartao.nome.length < 3) return sendJson(res, 400, { error: 'coloque o nome como está no cartão' });
+        const titular = { nome: String(b.titular || cartao.nome).trim().slice(0, 80), email: String(c.username).includes('@') ? c.username : String(b.email || ''), cpf: String(b.cpf || pl.cpf || '').replace(/\D/g, ''), cep: String(b.cep || '').replace(/\D/g, ''), numeroCasa: String(b.numeroCasa || '').slice(0, 10), telefone: String(b.telefone || '').replace(/\D/g, '') };
+        if (!asaas.docValido(titular.cpf)) return sendJson(res, 400, { error: 'CPF ou CNPJ do titular inválido' });
+        if (titular.cep.length !== 8) return sendJson(res, 400, { error: 'CEP inválido' });
+        if (!titular.numeroCasa) return sendJson(res, 400, { error: 'coloque o número do endereço' });
+        if (titular.telefone.length < 10) return sendJson(res, 400, { error: 'coloque o celular com DDD' });
+        const ip = ipDe(req);
+        let pago = null, msg = '';
+        if (pl.ciclo === 'mensal') {
+          await asaas.cartaoNaAssinatura(pl.asaasSub, cartao, titular, ip);
+          const p = await pendente();
+          const hoje = dataAsaas(Date.now());
+          if (p && p.dueDate <= hoje) pago = await asaas.pagarComCartao(p.id, cartao, titular, ip);
+          msg = pago ? 'Pagamento aprovado!' : `Cartão cadastrado: a cobrança de ${reais(pl.valor)} cai sozinha todo mês${p ? `, a primeira em ${p.dueDate.split('-').reverse().join('/')}` : ''}.`;
+          await contas.alterar(c.id, { plano: { ...pl, formaPref: 'CREDIT_CARD', cartao: true } });
+        } else {
+          const parcelas = Math.max(1, Math.min(12, Number(b.parcelas) || 1, Math.floor(pl.valor / 500)));
+          const p = await pendente();
+          if (p && parcelas === 1) pago = await asaas.pagarComCartao(p.id, cartao, titular, ip);
+          else {
+            if (p) await asaas.apagarCobranca(p.id).catch(() => {});
+            pago = await asaas.cobrancaCartao({ cliente: pl.asaasCliente, valor: pl.valor, parcelas, descricao: `Jogos Interativos: ${pl.desc || 'plano anual'}`, ref: `conta:${c.id}`, cartao, titular, ip, vence: dataAsaas(Date.now()) });
+            await contas.alterar(c.id, { plano: { ...pl, asaasPag: pago.id, parcelamento: pago.installment || '', parcelas, formaPref: 'CREDIT_CARD' } });
+          }
+          msg = 'Pagamento aprovado!';
+        }
+        const fresco = await contas.porId(c.id);
+        if (pago && ['CONFIRMED', 'RECEIVED'].includes(pago.status)) await liberar(fresco, pago);
+        else if (pago) msg = 'Pagamento em análise pelo banco: assim que aprovar, os jogos liberam sozinhos.';
+        contas.esqueceCache(c.id);
+        const atual = await contas.porId(c.id);
+        return sendJson(res, 200, { ok: true, msg, plano: planoPublico(atual.plano), vencido: Boolean(planoVencido(atual)) });
+      }
+    } catch (e) {
+      console.warn('pagamento:', e.message);
+      return sendJson(res, 502, { error: e.message.replace(/asaas/ig, 'pagamento') });
+    }
+    return sendJson(res, 404, { error: 'rota' });
+  }
+  if (url.pathname === '/pagar') { if (!(await contaDe(req))) { res.writeHead(302, { location: '/?login' }); return res.end(); } return sendStatic(req, res, path.join(PUBLIC_DIR, 'pagar.html')); }
+  if (url.pathname === '/api/email-livre') { const e = String(url.searchParams.get('e') || '').trim().toLowerCase(); if (demais(req)) return sendJson(res, 429, { error: 'espere um minuto' }); return sendJson(res, 200, { livre: !(await contas.porNome(e)) }); }
   if (url.pathname === '/api/planos') return sendJson(res, 200, { total: CAT_IDS.length, pagamentos: asaas.ligado(), sandbox: asaas.sandbox(), testeDias: TESTE_DIAS });
   // Página do painel: sem login mostra a página de entrada com o catálogo (a tela da live, ?clean=1, abre sem login — é a fonte do LIVE Studio/OBS)
-  if ((url.pathname === '/' || url.pathname === '/index.html') && url.searchParams.get('clean') !== '1' && !(await contaDe(req))) return sendStatic(req, res, path.join(PUBLIC_DIR, 'inicio.html'));
+  if ((url.pathname === '/' || url.pathname === '/index.html') && url.searchParams.get('clean') !== '1') {
+    const c = await contaDe(req);
+    if (!c) return sendStatic(req, res, path.join(PUBLIC_DIR, 'inicio.html'));
+    if (planoVencido(c)) { res.writeHead(302, { location: '/pagar?aviso=1', 'cache-control': 'no-store' }); return res.end(); } // pagamento não confirmado: painel bloqueado
+  }
   if (url.pathname === '/inicio') return sendStatic(req, res, path.join(PUBLIC_DIR, 'inicio.html')); // a logo do painel volta para cá (logado ou não)
   if (url.pathname === '/api/diag') {
     // Diagnóstico: tenta achar a sala de um @ e mostra o resultado de cada fonte.
