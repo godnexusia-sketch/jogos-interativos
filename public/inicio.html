@@ -241,6 +241,78 @@
     .pre { opacity: 0; transform: translateY(28px); }
     .rv { transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); transition-delay: calc(var(--d, 0) * 70ms); }
 
+
+    /* ---------- Preços (escondido até clicar em "Ver preços") ---------- */
+    .pricelink { display: none; font-weight: 800; color: var(--gold); text-decoration: none; margin-left: auto; }
+    #precos { padding-block: 70px 60px; }
+    #precos.abrindo { animation: abre .6s var(--ease-out); }
+    @keyframes abre { from { opacity: 0; transform: translateY(24px); } }
+    .ph { display: flex; gap: 18px; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; margin-bottom: 26px; }
+    .ph .sub { margin-bottom: 0; }
+    .ciclo { display: inline-flex; padding: 5px; border-radius: 999px; background: rgba(255,255,255,.06); border: 1px solid var(--line2); position: relative; }
+    .ciclo button { position: relative; z-index: 1; border: 0; background: none; padding: 10px 20px; border-radius: 999px; font-weight: 800; transition: color .2s ease; }
+    .ciclo button small { margin-left: 6px; padding: 2px 7px; border-radius: 6px; background: var(--ok); color: #052e12; font-size: 12px; }
+    .ciclo i { position: absolute; top: 5px; bottom: 5px; left: 5px; border-radius: 999px; background: var(--acc2); transition: transform .3s var(--ease-out), width .3s var(--ease-out); }
+    .ciclo button.on { color: #001218; }
+    .packs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-bottom: 34px; }
+    .pack { position: relative; text-align: left; border: 1px solid var(--line2); border-radius: 20px; padding: 18px 16px; background: linear-gradient(180deg, rgba(20,27,54,.9), rgba(13,18,38,.9)); transition: transform .2s var(--ease-out), border-color .2s ease; min-width: 0; }
+    .pack:active { transform: scale(.97); }
+    @media (hover: hover) and (pointer: fine) { .pack:hover { border-color: rgba(255,200,61,.6); } }
+    .pack.top { border-color: rgba(255,45,85,.7); background: linear-gradient(180deg, rgba(60,18,40,.95), rgba(20,14,34,.95)); }
+    .pack .tg { position: absolute; top: -11px; right: 12px; background: var(--acc); font-size: 11px; font-weight: 900; padding: 3px 8px; border-radius: 6px; letter-spacing: .03em; }
+    .pack b { display: block; font-family: var(--f-cond); font-size: 22px; font-weight: 800; line-height: 1.1; }
+    .pack .pv { display: block; font-family: var(--f-display); font-size: 26px; margin: 8px 0 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .pack .pv small { font-family: var(--f-body); font-size: 14px; color: var(--mut); font-weight: 700; }
+    .pack .pe { color: var(--mut); font-size: 13.5px; font-weight: 700; }
+    .pack .pe s { opacity: .7; }
+    .shop { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 22px; align-items: start; }
+    .pick { min-width: 0; }
+    .pick .tools { margin-bottom: 14px; }
+    .pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; max-height: 640px; overflow: auto; padding: 4px; border-radius: 18px; }
+    .pg { position: relative; padding: 0; border: 2px solid transparent; border-radius: 14px; overflow: hidden; background: var(--card); text-align: left; transition: border-color .15s ease, transform .15s var(--ease-out); }
+    .pg:active { transform: scale(.96); }
+    .pg img { display: block; width: 100%; aspect-ratio: 9/11; object-fit: cover; object-position: top; background: #0b0f20; }
+    .pg span { display: block; padding: 6px 8px 8px; font-size: 13px; font-weight: 800; line-height: 1.15; }
+    .pg::after { content: "+"; position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,0,0,.65); font-weight: 900; font-size: 18px; transition: background-color .15s ease; }
+    .pg.on { border-color: var(--acc2); }
+    .pg.on::after { content: "✓"; background: var(--acc2); color: #001218; font-size: 14px; }
+    .bag { position: sticky; top: 86px; border-radius: 24px; border: 1px solid var(--line2); background: linear-gradient(180deg, #151c38, var(--card)); padding: 22px; }
+    .bag h3 { margin: 0 0 4px; font-family: var(--f-cond); font-size: 26px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+    .bag h3 em { font-style: normal; min-width: 30px; height: 30px; padding: 0 8px; border-radius: 15px; display: inline-grid; place-items: center; background: var(--acc); font-size: 16px; font-family: var(--f-body); }
+    .bag h3 em.pop { animation: pop .35s var(--ease-out); }
+    @keyframes pop { 40% { transform: scale(1.3); } }
+    .chosen { display: flex; flex-wrap: wrap; gap: 6px; max-height: 128px; overflow: auto; margin: 12px 0; }
+    .chosen button { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line2); background: rgba(255,255,255,.05); font-size: 13px; font-weight: 700; }
+    .chosen button::after { content: "×"; color: var(--mut); font-size: 15px; }
+    .chosen p { margin: 0; color: var(--mut); font-size: 15px; }
+    .lines { display: grid; gap: 6px; border-top: 1px dashed var(--line2); padding-top: 12px; font-size: 15px; }
+    .lines div { display: flex; justify-content: space-between; gap: 10px; }
+    .lines span:last-child { font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .lines .tot { font-size: 22px; font-weight: 900; margin-top: 6px; }
+    .lines .tot span:last-child { font-family: var(--f-display); font-weight: 400; color: var(--gold); }
+    .lines .eco { color: var(--ok); font-weight: 800; }
+    .lines .mut { color: var(--mut); font-size: 14px; }
+    .tip { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(255,200,61,.1); border: 1px solid rgba(255,200,61,.35); color: #fde68a; font-size: 14px; font-weight: 700; }
+    .bag .btn { width: 100%; margin-top: 14px; padding: 15px; font-size: 17px; }
+    .bag .fine { margin: 10px 0 0; color: var(--mut); font-size: 13px; text-align: center; }
+    .mbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; display: none; align-items: center; gap: 12px; padding-block: 10px calc(10px + env(safe-area-inset-bottom, 0px)); padding-left: var(--gut); padding-right: var(--gutr); background: rgba(12,17,36,.96); border-top: 1px solid var(--line2); backdrop-filter: blur(10px); }
+    .mbar div { flex: 1; min-width: 0; font-weight: 800; line-height: 1.2; }
+    .mbar small { display: block; color: var(--mut); font-weight: 700; }
+    .pays { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .form .pays label { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 6px; border-radius: 14px; border: 1px solid var(--line2); background: rgba(255,255,255,.04); color: var(--txt); font-weight: 800; cursor: pointer; text-align: center; transition: border-color .15s ease, background-color .15s ease; }
+    .pays label i { font-style: normal; font-size: 22px; }
+    .pays label small { color: var(--mut); font-size: 11.5px; font-weight: 700; }
+    .pays input { position: absolute; opacity: 0; pointer-events: none; }
+    .pays label:has(input:checked) { border-color: var(--acc2); background: rgba(34,227,238,.1); }
+    .form select { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line2); background: #0b1022; color: var(--txt); font: inherit; font-size: 16px; }
+    .sumbox { margin: 4px 0 6px; padding: 12px 14px; border-radius: 14px; background: rgba(255,255,255,.04); border: 1px solid var(--line); font-size: 15px; }
+    .sumbox b { color: var(--gold); }
+    .grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 12px; }
+    @media (max-width: 1100px) { .packs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (max-width: 960px) { .shop { grid-template-columns: minmax(0, 1fr); } .bag { position: static; } .pgrid { max-height: 460px; } body.shopping .mbar { display: flex; } body.shopping footer { padding-bottom: 90px; } }
+    @media (max-width: 680px) { .pricelink { display: inline; } .packs { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pgrid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); } .grid2 { grid-template-columns: minmax(0, 1fr); } }
+    @media (max-width: 420px) { header .logo { font-size: 0; gap: 0; margin-right: 0; } header .btn { padding: 8px 11px; font-size: 13.5px; } .pricelink { font-size: 14px; } }
+
     /* ---------- Janelas ---------- */
     dialog { border: 0; padding: 0; background: transparent; color: var(--txt); max-width: min(940px, calc(100vw - 24px)); width: 100%; }
     dialog[open] { animation: dlgIn .28s var(--ease-out); }
@@ -327,7 +399,8 @@
     <a class="logo" href="/inicio" aria-label="Jogos Interativos — início"><i class="dot"></i>Jogos <span>Interativos</span></a>
     <span id="hdrGuest"><button class="btn pri" data-open="login">Entrar</button> <button class="btn" data-open="signup">Criar cadastro</button></span>
     <span id="hdrUser" hidden><a class="btn pri" href="/">Abrir meu painel</a> <button class="btn" id="sairBtn">Sair</button></span>
-    <nav class="links"><a href="#como">Como funciona</a><a href="#presentes">Presentes</a><a href="#recursos">Recursos</a><a href="#jogos">Jogos</a></nav>
+    <a class="pricelink" href="#precos" data-precos>Preços</a>
+    <nav class="links"><a href="#precos" data-precos>Preços</a><a href="#como">Como funciona</a><a href="#presentes">Presentes</a><a href="#recursos">Recursos</a><a href="#jogos">Jogos</a></nav>
     <i id="prog"></i>
   </header>
 
@@ -341,7 +414,7 @@
           <p class="lead">Cada presente, comentário, like e seguidor mexe no jogo na hora. Personagens 3D, voz que fala com o público, placar e IA. Você conecta o seu @, escolhe o jogo e a live joga.</p>
           <div class="cta">
             <button class="btn pri big" data-open="signup" data-cta>Quero usar na minha live</button>
-            <a class="btn big" href="#jogos">Ver os jogos</a>
+            <a class="btn big" href="#precos" data-precos>Ver preços</a>
           </div>
           <div class="proof">
             <div><b data-count="74" id="nGames">74</b><span>jogos prontos</span></div>
@@ -374,6 +447,35 @@
             </div>
             <span class="hint">Toque num presente e veja a live reagir. <a href="#jogos" id="heroMore">Ver este jogo</a></span>
           </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Preços: só aparece quando a pessoa clica em "Preços" ou "Ver preços" -->
+    <section id="precos" hidden>
+      <div class="wrap">
+        <div class="ph">
+          <div><p class="kick">Planos e preços</p><h2>Pague só pelos jogos que vai usar</h2>
+            <p class="sub" id="pSub">Monte a sua sacola: um jogo sai por R$ 9,90 por mês e os pacotes deixam cada jogo mais barato. Assinatura mensal com 30 dias grátis para testar.</p></div>
+          <div class="ciclo" id="ciclo" role="tablist" aria-label="Forma de cobrança"><i></i><button class="on" data-c="mensal" role="tab">Mensal</button><button data-c="anual" role="tab">Anual <small>-50%</small></button></div>
+        </div>
+        <div class="packs" id="packs"></div>
+        <div class="shop">
+          <div class="pick">
+            <h3 style="font-family:var(--f-cond);font-size:26px;margin:0 0 4px">Simulador: escolha os seus jogos</h3>
+            <p class="sub" style="margin-bottom:14px">Toque nos jogos para colocar na sacola. O preço se ajusta sozinho ao melhor pacote.</p>
+            <div class="tools"><input class="search" id="pq" type="search" placeholder="🔎 Buscar jogo" aria-label="Buscar jogo para a sacola" style="margin-left:0"><button class="chip" id="pAll" type="button">Todos os jogos</button><button class="chip" id="pNone" type="button">Esvaziar</button></div>
+            <div class="pgrid" id="pgrid"></div>
+          </div>
+          <aside class="bag" id="bag" aria-live="polite">
+            <h3>🛍️ Sua sacola <em id="bagN">0</em></h3>
+            <div class="chosen" id="chosen"></div>
+            <div class="lines" id="lines"></div>
+            <div class="tip" id="tip" hidden></div>
+            <button class="btn pri" id="buy" disabled>Escolha os jogos</button>
+            <p class="fine" id="fine">Pix, boleto ou cartão · cancele quando quiser</p>
+          </aside>
         </div>
       </div>
     </section>
@@ -498,6 +600,35 @@
 
   <footer>Jogos Interativos · jogos para lives do TikTok · <a href="#" data-open="login" id="ftLogin">Entrar</a> · <a href="#" data-open="signup" id="ftSignup">Criar cadastro</a></footer>
 
+
+  <div class="mbar" id="mbar"><div><span id="mbN">0 jogos</span><small id="mbV">escolha os jogos</small></div><button class="btn pri" id="mbGo">Ver sacola</button></div>
+  <!-- Pagamento -->
+  <dialog id="dCheckout"><div class="box"><button class="x" data-close aria-label="Fechar">✕</button>
+    <form class="form" id="fCheckout"><h3 id="coT">Assinar</h3>
+      <div class="sumbox" id="coSum"></div>
+      <div id="coNovo">
+        <label for="coNome">Nome completo</label><input id="coNome" required maxlength="80" autocomplete="name">
+        <div class="grid2"><div><label for="coEmail">E-mail (vai ser o seu login)</label><input id="coEmail" type="email" maxlength="60" autocomplete="email"></div>
+          <div><label for="coSenha">Crie uma senha (6 ou mais)</label><input id="coSenha" type="password" minlength="6" autocomplete="new-password"></div></div>
+      </div>
+      <div class="grid2"><div><label for="coCpf">CPF ou CNPJ</label><input id="coCpf" required inputmode="numeric" maxlength="18" placeholder="000.000.000-00" autocomplete="off"></div>
+        <div><label for="coCel">Celular com DDD</label><input id="coCel" inputmode="tel" maxlength="16" placeholder="(11) 90000-0000" autocomplete="tel"></div></div>
+      <label for="coTk">Seu @ no TikTok (opcional)</label><input id="coTk" maxlength="40" placeholder="@seuusuario">
+      <label>Como quer pagar</label>
+      <div class="pays" id="coPays">
+        <label><input type="radio" name="forma" value="PIX" checked><i>⚡</i>Pix<small>na hora</small></label>
+        <label><input type="radio" name="forma" value="CREDIT_CARD"><i>💳</i>Cartão<small id="coCardTxt">todo mês</small></label>
+        <label><input type="radio" name="forma" value="BOLETO"><i>🧾</i>Boleto<small>até 3 dias</small></label>
+      </div>
+      <div id="coParc" hidden><label for="coParcSel">Parcelas no cartão</label><select id="coParcSel"></select></div>
+      <button class="btn pri" id="coBtn">Continuar</button>
+      <div class="err" id="coErr"></div>
+      <p class="switch" id="coSafe">O pagamento é feito na página segura do Asaas. Não guardamos dados do seu cartão.</p>
+    </form>
+    <div class="form" id="coOk" hidden><h3 id="coOkT">Pronto! ✅</h3><div class="okmsg" id="coOkMsg"></div>
+      <a class="btn pri" id="coPay" target="_blank" rel="noopener" hidden>Abrir a página de pagamento</a>
+      <a class="btn" href="/" style="width:100%;margin-top:10px">Ir para o meu painel</a></div>
+  </div></dialog>
   <!-- Detalhe do jogo -->
   <dialog id="dGame"><div class="box"><button class="x" data-close aria-label="Fechar">✕</button><div id="gameBody"></div></div></dialog>
   <!-- Entrar -->
@@ -876,12 +1007,146 @@
       $('#lvGame').textContent = gameName(vidIds[curVid]);
       $('#heroMore').textContent = `Ver como funciona: ${gameName(vidIds[curVid])}`; $('#heroMore').href = `#jogo-${vidIds[curVid]}`;
       buildReel(); draw();
+      dispatchEvent(new Event('catalogo'));
       const h = location.hash.match(/^#jogo-(.+)$/); if (h) detail(h[1]);
     });
     $('#chips').addEventListener('click', (e) => { const b = e.target.closest('[data-genre]'); if (!b) return; genre = b.dataset.genre; $$('.chip').forEach((x) => x.classList.toggle('on', x === b)); draw(); });
     $('#q').addEventListener('input', draw);
     $('#grid').addEventListener('click', (e) => { const b = e.target.closest('[data-g]'); if (b) detail(b.dataset.g); });
     addEventListener('hashchange', () => { const h = location.hash.match(/^#jogo-(.+)$/); if (h && CAT.games.length) detail(h[1]); });
+  </script>
+  <script type="module">
+    // ---------- Preços, sacola e pagamento ----------
+    import { preco, reais, PACOTES, AVULSO, TODOS, TESTE_DIAS } from '/precos.js';
+    dlg.checkout = $('#dCheckout');
+    let ciclo = 'mensal', bag = new Set(), PL = { pagamentos: true };
+    fetch('/api/planos').then((r) => r.json()).then((j) => { PL = j; }).catch(() => {});
+    const esperaCat = () => (CAT.games.length ? Promise.resolve() : new Promise((r) => addEventListener('catalogo', r, { once: true })));
+    const total = () => CAT.games.length;
+
+    // Abrir a seção (fica escondida até a pessoa pedir)
+    function abrirPrecos() {
+      const s = $('#precos');
+      if (s.hidden) { s.hidden = false; s.classList.add('abrindo'); document.body.classList.add('shopping'); }
+      requestAnimationFrame(() => s.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth' }));
+    }
+    document.addEventListener('click', (e) => { if (e.target.closest('[data-precos]')) { e.preventDefault(); abrirPrecos(); } });
+    if (location.hash === '#precos') esperaCat().then(abrirPrecos);
+
+    // Mensal / Anual
+    const marca = () => { const on = $('#ciclo .on'), i = $('#ciclo i'); i.style.width = `${on.offsetWidth}px`; i.style.transform = `translateX(${on.offsetLeft - 5}px)`; };
+    $('#ciclo').addEventListener('click', (e) => { const b = e.target.closest('[data-c]'); if (!b) return; ciclo = b.dataset.c; $$('#ciclo button').forEach((x) => x.classList.toggle('on', x === b)); marca(); desenhaPacotes(); conta(); });
+    new ResizeObserver(marca).observe($('#ciclo'));
+
+    // Cartões de pacote: clicar já enche a sacola com essa quantidade
+    function desenhaPacotes() {
+      const T = total(), opts = [{ n: 1, nome: '1 jogo' }, ...PACOTES.filter((p) => p.n < T).map((p) => ({ n: p.n, nome: `${p.n} jogos` })), { n: T, nome: 'Todos os jogos' }];
+      $('#packs').innerHTML = opts.map((o) => {
+        const p = preco(o.n, T), mes = ciclo === 'anual' ? p.anualMes : p.mensal, porJogo = Math.round(p.mensal / p.cabe);
+        return `<button class="pack${o.n === T ? ' top' : ''}" data-n="${o.n}" type="button">${o.n === T ? '<span class="tg">MELHOR PREÇO</span>' : o.n === 5 ? '<span class="tg" style="background:var(--acc2);color:#001218">MAIS ESCOLHIDO</span>' : ''}
+          <b>${o.nome}</b><span class="pv">${reais(mes)}<small>/mês</small></span>
+          <span class="pe">${ciclo === 'anual' ? `${reais(p.anual)} por ano · <s>${reais(p.mensal * 12)}</s>` : o.n === 1 ? 'por jogo, por mês' : `${reais(porJogo)} por jogo`}</span></button>`;
+      }).join('');
+    }
+    $('#packs').addEventListener('click', (e) => {
+      const b = e.target.closest('.pack'); if (!b) return;
+      const n = Number(b.dataset.n);
+      if (n >= total()) bag = new Set(CAT.games.map((g) => g.id));
+      else if (bag.size > n) bag = new Set([...bag].slice(0, n));
+      else { const falta = n - bag.size; if (falta) $('#pq').value = ''; desenhaGrade(); toastBag(falta ? `Escolha ${falta} jogo${falta > 1 ? 's' : ''} abaixo para completar o pacote de ${n}` : ''); }
+      desenhaGrade(); conta();
+      $('.pick').scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'start' });
+    });
+    let tipForce = '';
+    const toastBag = (t) => { tipForce = t; };
+
+    // Grade de jogos para escolher
+    function desenhaGrade() {
+      const q = norm($('#pq').value);
+      $('#pgrid').innerHTML = CAT.games.filter((g) => !q || norm(g.name + ' ' + g.genreName).includes(q)).map((g) => `<button class="pg${bag.has(g.id) ? ' on' : ''}" data-g="${g.id}" type="button" aria-pressed="${bag.has(g.id)}"><img src="${cover(g)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>${g.icon} ${esc(g.name)}</span></button>`).join('');
+    }
+    $('#pgrid').addEventListener('click', (e) => {
+      const b = e.target.closest('.pg'); if (!b) return;
+      const id = b.dataset.g; bag.has(id) ? bag.delete(id) : bag.add(id);
+      b.classList.toggle('on', bag.has(id)); b.setAttribute('aria-pressed', bag.has(id)); tipForce = ''; conta();
+    });
+    $('#pq').addEventListener('input', desenhaGrade);
+    $('#pAll').addEventListener('click', () => { bag = new Set(CAT.games.map((g) => g.id)); desenhaGrade(); conta(); });
+    $('#pNone').addEventListener('click', () => { bag.clear(); desenhaGrade(); conta(); });
+    $('#chosen').addEventListener('click', (e) => { const b = e.target.closest('[data-g]'); if (!b) return; bag.delete(b.dataset.g); desenhaGrade(); conta(); });
+
+    // A conta da sacola
+    let ultN = 0;
+    function conta() {
+      const T = total(), n = bag.size, p = preco(n, T);
+      const em = $('#bagN'); em.textContent = n; if (n !== ultN) { em.classList.remove('pop'); void em.offsetWidth; em.classList.add('pop'); ultN = n; }
+      const nomes = [...bag].map((id) => CAT.games.find((g) => g.id === id)).filter(Boolean);
+      $('#chosen').innerHTML = !n ? '<p>Sua sacola está vazia. Toque nos jogos ou escolha um pacote.</p>' : p.todos ? '<p>✨ Todos os jogos, inclusive os novos que chegarem.</p>' : nomes.map((g) => `<button type="button" data-g="${g.id}" title="Tirar da sacola">${g.icon} ${esc(g.name)}</button>`).join('');
+      const L = [];
+      if (n) {
+        for (const x of p.partes) L.push([x.tipo === 'todos' ? `Pacote completo (${x.n} jogos)` : x.tipo === 'pacote' ? `Pacote ${x.n} jogos` : `${x.n} jogo${x.n > 1 ? 's' : ''} avulso${x.n > 1 ? 's' : ''}`, reais(x.v) + '/mês']);
+        if (ciclo === 'anual') {
+          L.push([`12 meses`, reais(p.mensal * 12), 'mut'], ['Desconto do plano anual (50%)', '− ' + reais(p.mensal * 12 - p.anual), 'eco'], ['Total por ano', reais(p.anual), 'tot'], ['Sai por mês', reais(p.anualMes), 'mut']);
+        } else {
+          L.push(['Total por mês', reais(p.mensal), 'tot']);
+          if (p.avulso > p.mensal) L.push([`Economia com pacote`, reais(p.avulso - p.mensal) + '/mês', 'eco']);
+        }
+      }
+      $('#lines').innerHTML = L.map(([a, b, c]) => `<div class="${c || ''}"><span>${a}</span><span>${b}</span></div>`).join('');
+      const extra = p.cabe - n;
+      const tip = tipForce || (n && !p.todos && extra > 0 ? `🎁 Por esse mesmo preço você leva ${p.cabe} jogos: escolha mais ${extra} sem pagar nada a mais.` : '');
+      $('#tip').hidden = !tip; $('#tip').textContent = tip;
+      const btn = $('#buy'); btn.disabled = !n;
+      btn.textContent = !n ? 'Escolha os jogos' : ciclo === 'mensal' && !AUTH.user?.plano ? `Testar ${TESTE_DIAS} dias grátis` : ciclo === 'mensal' ? `Assinar por ${reais(p.mensal)}/mês` : `Assinar o anual por ${reais(p.anual)}`;
+      $('#fine').textContent = ciclo === 'mensal' ? (AUTH.user?.plano ? 'Cobrança todo mês · cancele quando quiser' : `Nada a pagar agora: a 1ª cobrança é daqui a ${TESTE_DIAS} dias · cancele quando quiser`) : 'Pix, boleto ou cartão em até 12x';
+      $('#mbN').textContent = `${n} jogo${n === 1 ? '' : 's'}`; $('#mbV').textContent = n ? (ciclo === 'anual' ? `${reais(p.anual)}/ano` : `${reais(p.mensal)}/mês`) : 'escolha os jogos';
+      $('#mbGo').textContent = n ? 'Assinar' : 'Ver sacola';
+    }
+    $('#mbGo').addEventListener('click', () => (bag.size ? $('#buy').click() : $('#bag').scrollIntoView({ behavior: 'smooth' })));
+    // A barra de baixo (celular) só aparece com a seção de preços na tela
+    new IntersectionObserver(([en]) => document.body.classList.toggle('shopping', en.isIntersecting), { rootMargin: '0px 0px -30% 0px' }).observe($('#precos'));
+
+    // ---------- Janela de pagamento ----------
+    const fmtDoc = (v) => { const d = v.replace(/\D/g, '').slice(0, 14); return d.length <= 11 ? d.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3').replace(/(\d{3})-?(\d{1,2})$/, '$1-$2').replace(/^(\d{3}\.\d{3}\.\d{3})(\d)/, '$1-$2') : d.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2}).*/, '$1.$2.$3/$4-$5'); };
+    $('#coCpf').addEventListener('input', (e) => { e.target.value = fmtDoc(e.target.value); });
+    $('#coCel').addEventListener('input', (e) => { const d = e.target.value.replace(/\D/g, '').slice(0, 11); e.target.value = d.length > 6 ? `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}` : d.length > 2 ? `(${d.slice(0, 2)}) ${d.slice(2)}` : d; });
+    const forma = () => $('#coPays input:checked').value;
+    function resumoCheckout() {
+      const p = preco(bag.size, total()), anual = ciclo === 'anual', teste = !anual && !AUTH.user?.plano;
+      const qual = p.todos ? 'Todos os jogos' : `${bag.size} jogo${bag.size > 1 ? 's' : ''}`;
+      $('#coSum').innerHTML = `<b>${qual}</b> · plano ${anual ? 'anual' : 'mensal'}<br>${anual ? `${reais(p.anual)} por ano (sai ${reais(p.anualMes)}/mês)` : `${reais(p.mensal)} por mês`}${teste ? `<br>🎁 <b>${TESTE_DIAS} dias grátis</b>: a 1ª cobrança é só daqui a ${TESTE_DIAS} dias.` : ''}`;
+      $('#coT').textContent = teste ? 'Começar teste grátis' : anual ? 'Assinar o plano anual' : 'Assinar o plano mensal';
+      $('#coCardTxt').textContent = anual ? 'até 12x' : 'todo mês';
+      const showParc = anual && forma() === 'CREDIT_CARD'; $('#coParc').hidden = !showParc;
+      if (showParc) { const max = Math.max(1, Math.min(12, Math.floor(p.anual / 500))); const cur = $('#coParcSel').value; $('#coParcSel').innerHTML = Array.from({ length: max }, (_, i) => `<option value="${i + 1}">${i + 1}x de ${reais(Math.round(p.anual / (i + 1)))}${i ? ' sem juros' : ' à vista'}</option>`).join(''); if (cur && cur <= max) $('#coParcSel').value = cur; }
+      $('#coBtn').textContent = teste ? 'Começar meus 30 dias grátis' : 'Ir para o pagamento';
+    }
+    $('#coPays').addEventListener('change', resumoCheckout);
+    $('#buy').addEventListener('click', () => {
+      if (!bag.size) return;
+      if (AUTH.user?.role === 'admin') { $('#tip').hidden = false; $('#tip').textContent = 'Você é o admin: já tem todos os jogos. Teste a compra com outra conta.'; return; }
+      const logado = Boolean(AUTH.user);
+      $('#coNovo').hidden = logado; $('#coEmail').required = !logado; $('#coSenha').required = !logado; $('#coNome').required = !logado;
+      $('#fCheckout').hidden = false; $('#coOk').hidden = true; $('#coErr').textContent = '';
+      if (!PL.pagamentos) $('#coErr').textContent = 'Os pagamentos ainda estão sendo ativados. Se quiser, use "Criar cadastro" e o administrador libera para você.';
+      resumoCheckout(); open('checkout');
+    });
+    $('#fCheckout').addEventListener('submit', async (e) => {
+      e.preventDefault(); $('#coErr').textContent = ''; const b = $('#coBtn'); b.disabled = true; const t0 = b.textContent; b.textContent = 'Criando…';
+      try {
+        const p = preco(bag.size, total());
+        const j = await post('/api/checkout', { games: [...bag], todos: p.todos, ciclo, forma: forma(), parcelas: Number($('#coParcSel').value) || 1, nome: $('#coNome').value.trim(), email: $('#coEmail').value.trim(), senha: $('#coSenha').value, cpf: $('#coCpf').value, celular: $('#coCel').value, tiktok: $('#coTk').value.trim() });
+        $('#fCheckout').hidden = true; $('#coOk').hidden = false;
+        const ate = new Date(j.ate).toLocaleDateString('pt-BR');
+        $('#coOkT').textContent = j.teste ? 'Seu teste começou! 🎉' : 'Quase lá! 💳';
+        $('#coOkMsg').textContent = j.teste ? `Os seus jogos já estão liberados até ${ate}. A primeira cobrança de ${reais(j.valor)} vence nesse dia; você também pode deixar paga agora pela página do Asaas.` : 'Falta só pagar. Abra a página do Asaas e pague com a forma que escolheu: assim que o pagamento cair, os jogos liberam sozinhos no seu painel.';
+        const pay = $('#coPay'); pay.hidden = !j.fatura; if (j.fatura) pay.href = j.fatura;
+        AUTH.user = AUTH.user || { plano: true };
+        if (j.fatura && !j.teste) window.open(j.fatura, '_blank', 'noopener');
+      } catch (x) { $('#coErr').textContent = x.message; } finally { b.disabled = false; b.textContent = t0; }
+    });
+
+    esperaCat().then(() => { desenhaPacotes(); desenhaGrade(); conta(); marca(); });
   </script>
 </body>
 </html>

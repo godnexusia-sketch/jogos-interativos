@@ -368,3 +368,5 @@ button.primary:hover { box-shadow:0 8px 26px rgba(34,227,238,.45); }
 .rbadge { position:absolute; top:2px; right:6px; min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:#ff2d55; color:#fff; font:800 11px/18px system-ui; font-style:normal; }
 .panel.pend { border-color:rgba(34,227,238,.45); }
 .bd.bnew { background:#22e3ee; color:#04121a; }
+#planBtn { display:inline-flex; align-items:center; padding:8px 14px; border-radius:12px; background:rgba(34,227,238,.12); border:1px solid rgba(34,227,238,.4); color:#bff7ff; font-weight:800; font-size:13px; text-decoration:none; white-space:nowrap; }
+#planBtn.warn { background:rgba(255,45,85,.16); border-color:rgba(255,45,85,.6); color:#ffd0da; animation:livePulse 1.6s ease-in-out infinite; }

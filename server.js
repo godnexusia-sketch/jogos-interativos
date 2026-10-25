@@ -11,6 +11,8 @@ import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 import Anthropic from '@anthropic-ai/sdk';
 import { userInfo, giftInfo } from './lib/eventos.js';
 import * as contas from './lib/contas.js';
+import * as asaas from './lib/asaas.js';
+import { preco, reais, TESTE_DIAS } from './public/precos.js';
 
 const PORT = Number(process.env.PORT) || 3000;
 const SIGN_API_KEY = process.env.SIGN_API_KEY || undefined;
@@ -194,7 +196,17 @@ const AI_PROVS = ['sistema', 'puter', 'ollama', 'anthropic', 'openai', 'gemini',
 // O que o navegador pode ver da conta (sem senha nem a chave da IA)
 const PERMS = ['jogo', 'personagens', 'testar', 'efeitos', 'alertas', 'widgets', 'dj', 'musica', 'voz', 'placar', 'historico'];
 const limpaPerms = (p) => (Array.isArray(p) ? p.filter((x) => PERMS.includes(x)) : undefined);
-const contaPublica = (c) => c && { id: c.id, username: c.username, role: c.role, games: c.games || [], perms: c.perms || [], ai: { provider: c.ai?.provider || 'sistema', model: c.ai?.model || '', ollamaUrl: c.ai?.ollamaUrl || '', temChave: Boolean(c.ai?.key), feito: Boolean(c.ai?.feito) } };
+// Jogos que existem (para conferir a compra e o pacote completo); vem do catálogo da página de entrada
+let CAT_IDS = [];
+fs.readFile(path.join(PUBLIC_DIR, 'data', 'catalogo.json'), 'utf8').then((t) => { CAT_IDS = JSON.parse(t).games.map((g) => g.id); }).catch((e) => console.warn('catálogo:', e.message));
+// Plano pago: venceu (e não é admin) = fica sem jogos até pagar
+const planoVencido = (c) => c?.role !== 'admin' && c?.plano?.ciclo && Date.now() > Number(c.plano.ate || 0);
+const jogosDe = (c) => (c?.plano?.ciclo && c.plano.todos && CAT_IDS.length ? CAT_IDS : c?.games || []);
+const planoPublico = (p) => p?.ciclo ? { ciclo: p.ciclo, n: p.todos ? CAT_IDS.length : (p.games || []).length, todos: Boolean(p.todos), valor: p.valor, forma: p.forma, parcelas: p.parcelas || 1, status: p.status, teste: Boolean(p.teste), ate: p.ate, fatura: p.fatura || '' } : null;
+const contaPublica = (c) => c && { id: c.id, username: c.username, role: c.role, games: jogosDe(c), perms: c.perms || [], plano: planoPublico(c.plano), vencido: Boolean(planoVencido(c)), ai: { provider: c.ai?.provider || 'sistema', model: c.ai?.model || '', ollamaUrl: c.ai?.ollamaUrl || '', temChave: Boolean(c.ai?.key), feito: Boolean(c.ai?.feito) } };
+const ASAAS_WEBHOOK_TOKEN = String(process.env.ASAAS_WEBHOOK_TOKEN || '').trim();
+const DIA = 86400e3;
+const dataAsaas = (ms) => new Date(ms - 3 * 3600e3).toISOString().slice(0, 10); // dia no horário de Brasília
 const tentativas = new Map(); // ip -> { n, ate }: no máximo 10 tentativas de login por minuto
 const ipDe = (req) => String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
 function demais(req) { const k = ipDe(req), t = tentativas.get(k) || { n: 0, ate: Date.now() + 60000 }; if (Date.now() > t.ate) { t.n = 0; t.ate = Date.now() + 60000; } t.n++; tentativas.set(k, t); return t.n > 10; }
@@ -336,7 +348,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/api/users' || url.pathname.startsWith('/api/users/')) {
     const c = await contaDe(req); if (!c || c.role !== 'admin') return sendJson(res, 403, { error: 'só o admin' });
     const id = Number(url.pathname.split('/')[3]) || 0;
-    if (req.method === 'GET' && !id) return sendJson(res, 200, { users: (await contas.listar()).map((u) => ({ ...contaPublica(u), disabled: u.disabled, status: u.status, info: u.info, created_at: u.created_at })), banco: contas.temBanco() });
+    if (req.method === 'GET' && !id) return sendJson(res, 200, { users: (await contas.listar()).map((u) => ({ ...contaPublica(u), disabled: u.disabled, status: u.status, info: u.info, created_at: u.created_at, gamesConta: u.games || [] })), banco: contas.temBanco() });
     if (req.method === 'POST' && !id) {
       const b = await lerJson(req); if (!b || !NOME_RE.test(b.username || '') || String(b.password || '').length < 6) return sendJson(res, 400, { error: 'usuário ou e-mail e senha (6+ caracteres)' });
       if (await contas.porNome(b.username)) return sendJson(res, 409, { error: 'esse usuário já existe' });
@@ -353,6 +365,85 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'DELETE' && id) { if (id === c.id) return sendJson(res, 400, { error: 'você não pode apagar a si mesmo' }); await contas.apagar(id); contas.esqueceCache(id); return sendJson(res, 200, { ok: true }); }
     return sendJson(res, 405, { error: 'método' });
   }
+  // ---------- Assinatura (Asaas) ----------
+  if (url.pathname === '/api/checkout' && req.method === 'POST') {
+    if (!asaas.ligado()) return sendJson(res, 503, { error: 'Os pagamentos ainda estão sendo ativados. Tente de novo mais tarde ou peça acesso em "Criar cadastro".' });
+    const b = await lerJson(req); if (!b) return sendJson(res, 400, { error: 'dados inválidos' });
+    if (demais(req)) return sendJson(res, 429, { error: 'muitas tentativas, espere um minuto' });
+    if (!CAT_IDS.length) return sendJson(res, 503, { error: 'catálogo indisponível, tente de novo' });
+    const ciclo = b.ciclo === 'anual' ? 'anual' : 'mensal';
+    let games = b.todos === true ? CAT_IDS.slice() : [...new Set((Array.isArray(b.games) ? b.games : []).map(String))].filter((id) => CAT_IDS.includes(id));
+    if (!games.length) return sendJson(res, 400, { error: 'escolha pelo menos um jogo' });
+    const pr = preco(games.length, CAT_IDS.length);
+    const todos = pr.todos; if (todos) games = CAT_IDS.slice();
+    const valor = ciclo === 'anual' ? pr.anual : pr.mensal;
+    const forma = ['PIX', 'BOLETO', 'CREDIT_CARD'].includes(b.forma) ? b.forma : 'UNDEFINED';
+    const parcelas = ciclo === 'anual' && forma === 'CREDIT_CARD' ? Math.max(1, Math.min(12, Number(b.parcelas) || 1, Math.floor(valor / 500))) : 1;
+    let conta = await contaDe(req);
+    if (conta?.role === 'admin') return sendJson(res, 400, { error: 'a conta de admin já tem todos os jogos' });
+    const cpf = String(b.cpf || '').replace(/\D/g, ''), celular = String(b.celular || '').replace(/\D/g, '').slice(0, 13);
+    const nome = String(b.nome || conta?.info?.nome || '').trim().slice(0, 80);
+    if (nome.length < 3) return sendJson(res, 400, { error: 'coloque o seu nome completo' });
+    if (!asaas.docValido(cpf)) return sendJson(res, 400, { error: 'CPF ou CNPJ inválido' });
+    const email = conta ? (String(conta.username).includes('@') ? conta.username : String(b.email || '').trim().toLowerCase()) : String(b.email || '').trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !NOME_RE.test(email)) return sendJson(res, 400, { error: 'coloque um e-mail válido' });
+    if (!conta) {
+      if (String(b.senha || '').length < 6) return sendJson(res, 400, { error: 'crie uma senha com 6 ou mais caracteres' });
+      if (await contas.porNome(email)) return sendJson(res, 409, { error: 'esse e-mail já tem cadastro: clique em Entrar e depois assine o plano' });
+    }
+    const todasContas = await contas.listar();
+    // 30 dias grátis: só na primeira assinatura mensal (por conta e por CPF)
+    const teste = ciclo === 'mensal' && !conta?.plano?.ciclo && !todasContas.some((u) => u.plano?.cpf === cpf);
+    let nova = false;
+    if (!conta) { conta = await contas.porId((await contas.criar({ username: email, senha: b.senha, games, perms: PERMS.slice(), info: { nome, tiktok: String(b.tiktok || '').trim().replace(/^@/, '').slice(0, 40), origem: 'compra' } })).id); nova = true; }
+    const desc = `${todos ? 'todos os jogos' : `${games.length} jogo${games.length > 1 ? 's' : ''}`} (${ciclo})`;
+    const agora = Date.now(), ref = `conta:${conta.id}`;
+    let r;
+    try {
+      const cli = await asaas.cliente({ nome, cpf, email, celular, ref });
+      const vence = dataAsaas(teste ? agora + TESTE_DIAS * DIA : agora);
+      r = ciclo === 'mensal'
+        ? await asaas.assinatura({ cliente: cli.id, valor, vence, forma, descricao: `Jogos Interativos: ${desc}`, ref })
+        : await asaas.cobranca({ cliente: cli.id, valor, vence, forma, parcelas, descricao: `Jogos Interativos: ${desc}`, ref });
+      r.cliente = cli.id;
+    } catch (e) {
+      console.warn('asaas:', e.message);
+      if (nova) await contas.apagar(conta.id);
+      return sendJson(res, 502, { error: `Não deu para criar o pagamento: ${e.message}` });
+    }
+    // Trocou de plano: cancela a assinatura antiga
+    if (conta.plano?.asaasSub && conta.plano.asaasSub !== r.id) asaas.cancelarAssinatura(conta.plano.asaasSub).catch((e) => console.warn('asaas cancelar:', e.message));
+    const plano = { ciclo, games, todos, valor, forma, parcelas, cpf, teste, cabe: pr.cabe, inicio: agora, ate: teste ? agora + TESTE_DIAS * DIA : Math.max(agora, Number(conta.plano?.ate || 0)), status: teste ? 'teste' : 'aguardando', asaasCliente: r.cliente, asaasSub: ciclo === 'mensal' ? r.id : '', asaasPag: ciclo === 'anual' ? r.id : '', parcelamento: r.parcelamento || '', fatura: r.fatura };
+    await contas.alterar(conta.id, { games, plano, status: 'ok' }); contas.esqueceCache(conta.id);
+    if (nova) { const { token } = await contas.novaSessao(conta.id); setSess(req, res, token, 2592000); }
+    console.log(`assinatura: conta ${conta.id} ${desc} ${reais(valor)}${teste ? ' (teste grátis)' : ''}`);
+    return sendJson(res, 200, { ok: true, teste, fatura: r.fatura, valor, ciclo, ate: plano.ate });
+  }
+  if (url.pathname === '/api/asaas/webhook' && req.method === 'POST') {
+    // Avisos do Asaas: pagamento confirmado libera os jogos; atrasado/cancelado marca o plano
+    if (!ASAAS_WEBHOOK_TOKEN || req.headers['asaas-access-token'] !== ASAAS_WEBHOOK_TOKEN) return sendJson(res, 401, { error: 'token' });
+    const b = await lerJson(req); const pay = b?.payment, ev = String(b?.event || '');
+    const subDel = ev === 'SUBSCRIPTION_DELETED' || ev === 'SUBSCRIPTION_INACTIVATED' ? b?.subscription?.id : '';
+    if (!pay && !subDel) return sendJson(res, 200, { ok: true });
+    const u = (await contas.listar()).find((x) => x.plano?.ciclo && (subDel ? x.plano.asaasSub === subDel
+      : pay.subscription ? x.plano.asaasSub === pay.subscription
+      : x.plano.asaasPag === pay.id || (pay.installment && x.plano.parcelamento === pay.installment) || (!x.plano.asaasSub && pay.externalReference === `conta:${x.id}`)));
+    if (!u) return sendJson(res, 200, { ok: true, achou: false });
+    const pl = { ...u.plano };
+    if (ev === 'PAYMENT_CONFIRMED' || ev === 'PAYMENT_RECEIVED') {
+      const due = Date.parse((pay.dueDate || dataAsaas(Date.now())) + 'T12:00:00-03:00');
+      pl.ate = pl.ciclo === 'anual' ? Math.max(Number(pl.ate || 0), Number(pl.inicio || Date.now()) + 366 * DIA) : Math.max(Number(pl.ate || 0), Math.max(due, Date.now()) + 33 * DIA);
+      pl.status = 'ativo'; if (pay.invoiceUrl) pl.fatura = pay.invoiceUrl;
+    } else if (ev === 'PAYMENT_OVERDUE') { pl.status = 'atrasado'; if (pay.invoiceUrl) pl.fatura = pay.invoiceUrl; }
+    else if (ev === 'PAYMENT_CREATED' || ev === 'PAYMENT_UPDATED') { if (pay.invoiceUrl && pay.status === 'PENDING') pl.fatura = pay.invoiceUrl; }
+    else if (ev === 'PAYMENT_REFUNDED' || ev === 'PAYMENT_CHARGEBACK_REQUESTED') { pl.status = 'cancelado'; pl.ate = Date.now(); }
+    else if (subDel || (ev === 'PAYMENT_DELETED' && pl.ciclo === 'anual' && pl.status !== 'ativo')) pl.status = 'cancelado';
+    else return sendJson(res, 200, { ok: true });
+    await contas.alterar(u.id, { plano: pl }); contas.esqueceCache(u.id);
+    console.log(`asaas: ${ev} conta ${u.id} → ${pl.status} até ${new Date(pl.ate).toISOString().slice(0, 10)}`);
+    return sendJson(res, 200, { ok: true });
+  }
+  if (url.pathname === '/api/planos') return sendJson(res, 200, { total: CAT_IDS.length, pagamentos: asaas.ligado(), sandbox: asaas.sandbox(), testeDias: TESTE_DIAS });
   // Página do painel: sem login mostra a página de entrada com o catálogo (a tela da live, ?clean=1, abre sem login — é a fonte do LIVE Studio/OBS)
   if ((url.pathname === '/' || url.pathname === '/index.html') && url.searchParams.get('clean') !== '1' && !(await contaDe(req))) return sendStatic(req, res, path.join(PUBLIC_DIR, 'inicio.html'));
   if (url.pathname === '/inicio') return sendStatic(req, res, path.join(PUBLIC_DIR, 'inicio.html')); // a logo do painel volta para cá (logado ou não)
@@ -676,7 +767,12 @@ wss.on('connection', (ws, req) => {
     try { msg = JSON.parse(raw); } catch { return; }
     if (msg.type === 'connect') {
       // Painel precisa de login; a tela da live (fonte do LIVE Studio/OBS) só assiste e não precisa
-      if (msg.role !== 'screen' && !(await contas.contaDaSessao(ws.token))) return ws.send(JSON.stringify({ type: 'status', state: 'error', message: 'Faça login de novo.' }));
+      if (msg.role !== 'screen') {
+        const c = await contas.contaDaSessao(ws.token);
+        if (!c) return ws.send(JSON.stringify({ type: 'status', state: 'error', message: 'Faça login de novo.' }));
+        // Plano vencido ou ainda sem pagamento: não conecta na live até pagar
+        if (planoVencido(c)) return ws.send(JSON.stringify({ type: 'status', state: 'error', message: c.plano.status === 'aguardando' ? 'Falta pagar o plano: clique em "Falta pagar" no topo. Assim que o pagamento cair, a live conecta.' : 'Seu plano venceu: pague pelo botão no topo para conectar de novo.' }));
+      }
       const username = String(msg.user || '').trim().replace(/^@/, '').toLowerCase();
       if (!USERNAME_RE.test(username)) {
         return ws.send(JSON.stringify({ type: 'status', state: 'error', message: 'Usuário inválido.' }));

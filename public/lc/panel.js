@@ -731,6 +731,11 @@ if (!isClean) (() => {
   };
 
   // ---------- Usuários (só o admin) ----------
+  // Plano pago (Asaas): etiqueta e resumo na lista de contas
+  const PL_ST = { teste: ['TESTE GRÁTIS', 'b3d'], ativo: ['PAGO', 'bnew'], aguardando: ['AGUARDANDO PAGAMENTO', 'boff'], atrasado: ['ATRASADO', 'boff'], cancelado: ['CANCELADO', 'boff'] };
+  const planoTag = (u) => { if (!u.plano) return ''; const [t, c] = u.vencido ? ['VENCIDO', 'boff'] : PL_ST[u.plano.status] || [u.plano.status, '']; return `<i class="bd ${c}">${t}</i>`; };
+  const fmtR = (c) => (c / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const planoTxt = (u) => u.plano ? `<br>💳 ${u.plano.todos ? 'todos os jogos' : `${u.plano.n} jogos`} · ${u.plano.ciclo} · ${fmtR(u.plano.valor)}${u.plano.ciclo === 'anual' ? '/ano' : '/mês'} · ${u.plano.forma === 'PIX' ? 'Pix' : u.plano.forma === 'BOLETO' ? 'boleto' : u.plano.forma === 'CREDIT_CARD' ? 'cartão' : 'a escolher'} · até ${new Date(u.plano.ate).toLocaleDateString('pt-BR')}` : '';
   function pendBadge(n) {
     const b = document.querySelector('#rail [data-view="usuarios"]'); if (!b) return;
     let i = b.querySelector('.rbadge'); if (!n) return i?.remove();
@@ -764,9 +769,9 @@ if (!isClean) (() => {
         <div class="row"><button class="primary" id="nuAdd">Criar acesso</button></div>
         <p class="small">Com o e-mail do Google como usuário, a pessoa também pode usar "Entrar com o Google" (quando estiver configurado).</p></div>
       <div class="panel"><h3>Contas</h3><div class="ulist">${data.users.map((u) => `<div class="urow" data-u="${u.id}">
-        <div><b>${esc(u.username)}</b> ${u.role === 'admin' ? '<i class="bd b3d">ADMIN</i>' : ''} ${u.disabled ? '<i class="bd boff">DESATIVADO</i>' : ''}<br><small>${u.role === 'admin' ? 'acesso total' : `${u.games.length} jogos · ${u.perms.length} funções`} · IA: ${esc(u.ai?.provider || 'sistema')}${u.id === ME.id ? ' · você' : ''}</small></div>
+        <div><b>${esc(u.username)}</b> ${u.role === 'admin' ? '<i class="bd b3d">ADMIN</i>' : ''} ${u.disabled ? '<i class="bd boff">DESATIVADO</i>' : ''} ${planoTag(u)}<br><small>${u.role === 'admin' ? 'acesso total' : `${(u.gamesConta || u.games).length} jogos · ${u.perms.length} funções`}${planoTxt(u)} · IA: ${esc(u.ai?.provider || 'sistema')}${u.id === ME.id ? ' · você' : ''}</small></div>
         <div class="row">${u.role === 'admin' ? '' : '<button data-act="games">🎮 Jogos e funções</button>'}<button data-act="pass">🔑 Senha</button>${u.id === ME.id ? '' : `<button data-act="toggle">${u.disabled ? '✅ Ativar' : '⏸ Desativar'}</button><button data-act="del" class="danger">🗑</button>`}</div>
-        <div class="uedit" hidden><p class="small">Jogos:</p>${gamePick(u.games)}<p class="small">Funções:</p>${funcPick(u.perms || [])}<div class="row"><button class="primary" data-act="saveGames">Salvar</button></div></div></div>`).join('')}</div></div>`);
+        <div class="uedit" hidden><p class="small">Jogos:</p>${gamePick(u.gamesConta || u.games)}<p class="small">Funções:</p>${funcPick(u.perms || [])}<div class="row"><button class="primary" data-act="saveGames">Salvar</button></div></div></div>`).join('')}</div></div>`);
     const gen = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => 'abcdefghjkmnpqrstuvwxyz23456789'[b % 31]).join('');
     q('#nuPass').value = gen();
     q('#nuGen').addEventListener('click', () => { q('#nuPass').value = gen(); });
@@ -896,6 +901,16 @@ if (!isClean) (() => {
   const meBtn = document.createElement('button'); meBtn.id = 'meBtn'; meBtn.title = 'Sair'; meBtn.textContent = `👤 ${trim(ME.username, 22)}${IS_ADMIN ? ' (admin)' : ''} · Sair`;
   meBtn.addEventListener('click', () => { if (confirm('Sair desta conta?')) logout(); });
   document.querySelector('.topbtns')?.prepend(meBtn);
+  // Quem assinou: botão do plano no topo e aviso quando falta pagar ou venceu
+  if (ME.plano) {
+    const p = ME.plano, ate = new Date(p.ate).toLocaleDateString('pt-BR');
+    const b = document.createElement('a'); b.id = 'planBtn'; b.target = '_blank'; b.rel = 'noopener';
+    b.href = p.fatura || '/inicio#precos';
+    b.textContent = ME.vencido ? '⚠️ Plano vencido · pagar' : p.status === 'teste' ? `🎁 Teste grátis até ${ate}` : p.status === 'aguardando' ? '💳 Falta pagar' : p.status === 'atrasado' ? `⚠️ Pagamento atrasado · pagar` : `💳 Plano ativo até ${ate}`;
+    if (ME.vencido || p.status === 'atrasado' || p.status === 'aguardando') b.classList.add('warn');
+    document.querySelector('.topbtns')?.prepend(b);
+    if (ME.vencido) setTimeout(() => toastMsg(p.status === 'aguardando' ? '💳 Seus jogos liberam assim que o pagamento cair. Clique em "Falta pagar" no topo.' : '⚠️ O seu plano venceu. Pague pelo botão no topo para liberar os jogos de novo.'), 1200);
+  }
   // Admin: avisa na barra quando há pedidos de cadastro esperando aprovação
   if (IS_ADMIN) { const chk = () => fetch('/api/users').then((r) => r.json()).then((d) => pendBadge((d.users || []).filter((u) => u.status === 'pendente').length)).catch(() => {}); chk(); setInterval(chk, 60000); }
   // Primeiro acesso: abre a aba para conectar a IA

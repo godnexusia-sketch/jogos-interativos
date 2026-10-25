@@ -80,6 +80,13 @@ alertas, efeitos, widgets, DJ Pad, música, voz neural e apresentador com IA. Se
 - Vídeos dos jogos em `public/assets/videos/<id>.mp4` (+ `.jpg`), gravados por `node testes/videos.cjs [id...]` com relógio falso (liso mesmo em PC lento). A lista `VIDS` em `inicio.html` tem que bater com os vídeos gravados.
 - Skills de design do dono (repositório godnexusia-sketch/designer) copiadas para `.claude/skills/` (frontend-design, animate, emil-design-eng, apple-design, review-animations etc.).
 
+## Preços e assinatura pelo Asaas (25/10/2026)
+- Tabela em `public/precos.js` (o site e o servidor usam o mesmo arquivo). Por mês: 1 jogo R$ 9,90; pacotes de 3 = R$ 19,90, 5 = R$ 29,90, 10 = R$ 49,90, 20 = R$ 69,90; todos = R$ 99,90. Quantidade quebrada = pacote + avulsos (4 = 3 + 1 = R$ 29,80); se um pacote maior sair mais barato, cobra ele e avisa que dá para escolher mais jogos de graça. Anual = 50% de desconto. Mensal tem 30 dias grátis (1 vez por conta e por CPF).
+- Página de entrada: link "Preços" no topo / botão "Ver preços" mostram a seção escondida `#precos`: cartões dos pacotes, mensal/anual, simulador (sacola) e a janela de pagamento (nome, e-mail, senha, CPF/CNPJ, celular, Pix/cartão/boleto, parcelas no anual).
+- Servidor: `POST /api/checkout` cria cliente + assinatura mensal (ou cobrança anual) no Asaas (`lib/asaas.js`) e cria a conta já liberada (sem aprovação do admin). `POST /api/asaas/webhook` (token `ASAAS_WEBHOOK_TOKEN` no cabeçalho `asaas-access-token`) marca pago/atrasado/cancelado e estende `plano.ate`. Plano vencido: o painel mostra "pagar" no topo e a live não conecta.
+- No Render: `ASAAS_API_KEY` (chave $aact_prod_… cobra de verdade; $aact_hmlg_… usa o sandbox) e `ASAAS_WEBHOOK_TOKEN`. No Asaas: Integrações → Webhooks → URL `https://jogos-interativos.onrender.com/api/asaas/webhook`, mesmo token, eventos de cobrança e assinatura.
+- O admin vê o plano de cada conta (etiqueta TESTE GRÁTIS / PAGO / ATRASADO / VENCIDO) na aba Usuários.
+
 ## Arquitetura
 ### Servidor (`server.js`, Node 22, `http` + `ws`)
 - Uma conexão com o TikTok por @ (`tiktok-live-connector@2.5.0`, `enableExtendedGiftInfo: false`). A **sala do @ existe enquanto houver alguém conectado, mesmo com a live fora do ar**; a conexão com o TikTok tenta de novo sozinha (30 s offline, 5 s queda).
