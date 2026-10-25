@@ -26,14 +26,14 @@ defineGame({
   reset() {
     this.rng = makeRng('wyr');
     const own = lines(this.s.customWyr).map((l) => l.split('|').map((x) => x.trim())).filter((p) => p.length >= 2).map((p) => ({ a: p[0], b: p[1] }));
-    this.pool = this.data ? this.rng.shuffle([...own, ...this.data.filter((q) => this.s.intensity === 'all' || q.cat === this.s.intensity)]) : own;
+    this.pool = freshPool(this, this.data ? [...own, ...this.data.filter((q) => this.s.intensity === 'all' || q.cat === this.s.intensity)] : own, this.rng);
     this.idx = 0;
     this.ph = new Phases();
     if (this.pool.length) this.next();
   },
   sample() { return this.s.voteLabels === '12' ? pick(['1', '2']) : pick(['a', 'b', 'A', 'B']); },
   next() {
-    this.q = this.pool[this.idx++ % this.pool.length];
+    this.q = nextFresh(this, this.pool, this.rng);
     this.balls = []; this.side = new Map();
     this.ph.go('vote', this.s.voteSeconds);
     if (this.s.narrateQuestion) narrate(this, `Você prefere: ${this.q.a}, ou ${this.q.b}?`);
@@ -137,7 +137,7 @@ defineGame({
   settings: [
     { key: 'questionTimeLimit', type: 'number', label: 'Segundos por conta', min: 5, max: 60, default: 15 },
     { key: 'winnersShown', type: 'number', label: 'Quantos vencedores mostrar', min: 3, max: 12, default: 8 },
-    { key: 'difficultyBand', type: 'select', label: 'Dificuldade', options: [['auto', 'Automática'], ['easy', 'Fácil (1–3)'], ['medium', 'Média (4–7)'], ['hard', 'Difícil (8–10)']], default: 'auto' },
+    { key: 'difficultyBand', type: 'select', label: 'Dificuldade', options: [['auto', 'Automática (ajusta à live)'], ['rand', 'Aleatória (fácil, média e difícil misturadas)'], ['easy', 'Fácil (1–3)'], ['medium', 'Média (4–7)'], ['hard', 'Difícil (8–10)']], default: 'auto' },
     { key: 'breakSeconds', type: 'number', label: 'Intervalo', min: 1, max: 10, default: 3 },
     { key: 'showStreaks', type: 'toggle', label: 'Mostrar sequências', default: true },
     NARRATE_SETTING('Falar a conta e o vencedor'),
@@ -150,7 +150,11 @@ defineGame({
   next() {
     const band = { easy: [1, 3], medium: [4, 7], hard: [8, 10] }[this.s.difficultyBand];
     if (band) this.level = clamp(this.level, band[0], band[1]);
-    this.cur = mathQuestion(this.level, this.rng);
+    if (this.s.difficultyBand === 'rand') this.level = this.rng.int(1, 10);
+    // não repete a mesma conta enquanto houver contas novas
+    this.vistas ||= new Set();
+    for (let t = 0; t < 30; t++) { this.cur = mathQuestion(this.level, this.rng); if (!this.vistas.has(this.cur.q)) break; }
+    this.vistas.add(this.cur.q); if (this.vistas.size > 3000) this.vistas.clear();
     this.right = []; this.tried = new Set(); this.round++;
     this.ph.go('q', this.s.questionTimeLimit);
     narrate(this, `Quanto é ${this.cur.q.replace('×', 'vezes').replace('÷', 'dividido por').replace('−', 'menos').replace('²', ' ao quadrado')}?`);
@@ -304,14 +308,14 @@ defineGame({
   reset() {
     this.rng = makeRng('survey');
     const own = lines(this.s.customSurvey).map((l) => l.split('|').map((x) => x.trim())).filter((p) => p.length >= 3).map((p) => ({ q: p[0], a: p.slice(1).map((x) => { const [a, pts] = x.split(':'); return { a: a.trim(), p: Number(pts) || 10, alt: [] }; }).slice(0, 6) }));
-    this.pool = this.rng.shuffle([...own, ...(this.data || [])]);
+    this.pool = freshPool(this, [...own, ...(this.data || [])], this.rng);
     this.idx = 0; this.round = 0; this.points = new Points(this.id); this.ph = new Phases(); this.guesses = [];
     if (this.pool.length) this.next();
   },
   sample() { const q = this.q; return q && Math.random() < 0.4 ? pick(q.a).a : pick(['bola', 'pizza', 'cachorro', 'celular', 'praia', 'sol', 'carro']); },
   next() {
     if (this.round >= this.s.roundsPerMatch) { this.champ = this.points.top(1)[0]; if (this.champ) { scores.add(this.id, this.champ.user, 0, 1); confetti(150); sfx.win(); } this.round = 0; this.ph.go('final', 8); return; }
-    this.q = this.pool[this.idx++ % this.pool.length];
+    this.q = nextFresh(this, this.pool, this.rng);
     this.open = this.q.a.map(() => null); this.strikes = 0; this.misses = new Map(); this.lastHit = 0; this.round++; this.guesses = [];
     this.ph.go('play', this.s.roundSeconds);
     this.since = 0;

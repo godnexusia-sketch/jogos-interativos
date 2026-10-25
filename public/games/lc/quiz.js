@@ -8,7 +8,7 @@ function triviaPool(g, data, rng) {
   const own = lines(g.s.custom).map((l) => l.split('|').map((x) => x.trim())).filter((p) => p.length >= 3).map((p) => ({ q: p[0], a: p.slice(1, 5), cat: 'Suas perguntas', d: 2 }));
   if (g.s.onlyCustom && own.length) qs = own; else qs = [...own, ...qs];
   if (!qs.length) qs = data?.q || [];
-  return rng.shuffle(qs);
+  return freshPool(g, qs, rng);
 }
 // Embaralha as alternativas guardando qual é a certa.
 function shuffleOptions(q, rng) {
@@ -61,7 +61,7 @@ defineGame({
   sample() { return pick(['a', 'b', 'c', 'd', 'A', 'letra b']); },
   next() {
     if (!this.pool.length) return;
-    const q = this.pool[this.idx++ % this.pool.length];
+    const q = nextFresh(this, this.pool, this.rng);
     this.q = shuffleOptions(q, this.rng);
     this.votes = new Map(); this.counts = [0, 0, 0, 0]; this.removed = new Set(); this.winners = [];
     this.round++;
@@ -171,16 +171,18 @@ defineGame({
     this.step = 0; this.best = 0; this.fifty = 0; this.skips = 0; this.games = 1;
     this.feed = new Feed(3);
     this.ph = new Phases();
-    this.used = new Set();
+    this.used ||= new Set(); // continua entre partidas: não repete até passar por todas
     if (this.data) this.next();
   },
   sample() { return pick(['a', 'b', 'c', 'd']); },
   pickQuestion() {
     const level = this.s.difficulty === 'mix' ? (this.step < 5 ? 1 : this.step < 10 ? 2 : 3) : this.s.difficulty === 'rand' ? 1 + Math.floor(this.rng() * 3) : Number(this.s.difficulty);
     const own = lines(this.s.custom).map((l) => l.split('|').map((x) => x.trim())).filter((p) => p.length >= 3).map((p, i) => ({ q: p[0], a: p.slice(1, 5), cat: 'Suas perguntas', d: level, id: 'c' + i }));
-    let pool = this.s.onlyCustom && own.length ? own : [...own, ...this.data.q.filter((q) => q.d === level && (this.s.category === 'all' || q.cat === this.s.category))];
-    pool = pool.filter((q) => !this.used.has(q.q));
-    if (!pool.length) { this.used.clear(); pool = this.data.q; }
+    let todas = this.s.onlyCustom && own.length ? own : [...own, ...this.data.q.filter((q) => q.d === level && (this.s.category === 'all' || q.cat === this.s.category))];
+    if (!todas.length) todas = this.data.q.filter((q) => q.d === level);
+    let pool = todas.filter((q) => !this.used.has(q.q));
+    // já saíram todas desse nível: libera esse nível de novo (só repete depois de passar por todas)
+    if (!pool.length) { for (const q of todas) this.used.delete(q.q); pool = todas; }
     const q = pool[Math.floor(this.rng() * pool.length)];
     this.used.add(q.q);
     return shuffleOptions(q, this.rng);
@@ -326,7 +328,7 @@ defineGame({
     const nivel = (q) => this.s.difficulty === 'mix' || !this.s.difficulty || String(q.d ?? 2) === String(this.s.difficulty);
     let base = this.data ? this.data.q.filter((q) => (this.s.category === 'all' || q.cat === this.s.category) && nivel(q)) : [];
     if (this.data && !base.length) base = this.data.q.filter(nivel);
-    this.pool = this.data ? this.rng.shuffle([...own, ...base]) : [];
+    this.pool = this.data ? freshPool(this, [...own, ...base], this.rng) : [];
     this.idx = 0; this.round = 0;
     this.points = new Points(this.id); this.streak = new Map();
     this.feed = new Feed(3); this.ph = new Phases(); this.spot = null;
@@ -334,7 +336,7 @@ defineGame({
   },
   sample() { return pick(['V', 'F', 'verdadeiro', 'falso', 'mentira']); },
   next() {
-    this.q = this.pool[this.idx++ % this.pool.length];
+    this.q = nextFresh(this, this.pool, this.rng);
     this.votes = new Map(); this.round++;
     this.ph.go('q', this.s.statementSeconds);
     if (this.s.announcerVoice) narrate(this, `Verdadeiro ou falso? ${this.q.s}`, { maxLen: 240 });

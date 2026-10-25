@@ -56,6 +56,60 @@ const ALG_GEN = {
     const sg = (n) => (n >= 0 ? `+ ${n === 1 ? '' : n}y` : `− ${n === -1 ? '' : -n}y`), co = (n) => (n === 1 ? '' : n);
     return { topic: 'Sistema de equações', q: `${co(a)}x ${sg(b)} = ${e}\n${co(c)}x ${sg(d)} = ${f}\nQuanto vale ${askX ? 'x' : 'y'}?`, ans: askX ? x : y, wrong: askX ? [y, x + 1, -x, e - f] : [x, y - 1, -y, f], hint: 'Isole uma letra e substitua na outra', steps: [`Determinante = ${a}×${d} − ${b}×${c} = ${D}`, `x = (${e}×${d} − ${b}×${f}) ÷ ${D} = ${x}`, `y = (${a}×${f} − ${e}×${c}) ÷ ${D} = ${y}`] };
   },
+  pct(r, lv) { const p = r.pick(lv === 1 ? [10, 20, 25, 50] : lv === 2 ? [5, 15, 30, 40, 60, 75] : [12, 35, 45, 65, 80, 120]), base = r.int(1, lv === 3 ? 30 : 12) * (lv === 1 ? 10 : 20), v = p * base / 100;
+    if (lv > 1 && r() < 0.5) { const up = r() < 0.5, fim = up ? base + v : base - v;
+      return { topic: 'Porcentagem', q: `Um produto de R$ ${base} ${up ? 'aumentou' : 'teve desconto de'} ${p}%.\nQuanto passou a custar?`, ans: fim, wrong: [v, up ? base - v : base + v, base + p], hint: `${p}% de ${base} = ${fmtN(v)}`, steps: [`${p}% de ${base} = ${p} ÷ 100 × ${base} = ${fmtN(v)}`, `${base} ${up ? '+' : '−'} ${fmtN(v)} = ${fmtN(fim)}`] }; }
+    return { topic: 'Porcentagem', q: `Quanto é ${p}% de ${base}?`, ans: v, wrong: [base / p, v * 10, base - v, p + base / 10], hint: `${p}% = ${p} ÷ 100`, steps: [`${p}% de ${base} = ${p} ÷ 100 × ${base}`, `= ${fmtN(v)}`] }; },
+  regra3(r, lv) { const a = r.int(2, 6), k = r.int(2, lv === 1 ? 5 : 12), b = a * k, c = r.int(2, 9) * (lv === 3 ? 3 : 1);
+    if (lv === 3 && r() < 0.5) { const t1 = r.int(2, 5), h1 = r.int(2, 6) * 2, n1 = h1 * t1, h2 = r.pick([2, 3, 4, 6].filter((x) => x !== h1 && n1 % x === 0)) || 2, t2 = n1 / h2;
+      return { topic: 'Regra de três inversa', q: `${h1} pedreiros fazem um muro em ${t1} dias.\nEm quantos dias ${h2} pedreiros fazem o mesmo muro?`, ans: t2, wrong: [h2 * t1 / h1, t1 + h1 - h2, t2 + 1], hint: 'Mais pedreiros = menos dias (inversa)', steps: [`${h1} × ${t1} = ${h2} × x`, `${n1} = ${h2}x`, `x = ${t2}`] }; }
+    const tpl = r.pick([[(n, v) => `${n} pães custam R$ ${v}.`, (n) => `Quanto custam ${n} pães?`], [(n, v) => `Com ${n} litros o carro roda ${v} km.`, (n) => `Quantos km roda com ${n} litros?`], [(n, v) => `Uma máquina faz ${v} peças em ${n} horas.`, (n) => `Quantas peças faz em ${n} horas?`], [(n, v) => `${n} cadernos custam R$ ${v}.`, (n) => `Quanto custam ${n} cadernos?`]]);
+    const ans = b * c / a;
+    return { topic: 'Regra de três', q: `${tpl[0](a, b)}\n${tpl[1](c)}`, ans, wrong: [b + c - a, a * c, ans + k, b * a / c].map((x) => +x.toFixed(2)), hint: `Cada um vale ${k}`, steps: [`${a} → ${b}`, `${c} → x`, `x = ${b} × ${c} ÷ ${a} = ${fmtN(ans)}`] }; },
+  pot(r, lv) { const sup = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+    if (lv === 1) { const b = r.int(2, 10), e = b <= 3 ? r.int(2, 5) : r.int(2, 3), v = b ** e;
+      return { topic: 'Potência', q: `${b}${sup[e]} = ?`, ans: v, wrong: [b * e, b ** (e - 1), v + b, e ** b > 99999 ? v * 2 : e ** b], hint: `${b} vezes ele mesmo ${e} vezes`, steps: [`${Array(e).fill(b).join(' × ')} = ${v}`] }; }
+    const b = r.pick([2, 3, 5]), m = r.int(2, 5), n = r.int(1, 4), k = r.int(1, Math.min(m + n - 1, 5)), e = m + n - k;
+    return { topic: 'Propriedades da potência', q: `(${b}${sup[m]} × ${b}${sup[n]}) ÷ ${b}${sup[k]} = ${b}ˣ\nQuanto vale x?`, ans: e, wrong: [m * n - k, m + n + k, m * n / Math.max(1, k), e + 1].map((x) => +x.toFixed(2)), hint: 'Multiplicação: soma os expoentes. Divisão: subtrai', steps: [`${b}^(${m} + ${n} − ${k})`, `x = ${e}`] }; },
+  raiz(r, lv) {
+    if (lv === 1) { const n = r.int(2, 15); return { topic: 'Raiz quadrada', q: `√${n * n} = ?`, ans: n, wrong: [n * n / 2, n + 1, n * 2, n - 1], hint: 'Que número vezes ele mesmo dá isso?', steps: [`${n} × ${n} = ${n * n}`, `√${n * n} = ${n}`] }; }
+    if (lv === 2) { const n = r.int(2, 6); return { topic: 'Raiz cúbica', q: `∛${n ** 3} = ?`, ans: n, wrong: [n ** 3 / 3, n * n, n + 1, n * 3], hint: 'Que número ao cubo dá isso?', steps: [`${n} × ${n} × ${n} = ${n ** 3}`, `∛${n ** 3} = ${n}`] }; }
+    const a = r.int(2, 9), k = r.pick([2, 3, 5]), b = r.int(2, 9), soma = a + b;
+    return { topic: 'Radicais', q: `${a}√${k} + ${b}√${k} = x√${k}\nQuanto vale x?`, ans: soma, wrong: [a * b, soma * k, soma + k, Math.abs(a - b)], hint: 'Radicais iguais: soma os números da frente', steps: [`(${a} + ${b})√${k}`, `= ${soma}√${k}`, `x = ${soma}`] }; },
+  pa(r, lv) { const a1 = r.int(-5, 15), q = r.int(lv === 1 ? 2 : -6, lv === 1 ? 6 : 9) || 3, n = lv === 1 ? r.int(5, 8) : r.int(8, 30), an = a1 + (n - 1) * q;
+    if (lv === 3 && r() < 0.5) { const n2 = r.int(5, 15), S = (a1 + (a1 + (n2 - 1) * q)) * n2 / 2;
+      return { topic: 'PA · soma dos termos', q: `PA: ${a1}, ${a1 + q}, ${a1 + 2 * q}, ...\nQuanto dá a soma dos ${n2} primeiros termos?`, ans: S, wrong: [S + q, (a1 + (n2 - 1) * q) * n2, S - a1, a1 * n2], hint: 'Sₙ = (a₁ + aₙ) × n ÷ 2', steps: [`a${SUB(n2)} = ${a1} + ${n2 - 1}×${q} = ${a1 + (n2 - 1) * q}`, `S = (${a1} + ${a1 + (n2 - 1) * q}) × ${n2} ÷ 2 = ${S}`] }; }
+    return { topic: 'Progressão aritmética (PA)', q: `PA: ${a1}, ${a1 + q}, ${a1 + 2 * q}, ...\nQual é o ${n}º termo?`, ans: an, wrong: [a1 + n * q, an - q, a1 * n, an + 2 * q], hint: 'aₙ = a₁ + (n − 1) × r', steps: [`razão r = ${q}`, `a${SUB(n)} = ${a1} + (${n} − 1) × ${q}`, `= ${an}`] }; },
+  pg(r, lv) { const a1 = r.int(1, lv === 1 ? 3 : 5), q = r.pick(lv === 1 ? [2, 3] : [2, 3, -2, 4]), n = r.int(lv === 1 ? 4 : 5, lv === 3 ? 8 : 6), an = a1 * q ** (n - 1);
+    return { topic: 'Progressão geométrica (PG)', q: `PG: ${a1}, ${a1 * q}, ${a1 * q * q}, ...\nQual é o ${n}º termo?`, ans: an, wrong: [a1 * q ** n, an / q, a1 + (n - 1) * q, -an], hint: 'aₙ = a₁ × qⁿ⁻¹', steps: [`razão q = ${q}`, `a${SUB(n)} = ${a1} × ${q}^${n - 1}`, `= ${an}`] }; },
+  func1(r, lv) { const a = r.int(2, 9) * (lv > 1 && r() < 0.4 ? -1 : 1), b = r.int(-12, 15), x = r.int(lv === 1 ? 0 : -6, 10), y = a * x + b;
+    const fb = b >= 0 ? `+ ${b}` : `− ${-b}`, fa = String(a).replace('-', '−');
+    if (lv === 3 && r() < 0.5) { const z = r.int(-6, 9), y0 = a * z + b;
+      return { topic: 'Função do 1º grau (inversa)', q: `f(x) = ${fa}x ${fb}\nPara qual x temos f(x) = ${y0}?`, ans: z, wrong: [(y0 + b) / a, y0 - b, z + 1, -z].map((v) => +v.toFixed(2)), hint: 'Iguale a fórmula ao valor e resolva', steps: [`${a}x ${fb} = ${y0}`, `${a}x = ${y0 - b}`, `x = ${z}`] }; }
+    if (lv >= 2 && r() < 0.4) { const raiz = -b / a; if (Number.isInteger(raiz)) return { topic: 'Função do 1º grau (raiz)', q: `f(x) = ${fa}x ${fb}\nQual é a raiz (onde f(x) = 0)?`, ans: raiz, wrong: [b / a, -raiz + 1, b, a].map((v) => +(+v).toFixed(2)), hint: 'Faça f(x) = 0', steps: [`${a}x ${fb} = 0`, `x = ${-b} ÷ ${a} = ${raiz}`] }; }
+    return { topic: 'Função do 1º grau', q: `f(x) = ${fa}x ${fb}\nQuanto vale f(${x})?`, ans: y, wrong: [a + x + b, a * x - b, a * (x + b), y + a], hint: `Troque x por ${x}`, steps: [`f(${x}) = ${a} × ${x < 0 ? `(${x})` : x} ${fb}`, `= ${a * x} ${fb}`, `= ${y}`] }; },
+  juros(r, lv) { const C = r.int(2, 20) * 100, i = r.pick(lv === 1 ? [1, 2, 5, 10] : [2, 3, 4, 5, 6, 8]), t = r.int(2, lv === 1 ? 4 : 12), J = C * i * t / 100;
+    if (lv === 3 && r() < 0.5) { const t2 = 2, M = Math.round(C * (1 + i / 100) ** t2 * 100) / 100;
+      return { topic: 'Juros compostos', q: `R$ ${C} a juros compostos de ${i}% ao mês.\nQuanto vira em ${t2} meses (montante)?`, ans: M, wrong: [C + C * i * t2 / 100, M + C * i / 100, M - C, C * (1 + i / 100) ** 3].map((v) => +(+v).toFixed(2)), hint: 'M = C × (1 + i)ᵗ', steps: [`M = ${C} × (1,${String(i).padStart(2, '0')})²`, `M = ${fmtN(M)}`] }; }
+    const askM = lv > 1 && r() < 0.5;
+    return { topic: 'Juros simples', q: `R$ ${C} a ${i}% ao mês, juros simples, por ${t} meses.\n${askM ? 'Qual é o MONTANTE?' : 'Quanto dá de JUROS?'}`, ans: askM ? C + J : J, wrong: askM ? [J, C + J / t, C * i * t, C + J + C * i / 100] : [C + J, J / t, C * i, J * 2], hint: 'J = C × i × t', steps: [`J = ${C} × ${i}% × ${t}`, `J = ${fmtN(J)}`, ...(askM ? [`M = ${C} + ${fmtN(J)} = ${fmtN(C + J)}`] : [])] }; },
+  frac(r, lv) { const gcd = (a, b) => (b ? gcd(b, a % b) : a);
+    if (lv === 1) { const d = r.pick([2, 3, 4, 5, 10]), n = r.int(1, d - 1), tot = d * r.int(2, 12), v = tot / d * n;
+      return { topic: 'Fração de um número', q: `Quanto é ${n}/${d} de ${tot}?`, ans: v, wrong: [tot / d, tot * n, v + n, tot - v || v * 2], hint: `Divida por ${d} e multiplique por ${n}`, steps: [`${tot} ÷ ${d} = ${tot / d}`, `${tot / d} × ${n} = ${v}`] }; }
+    const b = r.pick([2, 3, 4, 5, 6]), d = r.pick([2, 3, 4, 6, 8].filter((x) => x !== b)), a = r.int(1, b * 2), c = r.int(1, d * 2), num = a * d + c * b, den = b * d, g = gcd(num, den), dec = num / den;
+    if (Number.isInteger(dec) || lv === 3) return { topic: 'Soma de frações', q: `${a}/${b} + ${c}/${d} = ?\n(responda em número decimal)`, ans: +dec.toFixed(2), wrong: [+((a + c) / (b + d)).toFixed(2), +(dec + 1).toFixed(2), +((a * c) / (b * d)).toFixed(2), +(dec * 2).toFixed(2)], hint: 'Iguale os denominadores', steps: [`${a}/${b} + ${c}/${d} = ${num}/${den}`, ...(g > 1 ? [`= ${num / g}/${den / g}`] : []), `≈ ${fmtN(+dec.toFixed(2))}`] };
+    const k = r.int(2, 6), f = r.pick([2, 3, 4, 5, 6, 7, 8, 9].filter((x) => x !== k));
+    return { topic: 'Frações equivalentes', q: `${k}/${f} = x/${f * k}\nQuanto vale x?`, ans: k * k, wrong: [k, k + k, f * k - f, k * f], hint: `${f} vezes ${k} dá ${f * k}`, steps: [`${f} × ${k} = ${f * k}`, `${k} × ${k} = ${k * k}`, `x = ${k * k}`] }; },
+  mmc(r, lv) { const gcd = (a, b) => (b ? gcd(b, a % b) : a), a = r.int(2, lv === 1 ? 12 : 24), b = r.int(2, lv === 1 ? 12 : 30), g = gcd(a, b), m = a * b / g;
+    if (r() < 0.5) return { topic: 'MDC', q: `Qual é o MDC de ${a * (lv === 3 ? 2 : 1)} e ${b * (lv === 3 ? 2 : 1)}?`, ans: g * (lv === 3 ? 2 : 1), wrong: [m, Math.min(a, b), 1 + g, a + b].map((x) => x * (lv === 3 ? 2 : 1)), hint: 'O maior número que divide os dois', steps: [`Divisores comuns de ${a * (lv === 3 ? 2 : 1)} e ${b * (lv === 3 ? 2 : 1)}`, `O maior é ${g * (lv === 3 ? 2 : 1)}`] };
+    return { topic: 'MMC', q: lv === 3 ? `Dois ônibus saem juntos. Um passa a cada ${a} min e o outro a cada ${b} min.\nEm quantos minutos saem juntos de novo?` : `Qual é o MMC de ${a} e ${b}?`, ans: m, wrong: [a * b === m ? m + a : a * b, g, m + g, Math.max(a, b)], hint: 'O menor múltiplo comum', steps: [`MDC(${a}, ${b}) = ${g}`, `MMC = ${a} × ${b} ÷ ${g} = ${m}`] }; },
+  expr(r, lv) { const a = r.int(2, 9), b = r.int(2, 9), c = r.int(2, 9), d = r.int(1, 5);
+    if (lv === 1) { const v = a + b * c; return { topic: 'Expressão numérica', q: `${a} + ${b} × ${c} = ?`, ans: v, wrong: [(a + b) * c, a * b + c, v + 1, a + b + c], hint: 'Primeiro a multiplicação', steps: [`${b} × ${c} = ${b * c}`, `${a} + ${b * c} = ${v}`] }; }
+    if (lv === 2) { const v = (a + b) * c - d * d; return { topic: 'Expressão numérica', q: `(${a} + ${b}) × ${c} − ${d}² = ?`, ans: v, wrong: [a + b * c - d * d, (a + b) * c - d * 2, v + d, (a + b) * (c - d) * d], hint: 'Parênteses, potência, multiplicação, depois soma', steps: [`(${a + b}) × ${c} = ${(a + b) * c}`, `${d}² = ${d * d}`, `${(a + b) * c} − ${d * d} = ${v}`] }; }
+    const v = (a * b - c) * 2 + (d + 1) ** 2; return { topic: 'Expressão numérica', q: `2 × (${a} × ${b} − ${c}) + (${d} + 1)² = ?`, ans: v, wrong: [2 * a * b - c + (d + 1) ** 2, (a * b - c) * 2 + d * d + 1, v - 2, (a * b - c) + (d + 1) * 2], hint: 'Resolva os parênteses primeiro', steps: [`${a} × ${b} − ${c} = ${a * b - c}`, `2 × ${a * b - c} = ${2 * (a * b - c)}`, `(${d + 1})² = ${(d + 1) ** 2}`, `Total = ${v}`] }; },
+  ineq(r, lv) { const a = r.int(2, lv === 1 ? 5 : 9), x0 = r.int(lv === 1 ? 1 : -5, 12), b = r.int(-10, 15), c = a * x0 + b, neg = lv === 3 && r() < 0.5;
+    const A = neg ? -a : a, C = neg ? -a * x0 + b : c, bs = b >= 0 ? `+ ${b}` : `− ${-b}`;
+    return { topic: 'Inequação do 1º grau', q: `${A}x ${bs} > ${String(C).replace('-', '−')}\nQual é o MENOR número inteiro que resolve?`.replace('MENOR', neg ? 'MAIOR' : 'MENOR'), ans: neg ? x0 - 1 : x0 + 1, wrong: neg ? [x0, x0 + 1, -x0, x0 - 2] : [x0, x0 - 1, x0 + 2, -x0], hint: neg ? 'Ao dividir por negativo, o sinal vira' : 'Resolva como equação e veja o sinal', steps: neg ? [`${A}x > ${C - b}`, `x < ${x0} (o sinal virou)`, `Maior inteiro: ${x0 - 1}`] : [`${A}x > ${C - b}`, `x > ${x0}`, `Menor inteiro: ${x0 + 1}`] }; },
 };
 // ---------- Perguntas: Geometria (com figura) ----------
 // fig: { type, ...medidas } desenhado por drawFig()
@@ -329,9 +383,11 @@ function defineMathGame(v) {
 
 defineMathGame({
   id: 'math-algebra', name: 'Desafio da Álgebra', title: 'DESAFIO DA ÁLGEBRA', icon: '🧮', color: '#14b8a6', stage: 'teal', accent: '#5eead4',
-  desc: 'Equações do 1º e 2º grau, logaritmos e sistemas. O chat responde com a letra ou o número e depois vê a resolução passo a passo.',
-  help: 'Aparece uma questão de <b>equação do 1º grau</b>, <b>equação do 2º grau</b>, <b>logaritmo</b> ou <b>sistema</b>. Escolha os conteúdos e o nível nas configurações.',
-  topics: [['eq1', 'Equação do 1º grau'], ['eq2', 'Equação do 2º grau'], ['log', 'Logaritmos'], ['sys', 'Sistemas de equações']],
+  desc: 'Matemática de verdade com 17 conteúdos: equações, sistemas, logaritmos, porcentagem, regra de três, potências, raízes, PA, PG, funções, juros, frações, MMC/MDC, expressões e inequações. Fácil, médio, difícil ou aleatório, com resolução passo a passo.',
+  help: 'Aparece uma questão de um dos conteúdos ligados (equações, sistemas, logaritmos, porcentagem, regra de três, potências, raízes, PA, PG, função do 1º grau, juros, frações, MMC/MDC, expressões e inequações). Escolha os conteúdos e o nível nas configurações.',
+  topics: [['eq1', 'Equação do 1º grau'], ['eq2', 'Equação do 2º grau'], ['log', 'Logaritmos'], ['sys', 'Sistemas de equações'],
+    ['pct', 'Porcentagem'], ['regra3', 'Regra de três'], ['pot', 'Potências'], ['raiz', 'Raízes'], ['frac', 'Frações'], ['mmc', 'MMC e MDC'], ['expr', 'Expressões numéricas'],
+    ['pa', 'Progressão aritmética (PA)'], ['pg', 'Progressão geométrica (PG)'], ['func1', 'Função do 1º grau'], ['ineq', 'Inequações'], ['juros', 'Juros simples e compostos']],
   gen: ALG_GEN,
 });
 defineMathGame({

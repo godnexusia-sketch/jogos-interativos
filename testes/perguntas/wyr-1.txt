@@ -1,0 +1,228 @@
+leve|Ter um botão de pausar o tempo|Ter um botão de voltar 10 segundos
+leve|Acordar sempre às 5h descansado|Dormir até meio-dia todo dia
+leve|Ganhar um carro hoje|Ganhar uma viagem ao redor do mundo daqui a 1 ano
+leve|Nunca mais pegar fila|Nunca mais pegar trânsito
+leve|Ter a casa sempre limpa sozinha|Ter a comida sempre pronta sozinha
+leve|Saber cozinhar qualquer prato|Saber dançar qualquer ritmo
+leve|Morar numa casa na árvore|Morar num barco
+leve|Ter um gato que fala|Ter um cachorro que entende tudo
+leve|Comer só doce por uma semana|Comer só salgado por um mês
+leve|Viver no inverno eterno|Viver no verão eterno
+leve|Ser o mais engraçado da turma|Ser o mais inteligente da turma
+leve|Ter Wi-Fi grátis em qualquer lugar|Ter bateria infinita no celular
+leve|Assistir só filmes de terror|Assistir só comédia romântica
+leve|Ter um chef particular|Ter um motorista particular
+leve|Falar com os animais|Falar com as plantas
+leve|Conhecer o fundo do mar|Conhecer o espaço
+leve|Ganhar na loteria sozinho|Dividir o prêmio com seus 10 melhores amigos
+leve|Teletransporte|Ler mentes
+leve|Ter memória perfeita|Aprender qualquer coisa em 1 dia
+leve|Morar num castelo antigo|Morar numa casa futurista
+leve|Só poder sussurrar|Só poder gritar
+leve|Andar de patinete pra todo lado|Andar de skate pra todo lado
+leve|Ter um robô ajudante|Ter um mordomo de verdade
+leve|Ser campeão de videogame|Ser campeão de xadrez
+leve|Comer açaí todo dia|Comer pastel todo dia
+leve|Brigadeiro|Beijinho
+leve|Coxinha|Pão de queijo
+leve|Feijoada no sábado|Churrasco no domingo
+leve|Guaraná|Refrigerante de cola
+leve|Café quentinho|Chocolate quente
+leve|Pizza de calabresa|Pizza de quatro queijos
+leve|Sorvete de chocolate|Sorvete de morango
+leve|Hambúrguer artesanal|Cachorro-quente completo
+leve|Tapioca|Cuscuz
+leve|Praia lotada com sol|Praia vazia com nublado
+leve|Acampar na floresta|Ficar num hotel de luxo
+leve|Viajar de avião|Viajar de navio
+leve|Conhecer o Japão|Conhecer a Itália
+leve|Passar o Carnaval em Salvador|Passar o Carnaval no Rio
+leve|Ver a aurora boreal|Ver as pirâmides do Egito
+leve|Férias na neve|Férias numa ilha tropical
+leve|Viajar sozinho|Viajar com a família inteira
+leve|Fazer uma viagem de carro pelo Brasil|Fazer um mochilão pela Europa
+leve|Morar em São Paulo|Morar no Rio de Janeiro
+leve|Morar no interior|Morar na capital
+leve|Ter superforça|Ter supervelocidade
+leve|Respirar debaixo d'água|Enxergar no escuro
+leve|Ser invisível por 1 hora por dia|Voar por 1 hora por dia
+leve|Ter o poder de curar|Ter o poder de prever o futuro
+leve|Ficar gigante quando quiser|Ficar minúsculo quando quiser
+leve|Controlar o fogo|Controlar a água
+leve|Parar a chuva|Fazer nevar quando quiser
+leve|Atravessar paredes|Pular prédios
+leve|Copiar qualquer habilidade que vê|Nunca precisar dormir
+leve|Ser um herói famoso|Ser um herói secreto
+leve|Ter um dragão|Ter um grifo
+leve|Viver em Hogwarts|Viver no mundo dos super-heróis
+leve|Ser um mago|Ser um cavaleiro
+leve|Ser pirata|Ser astronauta
+leve|Encontrar um tesouro|Encontrar um dinossauro vivo
+leve|Ter uma lâmpada mágica com 1 desejo|Ter 100 moedas mágicas de pequenos desejos
+leve|Ser jogador de futebol famoso|Ser cantor famoso
+leve|Ganhar a Copa do Mundo|Ganhar o Oscar
+leve|Ser youtuber de sucesso|Ser streamer de sucesso
+leve|Ter 1 milhão de seguidores|Ter 10 amigos de verdade pra sempre
+leve|Fazer uma live com 100 mil pessoas|Fazer um show para 100 mil pessoas
+leve|Viralizar dançando|Viralizar cantando
+leve|Ser famoso no TikTok|Ser famoso na TV
+leve|Ganhar um presente de leão na live|Ganhar 100 rosas na live
+leve|Ter um podcast|Ter um canal de culinária
+leve|Jogar futebol|Jogar vôlei
+leve|Assistir à final da Copa no estádio|Jogar 5 minutos da final da Copa
+leve|Correr uma maratona|Escalar uma montanha
+leve|Surfar ondas gigantes|Saltar de paraquedas
+leve|Andar de montanha-russa 10 vezes|Andar na roda-gigante a noite toda
+leve|Fazer bungee jump|Mergulhar com tubarões
+leve|Ser goleiro|Ser atacante
+leve|Ganhar uma medalha de ouro olímpica|Ganhar um prêmio Nobel
+leve|Nadar com golfinhos|Andar de elefante
+leve|Ter um celular novo todo ano|Ter um computador gamer top
+leve|Viver sem redes sociais|Viver sem streaming de filmes
+leve|Só usar celular|Só usar computador
+leve|Ter um carro voador|Ter uma moto que anda na água
+leve|Óculos que traduz tudo|Fone que tira todo barulho
+leve|Jogos de celular|Jogos de console
+leve|Mandar áudio|Mandar mensagem escrita
+leve|Ligar por vídeo|Ligar só por voz
+leve|Ter um assistente de IA perfeito|Ter um melhor amigo perfeito
+leve|Morar numa cidade inteligente|Morar numa fazenda tranquila
+leve|Ser criança de novo por um dia|Ver como você vai estar daqui a 30 anos
+leve|Conhecer seus bisavós jovens|Conhecer seus bisnetos
+leve|Reviver seu melhor dia|Pular seu pior dia
+leve|Saber a data de todo aniversário|Saber o nome de todo mundo
+leve|Nunca mais sentir frio|Nunca mais sentir calor
+leve|Ter sempre a música certa tocando|Ter sempre a piada certa na hora
+leve|Ganhar um abraço de quem você ama|Ganhar um elogio de quem você admira
+leve|Ser muito organizado|Ser muito criativo
+leve|Ter uma biblioteca gigante|Ter uma sala de cinema em casa
+leve|Ter uma piscina em casa|Ter um parque de diversões em casa
+leve|Morar perto do mar|Morar perto de uma cachoeira
+leve|Ter uma horta|Ter um pomar
+leve|Cuidar de um cavalo|Cuidar de um papagaio
+leve|Ter 10 gatos|Ter 3 cachorros grandes
+leve|Ter uma tartaruga que vive 100 anos|Ter um peixe que muda de cor
+leve|Ver um panda de perto|Ver um leão de perto
+leve|Visitar um zoológico|Visitar um aquário gigante
+leve|Ser um pinguim|Ser uma águia
+leve|Ser um golfinho|Ser um lobo
+leve|Ter cauda|Ter asas pequenas
+leve|Livro|Filme
+leve|Série longa|Filme curto
+leve|Desenho animado|Novela
+leve|Ir ao cinema|Assistir em casa no sofá
+leve|Show de rock|Show de sertanejo
+leve|Funk|Pagode
+leve|Forró|Axé
+leve|Cantar no karaokê|Dançar na pista
+leve|Tocar violão|Tocar bateria
+leve|Ouvir música alta|Ouvir música baixinha
+leve|Festa surpresa|Festa planejada
+leve|Festa junina|Festa de Réveillon
+leve|Natal na praia|Natal na neve
+leve|Ganhar presente|Dar presente
+leve|Fazer um piquenique|Fazer um churrasco
+leve|Jogar jogo de tabuleiro|Jogar videogame
+leve|Montar um quebra-cabeça de 1000 peças|Fazer 100 palavras-cruzadas
+leve|Ganhar no Uno|Ganhar no dominó
+leve|Ser bom em matemática|Ser bom em desenho
+leve|Escrever um livro|Gravar um disco
+leve|Pintar um quadro famoso|Construir uma ponte famosa
+leve|Inventar algo útil|Descobrir uma nova espécie
+leve|Ser professor|Ser médico
+leve|Ser bombeiro|Ser policial
+leve|Ser chef de cozinha|Ser confeiteiro
+leve|Trabalhar de casa|Trabalhar num escritório incrível
+leve|Ter férias de 3 meses|Ter fins de semana de 3 dias
+leve|Ganhar bem num trabalho chato|Ganhar pouco num trabalho que ama
+leve|Ser chefe|Ser o melhor funcionário
+leve|Aprender japonês|Aprender a tocar piano
+leve|Saber programar|Saber consertar carros
+leve|Ser excelente em esportes|Ser excelente em música
+leve|Ter dentes perfeitos|Ter cabelo perfeito
+leve|Sempre achar vaga para estacionar|Sempre pegar sinal verde
+leve|Nunca mais perder as chaves|Nunca mais esquecer senhas
+leve|Ter um closet infinito|Ter uma geladeira infinita
+leve|Andar descalço sempre|Usar tênis até pra dormir
+leve|Tomar banho gelado|Tomar banho quentíssimo
+leve|Comer de olhos vendados|Comer sem talheres
+leve|Usar roupa de festa todo dia|Usar pijama em todo lugar
+leve|Ter sempre 10 reais no bolso|Ter um cartão com 1 mil por mês
+leve|Achar 100 reais na rua|Ganhar 100 reais de um amigo
+leve|Ser o primeiro a saber das notícias|Ser o último e viver em paz
+leve|Ver o nascer do sol|Ver o pôr do sol
+leve|Noite estrelada no campo|Noite de luzes na cidade
+leve|Chuva com cobertor|Sol com piscina
+leve|Dia de preguiça|Dia de aventura
+leve|Ter um irmão gêmeo|Ser filho único
+leve|Ter 5 irmãos|Não ter nenhum
+leve|Morar com os amigos|Morar sozinho
+leve|Ter um vizinho barulhento|Ter um vizinho fofoqueiro
+leve|Ganhar um ano de pizza|Ganhar um ano de cinema
+leve|Ganhar um ano de Uber grátis|Ganhar um ano de delivery grátis
+leve|Comer comida japonesa|Comer comida mexicana
+leve|Salada|Batata frita
+leve|Ovo frito|Ovo cozido
+leve|Pipoca doce|Pipoca salgada
+leve|Pão francês|Pão de forma
+leve|Arroz e feijão|Macarrão
+leve|Suco natural|Milk-shake
+leve|Picolé|Sorvete de massa
+leve|Bolo de cenoura com chocolate|Bolo de fubá
+leve|Acordar com cheiro de café|Acordar com cheiro de bolo
+leve|Ser lembrado pela bondade|Ser lembrado pelo talento
+leve|Ter coragem sempre|Ter calma sempre
+leve|Ser muito sortudo|Ser muito esforçado
+leve|Nunca mais ficar doente|Nunca mais ficar triste
+leve|Viver 200 anos|Viver 80 anos muito feliz
+leve|Saber todas as respostas do quiz|Ganhar todos os sorteios
+apim|Ler as mensagens do seu crush|Seu crush ler as suas
+apim|Contar um segredo para a live|Cantar ao vivo para a live
+apim|Confessar sua maior vergonha|Imitar alguém da família ao vivo
+apim|Mostrar sua galeria do celular por 10 segundos|Mostrar seu histórico de pesquisa
+apim|Ex mandando mensagem às 3h|Chefe mandando mensagem às 3h
+apim|Ser pego dançando sozinho|Ser pego cantando no chuveiro
+apim|Esquecer o nome do crush|Chamar o crush pelo nome do ex
+apim|Mandar áudio errado para o grupo da família|Mandar print errado para a pessoa errada
+apim|Descobrir que seu amigo te stalkeia|Descobrir que seu ex te stalkeia
+apim|Encontrar o ex no casamento do amigo|Encontrar o ex no seu primeiro encontro novo
+apim|Primeiro encontro no cinema|Primeiro encontro num restaurante
+apim|Namorar alguém muito ciumento|Namorar alguém que esquece tudo
+apim|Receber uma declaração ao vivo|Fazer uma declaração ao vivo
+apim|Saber o que pensam de você|Nunca saber
+apim|Postar uma foto sem filtro|Postar um vídeo dançando
+apim|Ficar uma semana sem celular|Ficar uma semana sem tomar banho quente
+apim|Contar a verdade sempre|Mentir um pouco para não magoar
+apim|Ter o celular hackeado|Ter a conta do banco zerada por 1 dia
+apim|Ser expulso do grupo da família|Ser expulso do grupo dos amigos
+apim|Dar um fora|Levar um fora
+apim|Casar escondido|Casar com festa de 500 pessoas
+apim|Seu crush te ignorar|Seu crush te deixar no visto
+apim|Revelar sua senha do Wi-Fi|Revelar quem é seu crush
+apim|Rir num momento sério|Chorar num momento engraçado
+apim|Tropeçar na frente de todo mundo|Ficar com comida no dente o dia todo
+apim|Ser filmado sem saber cantando|Ser filmado sem saber roncando
+apim|Ler em voz alta seu diário antigo|Assistir seus vídeos de 10 anos atrás com a live
+apim|Ter um ex famoso|Ser o ex famoso de alguém
+apim|Namoro à distância|Morar junto logo no começo
+apim|Seu pai ver seus stories|Sua avó comentar todas as suas fotos
+apim|Pagar a conta do primeiro encontro|Dividir a conta
+apim|Ser o melhor amigo do crush|Nunca falar com o crush
+apim|Ser pego fingindo que está ocupado|Ser pego fingindo que está doente
+apim|Comer uma pimenta muito ardida ao vivo|Comer limão inteiro ao vivo
+apim|Deixar a live escolher seu corte de cabelo|Deixar a live escolher sua roupa por 1 semana
+apim|Mandar "saudade" para o ex|Mandar "te amo" para o chefe sem querer
+apim|Falar tudo o que pensa por 1 dia|Ficar calado por 1 dia inteiro
+apim|Ser fofoqueiro|Ser alvo de fofoca
+apim|Descobrir uma surpresa antes da hora|Esquecer o aniversário de alguém importante
+apim|Responder 10 perguntas sinceras da live|Fazer 10 desafios da live
+apim|Ficar preso no elevador com o ex|Ficar preso no elevador com o chefe
+apim|Ficar sem café por uma semana|Ficar sem internet por um fim de semana
+apim|Ficar amigo do ex|Nunca mais ver o ex
+apim|Mostrar o quarto bagunçado ao vivo|Mostrar a geladeira ao vivo
+apim|Ter seu áudio vazado|Ter seu print vazado
+apim|Dançar funk na frente dos sogros|Cantar sertanejo na frente do chefe
+apim|Receber 100 mensagens de um desconhecido|Receber 1 mensagem do ex
+apim|Ser o último a saber da fofoca|Ser quem espalhou sem querer
+apim|Terminar por mensagem|Terminar pessoalmente
+apim|Esquecer a carteira no encontro|Esquecer o celular no encontro

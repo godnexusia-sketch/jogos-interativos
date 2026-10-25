@@ -69,6 +69,23 @@ const fmtK = (n) => (n >= 1e6 ? (n / 1e6).toFixed(1).replace('.', ',') + 'M' : n
 // ---------- Sorteio igual em todas as telas ----------
 // O painel e a tela da live rodam cada um a sua cópia do jogo. Com a mesma semente, sorteiam a mesma pergunta.
 const RNG = { seed: (Math.random() * 1e9) | 0 };
+// Perguntas sem repetir: as que ainda não saíram vêm primeiro (embaralhadas) e só repetem depois de passar por todas.
+// A lista do que já saiu fica no jogo e continua quando a partida recomeça ou as configurações mudam.
+const chaveQ = (q) => q.q || q.s || `${q.a}|${q.b}`;
+function freshPool(g, items, rng) {
+  g._vistas ||= new Set();
+  const novas = items.filter((q) => !g._vistas.has(chaveQ(q)));
+  if (!novas.length) { g._vistas.clear(); return rng.shuffle(items); }
+  return [...rng.shuffle(novas), ...rng.shuffle(items.filter((q) => g._vistas.has(chaveQ(q))))];
+}
+// Pega a próxima da lista e marca como vista; quando todas saíram, começa uma volta nova embaralhada
+function nextFresh(g, pool, rng) {
+  if (!pool.length) return null;
+  if (g.idx >= pool.length) { g._vistas?.clear(); const nova = rng.shuffle(pool); pool.splice(0, pool.length, ...nova); g.idx = 0; }
+  const q = pool[g.idx++];
+  (g._vistas ||= new Set()).add(chaveQ(q));
+  return q;
+}
 function hashStr(s) { let h = 2166136261; for (const c of String(s)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; }
 function makeRng(tag) {
   let a = hashStr(RNG.seed + ':' + tag) || 1;

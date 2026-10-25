@@ -49,3 +49,16 @@ for f in sorted(glob.glob('testes/perguntas/povo-*.txt')):
         vistos.add(norm(q)); s.append({'q': q, 'a': sorted(resps, key=lambda r: -r['p'])}); novos += 1
 json.dump(s, open(base + 'survey.json', 'w'), ensure_ascii=False, indent=0)
 print('o povo diz: +', novos, 'total', len(s))
+
+# Prefere Isso ou Aquilo: leve/apim|opção A|opção B
+w = json.load(open(base + 'wyr.json'))
+vistos = {frozenset((norm(x['a']), norm(x['b']))) for x in w}; novos = 0
+for f in sorted(glob.glob('testes/perguntas/wyr-*.txt')):
+    for ln in open(f, encoding='utf-8'):
+        p = [x.strip() for x in ln.strip().split('|')]
+        if len(p) != 3 or p[0] not in ('leve', 'apim'): continue
+        k = frozenset((norm(p[1]), norm(p[2])))
+        if k in vistos or len(k) < 2: continue
+        vistos.add(k); w.append({'cat': p[0], 'a': p[1], 'b': p[2]}); novos += 1
+json.dump(w, open(base + 'wyr.json', 'w'), ensure_ascii=False, separators=(',', ':'))
+print('prefere: +', novos, 'total', len(w))
